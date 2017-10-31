@@ -1,6 +1,4 @@
-#include <cstdlib>
-#include <iostream>
-#include <vector>
+#include "Nsemu.hpp"
 #include "optionparser.h"
 using namespace std;
 struct Arg: public option::Arg
