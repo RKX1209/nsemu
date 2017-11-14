@@ -1,3 +1,4 @@
+/* nsemu - LGPL - Copyright 2017 rkx1209<rkx1209dev@gmail.com> */
 #include "Nsemu.hpp"
 #include "optionparser.h"
 using namespace std;
@@ -42,13 +43,20 @@ struct Arg: public option::Arg
 enum  optionIndex { UNKNOWN, HELP };
 const option::Descriptor usage[] =
 {
-	{UNKNOWN, 0, "", "",Arg::None, "USAGE: nsemu [options] <nro-binary>\n\n"
+	{UNKNOWN, 0, "", "",Arg::None, "USAGE: nsemu [options] <nso-binary>\n\n"
 	                                       "Options:" },
 	{HELP, 0,"","help",Arg::None, "  --help  \tUnsurprisingly, print this message." },
 	{0,0,nullptr,nullptr,nullptr,nullptr}
 };
 
+static void load_nso(Nsemu *nsemu, string path, uint64_t addr) {
+  Nso nso(path);
+  nso.load(nsemu, addr);
+}
+
 int main(int argc, char **argv) {
+  Nsemu::create();
+  Nsemu *nsemu = Nsemu::get_instance();
   argc -= argc > 0;
   argv += argc > 0;
 
@@ -79,6 +87,9 @@ int main(int argc, char **argv) {
 		}
     #endif
 	}
-
+  string nso_path = parse.nonOption(0);
+  debug_print ("NSO path=%s\n", nso_path.c_str());
+  load_nso(nsemu, nso_path, 0x1000);
+  Nsemu::destroy();
   return 0;
 }
