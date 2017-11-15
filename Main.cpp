@@ -49,11 +49,6 @@ const option::Descriptor usage[] =
 	{0,0,nullptr,nullptr,nullptr,nullptr}
 };
 
-static void load_nso(Nsemu *nsemu, string path, uint64_t addr) {
-  Nso nso(path);
-  nso.load(nsemu, addr);
-}
-
 int main(int argc, char **argv) {
   Nsemu::create();
   Nsemu *nsemu = Nsemu::get_instance();
@@ -87,9 +82,7 @@ int main(int argc, char **argv) {
 		}
     #endif
 	}
-  string nso_path = parse.nonOption(0);
-  debug_print ("NSO path=%s\n", nso_path.c_str());
-  load_nso(nsemu, nso_path, 0x1000);
+  nsemu->BootApp(parse.nonOption(0));
   Nsemu::destroy();
   return 0;
 }

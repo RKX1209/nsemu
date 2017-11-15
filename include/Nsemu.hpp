@@ -8,9 +8,11 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <map>
 #include <vector>
 using namespace std;
 
+#include "Memory.hpp"
 #include "Util.hpp"
 #include "NintendoObject.hpp"
 
@@ -21,6 +23,7 @@ private:
   ~Nsemu() = default;
 
   static Nsemu *inst;
+  std::map<std::string, AddressSpace> as;
 public:
   Nsemu(const Nsemu&) = delete;
   Nsemu& operator=(const Nsemu&) = delete;
@@ -43,5 +46,6 @@ public:
       inst= nullptr;
     }
   }
+  bool BootApp(const std::string& path);
 };
 #endif
