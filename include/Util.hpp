@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <unistd.h>
 
 #define LINE_BREAK 15
 
@@ -23,7 +24,11 @@ static void util_print(RunLevel level, const char *format, ...) {
 }
 
 #define debug_print(format, ...) util_print (RUN_LEVEL_DEBUG, format, ##__VA_ARGS__)
-#define print(format, ...) util_print (RUN_LEVEL_RELEASE, format, ##__VA_ARGS__)
+#define ns_print(format, ...) util_print (RUN_LEVEL_RELEASE, format, ##__VA_ARGS__)
+#define ns_abort(format, ...) \
+    ns_print ("%s: ", __func__); \
+    ns_print (format, ##__VA_ARGS__); \
+    abort()
 
 inline void bindump(uint8_t *ptr, size_t size) {
   int i = 0;

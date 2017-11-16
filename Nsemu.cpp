@@ -10,4 +10,5 @@ static void load_nso(Nsemu *nsemu, string path, uint64_t addr) {
 bool Nsemu::BootApp(const std::string& path) {
   debug_print ("Booting... %s\n", path.c_str());
   load_nso(this, path, 0x1000);
+  return true;
 }

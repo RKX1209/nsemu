@@ -23,6 +23,7 @@ private:
   ~Nsemu() = default;
 
   static Nsemu *inst;
+public:
   std::map<std::string, AddressSpace> as;
 public:
   Nsemu(const Nsemu&) = delete;
