@@ -38,7 +38,11 @@ int Nso::load (Nsemu *nsemu, uint64_t base) {
     delete[] text;
     ns_abort ("Failed to copy to .text\n");
   }
-	bindump ((uint8_t*)text, 105);
+  /* --- For test --- */
+  uint8_t *txt_dump = new uint8_t[hdr.textSize];
+  Memory::CopyfromEmuByName (nsemu, (void *)txt_dump, ".text", hdr.textSize);
+	bindump (txt_dump, 105);
+  /* ---------------- */
 	delete[] text;
 
 	char *rdata = decompress(fp, hdr.rdataOff, hdr.dataOff - hdr.rdataOff, hdr.rdataSize);

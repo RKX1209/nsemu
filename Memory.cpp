@@ -9,9 +9,10 @@ AddressSpace::AddressSpace (std::string _name, uint64_t addr, size_t _length, in
   perm = _perm;
   if (addr & (page - 1))
     addr = addr & ~(page - 1);
-  data = mmap((void *)addr, length, perm, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-  if (data == MAP_FAILED)
+  if ((data = mmap((void *)addr, length, perm, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED) {
     ns_abort("Failed to mmap %s\n", name.c_str());
+  }
+  debug_print("mmap %s: %p\n", name.c_str(), data);
   addr = (uint64_t) data;
 }
 
@@ -19,9 +20,9 @@ namespace Memory
 {
 static AddressSpace mem_map[] =
 {
-  AddressSpace (".text", (uint64_t)0x2000000, 0x1000000, PROT_READ | PROT_EXEC),
-  AddressSpace (".rdata", (uint64_t)0x3000000, 0x1000000, PROT_READ),
-  AddressSpace (".data", (uint64_t)0x4000000, 0x1000000, PROT_READ | PROT_WRITE),
+  AddressSpace (".text", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE | PROT_EXEC),
+  AddressSpace (".rdata", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE),
+  AddressSpace (".data", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE),
 };
 
 void InitMemmap (Nsemu *nsemu) {
@@ -32,32 +33,58 @@ void InitMemmap (Nsemu *nsemu) {
   }
 }
 
-static void _CopytoEmu (AddressSpace *as, void *data, uint64_t addr, size_t len) {
-  uint64_t off = addr - as->addr;
-  memcpy ((uint8_t *)as->data + off, data, len);
-}
-
-bool CopytoEmu (Nsemu *nsemu, void *data, uint64_t addr, size_t len) {
+AddressSpace *FindAddressSpace (Nsemu *nsemu, uint64_t addr, size_t len) {
   AddressSpace *as;
   std::map<std::string, AddressSpace>::iterator it = nsemu->as.begin();
   for (; it != nsemu->as.end(); it++) {
     as = &it->second;
     if (as->addr <= addr && addr + len <= as->addr + as->length) {
-      goto found;
+      return as;
     }
   }
-  return false;
-found:
-  _CopytoEmu (as, data, addr, len);
+  return nullptr;
+}
+
+static bool _CopyMemEmu (AddressSpace *as, void *data, uint64_t addr, size_t len, bool load) {
+  uint64_t off = addr - as->addr;
+  void *emu_mem = (uint8_t *)as->data + off;
+  if (load)
+    memcpy (emu_mem, data, len);
+  else
+    memcpy (data, emu_mem, len);
   return true;
 }
 
+bool CopytoEmu (Nsemu *nsemu, void *data, uint64_t addr, size_t len) {
+  AddressSpace *as;
+  if (!(as = FindAddressSpace (nsemu, addr, len)))
+    return false;
+  return _CopyMemEmu (as, data, addr, len, true);
+}
+
 bool CopytoEmuByName (Nsemu *nsemu, void *data, std::string name, size_t len) {
+  if (nsemu->as.find(name) == nsemu->as.end())
+    return false;
   AddressSpace *as = &nsemu->as[name];
   if (len > as->length)
     return false;
-  _CopytoEmu (as, data, as->addr, len);
-  return true;
+  return _CopyMemEmu (as, data, as->addr, len, true);
+}
+
+bool CopyfromEmu (Nsemu *nsemu, void *data, uint64_t addr, size_t len) {
+  AddressSpace *as;
+  if (!(as = FindAddressSpace (nsemu, addr, len)))
+    return false;
+  return _CopyMemEmu (as, data, addr, len, false);
+}
+
+bool CopyfromEmuByName (Nsemu *nsemu, void *data, std::string name, size_t len) {
+  if (nsemu->as.find(name) == nsemu->as.end())
+    return false;
+  AddressSpace *as = &nsemu->as[name];
+  if (len > as->length)
+    return false;
+  return _CopyMemEmu (as, data, as->addr, len, false);
 }
 
 }

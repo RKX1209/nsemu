@@ -23,8 +23,11 @@ class Nsemu;
 namespace Memory
 {
 void InitMemmap (Nsemu *nsemu);
+AddressSpace *FindAddressSpace (Nsemu *nsemu, uint64_t addr, size_t len);
 bool CopytoEmu (Nsemu *nsemu, void *data, uint64_t addr, size_t len);
 bool CopytoEmuByName (Nsemu *nsemu, void *data, std::string name, size_t len);
+bool CopyfromEmu (Nsemu *nsemu, void *data, uint64_t addr, size_t len);
+bool CopyfromEmuByName (Nsemu *nsemu, void *data, std::string name, size_t len);
 
 }
 #endif
