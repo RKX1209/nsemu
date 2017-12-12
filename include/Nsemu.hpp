@@ -15,6 +15,9 @@ using namespace std;
 #include "Memory.hpp"
 #include "Util.hpp"
 #include "NintendoObject.hpp"
+#include "Cpu.hpp"
+#include "ARMv8/ARMv8.hpp"
+#include "ARMv8/Interpreter.hpp"
 
 /* Global NSEMU singleton class .*/
 class Nsemu {
@@ -47,6 +50,6 @@ public:
       inst= nullptr;
     }
   }
-  bool BootApp(const std::string& path);
+  bool BootUp(const std::string& path);
 };
 #endif

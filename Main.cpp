@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 		}
     #endif
 	}
-  nsemu->BootApp(parse.nonOption(0));
+  nsemu->BootUp(parse.nonOption(0));
   Nsemu::destroy();
   return 0;
 }

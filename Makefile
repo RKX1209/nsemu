@@ -1,5 +1,5 @@
 CXX				:= g++
-SRC_FILES := $(wildcard *.cpp)
+SRC_FILES := $(wildcard *.cpp ARMv8/*.cpp)
 OBJ_FILES := $(SRC_FILES:.cpp=.o)
 CXX_FLAGS	:= -std=c++11 -Iinclude
 LD_FLAGS	:= -llz4
