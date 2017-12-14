@@ -18,6 +18,7 @@ using namespace std;
 #include "Cpu.hpp"
 #include "ARMv8/ARMv8.hpp"
 #include "ARMv8/Interpreter.hpp"
+#include "ARMv8/MMU.hpp"
 
 /* Global NSEMU singleton class .*/
 class Nsemu {

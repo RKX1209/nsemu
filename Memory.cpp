@@ -2,7 +2,7 @@
 #include <sys/mman.h>
 #include "Nsemu.hpp"
 
-AddressSpace::AddressSpace (std::string _name, uint64_t addr, size_t _length, int _perm) {
+AddressSpace::AddressSpace (std::string _name, uint64_t addr, size_t _length, int _perm, uint8_t **out_pointer) {
   int page = getpagesize();
   name = _name;
   length = _length;
@@ -14,15 +14,18 @@ AddressSpace::AddressSpace (std::string _name, uint64_t addr, size_t _length, in
   }
   debug_print("mmap %s: %p\n", name.c_str(), data);
   addr = (uint64_t) data;
+  if (out_pointer)
+    *out_pointer = (uint8_t *) data;
 }
 
 namespace Memory
 {
+uint8_t *pRAM; // XXX: Replace raw pointer to View wrapper.
 static AddressSpace mem_map[] =
 {
-  AddressSpace (".text", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE | PROT_EXEC),
-  AddressSpace (".rdata", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE),
-  AddressSpace (".data", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE),
+  AddressSpace (".text", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE | PROT_EXEC, &pRAM),
+  AddressSpace (".rdata", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE, NULL),
+  AddressSpace (".data", (uint64_t)nullptr, 0x100000, PROT_READ | PROT_WRITE, NULL),
 };
 
 void InitMemmap (Nsemu *nsemu) {

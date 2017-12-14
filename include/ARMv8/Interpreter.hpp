@@ -31,6 +31,7 @@ public:
     }
   }
   void Run();
+  int SingleStep();
 };
 
 #endif

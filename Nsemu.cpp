@@ -18,9 +18,9 @@ static void CpuThread() {
 
 bool Nsemu::BootUp(const std::string& path) {
   debug_print ("Booting... %s\n", path.c_str());
-  cpu_thread = std::thread (CpuThread);
   Memory::InitMemmap(this);
   load_nso(this, path, 0x1000);
+  cpu_thread = std::thread (CpuThread);  
   /* Run cpu */
   cpu_thread.join();
   return true;

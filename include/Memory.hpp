@@ -12,7 +12,7 @@ public:
   void *data;
   uint64_t addr;
   AddressSpace() {}
-  AddressSpace(std::string _name, uint64_t addr, size_t _length, int _perm);
+  AddressSpace(std::string _name, uint64_t addr, size_t _length, int _perm, uint8_t **out_pointer);
   bool operator<(const AddressSpace &as) {
     return name < as.name;
   }
@@ -22,6 +22,7 @@ public:
 class Nsemu;
 namespace Memory
 {
+extern uint8_t *pRAM; // XXX: Replace raw pointer to View wrapper.  
 void InitMemmap (Nsemu *nsemu);
 AddressSpace *FindAddressSpace (Nsemu *nsemu, uint64_t addr, size_t len);
 bool CopytoEmu (Nsemu *nsemu, void *data, uint64_t addr, size_t len);
