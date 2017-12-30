@@ -17,6 +17,7 @@ using namespace std;
 #include "NintendoObject.hpp"
 #include "Cpu.hpp"
 #include "ARMv8/ARMv8.hpp"
+#include "ARMv8/Disassembler.hpp"
 #include "ARMv8/Interpreter.hpp"
 #include "ARMv8/MMU.hpp"
 

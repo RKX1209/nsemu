@@ -1,6 +1,7 @@
 #ifndef _UTIL_HPP
 #define _UTIL_HPP
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <unistd.h>
@@ -46,6 +47,16 @@ inline void bindump(uint8_t *ptr, size_t size) {
 
 inline int32_t host_order32(const char *b) {
   return ((b[3]) << 24) | ((b[2]) << 16) | ((b[1]) << 8) | (b[0]);
+}
+
+static inline uint32_t extract32(uint32_t bitfield, int from, int len) {
+  assert(from >= 0 && len > 0 && from + len <= 32);
+  return (bitfield >> from) & (~0U >> (32 - len));
+}
+
+static inline int64_t sextract64(uint64_t bitfield, int from, int len) {
+  assert(from >= 0 && len > 0 && from + len <= 64);
+  return ((int64_t)(bitfield << (64 - from - len))) >> (64 - len);
 }
 
 #endif
