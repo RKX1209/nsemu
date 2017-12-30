@@ -2,7 +2,7 @@ CXX				:= g++
 SRC_FILES := $(wildcard *.cpp ARMv8/*.cpp)
 OBJ_FILES := $(SRC_FILES:.cpp=.o)
 CXX_FLAGS	:= -std=c++11 -Iinclude
-LD_FLAGS	:= -llz4
+LD_FLAGS	:= -llz4 -lpthread
 
 all: nsemu
 nsemu: $(OBJ_FILES)
@@ -10,5 +10,5 @@ nsemu: $(OBJ_FILES)
 %.o: %.cpp
 	$(CXX) $(CXX_FLAGS) -c -g -o $@ $<
 clean:
-	rm -f *.o
+	rm -f *.o */*.o
 	rm -f nsemu
