@@ -4,8 +4,8 @@
 namespace Cpu {
 
 enum class State {
-  Running = 0,
-  PowerDown = 1,
+	Running = 0,
+	PowerDown = 1,
 };
 
 void Init();

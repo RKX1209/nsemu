@@ -24,34 +24,34 @@ using namespace std;
 /* Global NSEMU singleton class .*/
 class Nsemu {
 private:
-  Nsemu() = default;
-  ~Nsemu() = default;
+Nsemu() = default;
+~Nsemu() = default;
 
-  static Nsemu *inst;
+static Nsemu *inst;
 public:
-  std::map<std::string, AddressSpace> as;
+std ::map<std ::string, AddressSpace> as;
 public:
-  Nsemu(const Nsemu&) = delete;
-  Nsemu& operator=(const Nsemu&) = delete;
-  Nsemu(Nsemu&&) = delete;
-  Nsemu& operator=(Nsemu&&) = delete;
+Nsemu(const Nsemu&) = delete;
+Nsemu& operator=(const Nsemu&) = delete;
+Nsemu(Nsemu&&) = delete;
+Nsemu& operator=(Nsemu&&) = delete;
 
-  static Nsemu* get_instance() {
-    return inst;
-  }
+static Nsemu *get_instance() {
+	return inst;
+}
 
-  static void create() {
-    if ( !inst ) {
-      inst = new Nsemu;
-    }
-  }
+static void create() {
+	if (!inst) {
+		inst = new Nsemu;
+	}
+}
 
-  static void destroy() {
-    if ( inst ) {
-      delete inst;
-      inst= nullptr;
-    }
-  }
-  bool BootUp(const std::string& path);
+static void destroy() {
+	if (inst) {
+		delete inst;
+		inst = nullptr;
+	}
+}
+bool BootUp(const std ::string& path);
 };
 #endif

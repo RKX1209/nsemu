@@ -4,18 +4,18 @@
 class Nsemu;
 class NintendoObject {
 public:
-  NintendoObject(std::string path);
-  ~NintendoObject();
-  virtual int load (Nsemu *nsemu, uint64_t base) = 0;
+NintendoObject(std ::string path);
+~NintendoObject();
+virtual int load(Nsemu *nsemu, uint64_t base) = 0;
 protected:
-  std::ifstream fp;
-  uint32_t length;
+std ::ifstream fp;
+uint32_t length;
 };
 
 class Nso : NintendoObject {
 public:
-  Nso(std::string path) : NintendoObject(path) {}
-  int load (Nsemu *nsemu, uint64_t base);
+Nso(std ::string path) : NintendoObject (path) {}
+int load(Nsemu *nsemu, uint64_t base);
 };
 
 typedef struct {
@@ -28,8 +28,8 @@ typedef struct {
 
 class Nro : NintendoObject {
 public:
-  Nro(std::string path) : NintendoObject(path) {}
-  int load (Nsemu *nsemu, uint64_t base);
+Nro(std ::string path) : NintendoObject (path) {}
+int load(Nsemu *nsemu, uint64_t base);
 };
 
 #endif
