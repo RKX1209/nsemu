@@ -3,7 +3,7 @@
 
 class IntprCallback : public DisasCallback {
 public:
-void MoviI64(unsigned int reg_idx, uint64_t imm);
+void MoviI64(unsigned int reg_idx, uint64_t imm, bool unchanged, bool bit64);
 /* Add/Sub with Immediate value */
 void AddiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64);
 void SubiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64);
@@ -11,6 +11,10 @@ void SubiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setfla
 void AndiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64);
 void OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64);
 void EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64);
+/* Bitfield Signed/Unsigned Extract... with Immediate value */
+void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
+void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
+
 };
 
 /* Global Interpreter singleton class .*/

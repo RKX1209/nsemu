@@ -61,10 +61,26 @@ static inline int64_t sextract64(uint64_t bitfield, int from, int len) {
 	return ((int64_t) (bitfield << (64 - from - len))) >> (64 - len);
 }
 
-static inline int clz32(uint32_t val) {
-	return val? __builtin_clz (val): 32;
+static inline int clz32(uint32_t bitfield) {
+	return bitfield? __builtin_clz (bitfield): 32;
 }
-static inline int clz64(uint64_t val) {
-	return val? __builtin_clzll (val): 64;
+
+static inline int clz64(uint64_t bitfield) {
+	return bitfield? __builtin_clzll (bitfield): 64;
+}
+
+/* Return a value with the bottom len bits set (where 0 < len <= 64) */
+static inline uint64_t bitmask64(unsigned int length) {
+        assert(length > 0 && length <= 64);
+        return ~0ULL >> (64 - length);
+}
+
+static uint64_t replicate64(uint64_t mask, unsigned int e) {
+        assert(e != 0);
+        while (e < 64) {
+                mask |= mask << e;
+                e *= 2;
+        }
+        return mask;
 }
 #endif
