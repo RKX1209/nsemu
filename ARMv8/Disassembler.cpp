@@ -47,7 +47,8 @@ static void DisasPCRelAddr(uint32_t insn, DisasCallback *cb) {
 	offset = sextract64 (insn, 5, 19);
 	offset = offset << 2 | sextract64 (insn, 29, 2);
 	rd = extract32 (insn, 0, 5);
-	base = PC - 4;
+	//base = PC - 4;
+        base = PC;
 
 	if (page) {
 		base &= ~0xfff;
@@ -258,6 +259,49 @@ static void DisasDataProcImm(uint32_t insn, DisasCallback *cb) {
 	}
 }
 
+static void DisasUncondBrImm(uint32_t insn, DisasCallback *cb) {
+        uint64_t addr = PC + sextract32(insn, 0, 26) * 4 - 4;
+
+        if (insn & (1U << 31)) {
+                /* BL Branch with link */
+                cb->MoviI64(GPR_LR, addr, false, true);
+        }
+
+        /* B Branch / BL Branch with link */
+        cb->GotoI64(addr);
+}
+
+static void DisasBranchExcSys(uint32_t insn, DisasCallback *cb) {
+        switch (extract32(insn, 25, 7)) {
+        case 0x0a: case 0x0b:
+        case 0x4a: case 0x4b: /* Unconditional branch (immediate) */
+                DisasUncondBrImm(insn, cb);
+                break;
+        case 0x1a: case 0x5a: /* Compare & branch (immediate) */
+
+                break;
+        case 0x1b: case 0x5b: /* Test & branch (immediate) */
+
+                break;
+        case 0x2a: /* Conditional branch (immediate) */
+
+                break;
+        case 0x6a: /* Exception generation / System */
+                if (insn & (1 << 24)) {
+
+                } else {
+
+                }
+                break;
+        case 0x6b: /* Unconditional branch (register) */
+
+                break;
+        default:
+                UnallocatedOp (insn);
+                break;
+    }
+}
+
 void DisasA64(uint32_t insn, DisasCallback *cb) {
 	switch (extract32 (insn, 25, 4)) {
 	case 0x0: case 0x1: case 0x2: case 0x3:	// Unallocated
@@ -267,6 +311,7 @@ void DisasA64(uint32_t insn, DisasCallback *cb) {
 		DisasDataProcImm (insn, cb);
 		break;
 	case 0xa: case 0xb:	/* Branch, exception generation and system insns */
+		DisasBranchExcSys (insn, cb);
 		break;
 	case 0x4:
 	case 0x6:

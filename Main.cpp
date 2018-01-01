@@ -110,6 +110,6 @@ printUsage:
 #endif
 	}
 	nsemu->BootUp (parse.nonOption (0));
-	Nsemu ::destroy ();
+	Nsemu::destroy ();
 	return 0;
 }

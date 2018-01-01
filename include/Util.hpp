@@ -47,6 +47,10 @@ inline void bindump(uint8_t *ptr, size_t size) {
 	}
 }
 
+inline uint32_t byte_swap(uint32_t b) {
+        return ((b >> 24) & 0xff) | ((b << 8) & 0xff0000) | ((b >> 8) & 0xff00) | ((b << 24) & 0xff000000);
+}
+
 inline int32_t host_order32(const char *b) {
 	return ((b[3]) << 24) | ((b[2]) << 16) | ((b[1]) << 8) | (b[0]);
 }
@@ -54,6 +58,11 @@ inline int32_t host_order32(const char *b) {
 static inline uint32_t extract32(uint32_t bitfield, int from, int len) {
 	assert (from >= 0 && len > 0 && from + len <= 32);
 	return (bitfield >> from) & (~0U >> (32 - len));
+}
+
+static inline int32_t sextract32(uint64_t bitfield, int from, int len) {
+	assert (from >= 0 && len > 0 && from + len <= 32);
+	return ((int32_t) (bitfield << (32 - from - len))) >> (32 - len);
 }
 
 static inline int64_t sextract64(uint64_t bitfield, int from, int len) {

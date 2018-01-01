@@ -10,9 +10,13 @@ struct ARMv8State {
 
 extern ARMv8State arm_state;
 
-#define LR ARMv8 ::arm_state.gpr[30]
-#define SP ARMv8 ::arm_state.gpr[31]
-#define ZERO ARMv8 ::arm_state.gpr[31]
+#define GPR_LR          30
+#define GPR_SP          31
+#define GPR_ZERO        31
+
+#define LR ARMv8 ::arm_state.gpr[GPR_LR]
+#define SP ARMv8 ::arm_state.gpr[GPR_SP]
+#define ZERO ARMv8 ::arm_state.gpr[GPR_ZERO]
 #define PC ARMv8 ::arm_state.pc
 
 #define GPR(x) ARMv8 ::arm_state.gpr[x]

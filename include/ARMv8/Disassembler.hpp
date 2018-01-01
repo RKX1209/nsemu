@@ -14,6 +14,8 @@ virtual void EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bo
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
 virtual void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
+/* Go to Immediate address */
+virtual void GotoI64(uint64_t imm) = 0;
 
 };
 

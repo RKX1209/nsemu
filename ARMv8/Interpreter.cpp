@@ -5,18 +5,21 @@ Interpreter *Interpreter::inst = nullptr;
 IntprCallback *Interpreter::disas_cb = nullptr;
 
 int Interpreter::SingleStep() {
-	uint32_t inst = ARMv8::ReadInst (PC);
-	debug_print ("Run Code: 0x%08lx\n", inst);
-	PC += sizeof(uint32_t);
+	uint32_t inst = byte_swap(ARMv8::ReadInst (PC));
+	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
+	PC += sizeof(uint32_t);
 	return 0;
 }
 
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
-	while (Cpu::GetState () == Cpu::State::Running) {
+	/*while (Cpu::GetState () == Cpu::State::Running) {
 		SingleStep ();
-	}
+	}*/
+        int test_max = 3;
+        for (int i = 0; i < test_max; i++)
+                SingleStep();
 }
 
 void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool unchanged, bool bit64) {
@@ -38,3 +41,7 @@ void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {}
 void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {}
 void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {}
+void IntprCallback::GotoI64(uint64_t imm) {
+        debug_print ("Goto: 0x%016lx\n", imm + 4);
+        PC = imm;
+}

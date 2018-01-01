@@ -14,7 +14,8 @@ void EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
-
+/* Go to Immediate address */
+void GotoI64(uint64_t imm);
 };
 
 /* Global Interpreter singleton class .*/

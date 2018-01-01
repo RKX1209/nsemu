@@ -8,7 +8,7 @@ PYTHON2 := python2
 MEPHISTO := ctu
 RUBY := ruby
 
-libtransistor_TESTS := malloc bsd_ai_packing bsd sfdnsres
+NSEMU_TESTS := simple_disas malloc bsd_ai_packing bsd sfdnsres
 
 libtransistor_OBJECTS := build/lib/svc.o build/lib/ipc.o build/lib/tls.o build/lib/util.o build/lib/ipc/sm.o build/lib/ipc/bsd.o
 
@@ -21,7 +21,7 @@ export CC_FOR_TARGET = clang -g -fPIC -ffreestanding -fexceptions -target aarch6
 
 .SUFFIXES: # disable built-in rules
 
-all: build/lib/libtransistor.nro.a build/lib/libtransistor.nso.a $(addprefix build/test/test_,$(addsuffix .nro,$(libtransistor_TESTS))) $(addprefix build/test/test_,$(addsuffix .nso,$(libtransistor_TESTS))) $(addprefix build/test/test_,$(addsuffix .nro.so,$(libtransistor_TESTS))) $(addprefix build/test/test_,$(addsuffix .nso.so,$(libtransistor_TESTS)))
+all: build/lib/libtransistor.nro.a build/lib/libtransistor.nso.a $(addprefix build/test/test_,$(addsuffix .nro,$(NSEMU_TESTS))) $(addprefix build/test/test_,$(addsuffix .nso,$(NSEMU_TESTS))) $(addprefix build/test/test_,$(addsuffix .nro.so,$(NSEMU_TESTS))) $(addprefix build/test/test_,$(addsuffix .nso.so,$(NSEMU_TESTS)))
 
 run_tests: run_malloc_test run_bsd_ai_packing_test run_bsd_test run_sfdnsres_test
 
@@ -37,6 +37,10 @@ run_%_test: build/test/test_%.nro
 build/test/%.o: test/%.c
 	mkdir -p $(@D)
 	$(CC) $(CC_FLAGS) -c -o $@ $<
+
+build/test/%.o: test/%.S
+	mkdir -p $(@D)
+	$(AS) $(AS_FLAGS) $< -filetype=obj -o $@
 
 build/lib/%.o: lib/%.c
 	mkdir -p $(@D)
@@ -54,11 +58,11 @@ build/test/%.nso: build/test/%.nso.so
 	mkdir -p $(@D)
 	$(PYTHON2) ./tools/elf2nxo.py $< $@ nso
 
-build/test/%.nro.so: build/test/%.o build/lib/libtransistor.nro.a newlib/aarch64-none-switch/newlib/libc.a 
+build/test/%.nro.so: build/test/%.o build/lib/libtransistor.nro.a newlib/aarch64-none-switch/newlib/libc.a
 	mkdir -p $(@D)
 	$(LD) $(LD_FLAGS) -o $@ $< --whole-archive build/lib/libtransistor.nro.a --no-whole-archive newlib/aarch64-none-switch/newlib/libc.a
 
-build/test/%.nso.so: build/test/%.o build/lib/libtransistor.nso.a newlib/aarch64-none-switch/newlib/libc.a 
+build/test/%.nso.so: build/test/%.o build/lib/libtransistor.nso.a newlib/aarch64-none-switch/newlib/libc.a
 	mkdir -p $(@D)
 	$(LD) $(LD_FLAGS) -o $@ $< --whole-archive build/lib/libtransistor.nso.a --no-whole-archive newlib/aarch64-none-switch/newlib/libc.a
 
