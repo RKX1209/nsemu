@@ -41,7 +41,19 @@ void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {}
 void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {}
 void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {}
-void IntprCallback::GotoI64(uint64_t imm) {
+void IntprCallback::BranchI64(uint64_t imm) {
         debug_print ("Goto: 0x%016lx\n", imm + 4);
         PC = imm;
+}
+void IntprCallback::BranchCondiI64(unsigned int cond, unsigned int rt_idx, uint64_t imm, uint64_t addr, bool bit64) {
+
+}
+void IntprCallback::BranchFlag(unsigned int cond, uint64_t addr) {
+
+}
+void IntprCallback::SetPCReg(unsigned int rt_idx) {
+
+}
+void IntprCallback::SVC(unsigned int svc_num) {
+        debug_print ("SVC: %u\n", svc_num);
 }

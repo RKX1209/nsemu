@@ -219,7 +219,7 @@ static void DisasExtract(uint32_t insn, DisasCallback *cb) {
         } else {
                if (imm == 0) {
                        // TODO: mov rd, rm
-                       //cb->MovI64(rd, rm, sf);
+                       //cb->MovReg(rd, rm, sf);
                } else if (rm == rn) { /* ROR */
                        // TODO:
                        //cb->RorI64(rd, rm, imm)
@@ -268,33 +268,138 @@ static void DisasUncondBrImm(uint32_t insn, DisasCallback *cb) {
         }
 
         /* B Branch / BL Branch with link */
-        cb->GotoI64(addr);
+        cb->BranchI64(addr);
+}
+
+static void DisasCompBrImm(uint32_t insn, DisasCallback *cb) {
+        unsigned int sf = extract32(insn, 31, 1);
+        unsigned int op = extract32(insn, 24, 1); /* 0: CBZ; 1: CBNZ */
+        unsigned int rt = extract32(insn, 0, 5);
+        uint64_t addr = PC + sextract32(insn, 5, 19) * 4 - 4;
+        cb->BranchCondiI64 (op ? COND_NE : COND_EQ, rt, 0, addr, sf);
+}
+
+static void DisasTestBrImm(uint32_t insn, DisasCallback *cb) {
+        unsigned int bit_pos = (extract32(insn, 31, 1) << 5) | extract32(insn, 19, 5);
+        unsigned int op = extract32(insn, 24, 1); /* 0: TBZ; 1: TBNZ */
+        unsigned int addr = PC + sextract32(insn, 5, 14) * 4 - 4;
+        uint64_t rt = extract32(insn, 0, 5);
+        cb->AndiI64(rt, rt, (1ULL << bit_pos), false, true);
+        cb->BranchCondiI64 (op ? COND_NE : COND_EQ, rt, 0, addr, true);
+}
+
+static void DisasCondBrImm(uint32_t insn, DisasCallback *cb) {
+        if ((insn & (1 << 4)) || (insn & (1 << 24))) {
+                UnallocatedOp (insn);
+                return;
+        }
+        unsigned int cond = extract32(insn, 0, 4);
+        uint64_t addr = PC + sextract32(insn, 5, 19) * 4 - 4;
+        if (cond < 0xe) {
+                cb->BranchFlag (cond, addr);
+        } else {
+                /* Always: */
+                cb->BranchI64 (addr);
+        }
+}
+
+static void DisasUncondBrReg(uint32_t insn, DisasCallback *cb) {
+        unsigned int opc = extract32(insn, 21, 4);
+        unsigned int op2 = extract32(insn, 16, 5);
+        unsigned int op3 = extract32(insn, 10, 6);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int op4 = extract32(insn, 0, 5);
+
+        if (op4 != 0x0 || op3 != 0x0 || op2 != 0x1f) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        switch (opc) {
+        case 0: /* BR */
+        case 1: /* BLR */
+        case 2: /* RET */
+                cb->SetPCReg (rn);
+                /* BLR also needs to load return address */
+                if (opc == 1) {
+                        //TODO:
+                        //cb->MovReg(GPR_LR, rn, true);
+                }
+                break;
+        case 4: /* ERET */
+                //TODO:
+                break;
+        case 5: /* DRPS */
+                //TODO:
+                UnallocatedOp (insn);
+                break;
+        default:
+                UnallocatedOp (insn);
+                break;
+        }
+}
+
+static void DisasException(uint32_t insn, DisasCallback *cb) {
+        unsigned int opc = extract32(insn, 21, 3);
+        unsigned int op2_ll = extract32(insn, 0, 5);
+        unsigned int imm16 = extract32(insn, 5, 16);
+        switch (opc) {
+        case 0:
+                switch (op2_ll) {
+                case 1: /* SVC */
+                        cb->SVC (imm16);
+                        break;
+                case 2: /* HVC */
+                        //TODO:
+                        break;
+                case 3: /* SMC */
+                        //TODO:
+                        break;
+                default:
+                        UnallocatedOp (insn);
+                        break;
+                }
+        case 1: /* BRK */
+                //TODO:
+                break;
+        case 2: /* HLT */
+                //TODO:
+                break;
+        case 5: /* DCPS1,2,3 */
+                //TODO:
+                break;
+        default:
+                UnallocatedOp (insn);
+                break;
+
+        }
 }
 
 static void DisasBranchExcSys(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 25, 7)) {
         case 0x0a: case 0x0b:
         case 0x4a: case 0x4b: /* Unconditional branch (immediate) */
-                DisasUncondBrImm(insn, cb);
+                DisasUncondBrImm (insn, cb);
                 break;
         case 0x1a: case 0x5a: /* Compare & branch (immediate) */
-
+                DisasCompBrImm (insn, cb);
                 break;
         case 0x1b: case 0x5b: /* Test & branch (immediate) */
-
+                DisasTestBrImm (insn, cb);
                 break;
         case 0x2a: /* Conditional branch (immediate) */
-
+                DisasCondBrImm (insn, cb);
                 break;
         case 0x6a: /* Exception generation / System */
                 if (insn & (1 << 24)) {
-
+                        //TODO:
+                        //DisasSystem (insn, cb);
                 } else {
-
+                        DisasException (insn, cb);
                 }
                 break;
         case 0x6b: /* Unconditional branch (register) */
-
+                DisasUncondBrReg (insn, cb);
                 break;
         default:
                 UnallocatedOp (insn);

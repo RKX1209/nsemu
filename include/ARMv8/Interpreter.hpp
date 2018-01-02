@@ -15,7 +15,15 @@ void EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 /* Go to Immediate address */
-void GotoI64(uint64_t imm);
+void BranchI64(uint64_t imm);
+/* Conditional Branch with Immediate value and jump to Immediate address */
+void BranchCondiI64(unsigned int cond, unsigned int rt_idx, uint64_t imm, uint64_t addr, bool bit64);
+/* Conditional Branch with NZCV flags */
+void BranchFlag(unsigned int cond, uint64_t addr);
+/* Set PC with reg */
+void SetPCReg(unsigned int rt_idx);
+/* Super Visor Call */
+void SVC(unsigned int svc_num);
 };
 
 /* Global Interpreter singleton class .*/
