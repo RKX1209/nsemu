@@ -3,25 +3,50 @@
 
 class IntprCallback : public DisasCallback {
 public:
+/* Mov with Immediate value */
 void MoviI64(unsigned int reg_idx, uint64_t imm, bool unchanged, bool bit64);
+
+/* Mov between registers */
+void MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64);
+
 /* Add/Sub with Immediate value */
-void AddiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64);
-void SubiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64);
-/* AND/OR/EOR... with Immediate value */
-void AndiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64);
+void AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64);
+void SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64);
+
+/* Add/Sub between registers */
+void AddReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64);
+void SubReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64);
+
+/* AND/OR/EOR/Shift ... with Immediate value */
+void AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64);
 void OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64);
 void EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64);
+void ShiftI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int shift_type, unsigned int shift_amount, bool bit64);
+
+/* AND/OR/EOR/BIC/NOT ... between registers */
+void AndReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64);
+void OrrReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64);
+void EorReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64);
+void BicReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64);
+void NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64);
+void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64);
+
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
+
 /* Go to Immediate address */
 void BranchI64(uint64_t imm);
+
 /* Conditional Branch with Immediate value and jump to Immediate address */
 void BranchCondiI64(unsigned int cond, unsigned int rt_idx, uint64_t imm, uint64_t addr, bool bit64);
+
 /* Conditional Branch with NZCV flags */
 void BranchFlag(unsigned int cond, uint64_t addr);
+
 /* Set PC with reg */
 void SetPCReg(unsigned int rt_idx);
+
 /* Super Visor Call */
 void SVC(unsigned int svc_num);
 };

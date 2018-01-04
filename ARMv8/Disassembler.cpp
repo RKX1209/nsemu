@@ -79,9 +79,9 @@ static void DisasAddSubImm(uint32_t insn, DisasCallback *cb) {
 	}
 
 	if (sub_op) {
-		cb->SubiI64 (rd, rn, imm, setflags, is_64bit);
+		cb->SubI64 (rd, rn, imm, setflags, is_64bit);
 	} else {
-		cb->AddiI64 (rd, rn, imm, setflags, is_64bit);
+		cb->AddI64 (rd, rn, imm, setflags, is_64bit);
 	}
 }
 
@@ -102,10 +102,10 @@ static void DisasLogImm(uint32_t insn, DisasCallback *cb) {
 
 	switch (opc) {
 	case 0x3:	/* ANDS */
-		cb->AndiI64 (rd, rn, wmask, true, is_64bit);
+		cb->AndI64 (rd, rn, wmask, true, is_64bit);
 		break;
 	case 0x0:	/* AND */
-		cb->AndiI64 (rd, rn, wmask, false, is_64bit);
+		cb->AndI64 (rd, rn, wmask, false, is_64bit);
 		break;
 	case 0x1:	/* ORR */
 		cb->OrrI64 (rd, rn, wmask, is_64bit);
@@ -129,17 +129,17 @@ static void DisasMovwImm(uint32_t insn, DisasCallback *cb) {
                 UnallocatedOp (insn);
                 return;
         }
-
+        imm <<= pos;
         switch (opc) {
         case 0: /* MOVN */
         case 2: /* MOVZ */
-                imm <<= pos;
                 if (opc == 0) {
                         imm = ~imm;
                 }
                 cb->MoviI64 (rd, imm, false, is_64bit);
                 break;
         case 3: /* MOVK */
+                //TODO: deposit(keep destionation bit)
                 cb->MoviI64 (rd, imm, true, is_64bit);
                 break;
         default:
@@ -219,7 +219,7 @@ static void DisasExtract(uint32_t insn, DisasCallback *cb) {
         } else {
                if (imm == 0) {
                        // TODO: mov rd, rm
-                       //cb->MovReg(rd, rm, sf);
+                       cb->MovReg(rd, rm, sf);
                } else if (rm == rn) { /* ROR */
                        // TODO:
                        //cb->RorI64(rd, rm, imm)
@@ -227,7 +227,7 @@ static void DisasExtract(uint32_t insn, DisasCallback *cb) {
                        // TODO:
                        //cb->ShriI64(rm, rm, imm)
                        //cb->ShliI64(rn, rn, imm)
-                       //cb->OrrI64(rd, rm, rn);
+                       cb->OrrReg(rd, rm, rn, sf);
                }
        }
        return;
@@ -284,7 +284,7 @@ static void DisasTestBrImm(uint32_t insn, DisasCallback *cb) {
         unsigned int op = extract32(insn, 24, 1); /* 0: TBZ; 1: TBNZ */
         unsigned int addr = PC + sextract32(insn, 5, 14) * 4 - 4;
         uint64_t rt = extract32(insn, 0, 5);
-        cb->AndiI64(rt, rt, (1ULL << bit_pos), false, true);
+        cb->AndI64(rt, rt, (1ULL << bit_pos), false, true);
         cb->BranchCondiI64 (op ? COND_NE : COND_EQ, rt, 0, addr, true);
 }
 
@@ -407,6 +407,129 @@ static void DisasBranchExcSys(uint32_t insn, DisasCallback *cb) {
     }
 }
 
+static void DisasLogicReg(uint32_t insn, DisasCallback *cb) {
+        unsigned int sf = extract32(insn, 31, 1);
+        unsigned int opc = extract32(insn, 29, 2);
+        unsigned int shift_type = extract32(insn, 22, 2);
+        unsigned int invert = extract32(insn, 21, 1);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int shift_amount = extract32(insn, 10, 6);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rd = extract32(insn, 0, 5);
+        if (!sf && (shift_amount & (1 << 5))) {
+                UnallocatedOp (insn);
+                return;
+        }
+        if (opc == 1 && shift_amount == 0 && shift_type == 0 && rn == 31) {
+                /* Unshifted ORR and ORN with WZR/XZR is the standard encoding for
+                * register-register MOV and MVN, so it is worth special casing.
+                */
+                if (invert) {
+                        cb->NotReg (rd, rm, sf);
+                }
+                cb->MovReg (rd, rm, sf);
+        }
+        if (shift_amount) {
+                cb->ShiftI64 (rm, rm, shift_type, shift_amount, sf);
+        }
+        switch (opc | (invert << 2)) {
+        case 0: /* AND */
+                cb->AndReg (rd, rn, rm, false, sf);
+                break;
+        case 3: /* ANDS */
+                cb->AndReg (rd, rn, rm, true, sf);
+                break;
+        case 1: /* ORR */
+                cb->OrrReg (rd, rn, rm, sf);
+                break;
+        case 2: /* EOR */
+                cb->EorReg (rd, rn, rm, sf);
+                break;
+        case 4: /* BIC */
+                cb->BicReg (rd, rn, rm, false, sf);
+                break;
+        case 7: /* BICS */
+                cb->BicReg (rd, rn, rm, true, sf);
+                break;
+        case 5: /* ORN */
+                cb->NotReg (rm, rm ,sf);
+                cb->OrrReg (rd, rn, rm, sf);
+                break;
+        case 6: /* EON */
+                cb->NotReg (rm, rm ,sf);
+                cb->EorReg (rd, rn, rm, sf);
+                break;
+        default:
+                ns_abort ("Invalid Logical(Reg) opcode: %u\n", opc);
+        break;
+    }
+}
+
+static void DisasAddSubExtReg(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int imm3 = extract32(insn, 10, 3);
+        unsigned int option = extract32(insn, 13, 3);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned setflags = extract32(insn, 29, 1);
+        unsigned sub_op = extract32(insn, 30, 1);
+        unsigned sf = extract32(insn, 31, 1);
+        if (imm3 > 4) {
+                UnallocatedOp (insn);
+                return;
+        }
+        cb->ExtendReg (rm, rm, option, sf);
+        cb->ShiftI64 (rm, rm, 0, imm3, sf); //TODO: shift_type LSL is 0?
+        if (sub_op) {
+                cb->SubReg (rd, rn, rm, setflags, sf);
+        } else {
+                cb->AddReg (rd, rn, rm, setflags, sf);
+        }
+}
+
+static void DisasAddSubReg(uint32_t insn, DisasCallback *cb) {
+}
+
+static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
+        switch (extract32(insn, 24, 5)) {
+        case 0x0a: /* Logical (shifted register) */
+                DisasLogicReg(insn, cb);
+                break;
+        case 0x0b: /* Add/subtract */
+                if (insn & (1 << 21)) { /* (extended register) */
+                        DisasAddSubExtReg (insn, cb);
+                } else {
+                        //DisasAddSubReg (insn, cb);
+                }
+                break;
+        case 0x1b: /* Data-processing (3 source) */
+                break;
+        case 0x1a:
+                switch (extract32(insn, 21, 3)) {
+                case 0x0: /* Add/subtract (with carry) */
+                        break;
+                case 0x2: /* Conditional compare */
+                        break;
+                case 0x4: /* Conditional select */
+                        break;
+                case 0x6: /* Data-processing */
+                        if (insn & (1 << 30)) { /* (1 source) */
+
+                        } else {            /* (2 source) */
+
+                        }
+                        break;
+                default:
+                        UnallocatedOp (insn);
+                        break;
+                }
+                break;
+        default:
+                UnallocatedOp (insn);
+                break;
+        }
+}
+
 void DisasA64(uint32_t insn, DisasCallback *cb) {
 	switch (extract32 (insn, 25, 4)) {
 	case 0x0: case 0x1: case 0x2: case 0x3:	// Unallocated
@@ -425,6 +548,7 @@ void DisasA64(uint32_t insn, DisasCallback *cb) {
 		break;
 	case 0x5:
 	case 0xd:	/* Data processing - register */
+                DisasDataProcReg (insn, cb);
 		break;
 	case 0x7:
 	case 0xf:	/* Data processing - SIMD and floating point */
@@ -434,6 +558,5 @@ void DisasA64(uint32_t insn, DisasCallback *cb) {
 		break;
 	}
 }
-
 
 };

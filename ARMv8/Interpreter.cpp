@@ -17,7 +17,7 @@ void Interpreter::Run() {
 	/*while (Cpu::GetState () == Cpu::State::Running) {
 		SingleStep ();
 	}*/
-        int test_max = 3;
+        int test_max = 20;
         for (int i = 0; i < test_max; i++)
                 SingleStep();
 }
@@ -27,33 +27,65 @@ void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool unchanged, 
 	debug_print ("MOV%c: %c[%u] = 0x%016lx\n", unchanged? 'K' : ' ', regc, reg_idx, imm);
 }
 
+/* Mov between registers */
+void IntprCallback::MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+
+}
+
 /* Add/Sub with Immediate value */
-void IntprCallback::AddiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
+void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
 	debug_print ("Add: %c[%u] = %c[%u] + 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
 }
-void IntprCallback::SubiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
+void IntprCallback::SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("Sub: %c[%u] = %c[%u] + 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
+	debug_print ("Sub: %c[%u] = %c[%u] - 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
 }
-void IntprCallback::AndiI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64) {}
+
+/* Add/Sub between registers */
+void IntprCallback::AddReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {}
+void IntprCallback::SubReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {}
+
+/* AND/OR/EOR... with Immediate value */
+void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64) {}
 void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {}
 void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {}
+void IntprCallback::ShiftI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int shift_type, unsigned int shift_amount, bool bit64) {}
+
+/* AND/OR/EOR/BIC/NOT... between registers */
+void IntprCallback::AndReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {}
+void IntprCallback::OrrReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64) {}
+void IntprCallback::EorReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64) {}
+void IntprCallback::BicReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {}
+void IntprCallback::NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64) {}
+void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64) {}
+
+/* Bitfield Signed/Unsigned Extract... with Immediate value */
 void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {}
 void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {}
+
+/* Go to Immediate address */
 void IntprCallback::BranchI64(uint64_t imm) {
         debug_print ("Goto: 0x%016lx\n", imm + 4);
         PC = imm;
 }
+
+/* Conditional Branch with Immediate value and jump to Immediate address */
 void IntprCallback::BranchCondiI64(unsigned int cond, unsigned int rt_idx, uint64_t imm, uint64_t addr, bool bit64) {
 
 }
+
+/* Conditional Branch with NZCV flags */
 void IntprCallback::BranchFlag(unsigned int cond, uint64_t addr) {
 
 }
+
+/* Set PC with reg */
 void IntprCallback::SetPCReg(unsigned int rt_idx) {
 
 }
+
+/* Super Visor Call */
 void IntprCallback::SVC(unsigned int svc_num) {
         debug_print ("SVC: %u\n", svc_num);
 }
