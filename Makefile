@@ -12,7 +12,9 @@ nsemu: $(OBJ_FILES)
 	$(CXX) $(CXX_FLAGS) -c -g -o $@ $<
 testall:
 	$(MAKE) -C test/
-clean:
+distclean:
 	$(MAKE) clean -C test/
+	$(MAKE)	clean
+clean:	
 	rm -f *.o */*.o
 	rm -f nsemu
