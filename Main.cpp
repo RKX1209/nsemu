@@ -103,11 +103,11 @@ printUsage:
 				goto printUsage;
 			}
 		} else {
-			if (parse.nonOptionsCount () != 1) {
-				goto printUsage;
-			}
 		}
-#endif
+#endif                
+		if (parse.nonOptionsCount () != 1) {
+		              goto printUsage;
+		}
 	}
 	nsemu->BootUp (parse.nonOption (0));
 	Nsemu::destroy ();
