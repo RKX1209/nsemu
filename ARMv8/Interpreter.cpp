@@ -5,7 +5,7 @@ Interpreter *Interpreter::inst = nullptr;
 IntprCallback *Interpreter::disas_cb = nullptr;
 
 int Interpreter::SingleStep() {
-	uint32_t inst = byte_swap(ARMv8::ReadInst (PC));
+	uint32_t inst = byte_swap32_uint (ARMv8::ReadInst (PC));
 	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);

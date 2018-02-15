@@ -54,3 +54,4 @@ dkms.conf
 core
 nsemu
 *.md
+test/

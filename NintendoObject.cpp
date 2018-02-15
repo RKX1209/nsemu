@@ -27,7 +27,7 @@ char *decompress(ifstream &fp, uint32_t offset, uint32_t csize, uint32_t usize) 
 int Nso ::load(Nsemu *nsemu, uint64_t base) {
 	NsoHeader hdr;
 	fp.read ((char *) &hdr, sizeof(NsoHeader));
-	if (hdr.magic != host_order32 ("NSO0")) {
+	if (hdr.magic != byte_swap32_str ("NSO0")) {
 		return 0;
 	}
 	uint32_t size = hdr.dataLoc + hdr.dataSize + hdr.bssSize;
