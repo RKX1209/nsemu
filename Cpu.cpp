@@ -2,18 +2,18 @@
 #include "Nsemu.hpp"
 namespace Cpu {
 
-static State state = State ::PowerDown;
+static State state = State::PowerDown;
 
 void Init() {
-	ARMv8 ::Init ();
+	ARMv8::Init ();
 }
 
 void Run() {
 	switch (state) {
-	case State ::Running:
-		ARMv8 ::RunLoop ();
+	case State::Running:
+		ARMv8::RunLoop ();
 		break;
-	case State ::PowerDown:
+	case State::PowerDown:
 		break;
 	}
 }

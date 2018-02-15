@@ -3,14 +3,14 @@
 #include "Nsemu.hpp"
 #include <lz4.h>
 
-NintendoObject ::NintendoObject(string path) {
-	fp.open (path.c_str (), ios ::in | ios ::binary);
-	fp.seekg (0, ios_base ::end);
+NintendoObject::NintendoObject(string path) {
+	fp.open (path.c_str (), ios::in | ios::binary);
+	fp.seekg (0, ios_base::end);
 	length = (uint32_t) fp.tellg ();
 	fp.seekg (0);
 }
 
-NintendoObject ::~NintendoObject() {
+NintendoObject::~NintendoObject() {
 	fp.close ();
 }
 
@@ -24,7 +24,7 @@ char *decompress(ifstream &fp, uint32_t offset, uint32_t csize, uint32_t usize) 
 	return obuf;
 }
 
-int Nso ::load(Nsemu *nsemu, uint64_t base) {
+int Nso::load(Nsemu *nsemu, uint64_t base) {
 	NsoHeader hdr;
 	fp.read ((char *) &hdr, sizeof(NsoHeader));
 	if (hdr.magic != byte_swap32_str ("NSO0")) {
@@ -36,26 +36,26 @@ int Nso ::load(Nsemu *nsemu, uint64_t base) {
 	}
 
 	char *text = decompress (fp, hdr.textOff, hdr.rdataOff - hdr.textOff, hdr.textSize);
-	if (!Memory ::CopytoEmuByName (nsemu, (void *) text, ".text", hdr.textSize)) {
+	if (!Memory::CopytoEmuByName (nsemu, (void *) text, ".text", hdr.textSize)) {
 		delete[] text;
 		ns_abort ("Failed to copy to .text\n");
 	}
 	/* --- For test --- */
 	uint8_t *txt_dump = new uint8_t[hdr.textSize];
-	Memory ::CopyfromEmuByName (nsemu, (void *) txt_dump, ".text", hdr.textSize);
+	Memory::CopyfromEmuByName (nsemu, (void *) txt_dump, ".text", hdr.textSize);
 	bindump (txt_dump, 105);
 	/* ---------------- */
 	delete[] text;
 
 	char *rdata = decompress (fp, hdr.rdataOff, hdr.dataOff - hdr.rdataOff, hdr.rdataSize);
-	if (!Memory ::CopytoEmuByName (nsemu, (void *) rdata, ".rdata", hdr.rdataSize)) {
+	if (!Memory::CopytoEmuByName (nsemu, (void *) rdata, ".rdata", hdr.rdataSize)) {
 		delete[] rdata;
 		ns_abort ("Failed to copy to .rdata\n");
 	}
 	delete[] rdata;
 
 	char *data = decompress (fp, hdr.dataOff, length - hdr.dataOff, hdr.dataSize);
-	if (!Memory ::CopytoEmuByName (nsemu, (void *) data, ".data", hdr.dataSize)) {
+	if (!Memory::CopytoEmuByName (nsemu, (void *) data, ".data", hdr.dataSize)) {
 		delete[] data;
 		ns_abort ("Failed to copy to .data\n");
 	}
@@ -64,6 +64,6 @@ int Nso ::load(Nsemu *nsemu, uint64_t base) {
 	return size;
 }
 
-int Nro ::load(Nsemu *nsemu, uint64_t base) {
+int Nro::load(Nsemu *nsemu, uint64_t base) {
 	return 0;
 }

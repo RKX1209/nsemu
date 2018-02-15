@@ -235,7 +235,7 @@ struct MSC_Builtin_CLZ {
 		return 32 - index;	// int is always 32bit on Windows, even for target x64
 	}
 };
-#define __builtin_clz(x) MSC_Builtin_CLZ ::builtin_clz (x)
+#define __builtin_clz(x) MSC_Builtin_CLZ::builtin_clz (x)
 #endif
 
 class Option;
@@ -1359,7 +1359,7 @@ static void shift(const char **args, int count)
  * @brief Interface for actions Parser::workhorse() should perform for each Option it
  * parses.
  */
-struct Parser ::Action {
+struct Parser::Action {
 	virtual ~Action() {}
 	/**
 	 * @brief Called by Parser::workhorse() for each Option that has been successfully
@@ -1395,7 +1395,7 @@ struct Parser ::Action {
  * @brief An Action to pass to Parser::workhorse() that will increment a counter for
  * each parsed Option.
  */
-class Stats ::CountOptionsAction : public Parser ::Action
+class Stats::CountOptionsAction : public Parser::Action
 {
 unsigned *buffer_max;
 public:
@@ -1422,7 +1422,7 @@ bool perform(Option&)
  * @brief An Action to pass to Parser::workhorse() that will store each parsed Option in
  * appropriate arrays (see Parser::parse()).
  */
-class Parser ::StoreOptionAction : public Parser ::Action
+class Parser::StoreOptionAction : public Parser::Action
 {
 Parser& parser;
 Option *options;
@@ -1481,14 +1481,14 @@ bool finished(int numargs, const char **args)
 }
 };
 
-inline void Parser ::parse(bool gnu, const Descriptor usage[], int argc, const char **argv, Option options[],
+inline void Parser::parse(bool gnu, const Descriptor usage[], int argc, const char **argv, Option options[],
 			   Option buffer[], int min_abbr_len, bool single_minus_longopt, int bufmax)
 {
 	StoreOptionAction action (*this, options, buffer, bufmax);
 	err = !workhorse (gnu, usage, argc, argv, action, single_minus_longopt, true, min_abbr_len);
 }
 
-inline void Stats ::add(bool gnu, const Descriptor usage[], int argc, const char **argv, int min_abbr_len,
+inline void Stats::add(bool gnu, const Descriptor usage[], int argc, const char **argv, int min_abbr_len,
 			bool single_minus_longopt)
 {
 	// determine size of options array. This is the greatest index used in the usage + 1
@@ -1502,10 +1502,10 @@ inline void Stats ::add(bool gnu, const Descriptor usage[], int argc, const char
 	}
 
 	CountOptionsAction action (&buffer_max);
-	Parser ::workhorse (gnu, usage, argc, argv, action, single_minus_longopt, false, min_abbr_len);
+	Parser::workhorse (gnu, usage, argc, argv, action, single_minus_longopt, false, min_abbr_len);
 }
 
-inline bool Parser ::workhorse(bool gnu, const Descriptor usage[], int numargs, const char **args, Action& action,
+inline bool Parser::workhorse(bool gnu, const Descriptor usage[], int numargs, const char **args, Action& action,
 			       bool single_minus_longopt, bool print_errors, int min_abbr_len)
 {
 	// protect against NULL pointer
@@ -2748,32 +2748,32 @@ template<typename OStream>
 void printUsage(OStream& prn, const Descriptor usage[], int width = 80, int last_column_min_percent = 50,
 		int last_column_own_line_max_percent = 75)
 {
-	PrintUsageImplementation ::OStreamWriter<OStream> write (prn);
-	PrintUsageImplementation ::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
+	PrintUsageImplementation::OStreamWriter<OStream> write (prn);
+	PrintUsageImplementation::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
 }
 
 template<typename Function>
 void printUsage(Function *prn, const Descriptor usage[], int width = 80, int last_column_min_percent = 50,
 		int last_column_own_line_max_percent = 75)
 {
-	PrintUsageImplementation ::FunctionWriter<Function> write (prn);
-	PrintUsageImplementation ::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
+	PrintUsageImplementation::FunctionWriter<Function> write (prn);
+	PrintUsageImplementation::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
 }
 
 template<typename Temporary>
 void printUsage(const Temporary& prn, const Descriptor usage[], int width = 80, int last_column_min_percent = 50,
 		int last_column_own_line_max_percent = 75)
 {
-	PrintUsageImplementation ::TemporaryWriter<Temporary> write (prn);
-	PrintUsageImplementation ::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
+	PrintUsageImplementation::TemporaryWriter<Temporary> write (prn);
+	PrintUsageImplementation::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
 }
 
 template<typename Syscall>
 void printUsage(Syscall *prn, int fd, const Descriptor usage[], int width = 80, int last_column_min_percent = 50,
 		int last_column_own_line_max_percent = 75)
 {
-	PrintUsageImplementation ::SyscallWriter<Syscall> write (prn, fd);
-	PrintUsageImplementation ::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
+	PrintUsageImplementation::SyscallWriter<Syscall> write (prn, fd);
+	PrintUsageImplementation::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
 }
 
 template<typename Function, typename Stream>
@@ -2781,8 +2781,8 @@ void printUsage(Function *prn, Stream *stream, const Descriptor usage[], int wid
 			50,
 		int last_column_own_line_max_percent = 75)
 {
-	PrintUsageImplementation ::StreamWriter<Function, Stream> write (prn, stream);
-	PrintUsageImplementation ::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
+	PrintUsageImplementation::StreamWriter<Function, Stream> write (prn, stream);
+	PrintUsageImplementation::printUsage (write, usage, width, last_column_min_percent, last_column_own_line_max_percent);
 }
 
 }

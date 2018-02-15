@@ -2,7 +2,7 @@
 #include <sys/mman.h>
 #include "Nsemu.hpp"
 
-AddressSpace ::AddressSpace (std ::string _name, uint64_t addr, size_t _length, int _perm, uint8_t **out_pointer) {
+AddressSpace::AddressSpace (std::string _name, uint64_t addr, size_t _length, int _perm, uint8_t **out_pointer) {
 	int page = getpagesize ();
 	name = _name;
 	length = _length;
@@ -33,14 +33,14 @@ static AddressSpace mem_map[] =
 void InitMemmap(Nsemu *nsemu) {
 	int num = sizeof(mem_map) / sizeof(AddressSpace);
 	for (int n = 0; n < num; n++) {
-		std ::string sec_name = mem_map[n].name;
+		std::string sec_name = mem_map[n].name;
 		nsemu->as[sec_name] = mem_map[n];
 	}
 }
 
 AddressSpace *FindAddressSpace(Nsemu *nsemu, uint64_t addr, size_t len) {
 	AddressSpace *as;
-	std ::map<std ::string, AddressSpace> ::iterator it = nsemu->as.begin ();
+	std::map<std::string, AddressSpace>::iterator it = nsemu->as.begin ();
 	for (; it != nsemu->as.end (); it++) {
 		as = &it->second;
 		if (as->addr <= addr && addr + len <= as->addr + as->length) {
@@ -69,7 +69,7 @@ bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len) {
 	return _CopyMemEmu (as, data, addr, len, true);
 }
 
-bool CopytoEmuByName(Nsemu *nsemu, void *data, std ::string name, size_t len) {
+bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
 	if (nsemu->as.find (name) == nsemu->as.end ()) {
 		return false;
 	}
@@ -88,7 +88,7 @@ bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len) {
 	return _CopyMemEmu (as, data, addr, len, false);
 }
 
-bool CopyfromEmuByName(Nsemu *nsemu, void *data, std ::string name, size_t len) {
+bool CopyfromEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
 	if (nsemu->as.find (name) == nsemu->as.end ()) {
 		return false;
 	}

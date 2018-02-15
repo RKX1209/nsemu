@@ -29,7 +29,7 @@ Nsemu() = default;
 
 static Nsemu *inst;
 public:
-std ::map<std ::string, AddressSpace> as;
+std::map<std::string, AddressSpace> as;
 public:
 Nsemu(const Nsemu&) = delete;
 Nsemu& operator=(const Nsemu&) = delete;
@@ -52,6 +52,6 @@ static void destroy() {
 		inst = nullptr;
 	}
 }
-bool BootUp(const std ::string& path);
+bool BootUp(const std::string& path);
 };
 #endif

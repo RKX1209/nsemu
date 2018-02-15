@@ -14,7 +14,7 @@ static T ReadFromRAM(const uint64_t paddr) {
 	T value = 0;
 	for (uint64_t addr = paddr; addr < paddr + sizeof(T); addr++) {
 		uint8_t byte;
-		std ::memcpy (&byte, &Memory ::pRAM[addr], sizeof(uint8_t));
+		std::memcpy (&byte, &Memory::pRAM[addr], sizeof(uint8_t));
 		value = (value << 8) | byte;
 	}
 	return value;

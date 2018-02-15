@@ -6,8 +6,8 @@ namespace ARMv8 {
 ARMv8State arm_state;
 
 void Init() {
-	Interpreter ::create ();
-	cpu_engine = Interpreter ::get_instance ();
+	Interpreter::create ();
+	cpu_engine = Interpreter::get_instance ();
 }
 
 void RunLoop() {
