@@ -11,6 +11,7 @@ typedef union {
 struct ARMv8State {
 	reg_t gpr[32];	// x0 - x31 (x30 is usually "link regsiter" and x31 is "stack pointer" or "zero register" )
 	uint64_t pc;
+        uint32_t nzcv;  // flag register
 };
 
 extern ARMv8State arm_state;
@@ -23,6 +24,7 @@ extern ARMv8State arm_state;
 #define SP ARMv8::arm_state.gpr[GPR_SP]
 #define ZERO ARMv8::arm_state.gpr[GPR_ZERO]
 #define PC ARMv8::arm_state.pc
+#define NZCV ARMv8::arm_state.nzcv
 
 #define GPR(r) ARMv8::arm_state.gpr[r]
 #define X(r) GPR(r).x

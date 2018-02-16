@@ -25,6 +25,7 @@ void Dump() {
                 debug_print ("0x%016lx\n", X(r));
         }
         debug_print ("PC\t0x%016lx\n", PC);
+        debug_print ("NZCV\t0x%016lx\n", NZCV);
 }
 
 }

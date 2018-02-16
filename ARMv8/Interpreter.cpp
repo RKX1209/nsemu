@@ -45,17 +45,57 @@ void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t
 
 /* Mov between registers */
 void IntprCallback::MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("MOV: %c[%u] = %c[%u]\n", regc, rd_idx, regc, rn_idx);
+        if (bit64)
+                X(rd_idx) = X(rn_idx);
+        else
+                W(rd_idx) = W(rn_idx);
+}
 
+static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
+        uint32_t nzcv;
+        if (res & (1ULL << 63)) nzcv |= 0x80000000; // N
+        if (res) nzcv |= 0x40000000; // Z
+        if (((arg1 & arg2) + (arg1 ^ arg2) >> 1) >> 63) nzcv |= 0x20000000; //C (half adder ((x & y) + ((x ^ y) >> 1)))
+        if ((arg1 ^ arg2) & (arg2 ^ res)) nzcv |= 0x10000000; //V
+        NZCV = nzcv;
 }
 
 /* Add/Sub with Immediate value */
 void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
 	debug_print ("Add: %c[%u] = %c[%u] + 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
+        uint64_t result;
+        if (bit64) {
+                result = X(rn_idx) + imm;
+                if (setflags)
+                        UpdateFlag (result, X(rn_idx), imm);
+                X(rd_idx) = result;
+        }
+        else {
+                result = W(rn_idx) + imm;
+                if (setflags)
+                        UpdateFlag (result, W(rn_idx), imm);
+                W(rd_idx) = result;
+        }
 }
 void IntprCallback::SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
 	debug_print ("Sub: %c[%u] = %c[%u] - 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
+        uint64_t result;
+        if (bit64) {
+                result = X(rn_idx) - imm;
+                if (setflags)
+                        UpdateFlag (result, X(rn_idx), imm);
+                X(rd_idx) = result;
+        }
+        else {
+                result = W(rn_idx) - imm;
+                if (setflags)
+                        UpdateFlag (result, W(rn_idx), imm);
+                W(rd_idx) = result;
+        }
 }
 
 /* Add/Sub between registers */
