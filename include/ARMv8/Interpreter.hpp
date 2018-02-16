@@ -4,7 +4,10 @@
 class IntprCallback : public DisasCallback {
 public:
 /* Mov with Immediate value */
-void MoviI64(unsigned int reg_idx, uint64_t imm, bool unchanged, bool bit64);
+void MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64);
+
+/* Deposit (i.e. distination register won't be changed) with Immediate value */
+void DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64);
 
 /* Mov between registers */
 void MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64);

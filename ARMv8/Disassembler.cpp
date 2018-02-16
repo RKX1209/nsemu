@@ -55,7 +55,7 @@ static void DisasPCRelAddr(uint32_t insn, DisasCallback *cb) {
 		offset <<= 12;
 	}
 
-	cb->MoviI64 (rd, base + offset, false, true);
+	cb->MoviI64 (rd, base + offset, true);
 }
 
 static void DisasAddSubImm(uint32_t insn, DisasCallback *cb) {
@@ -129,18 +129,18 @@ static void DisasMovwImm(uint32_t insn, DisasCallback *cb) {
                 UnallocatedOp (insn);
                 return;
         }
-        imm <<= pos;
         switch (opc) {
         case 0: /* MOVN */
         case 2: /* MOVZ */
+                imm <<= pos;
                 if (opc == 0) {
                         imm = ~imm;
                 }
-                cb->MoviI64 (rd, imm, false, is_64bit);
+                cb->MoviI64 (rd, imm, is_64bit);
                 break;
         case 3: /* MOVK */
                 //TODO: deposit(keep destionation bit)
-                cb->MoviI64 (rd, imm, true, is_64bit);
+                cb->DepositiI64 (rd, pos, imm, is_64bit);
                 break;
         default:
             UnallocatedOp (insn);
@@ -264,7 +264,7 @@ static void DisasUncondBrImm(uint32_t insn, DisasCallback *cb) {
 
         if (insn & (1U << 31)) {
                 /* BL Branch with link */
-                cb->MoviI64(GPR_LR, addr, false, true);
+                cb->MoviI64(GPR_LR, addr, true);
         }
 
         /* B Branch / BL Branch with link */

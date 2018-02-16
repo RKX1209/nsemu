@@ -18,5 +18,7 @@ void SetState(State _state);
 
 State GetState();
 
+void DumpMachine();
+
 }
 #endif

@@ -3,8 +3,13 @@
 
 namespace ARMv8 {
 
+typedef union {
+        uint32_t w[2];
+        uint64_t x;
+}reg_t;
+
 struct ARMv8State {
-	uint64_t gpr[32];	// x0 - x31 (x30 is usually "link regsiter" and x31 is "stack pointer" or "zero register" )
+	reg_t gpr[32];	// x0 - x31 (x30 is usually "link regsiter" and x31 is "stack pointer" or "zero register" )
 	uint64_t pc;
 };
 
@@ -19,11 +24,15 @@ extern ARMv8State arm_state;
 #define ZERO ARMv8::arm_state.gpr[GPR_ZERO]
 #define PC ARMv8::arm_state.pc
 
-#define GPR(x) ARMv8::arm_state.gpr[x]
+#define GPR(r) ARMv8::arm_state.gpr[r]
+#define X(r) GPR(r).x
+#define W(r) GPR(r).w[1]
 
 void Init();
 
 void RunLoop();
+
+void Dump();
 
 }
 

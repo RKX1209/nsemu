@@ -26,4 +26,8 @@ State GetState() {
 	return state;
 }
 
+void DumpMachine() {
+        ARMv8::Dump ();
+}
+
 }

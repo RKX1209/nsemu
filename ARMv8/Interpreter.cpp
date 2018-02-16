@@ -20,11 +20,27 @@ void Interpreter::Run() {
         int test_max = 20;
         for (int i = 0; i < test_max; i++)
                 SingleStep();
+        Cpu::DumpMachine ();
 }
 
-void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool unchanged, bool bit64) {
+
+void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("MOV%c: %c[%u] = 0x%016lx\n", unchanged? 'K' : ' ', regc, reg_idx, imm);
+	debug_print ("MOV: %c[%u] = 0x%016lx\n", regc, reg_idx, imm);
+        if (bit64) X(reg_idx) = imm;
+        else W(reg_idx) = imm;
+}
+
+void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("MOVK: %c[%u] = 0x%016lx\n", regc, reg_idx, imm << pos);
+        uint32_t mask = (1 << 16) - 1; //XXX: hard coded bit size: 16
+        if (bit64) {
+                X(reg_idx) = (X(reg_idx) & ~(mask << pos)) | (imm << pos);
+        }
+        else {
+                W(reg_idx) = (W(reg_idx) & ~(mask << pos)) | (imm << pos);
+        }
 }
 
 /* Mov between registers */

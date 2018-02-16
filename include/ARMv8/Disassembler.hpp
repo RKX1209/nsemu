@@ -8,7 +8,10 @@ enum {
 class DisasCallback {
 public:
 /* Mov with Immediate value */
-virtual void MoviI64(unsigned int reg_idx, uint64_t imm, bool unchanged, bool bit64) = 0;
+virtual void MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) = 0;
+
+/* Deposit (i.e. distination register won't be changed) with Immediate value */
+virtual void DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64) = 0;
 
 /* Mov between registers */
 virtual void MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
