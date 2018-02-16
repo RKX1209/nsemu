@@ -16,6 +16,8 @@ void RunLoop() {
 
 void Dump() {
         for (int r = 0; r < 32; r++) {
+                if (!X(r))
+                        continue;
                 if (r == GPR_LR)
                         debug_print ("LR\t");
                 else if (r == GPR_SP)
