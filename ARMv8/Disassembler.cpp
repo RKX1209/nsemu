@@ -276,7 +276,7 @@ static void DisasCompBrImm(uint32_t insn, DisasCallback *cb) {
         unsigned int op = extract32(insn, 24, 1); /* 0: CBZ; 1: CBNZ */
         unsigned int rt = extract32(insn, 0, 5);
         uint64_t addr = PC + sextract32(insn, 5, 19) * 4 - 4;
-        cb->BranchCondiI64 (op ? COND_NE : COND_EQ, rt, 0, addr, sf);
+        cb->BranchCondiI64 (op ? CondType_NE : CondType_EQ, rt, 0, addr, sf);
 }
 
 static void DisasTestBrImm(uint32_t insn, DisasCallback *cb) {
@@ -285,7 +285,7 @@ static void DisasTestBrImm(uint32_t insn, DisasCallback *cb) {
         unsigned int addr = PC + sextract32(insn, 5, 14) * 4 - 4;
         uint64_t rt = extract32(insn, 0, 5);
         cb->AndI64(rt, rt, (1ULL << bit_pos), false, true);
-        cb->BranchCondiI64 (op ? COND_NE : COND_EQ, rt, 0, addr, true);
+        cb->BranchCondiI64 (op ? CondType_NE : CondType_EQ, rt, 0, addr, true);
 }
 
 static void DisasCondBrImm(uint32_t insn, DisasCallback *cb) {
@@ -452,11 +452,11 @@ static void DisasLogicReg(uint32_t insn, DisasCallback *cb) {
                 cb->BicReg (rd, rn, rm, true, sf);
                 break;
         case 5: /* ORN */
-                cb->NotReg (rm, rm ,sf);
+                cb->NotReg (rm, rm, sf);
                 cb->OrrReg (rd, rn, rm, sf);
                 break;
         case 6: /* EON */
-                cb->NotReg (rm, rm ,sf);
+                cb->NotReg (rm, rm, sf);
                 cb->EorReg (rd, rn, rm, sf);
                 break;
         default:
@@ -479,7 +479,7 @@ static void DisasAddSubExtReg(uint32_t insn, DisasCallback *cb) {
                 return;
         }
         cb->ExtendReg (rm, rm, option, sf);
-        cb->ShiftI64 (rm, rm, 0, imm3, sf); //TODO: shift_type LSL is 0?
+        cb->ShiftI64 (rm, rm, ShiftType_LSL, imm3, sf);
         if (sub_op) {
                 cb->SubReg (rd, rn, rm, setflags, sf);
         } else {

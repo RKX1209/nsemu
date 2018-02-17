@@ -25,6 +25,10 @@ extern ARMv8State arm_state;
 #define ZERO ARMv8::arm_state.gpr[GPR_ZERO]
 #define PC ARMv8::arm_state.pc
 #define NZCV ARMv8::arm_state.nzcv
+#define N_MASK          0x80000000
+#define Z_MASK          0x40000000
+#define C_MASK          0x20000000
+#define V_MASK          0x10000000
 
 #define GPR(r) ARMv8::arm_state.gpr[r]
 #define X(r) GPR(r).x

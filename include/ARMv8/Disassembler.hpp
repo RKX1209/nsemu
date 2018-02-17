@@ -1,10 +1,6 @@
 #ifndef _DISASSEMBLER_HPP
 #define _DISASSEMBLER_HPP
 
-enum {
-        COND_EQ = 0,
-        COND_NE,
-};
 class DisasCallback {
 public:
 /* Mov with Immediate value */
@@ -60,8 +56,34 @@ virtual void SVC(unsigned int svc_num) = 0;
 
 namespace Disassembler {
 
+//logical ops with shifted registers
+enum ShiftType {
+        ShiftType_LSL = 0,
+        ShiftType_LSR,
+        ShiftType_ASR,
+        ShiftType_ROR
+};
+
+enum CondType {
+        CondType_EQ = 0,
+        CondType_NE,
+        CondType_CSHS,
+        CondType_CCLO,
+        CondType_MI,
+        CondType_PL,
+        CondType_VS,
+        CondType_VC,
+        CondType_HI,
+        CondType_LS,
+        CondType_GE,
+        CondType_LT,
+        CondType_GT,
+        CondType_LE,
+        CondType_AL,
+        CondType_NV
+};
+
 void DisasA64(uint32_t insn, DisasCallback *cb);
 
 };
-
 #endif
