@@ -322,8 +322,7 @@ static void DisasUncondBrReg(uint32_t insn, DisasCallback *cb) {
                 cb->SetPCReg (rn);
                 /* BLR also needs to load return address */
                 if (opc == 1) {
-                        //TODO:
-                        //cb->MovReg(GPR_LR, rn, true);
+                        cb->MovReg(GPR_LR, rn, true);
                 }
                 break;
         case 4: /* ERET */
@@ -488,6 +487,61 @@ static void DisasAddSubExtReg(uint32_t insn, DisasCallback *cb) {
 }
 
 static void DisasAddSubReg(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int imm6 = extract32(insn, 10, 6);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int shift_type = extract32(insn, 22, 2);
+        unsigned setflags = extract32(insn, 29, 1);
+        unsigned sub_op = extract32(insn, 30, 1);
+        unsigned sf = extract32(insn, 31, 1);
+        if (extract32(insn, 10, 6) != 0) {
+                UnallocatedOp (insn);
+                return;
+        }
+        if (sub_op) {
+                cb->SubReg (rd, rn, rm, setflags, sf);
+        } else {
+                cb->AddReg (rd, rn, rm, setflags, sf);
+        }
+}
+
+static void DisasAddSubcReg(uint32_t insn, DisasCallback *cb) {
+        unsigned int sf = extract32(insn, 31, 1);
+        unsigned int sub_op = extract32(insn, 30, 1);
+        unsigned int setflags = extract32(insn, 29, 1);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rd = extract32(insn, 0, 5);
+        if (sub_op) {
+                /* ADC, ADCS */
+                cb->SubcReg (rd, rn, rm, setflags, sf);
+        } else {
+                /* SBC, SBCS */
+                cb->AddcReg (rd, rn, rm, setflags, sf);
+        }
+}
+
+static void DisasCondCmp(uint32_t insn, DisasCallback *cb) {
+        unsigned int sf = extract32(insn, 31, 1);
+        unsigned int op = extract32(insn, 30, 1);
+        unsigned int is_imm = extract32(insn, 11, 1);
+        unsigned int y = extract32(insn, 16, 5); /* y = rm (reg) or imm5 (imm) */
+        unsigned int cond = extract32(insn, 12, 4);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int nzcv = extract32(insn, 0, 4);
+        if (!extract32(insn, 29, 1)) {
+                UnallocatedOp (insn);
+                return;
+        }
+        if (insn & (1 << 10 | 1 << 4)) {
+                UnallocatedOp (insn);
+                return;
+        }
+        if (is_imm)
+                cb->CondCmpI64(rn, y, nzcv, cond, op, sf);
+        else
+                cb->CondCmpReg(rn, y, nzcv, cond, op, sf);
 }
 
 static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
@@ -499,16 +553,19 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
                 if (insn & (1 << 21)) { /* (extended register) */
                         DisasAddSubExtReg (insn, cb);
                 } else {
-                        //DisasAddSubReg (insn, cb);
+                        DisasAddSubReg (insn, cb);
                 }
                 break;
         case 0x1b: /* Data-processing (3 source) */
+                /* TODO */
                 break;
         case 0x1a:
                 switch (extract32(insn, 21, 3)) {
                 case 0x0: /* Add/subtract (with carry) */
+                        DisasAddSubcReg (insn, cb);
                         break;
                 case 0x2: /* Conditional compare */
+                        DisasCondCmp (insn, cb);
                         break;
                 case 0x4: /* Conditional select */
                         break;

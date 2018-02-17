@@ -80,6 +80,28 @@ enum OpType{
 
 const char *OpStrs[] = { "<<", ">>", ">>", "ROR", "+", "-", "&", "|", "^" };
 
+static bool CondHold(unsigned int cond) {
+        cond >>= 1;
+        if (cond == 0x0)
+                return NZCV & Z_MASK;
+        if (cond == 0x1)
+                return NZCV & C_MASK;
+        if (cond == 0x2)
+                return NZCV & N_MASK;
+        if (cond == 0x3)
+                return NZCV & V_MASK;
+        if (cond == 0x4)
+                return (NZCV & C_MASK) & !(NZCV & Z_MASK) ;
+        if (cond == 0x5)
+                return (NZCV & N_MASK) == (NZCV & V_MASK);
+        if (cond == 0x6)
+                return ((NZCV & N_MASK) == (NZCV & V_MASK)) & !(NZCV & Z_MASK);
+        if (cond == 0x7)
+                return true;
+        ns_abort ("Unknown condition\n");
+        return false;
+}
+
 static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
         if (op == AL_TYPE_ADD)
                 return arg1 + arg2;
@@ -152,6 +174,28 @@ void IntprCallback::SubReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
                 ArithmeticLogic (rd_idx, X(rn_idx), X(rm_idx), setflags, bit64, AL_TYPE_SUB);
         else
                 ArithmeticLogic (rd_idx, W(rn_idx), W(rm_idx), setflags, bit64, AL_TYPE_SUB);
+}
+
+/* Add/Sub with carry flag between registers */
+void IntprCallback::AddcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {
+        AddReg (rd_idx, rn_idx, rm_idx, setflags, bit64);
+        /* Add carry */
+        if (NZCV & C_MASK) {
+                if (bit64)
+                        X(rd_idx) = X(rd_idx) + 1;
+                else
+                        W(rd_idx) = W(rd_idx) + 1;
+        }
+}
+void IntprCallback::SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {
+        SubReg (rd_idx, rn_idx, rm_idx, setflags, bit64);
+        /* Add carry */
+        if (NZCV & C_MASK) {
+                if (bit64)
+                        X(rd_idx) = X(rd_idx) + 1;
+                else
+                        W(rd_idx) = W(rd_idx) + 1;
+        }
 }
 
 /* AND/OR/EOR... with Immediate value */
@@ -240,6 +284,45 @@ void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsign
         /* TODO: */
 }
 
+/* Conditional compare... with Immediate value */
+void IntprCallback::CondCmpI64(unsigned int rn_idx, unsigned int imm, unsigned int nzcv, unsigned int cond, unsigned int op, bool bit64) {
+        if (CondHold (cond)) {
+                if (op) {
+                        if (bit64)
+                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), imm, true, bit64, AL_TYPE_SUB);
+                        else
+                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), imm, true, bit64, AL_TYPE_SUB);
+                } else {
+                        if (bit64)
+                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), imm, true, bit64, AL_TYPE_ADD);
+                        else
+                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), imm, true, bit64, AL_TYPE_ADD);
+                }
+        } else {
+                /* Set new nzcv */
+                NZCV = (nzcv) << 28;
+        }
+}
+/* Conditional compare... between registers */
+void IntprCallback::CondCmpReg(unsigned int rn_idx, unsigned int rm_idx, unsigned int nzcv, unsigned int cond, unsigned int op, bool bit64) {
+        if (CondHold (cond)) {
+                if (op) {
+                        if (bit64)
+                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), X(rm_idx), true, bit64, AL_TYPE_SUB);
+                        else
+                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), W(rm_idx), true, bit64, AL_TYPE_SUB);
+                } else {
+                        if (bit64)
+                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), X(rm_idx), true, bit64, AL_TYPE_ADD);
+                        else
+                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), W(rm_idx), true, bit64, AL_TYPE_ADD);
+                }
+        } else {
+                /* Set new nzcv */
+                NZCV = (nzcv) << 28;
+        }
+}
+
 /* Go to Immediate address */
 void IntprCallback::BranchI64(uint64_t imm) {
         debug_print ("Goto: 0x%016lx\n", imm + 4);
@@ -264,27 +347,6 @@ void IntprCallback::BranchCondiI64(unsigned int cond, unsigned int rt_idx, uint6
         }
 }
 
-static bool CondHold(unsigned int cond) {
-        cond >>= 1;
-        if (cond == 0x0)
-                return NZCV & Z_MASK;
-        if (cond == 0x1)
-                return NZCV & C_MASK;
-        if (cond == 0x2)
-                return NZCV & N_MASK;
-        if (cond == 0x3)
-                return NZCV & V_MASK;
-        if (cond == 0x4)
-                return (NZCV & C_MASK) & !(NZCV & Z_MASK) ;
-        if (cond == 0x5)
-                return (NZCV & N_MASK) == (NZCV & V_MASK);
-        if (cond == 0x6)
-                return ((NZCV & N_MASK) == (NZCV & V_MASK)) & !(NZCV & Z_MASK);
-        if (cond == 0x7)
-                return true;
-        ns_abort ("Unknown condition\n");
-        return false;
-}
 /* Conditional Branch with NZCV flags */
 void IntprCallback::BranchFlag(unsigned int cond, uint64_t addr) {
         if (CondHold (cond))

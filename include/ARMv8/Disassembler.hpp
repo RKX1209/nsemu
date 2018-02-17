@@ -20,6 +20,10 @@ virtual void SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool
 virtual void AddReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) = 0;
 virtual void SubReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) = 0;
 
+/* Add/Sub with carry flag between registers */
+virtual void AddcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) = 0;
+virtual void SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) = 0;
+
 /* AND/OR/EOR/Shift ... with Immediate value */
 virtual void AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64) = 0;
 virtual void OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) = 0;
@@ -37,6 +41,12 @@ virtual void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int ex
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
 virtual void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
+
+/* Conditional compare... with Immediate value */
+virtual void CondCmpI64(unsigned int rn_idx, unsigned int imm, unsigned int nzcv, unsigned int cond, unsigned int op, bool bit64) = 0;
+
+/* Conditional compare... between registers */
+virtual void CondCmpReg(unsigned int rn_idx, unsigned int rm_idx, unsigned int nzcv, unsigned int cond, unsigned int op, bool bit64) = 0;
 
 /* Go to Immediate address */
 virtual void BranchI64(uint64_t imm) = 0;
