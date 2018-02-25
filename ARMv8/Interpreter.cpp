@@ -22,50 +22,7 @@ void Interpreter::Run() {
 	}
 }
 
-
-void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
-	char regc = bit64? 'X': 'W';
-	debug_print ("MOV: %c[%u] = 0x%016lx\n", regc, reg_idx, imm);
-        if (bit64) X(reg_idx) = imm;
-        else W(reg_idx) = imm;
-}
-
-void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64) {
-	char regc = bit64? 'X': 'W';
-	debug_print ("MOVK: %c[%u] = 0x%016lx\n", regc, reg_idx, imm << pos);
-        uint32_t mask = (1 << 16) - 1; //XXX: hard coded bit size: 16
-        if (bit64) {
-                X(reg_idx) = (X(reg_idx) & ~(mask << pos)) | (imm << pos);
-        }
-        else {
-                W(reg_idx) = (W(reg_idx) & ~(mask << pos)) | (imm << pos);
-        }
-}
-
-/* Mov between registers */
-void IntprCallback::MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
-	char regc = bit64? 'X': 'W';
-	debug_print ("MOV: %c[%u] = %c[%u]\n", regc, rd_idx, regc, rn_idx);
-        if (bit64)
-                X(rd_idx) = X(rn_idx);
-        else
-                W(rd_idx) = W(rn_idx);
-}
-
-static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
-        uint32_t nzcv;
-        if (res & (1ULL << 63)) nzcv |= N_MASK; // N
-        if (res) nzcv |= Z_MASK; // Z
-        if (((arg1 & arg2) + (arg1 ^ arg2) >> 1) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
-        if ((arg1 ^ arg2) & (arg2 ^ res)) nzcv |= V_MASK; //V
-        NZCV = nzcv;
-}
-
-static uint64_t RotateRight(uint64_t val, uint64_t rot) {
-        uint64_t left = (val & (1 << rot - 1)) << (64 - rot);
-        return left | (val >> rot);
-}
-
+/* ####### Callbacks ####### */
 enum OpType{
         AL_TYPE_LSL,
         AL_TYPE_LSR,
@@ -100,6 +57,62 @@ static bool CondHold(unsigned int cond) {
                 return true;
         ns_abort ("Unknown condition\n");
         return false;
+}
+
+void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("MOV: %c[%u] = 0x%016lx\n", regc, reg_idx, imm);
+        if (bit64) X(reg_idx) = imm;
+        else W(reg_idx) = imm;
+}
+
+void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("MOVK: %c[%u] = 0x%016lx\n", regc, reg_idx, imm << pos);
+        uint32_t mask = (1 << 16) - 1; //XXX: hard coded bit size: 16
+        if (bit64) {
+                X(reg_idx) = (X(reg_idx) & ~(mask << pos)) | (imm << pos);
+        }
+        else {
+                W(reg_idx) = (W(reg_idx) & ~(mask << pos)) | (imm << pos);
+        }
+}
+
+/* Mov between registers */
+void IntprCallback::MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("MOV: %c[%u] = %c[%u]\n", regc, rd_idx, regc, rn_idx);
+        if (bit64)
+                X(rd_idx) = X(rn_idx);
+        else
+                W(rd_idx) = W(rn_idx);
+}
+
+/* Conditional mov between registers */
+void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("MOV: %c[%u] = %c[%u]\n", regc, rd_idx, regc, rn_idx);
+        if (bit64) {
+                if (CondHold(cond))
+                        X(rd_idx) = X(rn_idx);
+        } else {
+                if (CondHold(cond))
+                        W(rd_idx) = W(rn_idx);
+        }
+}
+
+static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
+        uint32_t nzcv;
+        if (res & (1ULL << 63)) nzcv |= N_MASK; // N
+        if (res) nzcv |= Z_MASK; // Z
+        if (((arg1 & arg2) + (arg1 ^ arg2) >> 1) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
+        if ((arg1 ^ arg2) & (arg2 ^ res)) nzcv |= V_MASK; //V
+        NZCV = nzcv;
+}
+
+static uint64_t RotateRight(uint64_t val, uint64_t rot) {
+        uint64_t left = (val & (1 << rot - 1)) << (64 - rot);
+        return left | (val >> rot);
 }
 
 static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {

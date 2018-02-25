@@ -12,6 +12,9 @@ virtual void DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, b
 /* Mov between registers */
 virtual void MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
 
+/* Conditional mov between registers */
+virtual void CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
+
 /* Add/Sub with Immediate value */
 virtual void AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) = 0;
 virtual void SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) = 0;

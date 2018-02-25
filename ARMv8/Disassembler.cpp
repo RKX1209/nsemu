@@ -218,7 +218,6 @@ static void DisasExtract(uint32_t insn, DisasCallback *cb) {
                 UnallocatedOp (insn);
         } else {
                if (imm == 0) {
-                       // TODO: mov rd, rm
                        cb->MovReg(rd, rm, sf);
                } else if (rm == rn) { /* ROR */
                        // TODO:
@@ -538,10 +537,37 @@ static void DisasCondCmp(uint32_t insn, DisasCallback *cb) {
                 UnallocatedOp (insn);
                 return;
         }
+        /* CCMN, CCMP */
         if (is_imm)
                 cb->CondCmpI64(rn, y, nzcv, cond, op, sf);
         else
                 cb->CondCmpReg(rn, y, nzcv, cond, op, sf);
+}
+
+static void DisasCondSel(uint32_t insn, DisasCallback *cb) {
+        unsigned int sf = extract32(insn, 31, 1);
+        unsigned int else_inv = extract32(insn, 30, 1);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int cond = extract32(insn, 12, 4);
+        unsigned int else_inc = extract32(insn, 10, 1);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rd = extract32(insn, 0, 5);
+        if (extract32(insn, 29, 1) || extract32(insn, 11, 1)) {
+                /* S == 1 or op2<1> == 1 */
+                UnallocatedOp (insn);
+                return;
+        }
+        bool cond_inv = false;
+        if (rn == 31 && rm == 31) {
+                /* CSET  (CSINC <Wd>, WZR, WZR, invert(<cond>)) *
+                 * CSETM (CSINV <Wd>, WZR, WZR, invert(<cond>)) */
+                cond = cond ^ 1; // i.e. invert(<cond>)
+        }
+        if (else_inv)
+                cb->NotReg (rm, rm, sf);
+        if (else_inc)
+                cb->AddI64 (rm, rm, 1, false, sf);
+        cb->CondMovReg (cond, rd, rn, rm);
 }
 
 static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
@@ -568,6 +594,7 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
                         DisasCondCmp (insn, cb);
                         break;
                 case 0x4: /* Conditional select */
+                        DisasCondSel (insn, cb);
                         break;
                 case 0x6: /* Data-processing */
                         if (insn & (1 << 30)) { /* (1 source) */
