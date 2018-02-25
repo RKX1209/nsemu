@@ -115,6 +115,20 @@ static uint64_t RotateRight(uint64_t val, uint64_t rot) {
         return left | (val >> rot);
 }
 
+static uint64_t ReverseBit64(uint64_t x) {
+        /* Assign the correct byte position.  */
+        x = byte_swap64_uint(x);
+        /* Assign the correct nibble position.  */
+        x = ((x & 0xf0f0f0f0f0f0f0f0ull) >> 4)
+          | ((x & 0x0f0f0f0f0f0f0f0full) << 4);
+        /* Assign the correct bit position.  */
+        x = ((x & 0x8888888888888888ull) >> 3)
+          | ((x & 0x4444444444444444ull) >> 1)
+          | ((x & 0x2222222222222222ull) << 1)
+          | ((x & 0x1111111111111111ull) << 3);
+        return x;
+}
+
 static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
         if (op == AL_TYPE_ADD)
                 return arg1 + arg2;
@@ -295,6 +309,61 @@ void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsign
 }
 void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
         /* TODO: */
+}
+
+/* Reverse bit order */
+void IntprCallback::RevBit(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+        if (bit64)
+                X(rd_idx) = ReverseBit64 (X(rn_idx));
+        else
+                W(rd_idx) = ReverseBit64 (W(rn_idx));
+}
+/* Reverse byte order per 16bit */
+void IntprCallback::RevByte16(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+        if (bit64)
+                X(rd_idx) = byte_swap16_uint (X(rn_idx));
+        else
+                W(rd_idx) = byte_swap16_uint (W(rn_idx));
+}
+/* Reverse byte order per 32bit */
+void IntprCallback::RevByte32(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+        if (bit64)
+                X(rd_idx) = byte_swap32_uint (X(rn_idx));
+        else
+                W(rd_idx) = byte_swap32_uint (W(rn_idx));
+}
+/* Reverse byte order per 64bit */
+void IntprCallback::RevByte64(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+        X(rd_idx) = byte_swap64_uint (X(rn_idx));
+}
+
+static inline unsigned int Clz32(uint64_t val) {
+        return val ? (unsigned int) __builtin_clz(val) : 32;
+}
+static inline unsigned int Clz64(uint64_t val) {
+        return val ? (unsigned int) __builtin_clzll(val) : 64;
+}
+
+static inline unsigned int Cls32(uint64_t val) {
+        return val ? (unsigned int) __builtin_clrsb(val) : 32;
+}
+static inline unsigned int Cls64(uint64_t val) {
+        return val ? (unsigned int) __builtin_clrsbll(val) : 64;
+}
+
+/* Count Leading Zeros */
+void IntprCallback::CntLeadZero(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+        if (bit64)
+                X(rd_idx) = Clz64 (X(rn_idx));
+        else
+                W(rd_idx) = Clz32 (W(rn_idx));
+}
+/* Count Leading Signed bits */
+void IntprCallback::CntLeadSign(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+        if (bit64)
+                X(rd_idx) = Cls64 (X(rn_idx));
+        else
+                W(rd_idx) = Cls32 (W(rn_idx));
 }
 
 /* Conditional compare... with Immediate value */

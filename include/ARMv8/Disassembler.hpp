@@ -45,6 +45,19 @@ virtual void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int ex
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
 virtual void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
 
+/* Reverse bit order */
+virtual void RevBit(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
+/* Reverse byte order per 16bit */
+virtual void RevByte16(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
+/* Reverse byte order per 32bit */
+virtual void RevByte32(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
+/* Reverse byte order per 64bit */
+virtual void RevByte64(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
+/* Count Leading Zeros */
+virtual void CntLeadZero(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
+/* Count Leading Signed bits */
+virtual void CntLeadSign(unsigned int rd_idx, unsigned int rn_idx, bool bit64) = 0;
+
 /* Conditional compare... with Immediate value */
 virtual void CondCmpI64(unsigned int rn_idx, unsigned int imm, unsigned int nzcv, unsigned int cond, unsigned int op, bool bit64) = 0;
 

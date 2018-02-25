@@ -570,6 +570,38 @@ static void DisasCondSel(uint32_t insn, DisasCallback *cb) {
         cb->CondMovReg (cond, rd, rn, rm);
 }
 
+static void DisasDataProc1src(uint32_t insn, DisasCallback *cb) {
+        if (extract32(insn, 29, 1) || extract32(insn, 16, 5)) {
+                UnallocatedOp (insn);
+                return;
+        }
+        unsigned int sf = extract32(insn, 31, 1);
+        unsigned int opcode = extract32(insn, 10, 6);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rd = extract32(insn, 0, 5);
+
+        switch (opcode) {
+        case 0: /* RBIT */
+                cb->RevBit (rd, rn, sf);
+                break;
+        case 1: /* REV16 */
+                cb->RevByte16 (rd, rn, sf);
+                break;
+        case 2: /* REV32 */
+                cb->RevByte32 (rd, rn, sf);
+                break;
+        case 3: /* REV64 */
+                cb->RevByte64 (rd, rn, sf);
+                break;
+        case 4: /* CLZ */
+                cb->CntLeadZero (rd, rn, sf);
+                break;
+        case 5: /* CLS */
+                cb->CntLeadSign (rd, rn, sf);
+                break;
+        }
+}
+
 static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 24, 5)) {
         case 0x0a: /* Logical (shifted register) */
@@ -598,7 +630,7 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
                         break;
                 case 0x6: /* Data-processing */
                         if (insn & (1 << 30)) { /* (1 source) */
-
+                                DisasDataProc1src (insn, cb);
                         } else {            /* (2 source) */
 
                         }
