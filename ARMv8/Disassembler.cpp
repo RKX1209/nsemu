@@ -2,7 +2,11 @@
 #include "Nsemu.hpp"
 namespace Disassembler {
 
-static void UnallocatedOp(uint32_t insn) {
+static inline void UnsupportedOp (const char *op) {
+        ns_abort ("[TODO] Unsupported op %s (Disas fail)\n", op);
+}
+
+static inline void UnallocatedOp(uint32_t insn) {
 	ns_abort ("Unallocated operation 0x%08lx\n", insn);
 }
 
@@ -139,7 +143,6 @@ static void DisasMovwImm(uint32_t insn, DisasCallback *cb) {
                 cb->MoviI64 (rd, imm, is_64bit);
                 break;
         case 3: /* MOVK */
-                //TODO: deposit(keep destionation bit)
                 cb->DepositiI64 (rd, pos, imm, is_64bit);
                 break;
         default:
@@ -193,12 +196,14 @@ static void DisasBitfield(uint32_t insn, DisasCallback *cb) {
 
          if (opc == 1) { /* BFM, BXFIL */
                 //TODO: deposit
+                UnsupportedOp ("BFM/BXFIL");
          } else {
                 /* SBFM or UBFM: We start with zero, and we haven't modified
                    any bits outside bitsize, therefore the zero-extension
                    below is unneeded.  */
                 //TODO: ???
                 //tcg_gen_deposit_z_i64(tcg_rd, tcg_tmp, pos, len);
+                UnsupportedOp ("SBFM/UBFM");
          }
          return;
 }
@@ -220,12 +225,10 @@ static void DisasExtract(uint32_t insn, DisasCallback *cb) {
                if (imm == 0) {
                        cb->MovReg(rd, rm, sf);
                } else if (rm == rn) { /* ROR */
-                       // TODO:
-                       //cb->RorI64(rd, rm, imm)
+                       cb->ShiftI64 (rd, rm, ShiftType_ROR, imm, sf);
                } else {
-                       // TODO:
-                       //cb->ShriI64(rm, rm, imm)
-                       //cb->ShliI64(rn, rn, imm)
+                       cb->ShiftI64 (rm, rm, ShiftType_LSR, imm, sf);
+                       cb->ShiftI64 (rn, rn, ShiftType_LSR, imm, sf);
                        cb->OrrReg(rd, rm, rn, sf);
                }
        }
@@ -326,10 +329,11 @@ static void DisasUncondBrReg(uint32_t insn, DisasCallback *cb) {
                 break;
         case 4: /* ERET */
                 //TODO:
+                UnsupportedOp ("ERET");
                 break;
         case 5: /* DRPS */
                 //TODO:
-                UnallocatedOp (insn);
+                UnsupportedOp ("DRPS");
                 break;
         default:
                 UnallocatedOp (insn);
@@ -349,9 +353,11 @@ static void DisasException(uint32_t insn, DisasCallback *cb) {
                         break;
                 case 2: /* HVC */
                         //TODO:
+                        UnsupportedOp ("HVC");
                         break;
                 case 3: /* SMC */
                         //TODO:
+                        UnsupportedOp ("SMC");
                         break;
                 default:
                         UnallocatedOp (insn);
@@ -359,12 +365,15 @@ static void DisasException(uint32_t insn, DisasCallback *cb) {
                 }
         case 1: /* BRK */
                 //TODO:
+                UnsupportedOp ("BRK");
                 break;
         case 2: /* HLT */
+                UnsupportedOp ("HLT");
                 //TODO:
                 break;
         case 5: /* DCPS1,2,3 */
                 //TODO:
+                UnsupportedOp ("DCPS");
                 break;
         default:
                 UnallocatedOp (insn);
@@ -392,6 +401,7 @@ static void DisasBranchExcSys(uint32_t insn, DisasCallback *cb) {
                 if (insn & (1 << 24)) {
                         //TODO:
                         //DisasSystem (insn, cb);
+                        UnsupportedOp ("System");
                 } else {
                         DisasException (insn, cb);
                 }
@@ -602,6 +612,56 @@ static void DisasDataProc1src(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void DisasDataProc2src(uint32_t insn, DisasCallback *cb) {
+        unsigned int sf = extract32(insn, 31, 1);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int opcode = extract32(insn, 10, 6);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rd = extract32(insn, 0, 5);
+        if (extract32(insn, 29, 1)) {
+                UnallocatedOp (insn);
+                return;
+        }
+        switch (opcode) {
+        case 2: /* UDIV */
+                cb->DivReg (rd, rn, rm, false, sf);
+                break;
+        case 3: /* SDIV */
+                cb->DivReg (rd, rn, rm, true, sf);
+                break;
+        case 8: /* LSLV */
+                cb->ShiftReg (rd, rn, rm, ShiftType_LSL, sf);
+                break;
+        case 9: /* LSRV */
+                cb->ShiftReg (rd, rn, rm, ShiftType_LSR, sf);
+                break;
+        case 10: /* ASRV */
+                cb->ShiftReg (rd, rn, rm, ShiftType_ASR, sf);
+                break;
+        case 11: /* RORV */
+                cb->ShiftReg (rd, rn, rm, ShiftType_ROR, sf);
+                break;
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+        case 21:
+        case 22:
+        case 23: /* CRC32 */
+        {
+                unsigned int sz = extract32(opcode, 0, 2);
+                bool crc32c = extract32(opcode, 2, 1);
+                /* TODO: */
+                UnsupportedOp ("CRC32");
+                break;
+         }
+         default:
+                UnallocatedOp (insn);
+                break;
+        }
+}
+
 static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 24, 5)) {
         case 0x0a: /* Logical (shifted register) */
@@ -616,6 +676,7 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
                 break;
         case 0x1b: /* Data-processing (3 source) */
                 /* TODO */
+                UnsupportedOp ("DataProc3src");                                                                
                 break;
         case 0x1a:
                 switch (extract32(insn, 21, 3)) {
@@ -632,7 +693,7 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
                         if (insn & (1 << 30)) { /* (1 source) */
                                 DisasDataProc1src (insn, cb);
                         } else {            /* (2 source) */
-
+                                DisasDataProc2src (insn, cb);
                         }
                         break;
                 default:

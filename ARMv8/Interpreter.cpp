@@ -33,6 +33,8 @@ enum OpType{
         AL_TYPE_AND,
         AL_TYPE_OR,
         AL_TYPE_EOR,
+        AL_TYPE_SDIV,
+        AL_TYPE_UDIV,
 };
 
 const char *OpStrs[] = { "<<", ">>", ">>", "ROR", "+", "-", "&", "|", "^" };
@@ -57,6 +59,93 @@ static bool CondHold(unsigned int cond) {
                 return true;
         ns_abort ("Unknown condition\n");
         return false;
+}
+
+static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
+        uint32_t nzcv;
+        if (res & (1ULL << 63)) nzcv |= N_MASK; // N
+        if (res) nzcv |= Z_MASK; // Z
+        if (((arg1 & arg2) + (arg1 ^ arg2) >> 1) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
+        if ((arg1 ^ arg2) & (arg2 ^ res)) nzcv |= V_MASK; //V
+        NZCV = nzcv;
+}
+
+static uint64_t RotateRight(uint64_t val, uint64_t rot) {
+        uint64_t left = (val & (1 << rot - 1)) << (64 - rot);
+        return left | (val >> rot);
+}
+
+static uint64_t ReverseBit64(uint64_t x) {
+        /* Assign the correct byte position.  */
+        x = byte_swap64_uint(x);
+        /* Assign the correct nibble position.  */
+        x = ((x & 0xf0f0f0f0f0f0f0f0ull) >> 4)
+          | ((x & 0x0f0f0f0f0f0f0f0full) << 4);
+        /* Assign the correct bit position.  */
+        x = ((x & 0x8888888888888888ull) >> 3)
+          | ((x & 0x4444444444444444ull) >> 1)
+          | ((x & 0x2222222222222222ull) << 1)
+          | ((x & 0x1111111111111111ull) << 3);
+        return x;
+}
+
+static uint64_t Udiv64(uint64_t arg1, uint64_t arg2) {
+        if (arg2 == 0)
+                return 0;
+        return arg1 / arg2;
+}
+
+static int64_t Sdiv64(int64_t arg1, int64_t arg2) {
+        if (arg2 == 0)
+                return 0;
+        if (arg1 == LLONG_MIN && arg2 == -1) {
+                return LLONG_MIN;
+        }
+        return arg1 / arg2;
+}
+
+static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
+        if (op == AL_TYPE_ADD)
+                return arg1 + arg2;
+        if (op == AL_TYPE_SUB)
+                return arg1 - arg2;
+        if (op == AL_TYPE_AND)
+                return arg1 & arg2;
+        if (op == AL_TYPE_OR)
+                return arg1 | arg2;
+        if (op == AL_TYPE_EOR)
+                return arg1 ^ arg2;
+        if (op == AL_TYPE_LSL)
+                return arg1 << arg2;
+        if (op == AL_TYPE_LSR)
+                return arg1 >> arg2;
+        if (op == AL_TYPE_ASR)
+                return (int64_t) arg1 >> arg2;
+        if (op == AL_TYPE_ROR)
+                return RotateRight (arg1, arg2);
+        if (op == AL_TYPE_UDIV) {
+                return Udiv64 (arg1, arg2);
+        }
+        if (op == AL_TYPE_SDIV) {
+                return Sdiv64 (arg1, arg2);
+        }
+        return 0;
+}
+
+static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType op) {
+        uint64_t result;
+        if (bit64) {
+                result = ALCalc (arg1, arg2, op);
+                if (setflags)
+                        UpdateFlag (result, arg1, arg2);
+                X(rd_idx) = result;
+        }
+        else {
+                result = ALCalc (arg1, arg2, op);
+                if (setflags)
+                        UpdateFlag (result, arg1, arg2);
+                W(rd_idx) = result;
+        }
 }
 
 void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
@@ -101,72 +190,6 @@ void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned 
         }
 }
 
-static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
-        uint32_t nzcv;
-        if (res & (1ULL << 63)) nzcv |= N_MASK; // N
-        if (res) nzcv |= Z_MASK; // Z
-        if (((arg1 & arg2) + (arg1 ^ arg2) >> 1) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
-        if ((arg1 ^ arg2) & (arg2 ^ res)) nzcv |= V_MASK; //V
-        NZCV = nzcv;
-}
-
-static uint64_t RotateRight(uint64_t val, uint64_t rot) {
-        uint64_t left = (val & (1 << rot - 1)) << (64 - rot);
-        return left | (val >> rot);
-}
-
-static uint64_t ReverseBit64(uint64_t x) {
-        /* Assign the correct byte position.  */
-        x = byte_swap64_uint(x);
-        /* Assign the correct nibble position.  */
-        x = ((x & 0xf0f0f0f0f0f0f0f0ull) >> 4)
-          | ((x & 0x0f0f0f0f0f0f0f0full) << 4);
-        /* Assign the correct bit position.  */
-        x = ((x & 0x8888888888888888ull) >> 3)
-          | ((x & 0x4444444444444444ull) >> 1)
-          | ((x & 0x2222222222222222ull) << 1)
-          | ((x & 0x1111111111111111ull) << 3);
-        return x;
-}
-
-static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
-        if (op == AL_TYPE_ADD)
-                return arg1 + arg2;
-        if (op == AL_TYPE_SUB)
-                return arg1 - arg2;
-        if (op == AL_TYPE_AND)
-                return arg1 & arg2;
-        if (op == AL_TYPE_OR)
-                return arg1 | arg2;
-        if (op == AL_TYPE_EOR)
-                return arg1 ^ arg2;
-        if (op == AL_TYPE_LSL)
-                return arg1 << arg2;
-        if (op == AL_TYPE_LSR)
-                return arg1 >> arg2;
-        if (op == AL_TYPE_ASR)
-                return (int64_t) arg1 >> arg2;
-        if (op == AL_TYPE_ROR)
-                return RotateRight (arg1, arg2);
-        return 0;
-}
-
-static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType op) {
-        uint64_t result;
-        if (bit64) {
-                result = ALCalc (arg1, arg2, op);
-                if (setflags)
-                        UpdateFlag (result, arg1, arg2);
-                X(rd_idx) = result;
-        }
-        else {
-                result = ALCalc (arg1, arg2, op);
-                if (setflags)
-                        UpdateFlag (result, arg1, arg2);
-                W(rd_idx) = result;
-        }
-}
-
 /* Add/Sub with Immediate value */
 void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
@@ -185,7 +208,7 @@ void IntprCallback::SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t im
                 ArithmeticLogic (rd_idx, W(rn_idx), imm, setflags, bit64, AL_TYPE_SUB);
 }
 
-/* Add/Sub between registers */
+/* Add/Sub/Div/Shift between registers */
 void IntprCallback::AddReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
 	debug_print ("Add: %c[%u] = %c[%u] + %c[%u] (flag: %s)\n", regc, rd_idx, regc, rn_idx, regc, rm_idx, setflags? "update": "no");
@@ -201,6 +224,23 @@ void IntprCallback::SubReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
                 ArithmeticLogic (rd_idx, X(rn_idx), X(rm_idx), setflags, bit64, AL_TYPE_SUB);
         else
                 ArithmeticLogic (rd_idx, W(rn_idx), W(rm_idx), setflags, bit64, AL_TYPE_SUB);
+}
+void IntprCallback::DivReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool sign, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("%cDIV: %c[%u] = %c[%u] / %c[%u] \n", sign?'S':'U', regc, rd_idx, regc, rn_idx, regc, rm_idx);
+        if (bit64)
+                ArithmeticLogic (rd_idx, X(rn_idx), X(rm_idx), false, bit64, sign?AL_TYPE_SDIV:AL_TYPE_UDIV);
+        else
+                ArithmeticLogic (rd_idx, W(rn_idx), W(rm_idx), false, bit64, sign?AL_TYPE_SDIV:AL_TYPE_UDIV);
+}
+void IntprCallback::ShiftReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, unsigned int shift_type, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("Shift: %c[%u] = %c[%u] %s %c[%u] \n", regc, rd_idx, regc, rn_idx, OpStrs[shift_type], regc, rm_idx);
+        if (bit64)
+                ArithmeticLogic (rd_idx, X(rn_idx), X(rm_idx), false, bit64, (OpType)shift_type);
+        else
+                ArithmeticLogic (rd_idx, W(rn_idx), W(rm_idx), false, bit64, (OpType)shift_type);
+
 }
 
 /* Add/Sub with carry flag between registers */

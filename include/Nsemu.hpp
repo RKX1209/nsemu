@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <cassert>
+#include <climits>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -10,6 +11,7 @@
 #include <string>
 #include <map>
 #include <vector>
+
 using namespace std;
 
 #include "Memory.hpp"
