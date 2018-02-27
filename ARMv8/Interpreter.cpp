@@ -385,10 +385,18 @@ static inline unsigned int Clz64(uint64_t val) {
 }
 
 static inline unsigned int Cls32(uint64_t val) {
-        return val ? (unsigned int) __builtin_clrsb(val) : 32;
+		#ifdef __APPLE__
+				return 0; //TODO
+		#else
+        		return val ? (unsigned int) __builtin_clrsb(val) : 32;
+		#endif
 }
 static inline unsigned int Cls64(uint64_t val) {
-        return val ? (unsigned int) __builtin_clrsbll(val) : 64;
+		#ifdef __APPLE__
+				return 0; //TODO
+		#else
+        		return val ? (unsigned int) __builtin_clrsbll(val) : 64;
+		#endif
 }
 
 /* Count Leading Zeros */
