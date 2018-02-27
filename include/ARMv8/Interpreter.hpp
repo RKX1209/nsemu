@@ -43,6 +43,9 @@ void BicReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool 
 void NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64);
 void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64);
 
+/* Load/Store */
+void LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64);
+
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);

@@ -50,8 +50,8 @@ AddressSpace *FindAddressSpace(Nsemu *nsemu, uint64_t addr, size_t len) {
 	return nullptr;
 }
 
-static bool _CopyMemEmu(AddressSpace *as, void *data, uint64_t addr, size_t len, bool load) {
-	uint64_t off = addr - as->addr;
+static bool _CopyMemEmu(AddressSpace *as, void *data, uint64_t hva, size_t len, bool load) {
+	uint64_t off = hva - as->addr;
 	void *emu_mem = (uint8_t *) as->data + off;
 	if (load) {
 		memcpy (emu_mem, data, len);
@@ -61,12 +61,12 @@ static bool _CopyMemEmu(AddressSpace *as, void *data, uint64_t addr, size_t len,
 	return true;
 }
 
-bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len) {
+bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t hva, size_t len) {
 	AddressSpace *as;
-	if (!(as = FindAddressSpace (nsemu, addr, len))) {
+	if (!(as = FindAddressSpace (nsemu, hva, len))) {
 		return false;
 	}
-	return _CopyMemEmu (as, data, addr, len, true);
+	return _CopyMemEmu (as, data, hva, len, true);
 }
 
 bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
@@ -80,12 +80,12 @@ bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
 	return _CopyMemEmu (as, data, as->addr, len, true);
 }
 
-bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len) {
+bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t hva, size_t len) {
 	AddressSpace *as;
-	if (!(as = FindAddressSpace (nsemu, addr, len))) {
+	if (!(as = FindAddressSpace (nsemu, hva, len))) {
 		return false;
 	}
-	return _CopyMemEmu (as, data, addr, len, false);
+	return _CopyMemEmu (as, data, hva, len, false);
 }
 
 bool CopyfromEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {

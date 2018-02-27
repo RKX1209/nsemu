@@ -707,7 +707,25 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+/* Load register (literal) ... literal means PC-relative immediate value */
 static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
+        unsigned int rt = extract32(insn, 0, 5);
+        int64_t imm = sextract32(insn, 5, 19) << 2;
+        bool is_vector = extract32(insn, 26, 1);
+        unsigned int opc = extract32(insn, 30, 2);
+        bool sf = opc != 0;
+        bool is_signed = false;
+        int size = 2;
+        if (is_vector) {
+                UnsupportedOp("LDR (SIMD&FP)");
+        } else {
+                if (opc == 3) {
+                        return;
+                }
+                size = 2 + extract32(opc, 0, 1);
+                is_signed = extract32(opc, 1, 1);
+        }
+        cb->LoadReg (rt, PC + imm - 4, size, false, sf);
 }
 
 static void DisasLdSt(uint32_t insn, DisasCallback *cb) {

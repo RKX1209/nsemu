@@ -343,6 +343,23 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
         /* TODO: */
 }
 
+/* Load/Store */
+void IntprCallback::LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
+		if (bit64) {
+			if (size == 4)
+					X(rd_idx) = ARMv8::ReadU32 (addr);
+			if (size == 8)
+					X(rd_idx) = ARMv8::ReadU64 (addr);
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		} else {
+			if (size == 4)
+					W(rd_idx) = ARMv8::ReadU32 (addr);
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		}
+}
+
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
         /* TODO: */

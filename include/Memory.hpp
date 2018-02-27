@@ -1,6 +1,8 @@
 #ifndef _MEMORY_HPP
 #define _MEMORY_HPP
 
+/* Memory utilities that support access by host virtual address. */
+
 #include <string>
 #include <sys/types.h>
 
