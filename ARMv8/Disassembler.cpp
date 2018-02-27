@@ -676,7 +676,7 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
                 break;
         case 0x1b: /* Data-processing (3 source) */
                 /* TODO */
-                UnsupportedOp ("DataProc3src");                                                                
+                UnsupportedOp ("DataProc3src");
                 break;
         case 0x1a:
                 switch (extract32(insn, 21, 3)) {
@@ -707,6 +707,38 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
+}
+
+static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
+        switch (extract32(insn, 24, 6)) {
+        case 0x08: /* Load/store exclusive */
+                //DisasLdstExcl (insn, cb);
+                UnsupportedOp("Load/Store Exclusive");
+                break;
+        case 0x18: case 0x1c: /* Load register (literal) */
+                DisasLdLit (insn, cb);
+                break;
+        case 0x28: case 0x29:
+        case 0x2c: case 0x2d: /* Load/store pair (all forms) */
+                //DisasLdstPair (insn, cb);
+                break;
+        case 0x38: case 0x39:
+        case 0x3c: case 0x3d: /* Load/store register (all forms) */
+                //DisasLdstReg (insn, cb);
+                break;
+        case 0x0c: /* AdvSIMD load/store multiple structures */
+                UnsupportedOp("SIMD Load/Store Multi");
+                break;
+        case 0x0d: /* AdvSIMD load/store single structure */
+                UnsupportedOp("SIMD Load/Store Single");
+                break;
+        default:
+                UnallocatedOp (insn);
+                break;
+        }
+}
+
 void DisasA64(uint32_t insn, DisasCallback *cb) {
 	switch (extract32 (insn, 25, 4)) {
 	case 0x0: case 0x1: case 0x2: case 0x3:	// Unallocated
@@ -722,6 +754,7 @@ void DisasA64(uint32_t insn, DisasCallback *cb) {
 	case 0x6:
 	case 0xc:
 	case 0xe:	/* Loads and stores */
+                DisasLdSt (insn, cb);
 		break;
 	case 0x5:
 	case 0xd:	/* Data processing - register */
@@ -729,6 +762,7 @@ void DisasA64(uint32_t insn, DisasCallback *cb) {
 		break;
 	case 0x7:
 	case 0xf:	/* Data processing - SIMD and floating point */
+                UnsupportedOp ("SIMD and FP");
 		break;
 	default:
 		ns_abort ("Invalid encoding operation: 0x%016lx\n", insn);	/* all 15 cases should be handled above */
