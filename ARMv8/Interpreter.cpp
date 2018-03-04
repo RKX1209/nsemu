@@ -344,7 +344,23 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 }
 
 /* Load/Store */
-void IntprCallback::LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
+void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) {
+		if (bit64) {
+			if (size == 4)
+					X(rd_idx) = ARMv8::ReadU32 (X(rm_idx));
+			if (size == 8)
+					X(rd_idx) = ARMv8::ReadU64 (X(rm_idx));
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		} else {
+			if (size == 4)
+					W(rd_idx) = ARMv8::ReadU32 (W(rm_idx));
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		}
+}
+
+void IntprCallback::LoadRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
 		if (bit64) {
 			if (size == 4)
 					X(rd_idx) = ARMv8::ReadU32 (addr);
@@ -355,6 +371,37 @@ void IntprCallback::LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool e
 		} else {
 			if (size == 4)
 					W(rd_idx) = ARMv8::ReadU32 (addr);
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		}
+}
+
+void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) {
+		if (bit64) {
+			if (size == 4)
+					ARMv8::WriteU32 (X(rm_idx), X(rd_idx));
+			if (size == 8)
+                                        ARMv8::WriteU64 (X(rm_idx), X(rd_idx));
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		} else {
+			if (size == 4)
+					ARMv8::WriteU32 (W(rm_idx), W(rd_idx));
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		}
+}
+void IntprCallback::StoreRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
+		if (bit64) {
+			if (size == 4)
+					ARMv8::WriteU32 (addr, X(rd_idx));
+			if (size == 8)
+                                        ARMv8::WriteU64 (addr, X(rd_idx));
+			/* TODO: if (extend)
+					ExtendReg(rd_idx, rd_idx, type, true); */
+		} else {
+			if (size == 4)
+					ARMv8::WriteU32 (addr, W(rd_idx));
 			/* TODO: if (extend)
 					ExtendReg(rd_idx, rd_idx, type, true); */
 		}

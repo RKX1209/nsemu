@@ -725,7 +725,91 @@ static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
                 size = 2 + extract32(opc, 0, 1);
                 is_signed = extract32(opc, 1, 1);
         }
-        cb->LoadReg (rt, PC + imm - 4, size, false, sf);
+        cb->LoadRegImm64 (rt, PC + imm - 4, size, false, sf);
+}
+
+static bool DisasLdstCompute64bit(unsigned int size, bool is_signed, unsigned int opc) {
+        unsigned int opc0 = extract32(opc, 0, 1);
+        unsigned int regsize;
+
+        if (is_signed) {
+                regsize = opc0 ? 32 : 64;
+        } else {
+                regsize = size == 3 ? 64 : 32;
+        }
+        return regsize == 64;
+}
+
+/* Load/Store register ... register offset */
+static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
+                                unsigned int opc,
+                                unsigned int size,
+                                unsigned int rt,
+                                bool is_vector) {
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int shift = extract32(insn, 12, 1);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int opt = extract32(insn, 13, 3);
+        bool is_signed = false;
+        bool is_store = false;
+        bool is_extended = false;
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+
+        if (extract32(opt, 1, 1) == 0) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        if (is_vector) {
+                UnsupportedOp ("LDR/STR (SIMD&FP)");
+        } else {
+                if (size == 3 && opc == 2) {
+                        /* PRFM - prefetch */
+                        return;
+                }
+                if (opc == 3 && size > 1) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                is_store = (opc == 0);
+                is_signed = extract32(opc, 1, 1);
+                is_extended = (size < 3) && extract32(opc, 0, 1);
+        }
+        cb->ExtendReg (rm, rm, opt, sf);
+        cb->ShiftReg (rm, rm, ShiftType_LSL, shift ? size : 0, sf);
+        if (is_store) {
+                cb->StoreReg (rt, rm, size, is_extended, sf);
+        } else {
+                cb->LoadReg (rt, rm, size, is_extended, sf);
+        }
+}
+
+/* Load/Store register ... register offset mode */
+static void DisasLdstReg(uint32_t insn, DisasCallback *cb) {
+        unsigned int rt = extract32(insn, 0, 5);
+        unsigned int opc = extract32(insn, 22, 2);
+        bool is_vector = extract32(insn, 26, 1);
+        unsigned int size = extract32(insn, 30, 2);
+
+        switch (extract32(insn, 24, 2)) {
+        case 0:
+                if (extract32(insn, 21, 1) == 1 && extract32(insn, 10, 2) == 2) {
+                        DisasLdstRegRoffset (insn, cb, opc, size, rt, is_vector);
+                } else {
+                        /* Load/store register (unscaled immediate)
+                         * Load/store immediate pre/post-indexed
+                         * Load/store register unprivileged
+                         */
+                        //DisasLdstRegImm9 (insn, cb);
+                }
+                break;
+        case 1:
+                //DisasLdstRegUnsignedImm (insn, cb);
+                break;
+        default:
+                UnallocatedOp (insn);
+                break;
+        }
 }
 
 static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
@@ -743,7 +827,7 @@ static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
                 break;
         case 0x38: case 0x39:
         case 0x3c: case 0x3d: /* Load/store register (all forms) */
-                //DisasLdstReg (insn, cb);
+                DisasLdstReg (insn, cb);
                 break;
         case 0x0c: /* AdvSIMD load/store multiple structures */
                 UnsupportedOp("SIMD Load/Store Multi");

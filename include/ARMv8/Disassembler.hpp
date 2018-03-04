@@ -44,7 +44,10 @@ virtual void NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64) = 0;
 virtual void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64) = 0;
 
 /* Load/Store */
-virtual void LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) = 0;
+virtual void LoadReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) = 0;
+virtual void LoadRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) = 0;
+virtual void StoreReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) = 0;
+virtual void StoreRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) = 0;
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
@@ -93,6 +96,17 @@ enum ShiftType {
         ShiftType_LSR,
         ShiftType_ASR,
         ShiftType_ROR
+};
+
+enum ExtendType {
+        ExtendType_UXTB = 0,
+        ExtendType_UXTH,
+        ExtendType_UXTW,
+        ExtendType_UXTX,
+        ExtendType_SXTB,
+        ExtendType_SXTH,
+        ExtendType_SXTW,
+        ExtendType_SXTX,
 };
 
 enum CondType {
