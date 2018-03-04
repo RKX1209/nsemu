@@ -18,6 +18,11 @@ static T ReadFromRAM(const uint64_t gpa) {
 	return value;
 }
 
+template<typename T>
+static void WriteToRAM(const uint64_t gpa, T value) {
+	std::memcpy (&Memory::pRAM[gpa], &value, sizeof(T));
+}
+
 uint8_t ReadU8(const uint64_t gva) {
 	/* XXX: Implement Page translation */
 	uint64_t gpa = gva;
@@ -37,6 +42,27 @@ uint64_t ReadU64(const uint64_t gva) {
 	/* XXX: Implement Page translation */
 	uint64_t gpa = gva;
 	return ReadFromRAM<uint64_t>(gpa);
+}
+
+void WriteU8(const uint64_t gva, uint8_t value) {
+	/* XXX: Implement Page translation */
+	uint64_t gpa = gva;
+	WriteToRAM<uint8_t>(gpa, value);
+}
+void WriteU16(const uint64_t gva, uint16_t value) {
+	/* XXX: Implement Page translation */
+	uint64_t gpa = gva;
+	WriteToRAM<uint16_t>(gpa, value);
+}
+void WriteU32(const uint64_t gva, uint32_t value) {
+	/* XXX: Implement Page translation */
+	uint64_t gpa = gva;
+	WriteToRAM<uint32_t>(gpa, value);
+}
+void WriteU64(const uint64_t gva, uint64_t value) {
+	/* XXX: Implement Page translation */
+	uint64_t gpa = gva;
+	WriteToRAM<uint64_t>(gpa, value);
 }
 
 }
