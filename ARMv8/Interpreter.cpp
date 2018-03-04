@@ -344,23 +344,7 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 }
 
 /* Load/Store */
-void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) {
-		if (bit64) {
-			if (size == 4)
-					X(rd_idx) = ARMv8::ReadU32 (X(rm_idx));
-			if (size == 8)
-					X(rd_idx) = ARMv8::ReadU64 (X(rm_idx));
-			/* TODO: if (extend)
-					ExtendReg(rd_idx, rd_idx, type, true); */
-		} else {
-			if (size == 4)
-					W(rd_idx) = ARMv8::ReadU32 (W(rm_idx));
-			/* TODO: if (extend)
-					ExtendReg(rd_idx, rd_idx, type, true); */
-		}
-}
-
-void IntprCallback::LoadRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
+static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
 		if (bit64) {
 			if (size == 4)
 					X(rd_idx) = ARMv8::ReadU32 (addr);
@@ -376,22 +360,7 @@ void IntprCallback::LoadRegImm64(unsigned int rd_idx, uint64_t addr, int size, b
 		}
 }
 
-void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) {
-		if (bit64) {
-			if (size == 4)
-					ARMv8::WriteU32 (X(rm_idx), X(rd_idx));
-			if (size == 8)
-                                        ARMv8::WriteU64 (X(rm_idx), X(rd_idx));
-			/* TODO: if (extend)
-					ExtendReg(rd_idx, rd_idx, type, true); */
-		} else {
-			if (size == 4)
-					ARMv8::WriteU32 (W(rm_idx), W(rd_idx));
-			/* TODO: if (extend)
-					ExtendReg(rd_idx, rd_idx, type, true); */
-		}
-}
-void IntprCallback::StoreRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
+static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
 		if (bit64) {
 			if (size == 4)
 					ARMv8::WriteU32 (addr, X(rd_idx));
@@ -405,6 +374,91 @@ void IntprCallback::StoreRegImm64(unsigned int rd_idx, uint64_t addr, int size, 
 			/* TODO: if (extend)
 					ExtendReg(rd_idx, rd_idx, type, true); */
 		}
+}
+
+void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
+                            bool extend, bool post, bool writeback, bool bit64) {
+                uint64_t addr;
+                if (bit64) {
+                        if (post)
+                                addr = X(base_idx);
+                        else
+                                addr = X(base_idx) + X(rm_idx);
+                        _LoadReg (rd_idx, addr, size, extend, true);
+                        if (writeback)
+                                X(base_idx) = addr;
+                } else {
+                        if (post)
+                                addr = W(base_idx);
+                        else
+                                addr = W(base_idx) + W(rm_idx);
+                        _LoadReg (rd_idx, addr, size, extend, false);
+                        if (writeback)
+                                W(base_idx) = addr;
+                }
+}
+void IntprCallback::LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
+                                bool extend, bool post, bool writeback, bool bit64) {
+                uint64_t addr;
+                if (bit64) {
+                        if (post)
+                                addr = X(base_idx);
+                        else
+                                addr = X(base_idx) + offset;
+                        _LoadReg (rd_idx, addr, size, extend, true);
+                        if (writeback)
+                                X(base_idx) = addr;
+                } else {
+                        if (post)
+                                addr = W(base_idx);
+                        else
+                                addr = W(base_idx) + offset;
+                        _LoadReg (rd_idx, addr, size, extend, false);
+                        if (writeback)
+                                W(base_idx) = addr;
+                }
+}
+void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
+                                bool extend, bool post, bool writeback, bool bit64) {
+                uint64_t addr;
+                if (bit64) {
+                        if (post)
+                                addr = X(base_idx);
+                        else
+                                addr = X(base_idx) + X(rm_idx);
+                        _StoreReg (rd_idx, addr, size, extend, true);
+                        if (writeback)
+                                X(base_idx) = addr;
+                } else {
+                        if (post)
+                                addr = W(base_idx);
+                        else
+                                addr = W(base_idx) + W(rm_idx);
+                        _StoreReg (rd_idx, addr, size, extend, false);
+                        if (writeback)
+                                W(base_idx) = addr;
+                }
+}
+void IntprCallback::StoreRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
+                                        bool extend, bool post, bool writeback, bool bit64) {
+                uint64_t addr;
+                if (bit64) {
+                        if (post)
+                                addr = X(base_idx);
+                        else
+                                addr = X(base_idx) + offset;
+                        _StoreReg (rd_idx, addr, size, extend, true);
+                        if (writeback)
+                                X(base_idx) = addr;
+                } else {
+                        if (post)
+                                addr = W(base_idx);
+                        else
+                                addr = W(base_idx) + offset;
+                        _StoreReg (rd_idx, addr, size, extend, false);
+                        if (writeback)
+                                W(base_idx) = addr;
+                }
 }
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */

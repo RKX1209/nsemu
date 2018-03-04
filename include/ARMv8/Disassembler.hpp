@@ -44,10 +44,10 @@ virtual void NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64) = 0;
 virtual void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64) = 0;
 
 /* Load/Store */
-virtual void LoadReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) = 0;
-virtual void LoadRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) = 0;
-virtual void StoreReg(unsigned int rd_idx, unsigned int rm_idx, int size, bool extend, bool bit64) = 0;
-virtual void StoreRegImm64(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) = 0;
+virtual void LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool writeback, bool bit64) = 0;
+virtual void LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size, bool extend, bool post, bool writeback, bool bit64) = 0;
+virtual void StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool writeback, bool bit64) = 0;
+virtual void StoreRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size, bool extend, bool post, bool writeback, bool bit64) = 0;
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;

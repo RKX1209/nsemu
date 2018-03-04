@@ -725,7 +725,7 @@ static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
                 size = 2 + extract32(opc, 0, 1);
                 is_signed = extract32(opc, 1, 1);
         }
-        cb->LoadRegImm64 (rt, PC + imm - 4, size, false, sf);
+        cb->LoadRegImm64 (rt, PC_IDX, imm - 4, size, false, false, false, sf);
 }
 
 static bool DisasLdstCompute64bit(unsigned int size, bool is_signed, unsigned int opc) {
@@ -761,7 +761,7 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
         }
 
         if (is_vector) {
-                UnsupportedOp ("LDR/STR (SIMD&FP)");
+                UnsupportedOp ("LDR/STR [base, Xm/Wm] (SIMD&FP)");
         } else {
                 if (size == 3 && opc == 2) {
                         /* PRFM - prefetch */
@@ -778,9 +778,75 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
         cb->ExtendReg (rm, rm, opt, sf);
         cb->ShiftReg (rm, rm, ShiftType_LSL, shift ? size : 0, sf);
         if (is_store) {
-                cb->StoreReg (rt, rm, size, is_extended, sf);
+                cb->StoreReg (rt, rn, rm, size, is_extended, false, false, sf);
         } else {
-                cb->LoadReg (rt, rm, size, is_extended, sf);
+                cb->LoadReg (rt, rn, rm, size, is_extended, false, false, sf);
+        }
+}
+
+/*
+ * Load/store register (unscaled immediate)
+ * Load/store immediate pre/post-indexed
+ * Load/store register unprivileged
+ */
+static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
+                                unsigned int opc,
+                                unsigned int size,
+                                unsigned int rt,
+                                bool is_vector) {
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int imm9 = sextract32(insn, 12, 9);
+        unsigned int idx = extract32(insn, 10, 2);
+        bool is_signed = false;
+        bool is_store = false;
+        bool is_extended = false;
+        bool is_unpriv = (idx == 2);
+        bool iss_valid = !is_vector;
+        bool post_index;
+        bool writeback;
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+
+        if (is_vector) {
+                UnsupportedOp ("LDR/STR [base, #imm9] (SIMD&FP)");
+        } else {
+                if (size == 3 && opc == 2) {
+                        /* PRFM - prefetch */
+                        if (is_unpriv) {
+                                UnallocatedOp (insn);
+                                return;
+                        }
+                        return;
+                }
+                if (opc == 3 && size > 1) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                is_store = (opc == 0);
+                is_signed = extract32(opc, 1, 1);
+                is_extended = (size < 3) && extract32(opc, 0, 1);
+        }
+
+        switch (idx) {
+        case 0:
+        case 2:
+                post_index = false;
+                writeback = false;
+                break;
+        case 1:
+                post_index = true;
+                writeback = true;
+                break;
+        case 3:
+                post_index = false;
+                writeback = true;
+                break;
+        default:
+                ns_abort ("Unreachable status\n");
+        }
+        if (is_store) {
+                cb->StoreRegImm64 (rt, rn, imm9, size, is_extended, post_index, writeback, sf);
+        } else {
+                cb->LoadRegImm64 (rt, rn, imm9, size, is_extended, post_index, writeback, sf);
         }
 }
 
@@ -796,11 +862,12 @@ static void DisasLdstReg(uint32_t insn, DisasCallback *cb) {
                 if (extract32(insn, 21, 1) == 1 && extract32(insn, 10, 2) == 2) {
                         DisasLdstRegRoffset (insn, cb, opc, size, rt, is_vector);
                 } else {
-                        /* Load/store register (unscaled immediate)
+                        /*
+                         * Load/store register (unscaled immediate)
                          * Load/store immediate pre/post-indexed
                          * Load/store register unprivileged
                          */
-                        //DisasLdstRegImm9 (insn, cb);
+                        DisasLdstRegImm9 (insn, cb, opc, size, rt, is_vector);                         
                 }
                 break;
         case 1:

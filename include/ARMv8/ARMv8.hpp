@@ -9,8 +9,10 @@ typedef union {
 }reg_t;
 
 struct ARMv8State {
-	reg_t gpr[33];	// x0 - x31 (x30 is usually "link regsiter" and x31 is "stack pointer" or "zero register" )
-	uint64_t pc;
+	reg_t gpr[34];
+        /*
+         * x0 - x31 (x30 is usually "link regsiter" and x31 is "stack pointer" or "zero register" )
+         * NOTE: In nsemu, 'PC' register is respresented as x32 internally. */
         uint32_t nzcv;  // flag register
 };
 
@@ -19,12 +21,13 @@ extern ARMv8State arm_state;
 #define GPR_LR          30
 #define GPR_SP          31
 #define GPR_ZERO        31
-#define GPR_DUMMY       32
+#define PC_IDX          32
+#define GPR_DUMMY       33
 
 #define LR ARMv8::arm_state.gpr[GPR_LR]
 #define SP ARMv8::arm_state.gpr[GPR_SP]
 #define ZERO ARMv8::arm_state.gpr[GPR_ZERO]
-#define PC ARMv8::arm_state.pc
+#define PC ARMv8::arm_state.gpr[PC_IDX].x // XXX: bit tricky
 #define NZCV ARMv8::arm_state.nzcv
 #define N_MASK          0x80000000
 #define Z_MASK          0x40000000
