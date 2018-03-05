@@ -6,7 +6,7 @@ class NintendoObject {
 public:
 NintendoObject(std::string path);
 ~NintendoObject();
-virtual int load(Nsemu *nsemu, uint64_t base) = 0;
+virtual int load(Nsemu *nsemu) = 0;
 protected:
 std::ifstream fp;
 uint32_t length;
@@ -15,7 +15,7 @@ uint32_t length;
 class Nso : NintendoObject {
 public:
 Nso(std::string path) : NintendoObject (path) {}
-int load(Nsemu *nsemu, uint64_t base);
+int load(Nsemu *nsemu);
 };
 
 typedef struct {
@@ -29,7 +29,7 @@ typedef struct {
 class Nro : NintendoObject {
 public:
 Nro(std::string path) : NintendoObject (path) {}
-int load(Nsemu *nsemu, uint64_t base);
+int load(Nsemu *nsemu);
 };
 
 #endif

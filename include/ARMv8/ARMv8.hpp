@@ -21,22 +21,23 @@ extern ARMv8State arm_state;
 #define GPR_LR          30
 #define GPR_SP          31
 #define GPR_ZERO        31
-#define PC_IDX          32
+#define PC_IDX          32  // XXX: bit tricky
 #define GPR_DUMMY       33
 
-#define LR ARMv8::arm_state.gpr[GPR_LR]
-#define SP ARMv8::arm_state.gpr[GPR_SP]
-#define ZERO ARMv8::arm_state.gpr[GPR_ZERO]
-#define PC ARMv8::arm_state.gpr[PC_IDX].x // XXX: bit tricky
+#define GPR(r) ARMv8::arm_state.gpr[r]
+#define X(r) GPR(r).x
+#define W(r) GPR(r).w[1]
+
+#define LR X(GPR_LR)
+#define SP X(GPR_SP)
+#define ZERO X(GPR_ZERO)
+#define PC X(PC_IDX)
+
 #define NZCV ARMv8::arm_state.nzcv
 #define N_MASK          0x80000000
 #define Z_MASK          0x40000000
 #define C_MASK          0x20000000
 #define V_MASK          0x10000000
-
-#define GPR(r) ARMv8::arm_state.gpr[r]
-#define X(r) GPR(r).x
-#define W(r) GPR(r).w[1]
 
 void Init();
 

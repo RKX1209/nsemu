@@ -31,7 +31,7 @@ Nsemu() = default;
 
 static Nsemu *inst;
 public:
-std::map<std::string, AddressSpace> as;
+std::map<std::string, RAMBlock> rams;
 public:
 Nsemu(const Nsemu&) = delete;
 Nsemu& operator=(const Nsemu&) = delete;

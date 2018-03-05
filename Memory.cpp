@@ -2,7 +2,7 @@
 #include <sys/mman.h>
 #include "Nsemu.hpp"
 
-AddressSpace::AddressSpace (std::string _name, uint64_t addr, size_t _length, int _perm, uint8_t **out_pointer) {
+RAMBlock::RAMBlock (std::string _name, uint64_t _addr, size_t _length, int _perm) {
 	int page = getpagesize ();
 	name = _name;
 	length = _length;
@@ -10,38 +10,37 @@ AddressSpace::AddressSpace (std::string _name, uint64_t addr, size_t _length, in
 	if (addr & (page - 1)) {
 		addr = addr & ~(page - 1);
 	}
-	if ((data = mmap ((void *) addr, length, perm, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED) {
-		ns_abort ("Failed to mmap %s\n", name.c_str ());
-	}
-	debug_print ("mmap %s: %p\n", name.c_str (), data);
-	addr = (uint64_t) data;
-	if (out_pointer) {
-		*out_pointer = (uint8_t *) data;
-	}
+	addr = _addr;
 }
 
 namespace Memory
 {
 uint8_t *pRAM;	// XXX: Replace raw pointer to View wrapper.
-static AddressSpace mem_map[] =
+static RAMBlock mem_map[] =
 {
-	AddressSpace (".text", (uint64_t) nullptr, 0x100000, PROT_READ | PROT_WRITE | PROT_EXEC, &pRAM),
-	AddressSpace (".rdata", (uint64_t) nullptr, 0x100000, PROT_READ | PROT_WRITE, NULL),
-	AddressSpace (".data", (uint64_t) nullptr, 0x100000, PROT_READ | PROT_WRITE, NULL),
+	RAMBlock (".text", 0x0, 0x10000, PROT_READ | PROT_WRITE | PROT_EXEC),
+	RAMBlock (".rdata", 0x10000, 0x10000, PROT_READ | PROT_WRITE),
+	RAMBlock (".data", 0x20000, 0x10000, PROT_READ | PROT_WRITE),
+	RAMBlock ("[stack]", 0x30000, 0x10000, PROT_READ | PROT_WRITE),
 };
 
 void InitMemmap(Nsemu *nsemu) {
-	int num = sizeof(mem_map) / sizeof(AddressSpace);
+        void *data;
+	if ((data = mmap (nullptr, 0x100000, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED) {
+	 	ns_abort ("Failed to allocate host memory\n");
+	}
+        pRAM = (uint8_t *) data;
+	int num = sizeof(mem_map) / sizeof(RAMBlock);
 	for (int n = 0; n < num; n++) {
 		std::string sec_name = mem_map[n].name;
-		nsemu->as[sec_name] = mem_map[n];
+		nsemu->rams[sec_name] = mem_map[n];
 	}
 }
 
-AddressSpace *FindAddressSpace(Nsemu *nsemu, uint64_t addr, size_t len) {
-	AddressSpace *as;
-	std::map<std::string, AddressSpace>::iterator it = nsemu->as.begin ();
-	for (; it != nsemu->as.end (); it++) {
+RAMBlock *FindRAMBlock(Nsemu *nsemu, uint64_t addr, size_t len) {
+	RAMBlock *as;
+	std::map<std::string, RAMBlock>::iterator it = nsemu->rams.begin ();
+	for (; it != nsemu->rams.end (); it++) {
 		as = &it->second;
 		if (as->addr <= addr && addr + len <= as->addr + as->length) {
 			return as;
@@ -50,9 +49,8 @@ AddressSpace *FindAddressSpace(Nsemu *nsemu, uint64_t addr, size_t len) {
 	return nullptr;
 }
 
-static bool _CopyMemEmu(AddressSpace *as, void *data, uint64_t hva, size_t len, bool load) {
-	uint64_t off = hva - as->addr;
-	void *emu_mem = (uint8_t *) as->data + off;
+static bool _CopyMemEmu(void *data, uint64_t gpa, size_t len, bool load) {
+	void *emu_mem = (void *)&pRAM[gpa];
 	if (load) {
 		memcpy (emu_mem, data, len);
 	} else {
@@ -61,42 +59,34 @@ static bool _CopyMemEmu(AddressSpace *as, void *data, uint64_t hva, size_t len, 
 	return true;
 }
 
-bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t hva, size_t len) {
-	AddressSpace *as;
-	if (!(as = FindAddressSpace (nsemu, hva, len))) {
-		return false;
-	}
-	return _CopyMemEmu (as, data, hva, len, true);
+bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t gpa, size_t len) {
+	return _CopyMemEmu (data, gpa, len, true);
 }
 
 bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
-	if (nsemu->as.find (name) == nsemu->as.end ()) {
+	if (nsemu->rams.find (name) == nsemu->rams.end ()) {
 		return false;
 	}
-	AddressSpace *as = &nsemu->as[name];
+	RAMBlock *as = &nsemu->rams[name];
 	if (len > as->length) {
 		return false;
 	}
-	return _CopyMemEmu (as, data, as->addr, len, true);
+	return _CopyMemEmu (data, as->addr, len, true);
 }
 
-bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t hva, size_t len) {
-	AddressSpace *as;
-	if (!(as = FindAddressSpace (nsemu, hva, len))) {
-		return false;
-	}
-	return _CopyMemEmu (as, data, hva, len, false);
+bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t gpa, size_t len) {
+	return _CopyMemEmu (data, gpa, len, false);
 }
 
 bool CopyfromEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
-	if (nsemu->as.find (name) == nsemu->as.end ()) {
+	if (nsemu->rams.find (name) == nsemu->rams.end ()) {
 		return false;
 	}
-	AddressSpace *as = &nsemu->as[name];
+	RAMBlock *as = &nsemu->rams[name];
 	if (len > as->length) {
 		return false;
 	}
-	return _CopyMemEmu (as, data, as->addr, len, false);
+	return _CopyMemEmu (data, as->addr, len, false);
 }
 
 }

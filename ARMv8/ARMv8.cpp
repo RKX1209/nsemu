@@ -8,6 +8,8 @@ ARMv8State arm_state;
 void Init() {
 	Interpreter::create ();
 	cpu_engine = Interpreter::get_instance ();
+        PC = 0x0;
+        SP = 0x30000;
 }
 
 void RunLoop() {

@@ -5,9 +5,9 @@
 Nsemu *Nsemu::inst = nullptr;
 static std::thread cpu_thread;
 
-static void load_nso(Nsemu *nsemu, string path, uint64_t addr) {
+static void LoadNso(Nsemu *nsemu, string path) {
 	Nso nso (path);
-	nso.load (nsemu, addr);
+	nso.load (nsemu);
 }
 
 static void CpuThread() {
@@ -19,7 +19,7 @@ static void CpuThread() {
 bool Nsemu::BootUp(const std::string& path) {
 	debug_print ("Booting... %s\n", path.c_str ());
 	Memory::InitMemmap (this);
-	load_nso (this, path, 0x1000);
+	LoadNso (this, path);
 	cpu_thread = std::thread (CpuThread);
 	/* Run cpu */
 	cpu_thread.join ();

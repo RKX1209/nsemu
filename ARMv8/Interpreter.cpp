@@ -150,14 +150,14 @@ static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, b
 
 void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("MOV: %c[%u] = 0x%016lx\n", regc, reg_idx, imm);
+	debug_print ("MOV: %c[%u] = 0x%lx\n", regc, reg_idx, imm);
         if (bit64) X(reg_idx) = imm;
         else W(reg_idx) = imm;
 }
 
 void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("MOVK: %c[%u] = 0x%016lx\n", regc, reg_idx, imm << pos);
+	debug_print ("MOVK: %c[%u] = 0x%lx\n", regc, reg_idx, imm << pos);
         uint32_t mask = (1 << 16) - 1; //XXX: hard coded bit size: 16
         if (bit64) {
                 X(reg_idx) = (X(reg_idx) & ~(mask << pos)) | (imm << pos);
@@ -193,7 +193,7 @@ void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned 
 /* Add/Sub with Immediate value */
 void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("Add: %c[%u] = %c[%u] + 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
+	debug_print ("Add: %c[%u] = %c[%u] + 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), imm, setflags, bit64, AL_TYPE_ADD);
         else
@@ -201,7 +201,7 @@ void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t im
 }
 void IntprCallback::SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("Sub: %c[%u] = %c[%u] - 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
+	debug_print ("Sub: %c[%u] = %c[%u] - 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), imm, setflags, bit64, AL_TYPE_SUB);
         else
@@ -268,7 +268,7 @@ void IntprCallback::SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned i
 /* AND/OR/EOR... with Immediate value */
 void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("And: %c[%u] = %c[%u] & 0x%016lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, wmask, setflags? "update": "no");
+	debug_print ("And: %c[%u] = %c[%u] & 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, wmask, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, setflags, bit64, AL_TYPE_AND);
         else
@@ -277,7 +277,7 @@ void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("Or: %c[%u] = %c[%u] | 0x%016lx \n", regc, rd_idx, regc, rn_idx, wmask);
+	debug_print ("Or: %c[%u] = %c[%u] | 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_OR);
         else
@@ -285,7 +285,7 @@ void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("Eor: %c[%u] = %c[%u] ^ 0x%016lx \n", regc, rd_idx, regc, rn_idx, wmask);
+	debug_print ("Eor: %c[%u] = %c[%u] ^ 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_EOR);
         else
@@ -293,7 +293,7 @@ void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::ShiftI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int shift_type, unsigned int shift_amount, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("Shift: %c[%u] = %c[%u] %s 0x%016lx \n", regc, rd_idx, regc, rn_idx, OpStrs[shift_type], shift_amount);
+	debug_print ("Shift: %c[%u] = %c[%u] %s 0x%lx \n", regc, rd_idx, regc, rn_idx, OpStrs[shift_type], shift_amount);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), shift_amount, false, bit64, (OpType)shift_type);
         else
@@ -404,7 +404,7 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
 void IntprCallback::LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
                                 bool extend, bool post, bool writeback, bool bit64) {
 	        char regc = bit64? 'X': 'W';
-	        debug_print ("Load(%d): %c[%u] <= [%c[%u], 0x%16lx]\n", size, regc, rd_idx, regc, base_idx, offset);
+	        debug_print ("Load(%d): %c[%u] <= [%c[%u], 0x%lx]\n", size, regc, rd_idx, regc, base_idx, offset);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -450,7 +450,7 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
 void IntprCallback::StoreRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
                                         bool extend, bool post, bool writeback, bool bit64) {
 	        char regc = bit64? 'X': 'W';
-	        debug_print ("Store(%d): %c[%u] => [%c[%u], 0x%16lx]\n", size, regc, rd_idx, regc, base_idx, offset);
+	        debug_print ("Store(%d): %c[%u] => [%c[%u], 0x%lx]\n", size, regc, rd_idx, regc, base_idx, offset);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -583,7 +583,7 @@ void IntprCallback::CondCmpReg(unsigned int rn_idx, unsigned int rm_idx, unsigne
 
 /* Go to Immediate address */
 void IntprCallback::BranchI64(uint64_t imm) {
-        debug_print ("Goto: 0x%016lx\n", imm + 4);
+        debug_print ("Goto: 0x%lx\n", imm + 4);
         PC = imm;
 }
 

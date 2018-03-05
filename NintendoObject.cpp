@@ -24,7 +24,7 @@ char *decompress(ifstream &fp, uint32_t offset, uint32_t csize, uint32_t usize) 
 	return obuf;
 }
 
-int Nso::load(Nsemu *nsemu, uint64_t base) {
+int Nso::load(Nsemu *nsemu) {
 	NsoHeader hdr;
 	fp.read ((char *) &hdr, sizeof(NsoHeader));
 	if (hdr.magic != byte_swap32_str ("NSO0")) {
@@ -64,6 +64,6 @@ int Nso::load(Nsemu *nsemu, uint64_t base) {
 	return size;
 }
 
-int Nro::load(Nsemu *nsemu, uint64_t base) {
+int Nro::load(Nsemu *nsemu) {
 	return 0;
 }
