@@ -850,6 +850,43 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
         }
 }
 
+static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
+                                unsigned int opc,
+                                unsigned int size,
+                                unsigned int rt,
+                                bool is_vector) {
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int imm12 = extract32(insn, 10, 12);
+        unsigned int offset;
+
+        bool is_store;
+        bool is_signed = false;
+        bool is_extended = false;
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+
+        if (is_vector) {
+                UnsupportedOp ("LDR/STR [base, #simm12] (SIMD&FP)");
+        } else {
+                if (size == 3 && opc == 2) {
+                        /* PRFM - prefetch */
+                        return;
+                }
+                if (opc == 3 && size > 1) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                is_store = (opc == 0);
+                is_signed = extract32(opc, 1, 1);
+                is_extended = (size < 3) && extract32(opc, 0, 1);
+        }
+        offset = imm12 << size;
+        if (is_store) {
+                cb->StoreRegImm64 (rt, rn, offset, size, is_extended, false, false, sf);
+        } else {
+                cb->LoadRegImm64 (rt, rn, offset, size, is_extended, false, false, sf);
+        }
+}
+
 /* Load/Store register ... register offset mode */
 static void DisasLdstReg(uint32_t insn, DisasCallback *cb) {
         unsigned int rt = extract32(insn, 0, 5);
@@ -867,11 +904,11 @@ static void DisasLdstReg(uint32_t insn, DisasCallback *cb) {
                          * Load/store immediate pre/post-indexed
                          * Load/store register unprivileged
                          */
-                        DisasLdstRegImm9 (insn, cb, opc, size, rt, is_vector);                         
+                        DisasLdstRegImm9 (insn, cb, opc, size, rt, is_vector);
                 }
                 break;
         case 1:
-                //DisasLdstRegUnsignedImm (insn, cb);
+                DisasLdstRegUnsignedImm (insn, cb, opc, size, rt, is_vector);
                 break;
         default:
                 UnallocatedOp (insn);
