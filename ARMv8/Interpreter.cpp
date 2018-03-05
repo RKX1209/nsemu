@@ -334,6 +334,8 @@ void IntprCallback::BicReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
                 ArithmeticLogic (rd_idx, W(rn_idx), ~W(rm_idx), false, bit64, AL_TYPE_AND);
 }
 void IntprCallback::NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("NOT: %c[%u] = ~%c[%u]\n", regc, rd_idx, regc, rm_idx);
         if (bit64)
                 X(rd_idx) = ~X(rm_idx);
         else
@@ -347,7 +349,7 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend, bool bit64) {
 		if (bit64) {
 			if (size == 4)
-					X(rd_idx) = ARMv8::ReadU32 (addr);
+					W(rd_idx) = ARMv8::ReadU32 (addr);
 			if (size == 8)
 					X(rd_idx) = ARMv8::ReadU64 (addr);
 			/* TODO: if (extend)
@@ -378,6 +380,8 @@ static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend,
 
 void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
                             bool extend, bool post, bool writeback, bool bit64) {
+	        char regc = bit64? 'X': 'W';
+	        debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]]\n", size, regc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -399,6 +403,8 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
 }
 void IntprCallback::LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
                                 bool extend, bool post, bool writeback, bool bit64) {
+	        char regc = bit64? 'X': 'W';
+	        debug_print ("Load(%d): %c[%u] <= [%c[%u], 0x%16lx]\n", size, regc, rd_idx, regc, base_idx, offset);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -420,6 +426,8 @@ void IntprCallback::LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uin
 }
 void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
                                 bool extend, bool post, bool writeback, bool bit64) {
+	        char regc = bit64? 'X': 'W';
+	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]]\n", size, regc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -441,6 +449,8 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
 }
 void IntprCallback::StoreRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
                                         bool extend, bool post, bool writeback, bool bit64) {
+	        char regc = bit64? 'X': 'W';
+	        debug_print ("Store(%d): %c[%u] => [%c[%u], 0x%16lx]\n", size, regc, rd_idx, regc, base_idx, offset);
                 uint64_t addr;
                 if (bit64) {
                         if (post)

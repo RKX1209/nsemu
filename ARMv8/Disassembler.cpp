@@ -753,7 +753,6 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
         bool is_signed = false;
         bool is_store = false;
         bool is_extended = false;
-        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
 
         if (extract32(opt, 1, 1) == 0) {
                 UnallocatedOp (insn);
@@ -775,6 +774,7 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
                 is_signed = extract32(opc, 1, 1);
                 is_extended = (size < 3) && extract32(opc, 0, 1);
         }
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
         cb->ExtendReg (rm, rm, opt, sf);
         cb->ShiftReg (rm, rm, ShiftType_LSL, shift ? size : 0, sf);
         if (is_store) {
@@ -804,7 +804,6 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
         bool iss_valid = !is_vector;
         bool post_index;
         bool writeback;
-        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
 
         if (is_vector) {
                 UnsupportedOp ("LDR/STR [base, #imm9] (SIMD&FP)");
@@ -825,7 +824,7 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
                 is_signed = extract32(opc, 1, 1);
                 is_extended = (size < 3) && extract32(opc, 0, 1);
         }
-
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
         switch (idx) {
         case 0:
         case 2:
@@ -862,7 +861,6 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
         bool is_store;
         bool is_signed = false;
         bool is_extended = false;
-        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
 
         if (is_vector) {
                 UnsupportedOp ("LDR/STR [base, #simm12] (SIMD&FP)");
@@ -879,6 +877,7 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
                 is_signed = extract32(opc, 1, 1);
                 is_extended = (size < 3) && extract32(opc, 0, 1);
         }
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
         offset = imm12 << size;
         if (is_store) {
                 cb->StoreRegImm64 (rt, rn, offset, size, is_extended, false, false, sf);
@@ -936,7 +935,6 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
         bool writeback = false;
 
         int size;
-        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
 
         if (opc == 3) {
                 UnallocatedOp (insn);
@@ -954,6 +952,8 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
                 }
         }
 
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+        
         switch (index) {
         case 0:
                 if (is_signed) {
