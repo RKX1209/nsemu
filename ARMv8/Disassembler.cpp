@@ -263,10 +263,9 @@ static void DisasDataProcImm(uint32_t insn, DisasCallback *cb) {
 
 static void DisasUncondBrImm(uint32_t insn, DisasCallback *cb) {
         uint64_t addr = PC + sextract32(insn, 0, 26) * 4 - 4;
-
         if (insn & (1U << 31)) {
                 /* BL Branch with link */
-                cb->MoviI64(GPR_LR, addr, true);
+                cb->MoviI64(GPR_LR, PC, true);
         }
 
         /* B Branch / BL Branch with link */
@@ -363,6 +362,7 @@ static void DisasException(uint32_t insn, DisasCallback *cb) {
                         UnallocatedOp (insn);
                         break;
                 }
+                break;
         case 1: /* BRK */
                 //TODO:
                 UnsupportedOp ("BRK");
@@ -953,7 +953,7 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
         }
 
         bool sf = DisasLdstCompute64bit (size, is_signed, opc);
-        
+
         switch (index) {
         case 0:
                 if (is_signed) {
