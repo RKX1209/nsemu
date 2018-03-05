@@ -916,6 +916,80 @@ static void DisasLdstReg(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+/*
+ * Load/store register (unscaled immediate)
+ * Load/store immediate pre/post-indexed
+ * Load/store register unprivileged
+ */
+static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
+        unsigned int rt = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rt2 = extract32(insn, 10, 5);
+        uint64_t offset = sextract64(insn, 15, 7);
+        unsigned int index = extract32(insn, 23, 2);
+        bool is_vector = extract32(insn, 26, 1);
+        bool is_load = extract32(insn, 22, 1);
+        unsigned int opc = extract32(insn, 30, 2);
+
+        bool is_signed = false;
+        bool post_index = false;
+        bool writeback = false;
+
+        int size;
+        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+
+        if (opc == 3) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        if (is_vector) {
+                UnsupportedOp ("LDP/STP Xt1, Xt2, [base, #simm7] (SIMD&FP)");
+        } else {
+                size = 2 + extract32 (opc, 1, 1);
+                is_signed = extract32 (opc, 0, 1);
+                if (!is_load && is_signed) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+        }
+
+        switch (index) {
+        case 0:
+                if (is_signed) {
+                        /* There is no non-temporal-hint version of LDPSW */
+                        UnallocatedOp (insn);
+                        return;
+                }
+                post_index = false;
+                break;
+        case 1: /* post-index */
+                post_index = true;
+                writeback = true;
+                break;
+        case 2: /* signed offset, rn not update */
+                post_index = false;
+                break;
+        case 3: /* pre-index */
+                post_index = false;
+                writeback = true;
+                break;
+        default:
+                ns_abort ("Unreachable status\n");
+        }
+
+        offset <<= size;
+        if (is_load) {
+                /* XXX: Do not modify rt register before recognizing any exception
+                 * from the second load. */
+                cb->LoadRegImm64 (rt, rn, offset, size, false, post_index, writeback, sf);
+                cb->LoadRegImm64 (rt2, rn, offset + (1 << size), size, false, post_index, writeback, sf);
+        } else {
+                cb->StoreRegImm64 (rt, rn, offset, size, false, post_index, writeback, sf);
+                cb->StoreRegImm64 (rt2, rn, offset + (1 << size), size, false, post_index, writeback, sf);
+        }
+}
+
 static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 24, 6)) {
         case 0x08: /* Load/store exclusive */
@@ -927,7 +1001,7 @@ static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
                 break;
         case 0x28: case 0x29:
         case 0x2c: case 0x2d: /* Load/store pair (all forms) */
-                //DisasLdstPair (insn, cb);
+                DisasLdstPair (insn, cb);
                 break;
         case 0x38: case 0x39:
         case 0x3c: case 0x3d: /* Load/store register (all forms) */
