@@ -347,6 +347,7 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 
 /* Load/Store */
 static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
+                debug_print ("Read from addr:0x%lx(%d)\n", addr, size);
 		if (size < 4) {
 			X(rd_idx) = ARMv8::ReadU64 (addr);
                 } else {
@@ -360,6 +361,7 @@ static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) 
 }
 
 static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
+                debug_print ("Write to addr:0x%lx(%d)\n", addr, size);
 		if (size < 4) {
                         ARMv8::WriteU64 (addr, X(rd_idx));
                 } else {

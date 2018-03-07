@@ -800,7 +800,7 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
                                 unsigned int rt,
                                 bool is_vector) {
         unsigned int rn = extract32(insn, 5, 5);
-        unsigned int imm9 = sextract32(insn, 12, 9);
+        uint64_t imm9 = sextract32(insn, 12, 9);
         unsigned int idx = extract32(insn, 10, 2);
         bool is_signed = false;
         bool is_store = false;
@@ -809,6 +809,8 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
         bool iss_valid = !is_vector;
         bool post_index;
         bool writeback;
+
+        debug_print ("ldst uimm9\n");
 
         if (is_vector) {
                 UnsupportedOp ("LDR/STR [base, #imm9] (SIMD&FP)");
@@ -860,15 +862,15 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
                                 unsigned int rt,
                                 bool is_vector) {
         unsigned int rn = extract32(insn, 5, 5);
-        unsigned int imm12 = extract32(insn, 10, 12);
-        unsigned int offset;
+        uint64_t imm12 = extract32(insn, 10, 12);
+        uint64_t offset;
 
         bool is_store;
         bool is_signed = false;
         bool is_extended = false;
-
+        debug_print ("ldst unsigned imm\n");
         if (is_vector) {
-                /* LDR/STR [base, #simm12] (SIMD&FP) */
+                /* LDR/STR [base, #uimm12] (SIMD&FP) */
                 size |= (opc & 2) << 1;
                 if (size > 4) {
                         UnallocatedOp (insn);
