@@ -376,7 +376,7 @@ static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend)
 void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
                             bool extend, bool post, bool writeback, bool bit64) {
 	        char regc = bit64? 'X': 'W';
-                char regdc = bit64 && size >= 4 ? 'Q' : regc;
+                char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
@@ -398,33 +398,22 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
                 }
 }
 void IntprCallback::LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
-                                bool extend, bool post, bool writeback, bool bit64) {
-	        char regc = bit64? 'X': 'W';
-                char regdc = bit64 && size >= 4 ? 'Q' : regc;
-	        debug_print ("Load(%d): %c[%u] <= [%c[%u], 0x%lx]\n", size, regdc, rd_idx, regc, base_idx, offset);
+                                bool extend, bool post, bool writeback) {
+                char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
+	        debug_print ("Load(%d): %c[%u] <= [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
                 uint64_t addr;
-                if (bit64) {
-                        if (post)
-                                addr = X(base_idx);
-                        else
-                                addr = X(base_idx) + offset;
-                        _LoadReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                X(base_idx) = addr;
-                } else {
-                        if (post)
-                                addr = W(base_idx);
-                        else
-                                addr = W(base_idx) + offset;
-                        _LoadReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                W(base_idx) = addr;
-                }
+                if (post)
+                        addr = X(base_idx);
+                else
+                        addr = X(base_idx) + offset;
+                _LoadReg (rd_idx, addr, size, extend);
+                if (writeback)
+                        X(base_idx) = addr;
 }
 void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
                                 bool extend, bool post, bool writeback, bool bit64) {
 	        char regc = bit64? 'X': 'W';
-                char regdc = bit64 && size >= 4 ? 'Q' : regc;
+                char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
@@ -446,28 +435,17 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
                 }
 }
 void IntprCallback::StoreRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
-                                        bool extend, bool post, bool writeback, bool bit64) {
-	        char regc = bit64? 'X': 'W';
-                char regdc = bit64 && size >= 4 ? 'Q' : regc;
-	        debug_print ("Store(%d): %c[%u] => [%c[%u], 0x%lx]\n", size, regdc, rd_idx, regc, base_idx, offset);
+                                        bool extend, bool post, bool writeback) {
+                char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
+	        debug_print ("Store(%d): %c[%u] => [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
                 uint64_t addr;
-                if (bit64) {
-                        if (post)
-                                addr = X(base_idx);
-                        else
-                                addr = X(base_idx) + offset;
-                        _StoreReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                X(base_idx) = addr;
-                } else {
-                        if (post)
-                                addr = W(base_idx);
-                        else
-                                addr = W(base_idx) + offset;
-                        _StoreReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                W(base_idx) = addr;
-                }
+                if (post)
+                        addr = X(base_idx);
+                else
+                        addr = X(base_idx) + offset;
+                _StoreReg (rd_idx, addr, size, extend);
+                if (writeback)
+                        X(base_idx) = addr;
 }
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
