@@ -8,11 +8,24 @@ typedef union {
         uint64_t x;
 }reg_t;
 
+/* NEON & FP register */
+typedef union {
+        uint8_t  b[16];
+        uint16_t h[8];
+        uint32_t s[4];
+        uint64_t d[2];
+}vreg_t;
+
 struct ARMv8State {
-	reg_t gpr[34];
         /*
          * x0 - x31 (x30 is usually "link regsiter" and x31 is "stack pointer" or "zero register" )
-         * NOTE: In nsemu, 'PC' register is respresented as x32 internally. */
+         * NOTE: In nsemu, 'PC' register is respresented as x32 internally.
+         */
+	reg_t gpr[34];
+
+        /* v0 - v31 (128 bit vector register, sometime treated as set of smaller size regs) */
+        vreg_t vreg[32];
+
         uint32_t nzcv;  // flag register
 };
 
@@ -25,8 +38,14 @@ extern ARMv8State arm_state;
 #define GPR_DUMMY       33
 
 #define GPR(r) ARMv8::arm_state.gpr[r]
+#define VREG(r) ARMv8::arm_state.vreg[r]
+
 #define X(r) GPR(r).x
-#define W(r) GPR(r).w[1]
+#define W(r) GPR(r).w[0]
+#define D(r) VREG(r).d[0]
+#define S(r) VREG(r).s[0]
+#define H(r) VREG(r).h[0]
+#define B(r) VREG(r).b[0]
 
 #define LR X(GPR_LR)
 #define SP X(GPR_SP)

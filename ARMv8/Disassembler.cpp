@@ -10,6 +10,11 @@ static inline void UnallocatedOp(uint32_t insn) {
 	ns_abort ("Unallocated operation 0x%08lx\n", insn);
 }
 
+static inline bool FpAccessCheck(uint32_t insn) {
+        /* TODO: */
+        return true;
+}
+
 static bool LogicImmDecode(uint64_t *wmask, unsigned int immn, unsigned int imms, unsigned int immr) {
 	assert (immn < 2 && imms < 64 && immr < 64);
         uint64_t mask;
@@ -863,7 +868,16 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
         bool is_extended = false;
 
         if (is_vector) {
-                UnsupportedOp ("LDR/STR [base, #simm12] (SIMD&FP)");
+                /* LDR/STR [base, #simm12] (SIMD&FP) */
+                size |= (opc & 2) << 1;
+                if (size > 4) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                is_store = !extract32(opc, 0, 1);
+                if (!FpAccessCheck (insn)) {
+                        return;
+                }
         } else {
                 if (size == 3 && opc == 2) {
                         /* PRFM - prefetch */
@@ -877,12 +891,21 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
                 is_signed = extract32(opc, 1, 1);
                 is_extended = (size < 3) && extract32(opc, 0, 1);
         }
-        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
         offset = imm12 << size;
-        if (is_store) {
-                cb->StoreRegImm64 (rt, rn, offset, size, is_extended, false, false, sf);
+        if (is_vector) {
+                /* size must be 4 (128-bit) */
+                if (is_store) {
+                        cb->StoreRegImm64 (rt, rn, offset, size, false, false, false, true);
+                } else {
+                        cb->LoadRegImm64 (rt, rn, offset, size, false, false, false, true);
+                }
         } else {
-                cb->LoadRegImm64 (rt, rn, offset, size, is_extended, false, false, sf);
+                bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+                if (is_store) {
+                        cb->StoreRegImm64 (rt, rn, offset, size, is_extended, false, false, sf);
+                } else {
+                        cb->LoadRegImm64 (rt, rn, offset, size, is_extended, false, false, sf);
+                }
         }
 }
 
