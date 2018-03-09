@@ -780,7 +780,7 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
                 is_extended = (size < 3) && extract32(opc, 0, 1);
         }
         bool sf = DisasLdstCompute64bit (size, is_signed, opc);
-        cb->ExtendReg (rm, rm, opt, sf);
+        cb->ExtendReg (rm, rm, opt, sf); //FIXME: When rm == GPR_ZERO, it should be handled as GPR_SP
         cb->ShiftReg (rm, rm, ShiftType_LSL, shift ? size : 0, sf);
         if (is_store) {
                 cb->StoreReg (rt, rn, rm, size, is_extended, false, sf);

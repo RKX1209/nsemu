@@ -6,6 +6,7 @@ IntprCallback *Interpreter::disas_cb = nullptr;
 
 int Interpreter::SingleStep() {
 	uint32_t inst = byte_swap32_uint (ARMv8::ReadInst (PC));
+        X(GPR_ZERO) = 0; //Reset Zero register
 	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);
@@ -38,6 +39,11 @@ enum OpType{
 };
 
 const char *OpStrs[] = { "<<", ">>", ">>", "ROR", "+", "-", "&", "|", "^" };
+
+/* See: C6.1.3 Use of the stack pointer */
+static inline unsigned int HandleAsSP(unsigned r_idx) {
+        return r_idx == GPR_ZERO ? GPR_SP : r_idx;
+}
 
 static bool CondHold(unsigned int cond) {
         cond >>= 1;
@@ -193,6 +199,10 @@ void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned 
 /* Add/Sub with Immediate value */
 void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        if (!setflags) {
+                rd_idx = HandleAsSP (rd_idx);
+                rn_idx = HandleAsSP (rn_idx);
+        }
 	debug_print ("Add: %c[%u] = %c[%u] + 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), imm, setflags, bit64, AL_TYPE_ADD);
@@ -201,6 +211,10 @@ void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t im
 }
 void IntprCallback::SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        if (!setflags) {
+                rd_idx = HandleAsSP (rd_idx);
+                rn_idx = HandleAsSP (rn_idx);
+        }
 	debug_print ("Sub: %c[%u] = %c[%u] - 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), imm, setflags, bit64, AL_TYPE_SUB);
@@ -268,6 +282,7 @@ void IntprCallback::SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned i
 /* AND/OR/EOR... with Immediate value */
 void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        rd_idx = HandleAsSP (rd_idx);
 	debug_print ("And: %c[%u] = %c[%u] & 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, wmask, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, setflags, bit64, AL_TYPE_AND);
@@ -277,6 +292,7 @@ void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        rd_idx = HandleAsSP (rd_idx);
 	debug_print ("Or: %c[%u] = %c[%u] | 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_OR);
@@ -285,6 +301,7 @@ void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        rd_idx = HandleAsSP (rd_idx);
 	debug_print ("Eor: %c[%u] = %c[%u] ^ 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_EOR);
@@ -293,6 +310,7 @@ void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::ShiftI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int shift_type, unsigned int shift_amount, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        rd_idx = HandleAsSP (rd_idx);
 	debug_print ("Shift: %c[%u] = %c[%u] %s 0x%lx \n", regc, rd_idx, regc, rn_idx, OpStrs[shift_type], shift_amount);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), shift_amount, false, bit64, (OpType)shift_type);
@@ -381,7 +399,8 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
                             bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
-	        debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
+                base_idx = HandleAsSP (base_idx);
+                debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -400,6 +419,7 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
 void IntprCallback::LoadRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
                                 bool extend, bool post) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
+                base_idx = HandleAsSP (base_idx);
 	        debug_print ("Load(%d): %c[%u] <= [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
                 uint64_t addr;
                 if (post)
@@ -412,6 +432,7 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
                                 bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
+                base_idx = HandleAsSP (base_idx);
 	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
@@ -431,6 +452,7 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
 void IntprCallback::StoreRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
                                         bool extend, bool post) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
+                base_idx = HandleAsSP (base_idx);
 	        debug_print ("Store(%d): %c[%u] => [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
                 uint64_t addr;
                 if (post)
@@ -515,15 +537,9 @@ void IntprCallback::CntLeadSign(unsigned int rd_idx, unsigned int rn_idx, bool b
 void IntprCallback::CondCmpI64(unsigned int rn_idx, unsigned int imm, unsigned int nzcv, unsigned int cond, unsigned int op, bool bit64) {
         if (CondHold (cond)) {
                 if (op) {
-                        if (bit64)
-                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), imm, true, bit64, AL_TYPE_SUB);
-                        else
-                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), imm, true, bit64, AL_TYPE_SUB);
+                        SubI64 (GPR_ZERO, rn_idx, imm, true, bit64);
                 } else {
-                        if (bit64)
-                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), imm, true, bit64, AL_TYPE_ADD);
-                        else
-                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), imm, true, bit64, AL_TYPE_ADD);
+                        AddI64 (GPR_ZERO, rn_idx, imm, true, bit64);
                 }
         } else {
                 /* Set new nzcv */
@@ -534,15 +550,9 @@ void IntprCallback::CondCmpI64(unsigned int rn_idx, unsigned int imm, unsigned i
 void IntprCallback::CondCmpReg(unsigned int rn_idx, unsigned int rm_idx, unsigned int nzcv, unsigned int cond, unsigned int op, bool bit64) {
         if (CondHold (cond)) {
                 if (op) {
-                        if (bit64)
-                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), X(rm_idx), true, bit64, AL_TYPE_SUB);
-                        else
-                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), W(rm_idx), true, bit64, AL_TYPE_SUB);
+                        SubReg (GPR_ZERO, rn_idx, rm_idx, true, bit64);
                 } else {
-                        if (bit64)
-                                ArithmeticLogic (GPR_DUMMY, X(rn_idx), X(rm_idx), true, bit64, AL_TYPE_ADD);
-                        else
-                                ArithmeticLogic (GPR_DUMMY, W(rn_idx), W(rm_idx), true, bit64, AL_TYPE_ADD);
+                        AddReg (GPR_ZERO, rn_idx, rm_idx, true, bit64);
                 }
         } else {
                 /* Set new nzcv */
@@ -589,5 +599,6 @@ void IntprCallback::SetPCReg(unsigned int rt_idx) {
 
 /* Super Visor Call */
 void IntprCallback::SVC(unsigned int svc_num) {
-        debug_print ("SVC: %u\n", svc_num);
+        //debug_print ("SVC: %u\n", svc_num);
+        ns_print ("SVC: %u\n", svc_num);
 }

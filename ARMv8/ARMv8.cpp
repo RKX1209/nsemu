@@ -17,7 +17,7 @@ void RunLoop() {
 }
 
 void Dump() {
-        for (int r = 0; r < 32; r++) {
+        for (int r = 0; r < GPR_DUMMY; r++) {
                 if (!X(r))
                         continue;
                 if (r == GPR_LR)

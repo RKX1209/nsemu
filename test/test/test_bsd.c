@@ -4,13 +4,12 @@
 
 int main() {
   svcSleepThread(100000000);
-  
   result_t r;
   if((r = sm_init()) != RESULT_OK) {
     dbg_printf("failed to init sm: 0x%x", r);
     return 1;
   }
-
+svcSleepThread(100000000);
   if((r = bsd_init()) != RESULT_OK) {
     dbg_printf("failed to init bsd: 0x%x, %d", r, bsd_errno);
     goto err_only_sm;
