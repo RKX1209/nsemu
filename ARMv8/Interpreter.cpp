@@ -16,7 +16,7 @@ void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
-                scanf("%c", &c);
+                //scanf("%c", &c);
 		SingleStep ();
                 Cpu::DumpMachine ();
 	}
@@ -348,7 +348,9 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 /* Load/Store */
 static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
                 debug_print ("Read from addr:0x%lx(%d)\n", addr, size);
-		if (size < 4) {
+		if (size < 3) {
+			W(rd_idx) = ARMv8::ReadU32 (addr);
+                } else if (size < 4){
 			X(rd_idx) = ARMv8::ReadU64 (addr);
                 } else {
                         /* 128-bit Qt */
@@ -362,7 +364,9 @@ static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) 
 
 static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
                 debug_print ("Write to addr:0x%lx(%d)\n", addr, size);
-		if (size < 4) {
+		if (size < 3) {
+                        ARMv8::WriteU32 (addr, W(rd_idx));
+                } else if (size < 4) {
                         ARMv8::WriteU64 (addr, X(rd_idx));
                 } else {
                         /* 128-bit Qt */
@@ -374,7 +378,7 @@ static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend)
 }
 
 void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
-                            bool extend, bool post, bool writeback, bool bit64) {
+                            bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
@@ -385,20 +389,16 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
                         else
                                 addr = X(base_idx) + X(rm_idx);
                         _LoadReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                X(base_idx) = addr;
                 } else {
                         if (post)
                                 addr = W(base_idx);
                         else
                                 addr = W(base_idx) + W(rm_idx);
                         _LoadReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                W(base_idx) = addr;
                 }
 }
-void IntprCallback::LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
-                                bool extend, bool post, bool writeback) {
+void IntprCallback::LoadRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
+                                bool extend, bool post) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Load(%d): %c[%u] <= [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
                 uint64_t addr;
@@ -407,11 +407,9 @@ void IntprCallback::LoadRegImm64(unsigned int rd_idx, unsigned int base_idx, uin
                 else
                         addr = X(base_idx) + offset;
                 _LoadReg (rd_idx, addr, size, extend);
-                if (writeback)
-                        X(base_idx) = addr;
 }
 void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
-                                bool extend, bool post, bool writeback, bool bit64) {
+                                bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
@@ -422,20 +420,16 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
                         else
                                 addr = X(base_idx) + X(rm_idx);
                         _StoreReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                X(base_idx) = addr;
                 } else {
                         if (post)
                                 addr = W(base_idx);
                         else
                                 addr = W(base_idx) + W(rm_idx);
                         _StoreReg (rd_idx, addr, size, extend);
-                        if (writeback)
-                                W(base_idx) = addr;
                 }
 }
-void IntprCallback::StoreRegImm64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
-                                        bool extend, bool post, bool writeback) {
+void IntprCallback::StoreRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
+                                        bool extend, bool post) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Store(%d): %c[%u] => [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
                 uint64_t addr;
@@ -444,8 +438,6 @@ void IntprCallback::StoreRegImm64(unsigned int rd_idx, unsigned int base_idx, ui
                 else
                         addr = X(base_idx) + offset;
                 _StoreReg (rd_idx, addr, size, extend);
-                if (writeback)
-                        X(base_idx) = addr;
 }
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
@@ -566,6 +558,8 @@ void IntprCallback::BranchI64(uint64_t imm) {
 
 /* Conditional Branch with Immediate value and jump to Immediate address */
 void IntprCallback::BranchCondiI64(unsigned int cond, unsigned int rt_idx, uint64_t imm, uint64_t addr, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	debug_print ("CondCmp(%u): (%c[%u] cmp 0x%lx) => goto: 0x%lx\n", cond, regc, rt_idx, imm, addr);
         if (cond == Disassembler::CondType_EQ) {
                 if (bit64) {
                         if (X(rt_idx) == imm) PC = addr;

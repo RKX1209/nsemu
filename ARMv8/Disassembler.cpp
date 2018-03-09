@@ -730,7 +730,7 @@ static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
                 size = 2 + extract32(opc, 0, 1);
                 is_signed = extract32(opc, 1, 1);
         }
-        cb->LoadRegImm64 (rt, PC_IDX, imm - 4, size, false, false, false);
+        cb->LoadRegI64 (rt, PC_IDX, imm - 4, size, false, false);
 }
 
 static bool DisasLdstCompute64bit(unsigned int size, bool is_signed, unsigned int opc) {
@@ -783,9 +783,9 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
         cb->ExtendReg (rm, rm, opt, sf);
         cb->ShiftReg (rm, rm, ShiftType_LSL, shift ? size : 0, sf);
         if (is_store) {
-                cb->StoreReg (rt, rn, rm, size, is_extended, false, false, sf);
+                cb->StoreReg (rt, rn, rm, size, is_extended, false, sf);
         } else {
-                cb->LoadReg (rt, rn, rm, size, is_extended, false, false, sf);
+                cb->LoadReg (rt, rn, rm, size, is_extended, false, sf);
         }
 }
 
@@ -850,9 +850,12 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
                 ns_abort ("Unreachable status\n");
         }
         if (is_store) {
-                cb->StoreRegImm64 (rt, rn, imm9, size, is_extended, post_index, writeback);
+                cb->StoreRegI64 (rt, rn, imm9, size, is_extended, post_index);
         } else {
-                cb->LoadRegImm64 (rt, rn, imm9, size, is_extended, post_index, writeback);
+                cb->LoadRegI64 (rt, rn, imm9, size, is_extended, post_index);
+        }
+        if (writeback) {
+                cb->AddI64 (rn, rn, imm9, false, true);
         }
 }
 
@@ -897,16 +900,16 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
         if (is_vector) {
                 /* size must be 4 (128-bit) */
                 if (is_store) {
-                        cb->StoreRegImm64 (rt, rn, offset, size, false, false, false);
+                        cb->StoreRegI64 (rt, rn, offset, size, false, false);
                 } else {
-                        cb->LoadRegImm64 (rt, rn, offset, size, false, false, false);
+                        cb->LoadRegI64 (rt, rn, offset, size, false, false);
                 }
         } else {
                 bool sf = DisasLdstCompute64bit (size, is_signed, opc);
                 if (is_store) {
-                        cb->StoreRegImm64 (rt, rn, offset, size, is_extended, false, false);
+                        cb->StoreRegI64 (rt, rn, offset, size, is_extended, false);
                 } else {
-                        cb->LoadRegImm64 (rt, rn, offset, size, is_extended, false, false);
+                        cb->LoadRegI64 (rt, rn, offset, size, is_extended, false);
                 }
         }
 }
@@ -1007,11 +1010,14 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
         if (is_load) {
                 /* XXX: Do not modify rt register before recognizing any exception
                  * from the second load. */
-                cb->LoadRegImm64 (rt, rn, offset, size, false, post_index, writeback);
-                cb->LoadRegImm64 (rt2, rn, offset + (1 << size), size, false, post_index, writeback);
+                cb->LoadRegI64 (rt, rn, offset, size, false, post_index);
+                cb->LoadRegI64 (rt2, rn, offset + (1 << size), size, false, post_index);
         } else {
-                cb->StoreRegImm64 (rt, rn, offset, size, false, post_index, writeback);
-                cb->StoreRegImm64 (rt2, rn, offset + (1 << size), size, false, post_index, writeback);
+                cb->StoreRegI64 (rt, rn, offset, size, false, post_index);
+                cb->StoreRegI64 (rt2, rn, offset + (1 << size), size, false, post_index);
+        }
+        if (writeback) {
+                cb->AddI64 (rn, rn, offset, false, true);
         }
 }
 

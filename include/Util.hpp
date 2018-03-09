@@ -22,6 +22,7 @@ static void util_print(RunLevel level, const char *format, ...) {
 		vprintf (format, va);
 		va_end (va);
 	}
+        fflush(stdout);
 }
 
 #define debug_print(format, ...) util_print (RUN_LEVEL_DEBUG, format, ## __VA_ARGS__)
