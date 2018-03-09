@@ -322,14 +322,11 @@ static void DisasUncondBrReg(uint32_t insn, DisasCallback *cb) {
         }
 
         switch (opc) {
-        case 0: /* BR */
         case 1: /* BLR */
+                cb->MovReg(GPR_LR, PC_IDX, true);
+        case 0: /* BR */
         case 2: /* RET */
                 cb->SetPCReg (rn);
-                /* BLR also needs to load return address */
-                if (opc == 1) {
-                        cb->MovReg(GPR_LR, rn, true);
-                }
                 break;
         case 4: /* ERET */
                 //TODO:
@@ -810,7 +807,7 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
         bool post_index;
         bool writeback;
 
-        debug_print ("ldst uimm9\n");
+        //debug_print ("ldst uimm9\n");
 
         if (is_vector) {
                 UnsupportedOp ("LDR/STR [base, #imm9] (SIMD&FP)");
@@ -871,7 +868,7 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
         bool is_store;
         bool is_signed = false;
         bool is_extended = false;
-        debug_print ("ldst unsigned imm\n");
+        //debug_print ("ldst unsigned imm\n");
         if (is_vector) {
                 /* LDR/STR [base, #uimm12] (SIMD&FP) */
                 size |= (opc & 2) << 1;

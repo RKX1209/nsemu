@@ -7,7 +7,8 @@ IntprCallback *Interpreter::disas_cb = nullptr;
 int Interpreter::SingleStep() {
 	uint32_t inst = byte_swap32_uint (ARMv8::ReadInst (PC));
         X(GPR_ZERO) = 0; //Reset Zero register
-	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+	//debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+        ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);
 	return 0;
@@ -19,7 +20,13 @@ void Interpreter::Run() {
                 char c;
                 //scanf("%c", &c);
 		SingleStep ();
-                Cpu::DumpMachine ();
+                //Cpu::DumpMachine ();
+                if (PC == 0x34) {
+		        SingleStep ();
+                        Cpu::DumpMachine ();
+                        debug_print("Reach\n");
+                        break;
+                }
 	}
 }
 

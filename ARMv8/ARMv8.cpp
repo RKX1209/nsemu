@@ -21,15 +21,15 @@ void Dump() {
                 if (!X(r))
                         continue;
                 if (r == GPR_LR)
-                        debug_print ("LR\t");
+                        ns_print ("LR\t");
                 else if (r == GPR_SP)
-                        debug_print ("SP\t");
+                        ns_print ("SP\t");
                 else
-                        debug_print ("X%d\t", r);
-                debug_print ("0x%016lx\n", X(r));
+                        ns_print ("X%d\t", r);
+                ns_print ("0x%016lx\n", X(r));
         }
-        debug_print ("PC\t0x%016lx\n", PC);
-        debug_print ("NZCV\t0x%016lx\n", NZCV);
+        ns_print ("PC\t0x%016lx\n", PC);
+        ns_print ("NZCV\t0x%016lx\n", NZCV);
 }
 
 }

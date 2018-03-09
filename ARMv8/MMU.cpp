@@ -15,8 +15,8 @@ static T ReadFromRAM(const uint64_t gpa) {
 		std::memcpy (&byte, &Memory::pRAM[addr], sizeof(uint8_t));
 		value = (value << 8) | byte;
 	}
-        uint8_t *ptr = &Memory::pRAM[gpa];
-        bindump (ptr, 2 * sizeof(T));
+        // uint8_t *ptr = &Memory::pRAM[gpa];
+        // bindump (ptr, 2 * sizeof(T));
 	return value;
 }
 
@@ -27,8 +27,8 @@ static void WriteToRAM(const uint64_t gpa, T value) {
 		std::memcpy (&Memory::pRAM[addr], &byte, sizeof(uint8_t));
 		value >>= 8;
 	}
-        uint8_t *ptr = &Memory::pRAM[gpa];
-        bindump (ptr, 2 * sizeof(T));
+        // uint8_t *ptr = &Memory::pRAM[gpa];
+        // bindump (ptr, 2 * sizeof(T));
 }
 
 uint8_t ReadU8(const uint64_t gva) {
