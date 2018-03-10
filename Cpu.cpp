@@ -3,6 +3,7 @@
 namespace Cpu {
 
 static State state = State::PowerDown;
+FILE *TraceOut;
 
 void Init() {
 	ARMv8::Init ();
@@ -27,7 +28,9 @@ State GetState() {
 }
 
 void DumpMachine() {
-        ARMv8::Dump ();
+        //ARMv8::Dump ();
+        if (TraceOut)
+                ARMv8::DumpJson (TraceOut);
 }
 
 }

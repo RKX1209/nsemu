@@ -20,5 +20,7 @@ State GetState();
 
 void DumpMachine();
 
+extern FILE *TraceOut;
+
 }
 #endif

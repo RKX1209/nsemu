@@ -51,14 +51,26 @@ struct Arg : public option::Arg {
 	}
 };
 
+void InitTrace(const char *fname) {
+        if ((Cpu::TraceOut = fopen(fname, "w")) == NULL) {
+                ns_abort ("Can not open output file for trace\n");
+        }
+}
+
+void FinTrace() {
+        if (Cpu::TraceOut)
+                fclose (Cpu::TraceOut);
+}
+
 enum  optionIndex {
-	UNKNOWN, HELP
+	UNKNOWN, HELP, ENABLE_TRACE
 };
 const option::Descriptor usage[] =
 {
 	{ UNKNOWN, 0, "", "", Arg::None, "USAGE: nsemu [options] <nso-binary>\n\n"
 	  "Options:" },
-	{ HELP, 0, "", "help", Arg::None, "  --help  \tUnsurprisingly, print this message." },
+	{ HELP, 0, "", "help", Arg::None, "  --help  \tPrint help message" },
+        { ENABLE_TRACE, 0, "t","enable-trace", Arg::None, "  --enable-trace, -t  \tEnable Trace" },
 	{ 0, 0, nullptr, nullptr, nullptr, nullptr }
 };
 
@@ -80,6 +92,9 @@ int main(int argc, char **argv) {
 printUsage:
 			option::printUsage (cout, usage);
 			return 0;
+		}
+                if (options[ENABLE_TRACE].count () > 0) {
+                        InitTrace ("nsemu_trace.json");
 		}
 #if 0
 		if (options[NSO].count () > 0) {
@@ -104,12 +119,13 @@ printUsage:
 			}
 		} else {
 		}
-#endif                
+#endif
 		if (parse.nonOptionsCount () != 1) {
 		              goto printUsage;
 		}
 	}
 	nsemu->BootUp (parse.nonOption (0));
 	Nsemu::destroy ();
+        FinTrace ();
 	return 0;
 }

@@ -19,14 +19,14 @@ void Interpreter::Run() {
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
+                Cpu::DumpMachine ();                
 		SingleStep ();
-                //Cpu::DumpMachine ();
-                if (PC == 0x34) {
-		        SingleStep ();
-                        Cpu::DumpMachine ();
-                        debug_print("Reach\n");
-                        break;
-                }
+                // if (PC == 0x2d54) {
+		//         SingleStep ();
+                //         Cpu::DumpMachine ();
+                //         debug_print("Reach\n");
+                //         break;
+                // }
 	}
 }
 

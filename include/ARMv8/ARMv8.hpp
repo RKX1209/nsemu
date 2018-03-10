@@ -67,6 +67,8 @@ void RunLoop();
 
 void Dump();
 
+void DumpJson(FILE *fp);
+
 }
 
 #endif

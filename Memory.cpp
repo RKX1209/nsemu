@@ -18,15 +18,15 @@ namespace Memory
 uint8_t *pRAM;	// XXX: Replace raw pointer to View wrapper.
 static RAMBlock mem_map[] =
 {
-	RAMBlock (".text", 0x0, 0x10000, PROT_READ | PROT_WRITE | PROT_EXEC),
-	RAMBlock (".rdata", 0x10000, 0x10000, PROT_READ | PROT_WRITE),
-	RAMBlock (".data", 0x20000, 0x10000, PROT_READ | PROT_WRITE),
-	RAMBlock ("[stack]", 0x30000, 0x4000000, PROT_READ | PROT_WRITE),
+	RAMBlock (".text", 0x0, 0x1000000, PROT_READ | PROT_WRITE | PROT_EXEC),
+	RAMBlock (".rdata", 0x1000000, 0x1000000, PROT_READ | PROT_WRITE),
+	RAMBlock (".data", 0x2000000, 0x1000000, PROT_READ | PROT_WRITE),
+	RAMBlock ("[stack]", 0x3000000, 0x6000000, PROT_READ | PROT_WRITE),
 };
 
 void InitMemmap(Nsemu *nsemu) {
         void *data;
-	if ((data = mmap (nullptr, 0x5000000, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED) {
+	if ((data = mmap (nullptr, 0x10000000, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED) {
 	 	ns_abort ("Failed to allocate host memory\n");
 	}
         pRAM = (uint8_t *) data;

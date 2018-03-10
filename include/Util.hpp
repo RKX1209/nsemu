@@ -16,18 +16,20 @@ enum RunLevel {
 //static RunLevel curlevel = RUN_LEVEL_DEBUG;
 static RunLevel curlevel = RUN_LEVEL_RELEASE;
 
-static void util_print(RunLevel level, const char *format, ...) {
+static void util_print(RunLevel level, FILE *fp, const char *format, ...) {
 	if (curlevel >= level) {
 		va_list va;
 		va_start (va, format);
-		vprintf (format, va);
+		vfprintf (fp, format, va);
 		va_end (va);
 	}
-        fflush(stdout);
+        fflush(fp);
 }
 
-#define debug_print(format, ...) util_print (RUN_LEVEL_DEBUG, format, ## __VA_ARGS__)
-#define ns_print(format, ...) util_print (RUN_LEVEL_RELEASE, format, ## __VA_ARGS__)
+#define debug_print(format, ...) util_print (RUN_LEVEL_DEBUG, stdout, format, ## __VA_ARGS__)
+#define ns_print(format, ...) util_print (RUN_LEVEL_RELEASE, stdout, format, ## __VA_ARGS__)
+#define file_print(fp, format, ...) util_print (RUN_LEVEL_RELEASE, fp, format, ## __VA_ARGS__)
+
 #define ns_abort(format, ...)		\
 	ns_print ("%s: ", __func__);	\
 	ns_print (format, ## __VA_ARGS__);\
