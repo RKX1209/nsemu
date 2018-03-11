@@ -106,7 +106,9 @@ static void DisasLogImm(uint32_t insn, DisasCallback *cb) {
 		UnallocatedOp (insn);
 		return;
 	}
-
+        if (!is_64bit) {
+                wmask &= 0xffffffff;
+        }
 	switch (opc) {
 	case 0x3:	/* ANDS */
 		cb->AndI64 (rd, rn, wmask, true, is_64bit);
@@ -142,6 +144,9 @@ static void DisasMovwImm(uint32_t insn, DisasCallback *cb) {
                 imm <<= pos;
                 if (opc == 0) {
                         imm = ~imm;
+                }
+                if (!is_64bit) {
+                        imm &= 0xffffffffu;
                 }
                 cb->MoviI64 (rd, imm, is_64bit);
                 break;

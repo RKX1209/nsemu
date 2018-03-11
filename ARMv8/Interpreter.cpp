@@ -155,25 +155,16 @@ static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
 
 static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType op) {
         uint64_t result;
-        if (bit64) {
-                result = ALCalc (arg1, arg2, op);
-                if (setflags)
-                        UpdateFlag (result, arg1, arg2);
-                X(rd_idx) = result;
-        }
-        else {
-                result = ALCalc (arg1, arg2, op);
-                if (setflags)
-                        UpdateFlag (result, arg1, arg2);
-                W(rd_idx) = result;
-        }
+        result = ALCalc (arg1, arg2, op);
+        if (setflags)
+                UpdateFlag (result, arg1, arg2);
+        X(rd_idx) = result;
 }
 
 void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
 	char regc = bit64? 'X': 'W';
 	debug_print ("MOV: %c[%u] = 0x%lx\n", regc, reg_idx, imm);
-        if (bit64) X(reg_idx) = imm;
-        else W(reg_idx) = imm;
+        X(reg_idx) = imm;
 }
 
 void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64) {
@@ -184,7 +175,7 @@ void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t
                 X(reg_idx) = (X(reg_idx) & ~(mask << pos)) | (imm << pos);
         }
         else {
-                W(reg_idx) = (W(reg_idx) & ~(mask << pos)) | (imm << pos);
+                X(reg_idx) = (W(reg_idx) & ~(mask << pos)) | (imm << pos);
         }
 }
 
@@ -195,7 +186,7 @@ void IntprCallback::MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64)
         if (bit64)
                 X(rd_idx) = X(rn_idx);
         else
-                W(rd_idx) = W(rn_idx);
+                X(rd_idx) = W(rn_idx);
 }
 
 /* Conditional mov between registers */
@@ -207,7 +198,7 @@ void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned 
                         X(rd_idx) = X(rn_idx);
         } else {
                 if (CondHold(cond))
-                        W(rd_idx) = W(rn_idx);
+                        X(rd_idx) = W(rn_idx);
         }
 }
 
@@ -280,7 +271,7 @@ void IntprCallback::AddcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned i
                 if (bit64)
                         X(rd_idx) = X(rd_idx) + 1;
                 else
-                        W(rd_idx) = W(rd_idx) + 1;
+                        X(rd_idx) = W(rd_idx) + 1;
         }
 }
 void IntprCallback::SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {
@@ -290,7 +281,7 @@ void IntprCallback::SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned i
                 if (bit64)
                         X(rd_idx) = X(rd_idx) + 1;
                 else
-                        W(rd_idx) = W(rd_idx) + 1;
+                        X(rd_idx) = W(rd_idx) + 1;
         }
 }
 
@@ -372,7 +363,7 @@ void IntprCallback::NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64)
         if (bit64)
                 X(rd_idx) = ~X(rm_idx);
         else
-                W(rd_idx) = ~W(rm_idx);
+                X(rd_idx) = ~W(rm_idx);
 }
 void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64) {
         /* TODO: */
@@ -382,7 +373,7 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
                 debug_print ("Read from addr:0x%lx(%d)\n", addr, size);
 		if (size < 3) {
-			W(rd_idx) = ARMv8::ReadU32 (addr);
+			X(rd_idx) = ARMv8::ReadU32 (addr);
                 } else if (size < 4){
 			X(rd_idx) = ARMv8::ReadU64 (addr);
                 } else {
@@ -492,21 +483,21 @@ void IntprCallback::RevBit(unsigned int rd_idx, unsigned int rn_idx, bool bit64)
         if (bit64)
                 X(rd_idx) = ReverseBit64 (X(rn_idx));
         else
-                W(rd_idx) = ReverseBit64 (W(rn_idx));
+                X(rd_idx) = ReverseBit64 (W(rn_idx));
 }
 /* Reverse byte order per 16bit */
 void IntprCallback::RevByte16(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
         if (bit64)
                 X(rd_idx) = byte_swap16_uint (X(rn_idx));
         else
-                W(rd_idx) = byte_swap16_uint (W(rn_idx));
+                X(rd_idx) = byte_swap16_uint (W(rn_idx));
 }
 /* Reverse byte order per 32bit */
 void IntprCallback::RevByte32(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
         if (bit64)
                 X(rd_idx) = byte_swap32_uint (X(rn_idx));
         else
-                W(rd_idx) = byte_swap32_uint (W(rn_idx));
+                X(rd_idx) = byte_swap32_uint (W(rn_idx));
 }
 /* Reverse byte order per 64bit */
 void IntprCallback::RevByte64(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
@@ -540,14 +531,14 @@ void IntprCallback::CntLeadZero(unsigned int rd_idx, unsigned int rn_idx, bool b
         if (bit64)
                 X(rd_idx) = Clz64 (X(rn_idx));
         else
-                W(rd_idx) = Clz32 (W(rn_idx));
+                X(rd_idx) = Clz32 (W(rn_idx));
 }
 /* Count Leading Signed bits */
 void IntprCallback::CntLeadSign(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
         if (bit64)
                 X(rd_idx) = Cls64 (X(rn_idx));
         else
-                W(rd_idx) = Cls32 (W(rn_idx));
+                X(rd_idx) = Cls32 (W(rn_idx));
 }
 
 /* Conditional compare... with Immediate value */
