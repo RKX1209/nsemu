@@ -5,7 +5,7 @@ Interpreter *Interpreter::inst = nullptr;
 IntprCallback *Interpreter::disas_cb = nullptr;
 
 int Interpreter::SingleStep() {
-	uint32_t inst = byte_swap32_uint (ARMv8::ReadInst (PC));
+	uint32_t inst = ARMv8::ReadInst (PC);
 	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
         //ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
@@ -389,6 +389,7 @@ static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) 
                         /* 128-bit Qt */
                         VREG(rd_idx).d[0] = ARMv8::ReadU64 (addr + 8);
                         VREG(rd_idx).d[1] = ARMv8::ReadU64 (addr);
+                        //ns_debug("Read: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
                 }
 
 		/* TODO: if (extend)
@@ -405,6 +406,7 @@ static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend)
                         /* 128-bit Qt */
                         ARMv8::WriteU64 (addr + 8, VREG(rd_idx).d[0]);
                         ARMv8::WriteU64 (addr, VREG(rd_idx).d[1]);
+                        //ns_debug("Write: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
                 }
 		/* TODO: if (extend)
 				ExtendReg(rd_idx, rd_idx, type, true); */
