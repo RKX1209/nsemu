@@ -151,7 +151,7 @@ static void DisasMovwImm(uint32_t insn, DisasCallback *cb) {
                 cb->MoviI64 (rd, imm, is_64bit);
                 break;
         case 3: /* MOVK */
-                cb->DepositiI64 (rd, pos, imm, is_64bit);
+                cb->DepositI64 (rd, imm, pos, 16, is_64bit);
                 break;
         default:
             UnallocatedOp (insn);
@@ -176,7 +176,7 @@ static void DisasBitfield(uint32_t insn, DisasCallback *cb) {
 
         /* Recognize simple(r) extractions.  */
         if (si >= ri) {
-                /* Wd<s-r:0> = Wn<s:r> */
+                /* Xd<0:r> = Xn<(s-r+1):s> */
                 len = (si - ri) + 1;
                 if (opc == 0) { /* SBFM: ASR, SBFX, SXTB, SXTH, SXTW */
                         cb->SExtractI64(rd, rn, ri, len, is_64bit);
@@ -188,7 +188,7 @@ static void DisasBitfield(uint32_t insn, DisasCallback *cb) {
                 pos = 0;
         } else {
                 /* Handle the ri > si case with a deposit
-                 * Wd<32+s-r,32-r> = Wn<s:0>
+                 * Xd<64-r:64-r+s> = Xn<0:s>
                  */
                 len = si + 1;
                 pos = (bitsize - ri) & (bitsize - 1);
@@ -203,15 +203,14 @@ static void DisasBitfield(uint32_t insn, DisasCallback *cb) {
          }
 
          if (opc == 1) { /* BFM, BXFIL */
-                //TODO: deposit
-                UnsupportedOp ("BFM/BXFIL");
+                cb->DepositReg (rd, rd, pos, len, is_64bit);
+                //UnsupportedOp ("BFM/BXFIL");
          } else {
                 /* SBFM or UBFM: We start with zero, and we haven't modified
                    any bits outside bitsize, therefore the zero-extension
                    below is unneeded.  */
-                //TODO: ???
-                //tcg_gen_deposit_z_i64(tcg_rd, tcg_tmp, pos, len);
-                UnsupportedOp ("SBFM/UBFM");
+                cb->DepositZeroReg (rd, rd, pos, len, is_64bit);
+                //UnsupportedOp ("SBFM/UBFM");
          }
          return;
 }

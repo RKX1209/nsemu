@@ -167,15 +167,34 @@ void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
         X(reg_idx) = imm;
 }
 
-void IntprCallback::DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64) {
+void IntprCallback::DepositI64(unsigned int rd_idx, uint64_t imm, unsigned int pos, unsigned int len, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("MOVK: %c[%u] = 0x%lx\n", regc, reg_idx, imm << pos);
-        uint32_t mask = (1 << 16) - 1; //XXX: hard coded bit size: 16
+	debug_print ("MOVK: %c[%u] = 0x%lx\n", regc, rd_idx, imm << pos);
+        uint32_t mask = (1 << len) - 1; //XXX: hard coded bit size: 16
+        X(rd_idx) = (X(rd_idx) & ~(mask << pos)) | (imm << pos);
+}
+
+void IntprCallback::DepositReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
         if (bit64) {
-                X(reg_idx) = (X(reg_idx) & ~(mask << pos)) | (imm << pos);
+                DepositI64 (rd_idx, X(rn_idx), pos, len, bit64);
         }
         else {
-                X(reg_idx) = (W(reg_idx) & ~(mask << pos)) | (imm << pos);
+                DepositI64 (rd_idx, W(rn_idx), pos, len, bit64);
+        }
+}
+
+void IntprCallback::DepositZeroI64(unsigned int rd_idx, uint64_t imm, unsigned int pos, unsigned int len, bool bit64) {
+	char regc = bit64? 'X': 'W';
+	//debug_print ("MOVK: %c[%u] = 0x%lx\n", regc, rd_idx, imm << pos);
+        X(rd_idx) = (imm & ((1ULL << len) - 1)) << pos;
+}
+
+void IntprCallback::DepositZeroReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
+        if (bit64) {
+                DepositZeroI64 (rd_idx, X(rn_idx), pos, len, bit64);
+        }
+        else {
+                DepositZeroI64 (rd_idx, W(rn_idx), pos, len, bit64);
         }
 }
 
@@ -471,11 +490,26 @@ void IntprCallback::StoreRegI64(unsigned int rd_idx, unsigned int base_idx, uint
 }
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
+/*  X(d)<> = X(n)<off:64> */
 void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
-        /* TODO: */
+        char regc = bit64? 'X': 'W';
+	debug_print ("SExtract: %c[%u] <= SEXT[%c[%u]: %u, %u]\n", regc, rd_idx, regc, rn_idx, pos, len);
+        if (pos + len == 64) {
+                ShiftI64 (rd_idx, rn_idx, AL_TYPE_ASR, 64 - len, bit64);
+                return;
+        }
+        ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
+        ShiftI64 (rd_idx, rd_idx, AL_TYPE_ASR, 64 - len, bit64);
 }
 void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
-        /* TODO: */
+        char regc = bit64? 'X': 'W';
+	debug_print ("UExtract: %c[%u] <= SEXT[%c[%u]: %u, %u]\n", regc, rd_idx, regc, rn_idx, pos, len);
+        if (pos + len == 64) {
+                ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSR, 64 - len, bit64);
+                return;
+        }
+        ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
+        ShiftI64 (rd_idx, rd_idx, AL_TYPE_LSR, 64 - len, bit64);
 }
 
 /* Reverse bit order */

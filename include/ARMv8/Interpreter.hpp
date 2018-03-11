@@ -7,7 +7,10 @@ public:
 void MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64);
 
 /* Deposit (i.e. distination register won't be changed) with Immediate value */
-void DepositiI64(unsigned int reg_idx, unsigned int pos, uint64_t imm, bool bit64);
+void DepositI64(unsigned int reg_idx, uint64_t imm, unsigned int pos, unsigned int len, bool bit64);
+void DepositReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
+void DepositZeroI64(unsigned int reg_idx, uint64_t imm, unsigned int pos, unsigned int len, bool bit64);
+void DepositZeroReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 
 /* Mov between registers */
 void MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64);
