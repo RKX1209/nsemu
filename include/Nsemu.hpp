@@ -7,9 +7,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <map>
+#include <memory>
 #include <vector>
 
 using namespace std;
@@ -18,6 +20,7 @@ using namespace std;
 #include "Util.hpp"
 #include "NintendoObject.hpp"
 #include "Cpu.hpp"
+#include "Svc.hpp"
 #include "ARMv8/ARMv8.hpp"
 #include "ARMv8/Disassembler.hpp"
 #include "ARMv8/Interpreter.hpp"

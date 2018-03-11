@@ -8,7 +8,7 @@ int Interpreter::SingleStep() {
 	uint32_t inst = byte_swap32_uint (ARMv8::ReadInst (PC));
         X(GPR_ZERO) = 0; //Reset Zero register
 	//debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
-        ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+        //ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);
 	return 0;
@@ -19,7 +19,7 @@ void Interpreter::Run() {
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
-                Cpu::DumpMachine ();                
+                Cpu::DumpMachine ();
 		SingleStep ();
                 // if (PC == 0x2d54) {
 		//         SingleStep ();
@@ -608,4 +608,8 @@ void IntprCallback::SetPCReg(unsigned int rt_idx) {
 void IntprCallback::SVC(unsigned int svc_num) {
         //debug_print ("SVC: %u\n", svc_num);
         ns_print ("SVC: %u\n", svc_num);
+        if (SVC::svc_handlers[svc_num])
+                SVC::svc_handlers[svc_num]();
+        else
+                ns_print ("Invalid svc number: %u\n", svc_num);
 }

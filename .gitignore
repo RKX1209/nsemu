@@ -54,5 +54,7 @@ dkms.conf
 core
 nsemu
 *.log
+*.json
+*.diff
 *.md
 test/

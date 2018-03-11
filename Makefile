@@ -1,7 +1,7 @@
 CXX				:= g++
 SRC_FILES := $(wildcard *.cpp ARMv8/*.cpp)
 OBJ_FILES := $(SRC_FILES:.cpp=.o)
-CXX_FLAGS	:= -std=c++11 -Iinclude
+CXX_FLAGS	:= -std=gnu++1z -Iinclude
 LD_FLAGS	:= -llz4 -lpthread
 MAKE := make
 
@@ -15,6 +15,6 @@ testall:
 distclean:
 	$(MAKE) clean -C test/
 	$(MAKE)	clean
-clean:	
+clean:
 	rm -f *.o */*.o
 	rm -f nsemu
