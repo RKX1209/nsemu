@@ -34,8 +34,6 @@ void Dump() {
 
 static uint64_t counter;
 void DumpJson(FILE *fp) {
-        if (counter >= 243)
-                return;
         file_print (fp, "%lu : {\n", counter++);
         for (int r = 0; r <= GPR_DUMMY; r++) {
                 if (r == GPR_LR && X(r))

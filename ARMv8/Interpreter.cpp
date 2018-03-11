@@ -6,21 +6,25 @@ IntprCallback *Interpreter::disas_cb = nullptr;
 
 int Interpreter::SingleStep() {
 	uint32_t inst = byte_swap32_uint (ARMv8::ReadInst (PC));
-        X(GPR_ZERO) = 0; //Reset Zero register
-	//debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
         //ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);
+        X(GPR_ZERO) = 0; //Reset Zero register
 	return 0;
 }
 
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
+        static uint64_t counter = 0;
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
                 Cpu::DumpMachine ();
 		SingleStep ();
+                if (counter >= 242)
+                        break;
+                counter++;
                 // if (PC == 0x2d54) {
 		//         SingleStep ();
                 //         Cpu::DumpMachine ();
@@ -53,33 +57,37 @@ static inline unsigned int HandleAsSP(unsigned r_idx) {
 }
 
 static bool CondHold(unsigned int cond) {
-        cond >>= 1;
-        if (cond == 0x0)
-                return NZCV & Z_MASK;
-        if (cond == 0x1)
-                return NZCV & C_MASK;
-        if (cond == 0x2)
-                return NZCV & N_MASK;
-        if (cond == 0x3)
-                return NZCV & V_MASK;
-        if (cond == 0x4)
-                return (NZCV & C_MASK) & !(NZCV & Z_MASK) ;
-        if (cond == 0x5)
-                return (NZCV & N_MASK) == (NZCV & V_MASK);
-        if (cond == 0x6)
-                return ((NZCV & N_MASK) == (NZCV & V_MASK)) & !(NZCV & Z_MASK);
-        if (cond == 0x7)
+        bool result = false;
+        if (cond >> 1 == 0x0) {
+                result = NZCV & Z_MASK;
+        } else if (cond >> 1 == 0x1) {
+                result = NZCV & C_MASK;
+        } else if (cond >> 1 == 0x2) {
+                result = NZCV & N_MASK;
+        } else if (cond >> 1 == 0x3) {
+                result = NZCV & V_MASK;
+        } else if (cond >> 1 == 0x4) {
+                result = (NZCV & C_MASK) & !(NZCV & Z_MASK) ;
+        } else if (cond >> 1 == 0x5) {
+                result = (NZCV & N_MASK) == (NZCV & V_MASK);
+        } else if (cond >> 1 == 0x6) {
+                result = ((NZCV & N_MASK) == (NZCV & V_MASK)) & !(NZCV & Z_MASK);
+        } else if (cond >> 1 == 0x7) {
                 return true;
-        ns_abort ("Unknown condition\n");
-        return false;
+        } else {
+                ns_abort ("Unknown condition\n");
+        }
+        if (cond & 0x1)
+                result = !result;
+        return result;
 }
 
 static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
         uint32_t nzcv;
         if (res & (1ULL << 63)) nzcv |= N_MASK; // N
-        if (res) nzcv |= Z_MASK; // Z
+        if (res == 0ULL) nzcv |= Z_MASK; // Z
         if (((arg1 & arg2) + (arg1 ^ arg2) >> 1) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
-        if ((arg1 ^ arg2) & (arg2 ^ res)) nzcv |= V_MASK; //V
+        if (!(arg1 ^ arg2 && (1ULL < 63)) & (arg2 ^ res && (1ULL < 63))) nzcv |= V_MASK; //V
         NZCV = nzcv;
 }
 
@@ -595,8 +603,9 @@ void IntprCallback::BranchCondiI64(unsigned int cond, unsigned int rt_idx, uint6
 
 /* Conditional Branch with NZCV flags */
 void IntprCallback::BranchFlag(unsigned int cond, uint64_t addr) {
-        if (CondHold (cond))
+        if (CondHold (cond)) {
                 PC = addr;
+        }
 }
 
 /* Set PC with reg */
