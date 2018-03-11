@@ -54,16 +54,14 @@ static void DisasPCRelAddr(uint32_t insn, DisasCallback *cb) {
 
 	page = extract32 (insn, 31, 1);
 	offset = sextract64 (insn, 5, 19);
-	offset = offset << 2 | sextract64 (insn, 29, 2);
+	offset = offset << 2 | extract32 (insn, 29, 2);
 	rd = extract32 (insn, 0, 5);
 	//base = PC - 4;
         base = PC;
-
 	if (page) {
 		base &= ~0xfff;
 		offset <<= 12;
 	}
-
 	cb->MoviI64 (rd, base + offset, true);
 }
 
