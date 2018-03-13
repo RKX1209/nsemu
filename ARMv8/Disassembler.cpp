@@ -292,8 +292,9 @@ static void DisasTestBrImm(uint32_t insn, DisasCallback *cb) {
         unsigned int op = extract32(insn, 24, 1); /* 0: TBZ; 1: TBNZ */
         unsigned int addr = PC + sextract32(insn, 5, 14) * 4 - 4;
         uint64_t rt = extract32(insn, 0, 5);
-        cb->AndI64(rt, rt, (1ULL << bit_pos), false, true);
-        cb->BranchCondiI64 (op ? CondType_NE : CondType_EQ, rt, 0, addr, true);
+        /* XXX: Dummy register is used as temporaly register. */
+        cb->AndI64(GPR_DUMMY, rt, (1ULL << bit_pos), false, true);
+        cb->BranchCondiI64 (op ? CondType_NE : CondType_EQ, GPR_DUMMY, 0, addr, true);
 }
 
 static void DisasCondBrImm(uint32_t insn, DisasCallback *cb) {

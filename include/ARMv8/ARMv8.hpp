@@ -38,7 +38,7 @@ extern ARMv8State arm_state;
 #define GPR_ZERO          31
 #define GPR_SP            32
 #define PC_IDX            33  // XXX: bit tricky
-#define GPR_DUMMY         PC_IDX
+#define GPR_DUMMY         34
 
 #define GPR(r) ARMv8::arm_state.gpr[r]
 #define VREG(r) ARMv8::arm_state.vreg[r]
@@ -56,10 +56,10 @@ extern ARMv8State arm_state;
 #define PC X(PC_IDX)
 
 #define NZCV ARMv8::arm_state.nzcv
-#define N_MASK          0x80000000
-#define Z_MASK          0x40000000
-#define C_MASK          0x20000000
-#define V_MASK          0x10000000
+#define N_MASK          0x80000000UL
+#define Z_MASK          0x40000000UL
+#define C_MASK          0x20000000UL
+#define V_MASK          0x10000000UL
 
 void Init();
 

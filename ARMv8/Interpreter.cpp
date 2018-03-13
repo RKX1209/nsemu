@@ -59,19 +59,20 @@ static inline unsigned int HandleAsSP(unsigned r_idx) {
 static bool CondHold(unsigned int cond) {
         bool result = false;
         if (cond >> 1 == 0x0) {
-                result = NZCV & Z_MASK;
+                result = ((NZCV & Z_MASK) != 0);
         } else if (cond >> 1 == 0x1) {
-                result = NZCV & C_MASK;
+                result = ((NZCV & C_MASK) != 0);
         } else if (cond >> 1 == 0x2) {
-                result = NZCV & N_MASK;
+                result = ((NZCV & N_MASK) != 0);
         } else if (cond >> 1 == 0x3) {
-                result = NZCV & V_MASK;
+                result = ((NZCV & V_MASK) != 0);
         } else if (cond >> 1 == 0x4) {
-                result = (NZCV & C_MASK) & !(NZCV & Z_MASK) ;
+                result = ((NZCV & C_MASK) != 0) & ((NZCV & Z_MASK) == 0);
+                //printf("nzcv = 0x%016lx, result=%d(%lx,%lx)\n", NZCV, result, (NZCV & C_MASK), !(NZCV & Z_MASK));
         } else if (cond >> 1 == 0x5) {
-                result = (NZCV & N_MASK) == (NZCV & V_MASK);
+                result = ((NZCV & N_MASK) != 0) == ((NZCV & V_MASK) != 0);
         } else if (cond >> 1 == 0x6) {
-                result = ((NZCV & N_MASK) == (NZCV & V_MASK)) & !(NZCV & Z_MASK);
+                result = (((NZCV & N_MASK) != 0) == ((NZCV & V_MASK) != 0)) & ((NZCV & Z_MASK) == 0);
         } else if (cond >> 1 == 0x7) {
                 return true;
         } else {
@@ -83,10 +84,13 @@ static bool CondHold(unsigned int cond) {
 }
 
 static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
-        uint32_t nzcv;
+        /* XXX: In ARMv8, nzcv flag is only updated when ADD/SUB/AND/BIC.
+         * So following logic can work correctly(?)
+         */
+        uint32_t nzcv = 0;
         if (res & (1ULL << 63)) nzcv |= N_MASK; // N
         if (res == 0ULL) nzcv |= Z_MASK; // Z
-        if (((arg1 & arg2) + (arg1 ^ arg2) >> 1) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
+        if (((arg1 & arg2) + ((arg1 ^ arg2) >> 1)) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
         if (!(arg1 ^ arg2 && (1ULL < 63)) & (arg2 ^ res && (1ULL < 63))) nzcv |= V_MASK; //V
         NZCV = nzcv;
 }
@@ -128,8 +132,8 @@ static int64_t Sdiv64(int64_t arg1, int64_t arg2) {
 static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
         if (op == AL_TYPE_ADD)
                 return arg1 + arg2;
-        if (op == AL_TYPE_SUB)
-                return arg1 - arg2;
+        // if (op == AL_TYPE_SUB)
+        //         return arg1 - arg2;
         if (op == AL_TYPE_AND)
                 return arg1 & arg2;
         if (op == AL_TYPE_OR)
@@ -155,6 +159,10 @@ static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
 
 static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType op) {
         uint64_t result;
+        if (op == AL_TYPE_SUB) {
+                arg2 = -arg2;
+                op = AL_TYPE_ADD;
+        }
         result = ALCalc (arg1, arg2, op);
         if (setflags)
                 UpdateFlag (result, arg1, arg2);
@@ -391,9 +399,13 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 /* Load/Store */
 static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
                 debug_print ("Read from addr:0x%lx(%d)\n", addr, size);
-		if (size < 3) {
-			X(rd_idx) = ARMv8::ReadU32 (addr);
-                } else if (size < 4){
+                if (size == 0) {
+                        X(rd_idx) = ARMv8::ReadU8 (addr);
+                } else if (size == 1) {
+                        X(rd_idx) = ARMv8::ReadU16 (addr);
+                } else if (size == 2) {
+                        X(rd_idx) = ARMv8::ReadU32 (addr);
+                } else if (size == 3){
 			X(rd_idx) = ARMv8::ReadU64 (addr);
                 } else {
                         /* 128-bit Qt */
@@ -408,9 +420,13 @@ static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) 
 
 static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
                 debug_print ("Write to addr:0x%lx(%d)\n", addr, size);
-		if (size < 3) {
+                if (size == 0) {
+                        ARMv8::WriteU8 (addr, (uint8_t) (W(rd_idx) & 0xff));
+                } else if (size == 1) {
+                        ARMv8::WriteU16 (addr, (uint16_t) (W(rd_idx) & 0xffff));
+                } else if (size == 2) {
                         ARMv8::WriteU32 (addr, W(rd_idx));
-                } else if (size < 4) {
+                } else if (size == 3) {
                         ARMv8::WriteU64 (addr, X(rd_idx));
                 } else {
                         /* 128-bit Qt */
@@ -498,8 +514,8 @@ void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsign
                 ShiftI64 (rd_idx, rn_idx, AL_TYPE_ASR, 64 - len, bit64);
                 return;
         }
-        ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
-        ShiftI64 (rd_idx, rd_idx, AL_TYPE_ASR, 64 - len, bit64);
+        ShiftI64 (GPR_DUMMY, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
+        ShiftI64 (rd_idx, GPR_DUMMY, AL_TYPE_ASR, 64 - len, true);
 }
 void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
         char regc = bit64? 'X': 'W';
@@ -508,8 +524,8 @@ void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsign
                 ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSR, 64 - len, bit64);
                 return;
         }
-        ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
-        ShiftI64 (rd_idx, rd_idx, AL_TYPE_LSR, 64 - len, bit64);
+        ShiftI64 (GPR_DUMMY, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
+        ShiftI64 (rd_idx, GPR_DUMMY, AL_TYPE_LSR, 64 - len, true);
 }
 
 /* Reverse bit order */

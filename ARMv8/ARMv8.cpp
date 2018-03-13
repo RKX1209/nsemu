@@ -35,16 +35,14 @@ void Dump() {
 static uint64_t counter;
 void DumpJson(FILE *fp) {
         file_print (fp, "%lu : {\n", counter++);
-        for (int r = 0; r <= GPR_DUMMY; r++) {
+        int r;
+        for (r = 0; r < GPR_DUMMY; r++) {
                 if (r == GPR_LR && X(r))
-                        file_print (fp, "\"X%d\" : \"0x%016lx\"", r, X(r) + 4);
+                        file_print (fp, "\"X%d\" : \"0x%016lx\",\n", r, X(r) + 4);
                 else
-                        file_print (fp, "\"X%d\" : \"0x%016lx\"", r, X(r));
-                if (r == GPR_DUMMY)
-                        file_print (fp, "\n");
-                else
-                        file_print (fp, ",\n");
+                        file_print (fp, "\"X%d\" : \"0x%016lx\",\n", r, X(r));
         }
+        file_print (fp, "\"X%d\" : \"0x%016x\"\n", r, NZCV);
         file_print (fp, "},\n");
 }
 
