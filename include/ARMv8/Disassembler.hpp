@@ -48,9 +48,9 @@ virtual void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int ex
 
 /* Load/Store */
 virtual void LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool bit64) = 0;
-virtual void LoadRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size, bool extend, bool post) = 0;
+virtual void LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool extend) = 0;
 virtual void StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool bit64) = 0;
-virtual void StoreRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size, bool extend, bool post) = 0;
+virtual void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool extend) = 0;
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
@@ -89,6 +89,18 @@ virtual void SetPCReg(unsigned int rt_idx) = 0;
 
 /* Super Visor Call */
 virtual void SVC(unsigned int svc_num) = 0;
+
+/* Read Vector register to FP regsiter */
+virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;
+/* Duplicate an element of vector register to new one */
+virtual void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize) = 0;
+/* Duplicate an general register into vector register */
+virtual void DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize) = 0;
+
+/* Write to FP register */
+virtual void WriteFpReg(unsigned int fd_idx, unsigned int fn_idx) = 0;
+virtual void WriteFpRegI64(unsigned int fd_idx, uint64_t imm) = 0;
+
 };
 
 namespace Disassembler {
@@ -130,6 +142,14 @@ enum CondType {
         CondType_AL,
         CondType_NV
 };
+
+typedef void A64DecodeFn(uint32_t insn, DisasCallback *cb);
+
+typedef struct AArch64DecodeTable {
+    uint32_t pattern;
+    uint32_t mask;
+    A64DecodeFn *disas_fn;
+} A64DecodeTable;
 
 void DisasA64(uint32_t insn, DisasCallback *cb);
 

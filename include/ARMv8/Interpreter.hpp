@@ -48,9 +48,9 @@ void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_typ
 
 /* Load/Store */
 void LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool bit64);
-void LoadRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size, bool extend, bool post);
+void LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool extend);
 void StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool bit64);
-void StoreRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size, bool extend, bool post);
+void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool extend);
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
@@ -88,6 +88,18 @@ void SetPCReg(unsigned int rt_idx);
 
 /* Super Visor Call */
 void SVC(unsigned int svc_num);
+
+/* Read Vector register to FP register */
+void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size);
+/* Duplicate an element of vector register to new one */
+void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize);
+/* Duplicate an general register into vector register */
+void DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize);
+
+/* Write to FP register */
+void WriteFpReg(unsigned int fd_idx, unsigned int fn_idx);
+void WriteFpRegI64(unsigned int fd_idx, uint64_t imm);
+
 };
 
 /* Global Interpreter singleton class .*/

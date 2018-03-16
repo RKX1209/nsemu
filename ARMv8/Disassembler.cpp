@@ -15,6 +15,19 @@ static inline bool FpAccessCheck(uint32_t insn) {
         return true;
 }
 
+/* Currently used only fo disassemble fo SIMD operations */
+static inline A64DecodeFn *LookupDisasFn(const A64DecodeTable *table,
+                                         uint32_t insn) {
+        const A64DecodeTable *tptr = table;
+        while (tptr->mask) {
+                if ((insn & tptr->mask) == tptr->pattern) {
+                        return tptr->disas_fn;
+                }
+                tptr++;
+        }
+        return NULL;
+}
+
 static bool LogicImmDecode(uint64_t *wmask, unsigned int immn, unsigned int imms, unsigned int immr) {
 	assert (immn < 2 && imms < 64 && immr < 64);
         uint64_t mask;
@@ -204,13 +217,11 @@ static void DisasBitfield(uint32_t insn, DisasCallback *cb) {
 
          if (opc == 1) { /* BFM, BXFIL */
                 cb->DepositReg (rd, rd, pos, len, is_64bit);
-                //UnsupportedOp ("BFM/BXFIL");
          } else {
                 /* SBFM or UBFM: We start with zero, and we haven't modified
                    any bits outside bitsize, therefore the zero-extension
                    below is unneeded.  */
                 cb->DepositZeroReg (rd, rd, pos, len, is_64bit);
-                //UnsupportedOp ("SBFM/UBFM");
          }
          return;
 }
@@ -722,7 +733,8 @@ static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
         bool is_signed = false;
         int size = 2;
         if (is_vector) {
-                UnsupportedOp("LDR (SIMD&FP)");
+                /* LDR (SIMD&FP) */
+                size = opc + 2;
         } else {
                 if (opc == 3) {
                         return;
@@ -730,7 +742,8 @@ static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
                 size = 2 + extract32(opc, 0, 1);
                 is_signed = extract32(opc, 1, 1);
         }
-        cb->LoadRegI64 (rt, PC_IDX, imm - 4, size, false, false);
+        cb->AddI64 (rt, PC_IDX, imm - 4, false, true);
+        cb->LoadRegI64 (rt, rt, size, false);
 }
 
 static bool DisasLdstCompute64bit(unsigned int size, bool is_signed, unsigned int opc) {
@@ -765,7 +778,9 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
         }
 
         if (is_vector) {
-                UnsupportedOp ("LDR/STR [base, Xm/Wm] (SIMD&FP)");
+                /* "LDR/STR [base, Xm/Wm] (SIMD&FP)") */
+                size = (opc & 2) << 1;
+                is_store = !extract32(opc, 0, 1);
         } else {
                 if (size == 3 && opc == 2) {
                         /* PRFM - prefetch */
@@ -799,7 +814,7 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
                                 unsigned int size,
                                 unsigned int rt,
                                 bool is_vector) {
-        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rn = ARMv8::HandleAsSP (extract32(insn, 5, 5));
         uint64_t imm9 = sextract32(insn, 12, 9);
         unsigned int idx = extract32(insn, 10, 2);
         bool is_signed = false;
@@ -813,7 +828,13 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
         //debug_print ("ldst uimm9\n");
 
         if (is_vector) {
-                UnsupportedOp ("LDR/STR [base, #imm9] (SIMD&FP)");
+                /* LDR/STR [base, #imm9] (SIMD&FP) */
+                size |= (opc & 2) << 1;
+                if (size > 4 && is_unpriv) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                is_store = ((opc & 1) == 0);
         } else {
                 if (size == 3 && opc == 2) {
                         /* PRFM - prefetch */
@@ -849,10 +870,15 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
         default:
                 ns_abort ("Unreachable status\n");
         }
+
+        cb->MovReg (GPR_DUMMY, rn, true);
+        if (!post_index) {
+                cb->AddI64 (GPR_DUMMY, rn, imm9, false, true);
+        }
         if (is_store) {
-                cb->StoreRegI64 (rt, rn, imm9, size, is_extended, post_index);
+                cb->StoreRegI64 (rt, GPR_DUMMY, size, is_extended);
         } else {
-                cb->LoadRegI64 (rt, rn, imm9, size, is_extended, post_index);
+                cb->LoadRegI64 (rt, GPR_DUMMY, size, is_extended);
         }
         if (writeback) {
                 cb->AddI64 (rn, rn, imm9, false, true);
@@ -864,7 +890,7 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
                                 unsigned int size,
                                 unsigned int rt,
                                 bool is_vector) {
-        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rn = ARMv8::HandleAsSP (extract32(insn, 5, 5));
         uint64_t imm12 = extract32(insn, 10, 12);
         uint64_t offset;
 
@@ -897,19 +923,20 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
                 is_extended = (size < 3) && extract32(opc, 0, 1);
         }
         offset = imm12 << size;
+        cb->AddI64 (GPR_DUMMY, rn, offset, false, true);
         if (is_vector) {
                 /* size must be 4 (128-bit) */
                 if (is_store) {
-                        cb->StoreRegI64 (rt, rn, offset, size, false, false);
+                        cb->StoreRegI64 (rt, GPR_DUMMY, size, false);
                 } else {
-                        cb->LoadRegI64 (rt, rn, offset, size, false, false);
+                        cb->LoadRegI64 (rt, GPR_DUMMY, size, false);
                 }
         } else {
                 bool sf = DisasLdstCompute64bit (size, is_signed, opc);
                 if (is_store) {
-                        cb->StoreRegI64 (rt, rn, offset, size, is_extended, false);
+                        cb->StoreRegI64 (rt, GPR_DUMMY, size, is_extended);
                 } else {
-                        cb->LoadRegI64 (rt, rn, offset, size, is_extended, false);
+                        cb->LoadRegI64 (rt, GPR_DUMMY, size, is_extended);
                 }
         }
 }
@@ -950,7 +977,7 @@ static void DisasLdstReg(uint32_t insn, DisasCallback *cb) {
  */
 static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
         unsigned int rt = extract32(insn, 0, 5);
-        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rn = ARMv8::HandleAsSP (extract32(insn, 5, 5));
         unsigned int rt2 = extract32(insn, 10, 5);
         uint64_t offset = sextract64(insn, 15, 7);
         unsigned int index = extract32(insn, 23, 2);
@@ -970,7 +997,8 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
         }
 
         if (is_vector) {
-                UnsupportedOp ("LDP/STP Xt1, Xt2, [base, #simm7] (SIMD&FP)");
+                /* LDP/STP Xt1, Xt2, [base, #simm7] (SIMD&FP) */
+                size = 2 + opc;
         } else {
                 size = 2 + extract32 (opc, 1, 1);
                 is_signed = extract32 (opc, 0, 1);
@@ -1007,14 +1035,20 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
         }
 
         offset <<= size;
+        cb->MovReg (GPR_DUMMY, rn, true);
+        if (!post_index) {
+                cb->AddI64 (GPR_DUMMY, rn, offset, false, true);
+        }
         if (is_load) {
                 /* XXX: Do not modify rt register before recognizing any exception
                  * from the second load. */
-                cb->LoadRegI64 (rt, rn, offset, size, false, post_index);
-                cb->LoadRegI64 (rt2, rn, offset + (1 << size), size, false, post_index);
+                cb->LoadRegI64 (rt, GPR_DUMMY, size, false);
+                cb->AddI64 (GPR_DUMMY, GPR_DUMMY, 1 << size, false, true);
+                cb->LoadRegI64 (rt2, GPR_DUMMY, size, false);
         } else {
-                cb->StoreRegI64 (rt, rn, offset, size, false, post_index);
-                cb->StoreRegI64 (rt2, rn, offset + (1 << size), size, false, post_index);
+                cb->StoreRegI64 (rt, GPR_DUMMY, size, false);
+                cb->AddI64 (GPR_DUMMY, GPR_DUMMY, 1 << size, false, true);
+                cb->StoreRegI64 (rt2, GPR_DUMMY, size, false);
         }
         if (writeback) {
                 cb->AddI64 (rn, rn, offset, false, true);
@@ -1050,6 +1084,205 @@ static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void DisasFp1Src(uint32_t insn, DisasCallback *cb) {
+        //TODO:
+}
+
+static void DisasDataProcFp(uint32_t insn, DisasCallback *cb) {
+        if (extract32(insn, 24, 1)) {
+                /* Floating point data-processing (3 source) */
+                //DisasFp3Src (insn);
+                UnsupportedOp ("FP 3 source");
+        } else if (extract32(insn, 21, 1) == 0) {
+                /* Floating point to fixed point conversions */
+                //DisasFpFixedConv (insn);
+                UnsupportedOp ("FP fixed conv");
+        } else {
+                switch (extract32(insn, 10, 2)) {
+                case 1:
+                        /* Floating point conditional compare */
+                        //DisasFpCcomp (insn);
+                        break;
+                case 2:
+                        /* Floating point data-processing (2 source) */
+                        //DisasFp2Src (insn);
+                        break;
+                case 3:
+                        /* Floating point conditional select */
+                        //DisasFpCsel (insn);
+                        break;
+                case 0:
+                        switch (ctz32(extract32(insn, 12, 4))) {
+                        case 0: /* [15:12] == xxx1 */
+                                /* Floating point immediate */
+                                //DisasFpImm (insn);
+                                break;
+                        case 1: /* [15:12] == xx10 */
+                                /* Floating point compare */
+                                //DisasFpCompare (insn);
+                                break;
+                        case 2: /* [15:12] == x100 */
+                                /* Floating point data-processing (1 source) */
+                                DisasFp1Src (insn, cb);
+                                break;
+                        case 3: /* [15:12] == 1000 */
+                                UnallocatedOp (insn);
+                                break;
+                        default: /* [15:12] == 0000 */
+                                /* Floating point <-> integer conversions */
+                                //disas_fp_int_conv(s, insn);
+                                break;
+                        }
+                        break;
+                }
+        }
+}
+
+static void DisasSimdDupe(uint32_t insn, int is_q, int rd, int rn,
+                          int imm5, DisasCallback *cb) {
+        int size = ctz32(imm5);
+        unsigned int index = imm5 >> (size + 1);
+
+        if (size > 3 || (size == 3 && !is_q)) {
+                UnallocatedOp (insn);
+                return;
+        }
+        cb->DupVecReg(rd, rn, index, size, (imm5 >> 4) ? 128 : 64);
+}
+
+static void DisasSimdDupg(uint32_t insn, int is_q, int rd, int rn,
+                          int imm5, DisasCallback *cb) {
+        int size = ctz32(imm5);
+
+        if (size > 3 || (size == 3 && !is_q)) {
+                UnallocatedOp (insn);
+                return;
+        }
+        cb->DupVecRegFromGen(rd, rn, size, is_q ? 128 : 64);
+}
+
+static void DisasSimdCopy(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int imm4 = extract32(insn, 11, 4);
+        unsigned int op = extract32(insn, 29, 1);
+        unsigned int is_q = extract32(insn, 30, 1);
+        unsigned int imm5 = extract32(insn, 16, 5);
+
+        if (op) {
+                if (is_q) {
+                        /* INS (element) */
+                        //handle_simd_inse(s, rd, rn, imm4, imm5);
+                } else {
+                        UnallocatedOp (insn);
+                }
+        } else {
+                switch (imm4) {
+                case 0:
+                        /* DUP (element - vector) */
+                        DisasSimdDupe(insn, is_q, rd, rn, imm5, cb);
+                        break;
+                case 1:
+                        /* DUP (general) */
+                        DisasSimdDupg(insn, is_q, rd, rn, imm5, cb);
+                        break;
+                case 3:
+                        if (is_q) {
+                                /* INS (general) */
+                                //handle_simd_insg(s, rd, rn, imm5);
+                        } else {
+                                UnallocatedOp (insn);
+                        }
+                        break;
+                case 5:
+                case 7:
+                        /* UMOV/SMOV (is_q indicates 32/64; imm4 indicates signedness) */
+                        //handle_simd_umov_smov(s, is_q, (imm4 == 5), rn, rd, imm5);
+                        break;
+                default:
+                        UnallocatedOp (insn);
+                        break;
+                }
+        }
+}
+
+static void DisasSimdScalarCopy(uint32_t insn, DisasCallback *cb) {
+        unsigned int fd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int imm4 = extract32(insn, 11, 4);
+        unsigned int imm5 = extract32(insn, 16, 5);
+        unsigned int op = extract32(insn, 29, 1);
+        int size = ctz32(imm5);
+
+        if (op != 0 || imm4 != 0) {
+                UnallocatedOp (insn);
+                return;
+        }
+        if (size > 3) {
+                UnallocatedOp (insn);
+        }
+        int index = imm5 >> (size + 1);
+        cb->ReadVecReg (fd, rn, index, size);
+}
+
+/* C4.1.5 Data Processing -- Scalar Floating-Point and Advanced SIMD
+ */
+static const A64DecodeTable data_proc_simd[] = {
+    /* pattern  ,  mask     ,  fn                        */
+    // { 0x0e200400, 0x9f200400, disas_simd_three_reg_same },
+    // { 0x0e008400, 0x9f208400, disas_simd_three_reg_same_extra },
+    // { 0x0e200000, 0x9f200c00, disas_simd_three_reg_diff },
+    // { 0x0e200800, 0x9f3e0c00, disas_simd_two_reg_misc },
+    // { 0x0e300800, 0x9f3e0c00, disas_simd_across_lanes },
+    { 0x0e000400, 0x9fe08400, DisasSimdCopy },
+    // { 0x0f000000, 0x9f000400, disas_simd_indexed }, /* vector indexed */
+    // /* simd_mod_imm decode is a subset of simd_shift_imm, so must precede it */
+    // { 0x0f000400, 0x9ff80400, disas_simd_mod_imm },
+    // { 0x0f000400, 0x9f800400, disas_simd_shift_imm },
+    // { 0x0e000000, 0xbf208c00, disas_simd_tb },
+    // { 0x0e000800, 0xbf208c00, disas_simd_zip_trn },
+    // { 0x2e000000, 0xbf208400, disas_simd_ext },
+    // { 0x5e200400, 0xdf200400, disas_simd_scalar_three_reg_same },
+    // { 0x5e008400, 0xdf208400, disas_simd_scalar_three_reg_same_extra },
+    // { 0x5e200000, 0xdf200c00, disas_simd_scalar_three_reg_diff },
+    // { 0x5e200800, 0xdf3e0c00, disas_simd_scalar_two_reg_misc },
+    // { 0x5e300800, 0xdf3e0c00, disas_simd_scalar_pairwise },
+    { 0x5e000400, 0xdfe08400, DisasSimdScalarCopy },
+    // { 0x5f000000, 0xdf000400, disas_simd_indexed }, /* scalar indexed */
+    // { 0x5f000400, 0xdf800400, disas_simd_scalar_shift_imm },
+    // { 0x4e280800, 0xff3e0c00, disas_crypto_aes },
+    // { 0x5e000000, 0xff208c00, disas_crypto_three_reg_sha },
+    // { 0x5e280800, 0xff3e0c00, disas_crypto_two_reg_sha },
+    // { 0xce608000, 0xffe0b000, disas_crypto_three_reg_sha512 },
+    // { 0xcec08000, 0xfffff000, disas_crypto_two_reg_sha512 },
+    // { 0xce000000, 0xff808000, disas_crypto_four_reg },
+    // { 0xce800000, 0xffe00000, disas_crypto_xar },
+    // { 0xce408000, 0xffe0c000, disas_crypto_three_reg_imm2 },
+    // { 0x0e400400, 0x9f60c400, disas_simd_three_reg_same_fp16 },
+    // { 0x0e780800, 0x8f7e0c00, disas_simd_two_reg_misc_fp16 },
+    // { 0x5e400400, 0xdf60c400, disas_simd_scalar_three_reg_same_fp16 },
+    { 0x00000000, 0x00000000, NULL }
+};
+
+static void DisasDataProcSimd(uint32_t insn, DisasCallback *cb) {
+        A64DecodeFn *fn = LookupDisasFn (&data_proc_simd[0], insn);
+        if (fn) {
+                fn (insn, cb);
+        } else {
+                UnallocatedOp (insn);
+        }
+}
+
+static void DisasDataProcSimdFp(uint32_t insn, DisasCallback *cb) {
+        if (extract32(insn, 28, 1) == 1 && extract32(insn, 30, 1) == 0) {
+                UnsupportedOp ("FP ops");
+                //DisasDataProcFp(s, insn);
+        } else {
+                /* SIMD, including crypto */
+                DisasDataProcSimd(insn, cb);
+        }
+}
+
 void DisasA64(uint32_t insn, DisasCallback *cb) {
 	switch (extract32 (insn, 25, 4)) {
 	case 0x0: case 0x1: case 0x2: case 0x3:	// Unallocated
@@ -1073,7 +1306,7 @@ void DisasA64(uint32_t insn, DisasCallback *cb) {
 		break;
 	case 0x7:
 	case 0xf:	/* Data processing - SIMD and floating point */
-                UnsupportedOp ("SIMD and FP");
+                DisasDataProcSimdFp (insn, cb);
 		break;
 	default:
 		ns_abort ("Invalid encoding operation: 0x%016lx\n", insn);	/* all 15 cases should be handled above */

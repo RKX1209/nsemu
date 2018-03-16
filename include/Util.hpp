@@ -98,6 +98,14 @@ static inline int clz64(uint64_t bitfield) {
 	return bitfield? __builtin_clzll (bitfield): 64;
 }
 
+static inline int ctz32(uint32_t bitfield) {
+	return bitfield? __builtin_ctz (bitfield): 32;
+}
+
+static inline int ctz64(uint64_t bitfield) {
+	return bitfield? __builtin_ctzll (bitfield): 64;
+}
+
 /* Return a value with the bottom len bits set (where 0 < len <= 64) */
 static inline uint64_t bitmask64(unsigned int length) {
         assert(length > 0 && length <= 64);

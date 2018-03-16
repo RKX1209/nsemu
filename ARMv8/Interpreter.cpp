@@ -22,8 +22,8 @@ void Interpreter::Run() {
                 //scanf("%c", &c);
                 Cpu::DumpMachine ();
 		SingleStep ();
-                if (counter >= 242)
-                        break;
+                // if (counter >= 242)
+                //         break;
                 counter++;
                 // if (PC == 0x2d54) {
 		//         SingleStep ();
@@ -50,11 +50,6 @@ enum OpType{
 };
 
 const char *OpStrs[] = { "<<", ">>", ">>", "ROR", "+", "-", "&", "|", "^" };
-
-/* See: C6.1.3 Use of the stack pointer */
-static inline unsigned int HandleAsSP(unsigned r_idx) {
-        return r_idx == GPR_ZERO ? GPR_SP : r_idx;
-}
 
 static bool CondHold(unsigned int cond) {
         bool result = false;
@@ -233,8 +228,8 @@ void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned 
 void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
         if (!setflags) {
-                rd_idx = HandleAsSP (rd_idx);
-                rn_idx = HandleAsSP (rn_idx);
+                rd_idx = ARMv8::HandleAsSP (rd_idx);
+                rn_idx = ARMv8::HandleAsSP (rn_idx);
         }
 	debug_print ("Add: %c[%u] = %c[%u] + 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
         if (bit64)
@@ -245,8 +240,8 @@ void IntprCallback::AddI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t im
 void IntprCallback::SubI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t imm, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
         if (!setflags) {
-                rd_idx = HandleAsSP (rd_idx);
-                rn_idx = HandleAsSP (rn_idx);
+                rd_idx = ARMv8::HandleAsSP (rd_idx);
+                rn_idx = ARMv8::HandleAsSP (rn_idx);
         }
 	debug_print ("Sub: %c[%u] = %c[%u] - 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, imm, setflags? "update": "no");
         if (bit64)
@@ -315,7 +310,7 @@ void IntprCallback::SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned i
 /* AND/OR/EOR... with Immediate value */
 void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = HandleAsSP (rd_idx);
+        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("And: %c[%u] = %c[%u] & 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, wmask, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, setflags, bit64, AL_TYPE_AND);
@@ -325,7 +320,7 @@ void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = HandleAsSP (rd_idx);
+        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Or: %c[%u] = %c[%u] | 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_OR);
@@ -334,7 +329,7 @@ void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = HandleAsSP (rd_idx);
+        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Eor: %c[%u] = %c[%u] ^ 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_EOR);
@@ -343,7 +338,7 @@ void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::ShiftI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int shift_type, unsigned int shift_amount, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = HandleAsSP (rd_idx);
+        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Shift: %c[%u] = %c[%u] %s 0x%lx \n", regc, rd_idx, regc, rn_idx, OpStrs[shift_type], shift_amount);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), shift_amount, false, bit64, (OpType)shift_type);
@@ -442,7 +437,7 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
                             bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
-                base_idx = HandleAsSP (base_idx);
+                base_idx = ARMv8::HandleAsSP (base_idx);
                 debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
@@ -459,23 +454,17 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
                         _LoadReg (rd_idx, addr, size, extend);
                 }
 }
-void IntprCallback::LoadRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
-                                bool extend, bool post) {
+void IntprCallback::LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size,
+                                bool extend) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
-                base_idx = HandleAsSP (base_idx);
-	        debug_print ("Load(%d): %c[%u] <= [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
-                uint64_t addr;
-                if (post)
-                        addr = X(base_idx);
-                else
-                        addr = X(base_idx) + offset;
-                _LoadReg (rd_idx, addr, size, extend);
+	        debug_print ("Load(%d): %c[%u] <= [0x%lx]\n", size, regdc, rd_idx, X(ad_idx));
+                _LoadReg (rd_idx, X(ad_idx), size, extend);
 }
 void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
                                 bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
-                base_idx = HandleAsSP (base_idx);
+                base_idx = ARMv8::HandleAsSP (base_idx);
 	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
                 uint64_t addr;
                 if (bit64) {
@@ -492,17 +481,11 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
                         _StoreReg (rd_idx, addr, size, extend);
                 }
 }
-void IntprCallback::StoreRegI64(unsigned int rd_idx, unsigned int base_idx, uint64_t offset, int size,
-                                        bool extend, bool post) {
+void IntprCallback::StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size,
+                                        bool extend) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
-                base_idx = HandleAsSP (base_idx);
-	        debug_print ("Store(%d): %c[%u] => [X[%u], 0x%lx]\n", size, regdc, rd_idx, base_idx, offset);
-                uint64_t addr;
-                if (post)
-                        addr = X(base_idx);
-                else
-                        addr = X(base_idx) + offset;
-                _StoreReg (rd_idx, addr, size, extend);
+	        debug_print ("Store(%d): %c[%u] => [0x%lx]\n", size, regdc, rd_idx, X(ad_idx));
+                _StoreReg (rd_idx, X(ad_idx), size, extend);
 }
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
@@ -664,4 +647,66 @@ void IntprCallback::SVC(unsigned int svc_num) {
                 SVC::svc_handlers[svc_num]();
         else
                 ns_print ("Invalid svc number: %u\n", svc_num);
+}
+
+/* Read Vector register to FP register */
+void IntprCallback::ReadVecReg(unsigned int rd_idx, unsigned int vn_idx, unsigned int index, int size) {
+        if (size == 0) {
+                D(rd_idx) = VREG(vn_idx).b[index];
+        } else if (size == 1) {
+                D(rd_idx) = VREG(vn_idx).h[index];
+        } else if (size == 2) {
+                D(rd_idx) = VREG(vn_idx).s[index];
+        } else if (size == 3) {
+                D(rd_idx) = VREG(vn_idx).d[index];
+        }
+}
+
+template<typename T>
+static void DupVecImm(unsigned int vd_idx, T imm, int size, int dstsize) {
+        uint32_t i;
+        int sec_size = sizeof(T) * 8;
+        for (i = 0; i + sec_size <= dstsize; i += sec_size){
+                if (size == 0)
+                        VREG(vd_idx).b[i / sec_size] = imm;
+                else if (size == 1)
+                        VREG(vd_idx).h[i / sec_size] = imm;
+                else if (size == 2)
+                        VREG(vd_idx).s[i / sec_size] = imm;
+                else
+                        VREG(vd_idx).d[i / sec_size] = imm;
+        }
+}
+/* Duplicate an element of vector register to new one */
+void IntprCallback::DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize) {
+        if (size == 0) {
+                DupVecImm(vd_idx, VREG(vn_idx).b[index], size, dstsize);
+        } else if (size == 1) {
+                DupVecImm(vd_idx, VREG(vn_idx).h[index], size, dstsize);
+        } else if (size == 2) {
+                DupVecImm(vd_idx, VREG(vn_idx).s[index], size, dstsize);
+        } else if (size == 3) {
+                DupVecImm(vd_idx, VREG(vn_idx).d[index], size, dstsize);
+        }
+}
+
+/* Duplicate an general register into vector register */
+void IntprCallback::DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize) {
+        if (size == 0) {
+                DupVecImm(vd_idx, (uint8_t) (X(rn_idx) & 0xff), size, dstsize);
+        } else if (size == 1) {
+                DupVecImm(vd_idx, (uint16_t) (X(rn_idx) & 0xffff), size, dstsize);
+        } else if (size == 2) {
+                DupVecImm(vd_idx, (uint32_t) (X(rn_idx) & 0xffffffff), size, dstsize);
+        } else if (size == 3) {
+                DupVecImm(vd_idx, X(rn_idx), size, dstsize);
+        }
+}
+
+/* Write to FP register */
+void IntprCallback::WriteFpReg(unsigned int fd_idx, unsigned int fn_idx)  {
+        D(fd_idx) = D(fn_idx);
+}
+void IntprCallback::WriteFpRegI64(unsigned int fd_idx, uint64_t imm) {
+        D(fd_idx) = imm;
 }
