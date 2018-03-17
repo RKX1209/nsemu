@@ -20,10 +20,9 @@ void Interpreter::Run() {
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
-                Cpu::DumpMachine ();
 		SingleStep ();
-                // if (counter >= 242)
-                //         break;
+                if (counter >= 241)
+                        break;
                 counter++;
                 // if (PC == 0x2d54) {
 		//         SingleStep ();
@@ -32,6 +31,7 @@ void Interpreter::Run() {
                 //         break;
                 // }
 	}
+        Cpu::DumpMachine ();
 }
 
 /* ####### Callbacks ####### */
@@ -642,7 +642,7 @@ void IntprCallback::SetPCReg(unsigned int rt_idx) {
 /* Super Visor Call */
 void IntprCallback::SVC(unsigned int svc_num) {
         //debug_print ("SVC: %u\n", svc_num);
-        ns_print ("SVC: %u\n", svc_num);
+        ns_print ("SVC: 0x%02x\n", svc_num);
         if (SVC::svc_handlers[svc_num])
                 SVC::svc_handlers[svc_num]();
         else

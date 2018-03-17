@@ -17,19 +17,22 @@ void RunLoop() {
 }
 
 void Dump() {
+        int cnt = 1;
+        ns_print ("CPU Dump:\n");
         for (int r = 0; r < GPR_DUMMY; r++) {
                 if (!X(r))
                         continue;
                 if (r == GPR_LR)
-                        ns_print ("LR\t");
+                        ns_print ("LR:\t");
                 else if (r == GPR_SP)
-                        ns_print ("SP\t");
+                        ns_print ("SP:\t");
                 else
-                        ns_print ("X%d\t", r);
-                ns_print ("0x%016lx\n", X(r));
+                        ns_print ("X%d:\t", r);
+                ns_print ("0x%016lx%c", X(r), cnt % 3 == 0 ? '\n' : '\t');
+                cnt++;
         }
-        ns_print ("PC\t0x%016lx\n", PC);
-        ns_print ("NZCV\t0x%016lx\n", NZCV);
+        ns_print ("PC:\t0x%016lx\n", PC);
+        ns_print ("NZCV:\t0x%016lx\n", NZCV);
 }
 
 static uint64_t counter;

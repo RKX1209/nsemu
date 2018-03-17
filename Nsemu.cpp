@@ -11,13 +11,15 @@ static void LoadNso(Nsemu *nsemu, string path) {
 }
 
 static void CpuThread() {
+        ns_print ("[CPU]\tLaunching ARMv8::VCPU.....\n");
 	Cpu::Init ();
 	Cpu::SetState (Cpu::State::Running);
+        ns_print ("[CPU]\tRunning.....\n");
 	Cpu::Run ();
 }
 
 bool Nsemu::BootUp(const std::string& path) {
-	debug_print ("Booting... %s\n", path.c_str ());
+	ns_print ("Booting... %s\n", path.c_str ());
 	Memory::InitMemmap (this);
 	LoadNso (this, path);
 	cpu_thread = std::thread (CpuThread);

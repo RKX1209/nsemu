@@ -62,6 +62,19 @@ void FinTrace() {
                 fclose (Cpu::TraceOut);
 }
 
+void Banner() {
+
+        const char *banner = "\n\n"\
+        "███╗   ██╗███████╗███████╗███╗   ███╗██╗   ██╗\n"\
+        "████╗  ██║██╔════╝██╔════╝████╗ ████║██║   ██║\n"\
+        "██╔██╗ ██║███████╗█████╗  ██╔████╔██║██║   ██║\n"\
+        "██║╚██╗██║╚════██║██╔══╝  ██║╚██╔╝██║██║   ██║\n"\
+        "██║ ╚████║███████║███████╗██║ ╚═╝ ██║╚██████╔╝\n"\
+        "╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝     ╚═╝ ╚═════╝ \n\n"\
+        "NSEMU ver (0.1: unstable)\n\n";
+        ns_print(banner);
+}
+
 enum  optionIndex {
 	UNKNOWN, HELP, ENABLE_TRACE
 };
@@ -124,6 +137,7 @@ printUsage:
 		              goto printUsage;
 		}
 	}
+        Banner ();
 	nsemu->BootUp (parse.nonOption (0));
 	Nsemu::destroy ();
         FinTrace ();

@@ -144,6 +144,7 @@ void ExitThread() {
 }
 
 uint64_t SleepThread(uint64_t ns) {
+        ns_print("SleepThread 0x%lx [ns]\n", ns);
 	return 0;
 }
 
@@ -257,6 +258,7 @@ uint64_t Break(uint64_t X0, uint64_t X1, uint64_t info) {
 }
 
 uint64_t OutputDebugString(uint64_t ptr, uint64_t size) {
+        ns_print("OutputDebugString addr=0x%lx, size=%llu\n", ptr, size);
 	return 0;
 }
 
