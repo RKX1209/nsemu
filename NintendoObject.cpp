@@ -34,28 +34,30 @@ int Nso::load(Nsemu *nsemu) {
 	if (size & 0xfff) {
 		size = (size & ~0xfff) + 0x1000;
 	}
-
+        uint64_t base = 0;
 	char *text = decompress (fp, hdr.textOff, hdr.rdataOff - hdr.textOff, hdr.textSize);
-	if (!Memory::CopytoEmuByName (nsemu, (void *) text, ".text", hdr.textSize)) {
+	if (!Memory::CopytoEmu (nsemu, (void *) text, base + hdr.textLoc, hdr.textSize)) {
 		delete[] text;
 		ns_abort ("Failed to copy to .text\n");
 	}
 	/* --- For test --- */
-	uint8_t *txt_dump = new uint8_t[hdr.textSize];
-	Memory::CopyfromEmuByName (nsemu, (void *) txt_dump, ".text", hdr.textSize);
-	bindump (txt_dump, 105);
-	/* ---------------- */
-	delete[] text;
-
+	// uint8_t *txt_dump = new uint8_t[hdr.textSize];
+	// Memory::CopyfromEmuByName (nsemu, (void *) txt_dump, ".text", hdr.textSize);
+	// bindump (txt_dump, 105);
+	// /* ---------------- */
+	// delete[] text;
+        ns_print(".text[0x%x] size = 0x%x\n", hdr.textOff, hdr.textSize);
+        ns_print(".rdata[0x%x] size = 0x%x\n", hdr.rdataOff, hdr.rdataSize);
+        ns_print(".data[0x%x] size = 0x%x\n", hdr.dataOff, hdr.dataSize);
 	char *rdata = decompress (fp, hdr.rdataOff, hdr.dataOff - hdr.rdataOff, hdr.rdataSize);
-	if (!Memory::CopytoEmuByName (nsemu, (void *) rdata, ".rdata", hdr.rdataSize)) {
+	if (!Memory::CopytoEmu (nsemu, (void *) rdata, base + hdr.rdataLoc, hdr.rdataSize)) {
 		delete[] rdata;
 		ns_abort ("Failed to copy to .rdata\n");
 	}
 	delete[] rdata;
 
 	char *data = decompress (fp, hdr.dataOff, length - hdr.dataOff, hdr.dataSize);
-	if (!Memory::CopytoEmuByName (nsemu, (void *) data, ".data", hdr.dataSize)) {
+	if (!Memory::CopytoEmu (nsemu, (void *) data, base + hdr.dataLoc, hdr.dataSize)) {
 		delete[] data;
 		ns_abort ("Failed to copy to .data\n");
 	}

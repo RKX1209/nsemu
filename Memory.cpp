@@ -30,11 +30,6 @@ void InitMemmap(Nsemu *nsemu) {
 	 	ns_abort ("Failed to allocate host memory\n");
 	}
         pRAM = (uint8_t *) data;
-	int num = sizeof(mem_map) / sizeof(RAMBlock);
-	for (int n = 0; n < num; n++) {
-		std::string sec_name = mem_map[n].name;
-		nsemu->rams[sec_name] = mem_map[n];
-	}
 }
 
 RAMBlock *FindRAMBlock(Nsemu *nsemu, uint64_t addr, size_t len) {
@@ -63,30 +58,8 @@ bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t gpa, size_t len) {
 	return _CopyMemEmu (data, gpa, len, true);
 }
 
-bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
-	if (nsemu->rams.find (name) == nsemu->rams.end ()) {
-		return false;
-	}
-	RAMBlock *as = &nsemu->rams[name];
-	if (len > as->length) {
-		return false;
-	}
-	return _CopyMemEmu (data, as->addr, len, true);
-}
-
 bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t gpa, size_t len) {
 	return _CopyMemEmu (data, gpa, len, false);
-}
-
-bool CopyfromEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len) {
-	if (nsemu->rams.find (name) == nsemu->rams.end ()) {
-		return false;
-	}
-	RAMBlock *as = &nsemu->rams[name];
-	if (len > as->length) {
-		return false;
-	}
-	return _CopyMemEmu (data, as->addr, len, false);
 }
 
 }
