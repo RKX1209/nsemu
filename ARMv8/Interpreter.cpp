@@ -17,21 +17,16 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
+        uint64_t estimate = 3400000;
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
+                if (counter >= estimate) {
+                        Cpu::DumpMachine ();
+                }
 		SingleStep ();
-                if (counter >= 241)
-                        break;
                 counter++;
-                // if (PC == 0x2d54) {
-		//         SingleStep ();
-                //         Cpu::DumpMachine ();
-                //         debug_print("Reach\n");
-                //         break;
-                // }
 	}
-        Cpu::DumpMachine ();
 }
 
 /* ####### Callbacks ####### */
