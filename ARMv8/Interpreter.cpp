@@ -17,7 +17,7 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3400000;
+        uint64_t estimate = 3404800;
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
@@ -382,12 +382,54 @@ void IntprCallback::NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64)
         else
                 X(rd_idx) = ~W(rm_idx);
 }
+
+static void ExtendRegI64(unsigned int rd_idx, uint64_t imm, unsigned int option) {
+        int extsize = extract32(option, 0, 2);
+        bool is_signed = extract32(option, 2, 1);
+        if (is_signed) {
+                switch (extsize) {
+                case 0:
+                        X(rd_idx) = (int64_t)(int8_t)(imm & 0xff);
+                        break;
+                case 1:
+                        X(rd_idx) = (int64_t)(int16_t)(imm & 0xffff);
+                        break;
+                case 2:
+                        X(rd_idx) = (int64_t)(int32_t)(imm & 0xffffffff);
+                        break;
+                case 3:
+                        X(rd_idx) = imm;
+                        break;
+                }
+        } else {
+                switch (extsize) {
+                case 0:
+                        X(rd_idx) = (uint64_t) (imm & 0xff);
+                        break;
+                case 1:
+                        X(rd_idx) = (uint64_t) (imm & 0xffff);
+                        break;
+                case 2:
+                        X(rd_idx) = (uint64_t) (imm & 0xffffffff);
+                        break;
+                case 3:
+                        X(rd_idx) = imm;
+                        break;
+                }
+        }
+
+}
 void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64) {
-        /* TODO: */
+	char regc = bit64? 'X': 'W';
+	debug_print ("Extend: %c[%u] Ext(%c[%u])\n", regc, rd_idx, regc, rn_idx);
+        if (bit64)
+                ExtendRegI64 (rd_idx, X(rn_idx), extend_type);
+        else
+                ExtendRegI64 (rd_idx, W(rn_idx), extend_type);
 }
 
 /* Load/Store */
-static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
+static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) {
                 debug_print ("Read from addr:0x%lx(%d)\n", addr, size);
                 if (size == 0) {
                         X(rd_idx) = ARMv8::ReadU8 (addr);
@@ -404,11 +446,13 @@ static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) 
                         //ns_debug("Read: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
                 }
 
-		/* TODO: if (extend)
-				ExtendReg(rd_idx, rd_idx, type, true); */
+		if (extend && is_sign) {
+                        /* TODO: treat other cases (8bit-> or 16bit->)*/
+                        X(rd_idx) = (int64_t) (int32_t) W(rd_idx);
+                }
 }
 
-static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend) {
+static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) {
                 debug_print ("Write to addr:0x%lx(%d)\n", addr, size);
                 if (size == 0) {
                         ARMv8::WriteU8 (addr, (uint8_t) (W(rd_idx) & 0xff));
@@ -424,63 +468,61 @@ static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool extend)
                         ARMv8::WriteU64 (addr, VREG(rd_idx).d[1]);
                         //ns_debug("Write: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
                 }
-		/* TODO: if (extend)
-				ExtendReg(rd_idx, rd_idx, type, true); */
 }
 
 void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
-                            bool extend, bool post, bool bit64) {
+                            bool is_sign, bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
                 base_idx = ARMv8::HandleAsSP (base_idx);
-                debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
+                debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]](extend:%d, sign:%d)\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx, extend, is_sign);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
                                 addr = X(base_idx);
                         else
                                 addr = X(base_idx) + X(rm_idx);
-                        _LoadReg (rd_idx, addr, size, extend);
+                        _LoadReg (rd_idx, addr, size, is_sign, extend);
                 } else {
                         if (post)
                                 addr = W(base_idx);
                         else
                                 addr = W(base_idx) + W(rm_idx);
-                        _LoadReg (rd_idx, addr, size, extend);
+                        _LoadReg (rd_idx, addr, size, is_sign, extend);
                 }
 }
 void IntprCallback::LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size,
-                                bool extend) {
+                                bool is_sign, bool extend) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Load(%d): %c[%u] <= [0x%lx]\n", size, regdc, rd_idx, X(ad_idx));
-                _LoadReg (rd_idx, X(ad_idx), size, extend);
+                _LoadReg (rd_idx, X(ad_idx), size, is_sign, extend);
 }
 void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size,
-                                bool extend, bool post, bool bit64) {
+                                bool is_sign, bool extend, bool post, bool bit64) {
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
                 base_idx = ARMv8::HandleAsSP (base_idx);
-	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]]\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx);
+	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]](extend:%d, sign:%d)\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx, extend, is_sign);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
                                 addr = X(base_idx);
                         else
                                 addr = X(base_idx) + X(rm_idx);
-                        _StoreReg (rd_idx, addr, size, extend);
+                        _StoreReg (rd_idx, addr, size, is_sign, extend);
                 } else {
                         if (post)
                                 addr = W(base_idx);
                         else
                                 addr = W(base_idx) + W(rm_idx);
-                        _StoreReg (rd_idx, addr, size, extend);
+                        _StoreReg (rd_idx, addr, size, is_sign, extend);
                 }
 }
 void IntprCallback::StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size,
-                                        bool extend) {
+                                bool is_sign, bool extend) {
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
 	        debug_print ("Store(%d): %c[%u] => [0x%lx]\n", size, regdc, rd_idx, X(ad_idx));
-                _StoreReg (rd_idx, X(ad_idx), size, extend);
+                _StoreReg (rd_idx, X(ad_idx), size, is_sign, extend);
 }
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
@@ -631,7 +673,8 @@ void IntprCallback::BranchFlag(unsigned int cond, uint64_t addr) {
 
 /* Set PC with reg */
 void IntprCallback::SetPCReg(unsigned int rt_idx) {
-        PC = X(rt_idx);
+        PC = X(rt_idx) - 4;
+        ns_print ("Goto: 0x%lx\n", PC);
 }
 
 /* Super Visor Call */

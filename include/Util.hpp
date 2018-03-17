@@ -13,8 +13,8 @@ enum RunLevel {
 	RUN_LEVEL_DEBUG,
 };
 
-//static RunLevel curlevel = RUN_LEVEL_DEBUG;
-static RunLevel curlevel = RUN_LEVEL_RELEASE;
+static RunLevel curlevel = RUN_LEVEL_DEBUG;
+//static RunLevel curlevel = RUN_LEVEL_RELEASE;
 
 static void util_print(RunLevel level, FILE *fp, const char *format, ...) {
 	if (curlevel >= level) {

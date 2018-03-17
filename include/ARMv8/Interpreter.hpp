@@ -47,10 +47,10 @@ void NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64);
 void ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64);
 
 /* Load/Store */
-void LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool bit64);
-void LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool extend);
-void StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool extend, bool post, bool bit64);
-void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool extend);
+void LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool is_sign, bool extend, bool post, bool bit64);
+void LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sign, bool extend);
+void StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool is_sign, bool extend, bool post, bool bit64);
+void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sign, bool extend);
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
