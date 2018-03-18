@@ -17,11 +17,12 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3404800;
+        uint64_t estimate = 3404800, mx = 1000;
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
                 if (counter >= estimate) {
+                //if (counter >= estimate && counter <= estimate + mx){
                         Cpu::DumpMachine ();
                 }
 		SingleStep ();
@@ -42,6 +43,7 @@ enum OpType{
         AL_TYPE_EOR,
         AL_TYPE_SDIV,
         AL_TYPE_UDIV,
+        AL_TYPE_MUL,
 };
 
 const char *OpStrs[] = { "<<", ">>", ">>", "ROR", "+", "-", "&", "|", "^" };
@@ -119,11 +121,53 @@ static int64_t Sdiv64(int64_t arg1, int64_t arg2) {
         return arg1 / arg2;
 }
 
+static void Umul64(uint64_t *res_h, uint64_t *res_l, uint64_t arg1, uint64_t arg2) {
+        typedef union {
+                uint64_t ll;
+                struct {
+                        uint32_t low, high;
+                } l;
+        } LL;
+        LL rl, rm, rn, rh, a0, b0;
+        uint64_t c;
+
+        a0.ll = arg1;
+        b0.ll = arg2;
+
+        rl.ll = (uint64_t)a0.l.low * b0.l.low;
+        rm.ll = (uint64_t)a0.l.low * b0.l.high;
+        rn.ll = (uint64_t)a0.l.high * b0.l.low;
+        rh.ll = (uint64_t)a0.l.high * b0.l.high;
+
+        c = (uint64_t)rl.l.high + rm.l.low + rn.l.low;
+        rl.l.high = c;
+        c >>= 32;
+        c = c + rm.l.high + rn.l.high + rh.l.low;
+        rh.l.low = c;
+        rh.l.high += (uint32_t)(c >> 32);
+
+        *res_l = rl.ll;
+        *res_h = rh.ll;
+}
+
+static void Smul64(uint64_t *res_h, uint64_t *res_l, uint64_t arg1, uint64_t arg2) {
+        uint64_t rh;
+
+        Umul64(res_l, &rh, arg1, arg2);
+
+        /* Adjust for signs.  */
+        if (arg2 < 0) {
+                rh -= arg1;
+        }
+        if (arg1 < 0) {
+                rh -= arg2;
+        }
+        *res_h = rh;
+}
+
 static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
         if (op == AL_TYPE_ADD)
                 return arg1 + arg2;
-        // if (op == AL_TYPE_SUB)
-        //         return arg1 - arg2;
         if (op == AL_TYPE_AND)
                 return arg1 & arg2;
         if (op == AL_TYPE_OR)
@@ -143,6 +187,9 @@ static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
         }
         if (op == AL_TYPE_SDIV) {
                 return Sdiv64 (arg1, arg2);
+        }
+        if (op == AL_TYPE_MUL) {
+                return arg1 * arg2;
         }
         return 0;
 }
@@ -262,6 +309,32 @@ void IntprCallback::SubReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
         else
                 ArithmeticLogic (rd_idx, W(rn_idx), W(rm_idx), setflags, bit64, AL_TYPE_SUB);
 }
+void IntprCallback::MulReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool sign, bool dst64, bool src64) {
+	char regdc = dst64? 'X': 'W';
+	char regsc = src64? 'X': 'W';
+	debug_print ("%cMUL: %c[%u] = %c[%u] * %c[%u] \n", sign?'S':'U', regdc, rd_idx, regsc, rn_idx, regsc, rm_idx);
+        if (dst64) {
+                if (src64) {
+                        X(rd_idx) = X(rn_idx) * X(rm_idx);
+                } else {
+                        if (sign)
+                                X(rd_idx) = (int64_t)((int32_t)W(rn_idx) * (int32_t)W(rm_idx));
+                        else
+                                X(rd_idx) = W(rn_idx) * W(rm_idx);
+                }
+        } else {
+                W(rd_idx) = W(rn_idx) * W(rm_idx);
+        }
+}
+//64bit * 64bit
+void IntprCallback::Mul2Reg(unsigned int rh_idx, unsigned int rl_idx, unsigned int rn_idx, unsigned int rm_idx, bool sign) {
+	debug_print ("%cMUL2: X[%u], X[%u] = X[%u] * X[%u] \n", sign?'S':'U', rh_idx, rl_idx, rn_idx, rm_idx);
+        if (sign)
+                Smul64(&X(rh_idx), &X(rl_idx), X(rn_idx), X(rm_idx));
+        else
+                Umul64(&X(rh_idx), &X(rl_idx), X(rn_idx), X(rm_idx));
+}
+
 void IntprCallback::DivReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool sign, bool bit64) {
 	char regc = bit64? 'X': 'W';
 	debug_print ("%cDIV: %c[%u] = %c[%u] / %c[%u] \n", sign?'S':'U', regc, rd_idx, regc, rn_idx, regc, rm_idx);

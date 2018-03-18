@@ -531,6 +531,61 @@ static void DisasAddSubReg(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void DisasDataProc3src(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int ra = extract32(insn, 10, 5);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int op_id = (extract32(insn, 29, 3) << 4) |
+                        (extract32(insn, 21, 3) << 1) | extract32(insn, 15, 1);
+        bool sf = extract32(insn, 31, 1);
+        bool is_sub = extract32(op_id, 0, 1);
+        bool is_high = extract32(op_id, 2, 1);
+        bool is_signed = false;
+        bool src64 = false;
+
+        /* Note that op_id is sf:op54:op31:o0 so it includes the 32/64 size flag */
+        switch (op_id) {
+        case 0x42: /* SMADDL */
+        case 0x43: /* SMSUBL */
+        case 0x44: /* SMULH */
+                is_signed = true;
+                break;
+        case 0x0: /* MADD (32bit) */
+        case 0x1: /* MSUB (32bit) */
+        case 0x40: /* MADD (64bit) */
+        case 0x41: /* MSUB (64bit) */
+        case 0x4a: /* UMADDL */
+        case 0x4b: /* UMSUBL */
+        case 0x4c: /* UMULH */
+                break;
+        default:
+                UnallocatedOp (insn);
+                return;
+        }
+        if (is_high) {
+                /* SMULH, UMULH ... [Multiply High] */
+                cb->Mul2Reg (rd, GPR_DUMMY, rn, rm, is_signed);
+        } else {
+                /*
+                 * sf = 0: MADD(32bit), MSUB(32bit) ... Wd = Wa +/- Wn * Wm
+                 * sf = 1: (op_id < 0x42) MADD(64bit), MSUB(64bit) ... Xd = Xa +/- Xn * Xm
+                           (sign = 0) UMADDL(UMULL), UMSUBL(UMNEGL) ... [Multiply Long 32bit*32bit] Xd = Wa +/- Wn * Wm
+                 *         (sign = 1) SMADDL(SMULL), SMSUBL(SMNEGL) ... [Multiply Long 32bit*32bit] Xd = Wa +/- Wn * Wm
+                 */
+                if (op_id < 0x42) {
+                        /* MADD(64bit), MSUB(64bit) */
+                        src64 = true;
+                }
+                cb->MulReg (rd, rn, rm, is_signed, sf, src64);
+                if (is_sub)
+                        cb->SubReg (rd, ra, rd, false, src64);
+                else
+                        cb->AddReg (rd, ra, rd, false, src64);
+        }
+
+}
+
 static void DisasAddSubcReg(uint32_t insn, DisasCallback *cb) {
         unsigned int sf = extract32(insn, 31, 1);
         unsigned int sub_op = extract32(insn, 30, 1);
@@ -681,7 +736,7 @@ static void DisasDataProc2src(uint32_t insn, DisasCallback *cb) {
 static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 24, 5)) {
         case 0x0a: /* Logical (shifted register) */
-                DisasLogicReg(insn, cb);
+                DisasLogicReg (insn, cb);
                 break;
         case 0x0b: /* Add/subtract */
                 if (insn & (1 << 21)) { /* (extended register) */
@@ -691,8 +746,7 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
                 }
                 break;
         case 0x1b: /* Data-processing (3 source) */
-                /* TODO */
-                UnsupportedOp ("DataProc3src");
+                DisasDataProc3src (insn, cb);
                 break;
         case 0x1a:
                 switch (extract32(insn, 21, 3)) {
@@ -793,7 +847,7 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
                 is_store = (opc == 0);
                 is_signed = extract32(opc, 1, 1);
                 //is_extended = (size < 3) && extract32(opc, 0, 1);
-                is_extended = (size < 3); //TODO: treat other case, size = 0, 1(8bit-> or 16bit->)                
+                is_extended = (size < 3); //TODO: treat other case, size = 0, 1(8bit-> or 16bit->)
         }
         bool sf = DisasLdstCompute64bit (size, is_signed, opc);
         cb->ExtendReg (GPR_DUMMY, rm, opt, sf); //FIXME: When rm == GPR_ZERO, it should be handled as GPR_SP
