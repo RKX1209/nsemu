@@ -188,16 +188,19 @@ static void DisasBitfield(uint32_t insn, DisasCallback *cb) {
         }
 
         /* Recognize simple(r) extractions.  */
+        cb->MovReg (GPR_DUMMY, rn, true);
         if (si >= ri) {
                 /* Xd<0:r> = Xn<(s-r+1):s> */
                 len = (si - ri) + 1;
                 if (opc == 0) { /* SBFM: ASR, SBFX, SXTB, SXTH, SXTW */
-                        cb->SExtractI64(rd, rn, ri, len, is_64bit);
+                        cb->SExtractI64(rd, GPR_DUMMY, ri, len, is_64bit);
                         return;
                 } else if (opc == 2) { /* UBFM: UBFX, LSR, UXTB, UXTH */
-                        cb->UExtractI64(rd, rn, ri, len, is_64bit);
+                        cb->UExtractI64(rd, GPR_DUMMY, ri, len, is_64bit);
                         return;
                 }
+                /* opc == 1, BXFIL fall through to deposit */
+                cb->UExtractI64(GPR_DUMMY, GPR_DUMMY, ri, len, is_64bit);
                 pos = 0;
         } else {
                 /* Handle the ri > si case with a deposit
@@ -211,17 +214,17 @@ static void DisasBitfield(uint32_t insn, DisasCallback *cb) {
                 /* SBFM: sign extend the destination field from len to fill
                    the balance of the word.  Let the deposit below insert all
                    of those sign bits.  */
-                cb->SExtractI64(rd, rn, 0, len, is_64bit);
+                cb->SExtractI64(GPR_DUMMY, GPR_DUMMY, 0, len, is_64bit);
                 len = ri;
          }
 
          if (opc == 1) { /* BFM, BXFIL */
-                cb->DepositReg (rd, rd, pos, len, is_64bit);
+                cb->DepositReg (rd, GPR_DUMMY, pos, len, is_64bit);
          } else {
                 /* SBFM or UBFM: We start with zero, and we haven't modified
                    any bits outside bitsize, therefore the zero-extension
                    below is unneeded.  */
-                cb->DepositZeroReg (rd, rd, pos, len, is_64bit);
+                cb->DepositZeroReg (rd, GPR_DUMMY, pos, len, is_64bit);
          }
          return;
 }
@@ -280,14 +283,14 @@ static void DisasDataProcImm(uint32_t insn, DisasCallback *cb) {
 }
 
 static void DisasUncondBrImm(uint32_t insn, DisasCallback *cb) {
-        uint64_t addr = PC + sextract32(insn, 0, 26) * 4 - 4;
+        cb->AddI64(GPR_DUMMY, PC_IDX, sextract32(insn, 0, 26) * 4, false, true);
         if (insn & (1U << 31)) {
                 /* BL Branch with link */
-                cb->MoviI64(GPR_LR, PC, true);
+                cb->AddI64(GPR_LR, PC_IDX, 4, false, true);
         }
 
         /* B Branch / BL Branch with link */
-        cb->BranchI64(addr);
+        cb->SetPCReg(GPR_DUMMY);
 }
 
 static void DisasCompBrImm(uint32_t insn, DisasCallback *cb) {
@@ -337,7 +340,7 @@ static void DisasUncondBrReg(uint32_t insn, DisasCallback *cb) {
 
         switch (opc) {
         case 1: /* BLR */
-                cb->MovReg(GPR_LR, PC_IDX, true);
+                cb->AddI64(GPR_LR, PC_IDX, 4, false, true);
         case 0: /* BR */
         case 2: /* RET */
                 cb->SetPCReg (rn);
@@ -450,38 +453,41 @@ static void DisasLogicReg(uint32_t insn, DisasCallback *cb) {
                 */
                 if (invert) {
                         cb->NotReg (rd, rm, sf);
+                } else {
+                        cb->MovReg (rd, rm, sf);
                 }
-                cb->MovReg (rd, rm, sf);
+                return;
         }
+        cb->MovReg (GPR_DUMMY, rm, true);
         if (shift_amount) {
-                cb->ShiftI64 (rm, rm, shift_type, shift_amount, sf);
+                cb->ShiftI64 (GPR_DUMMY, rm, shift_type, shift_amount, sf);
         }
         switch (opc | (invert << 2)) {
         case 0: /* AND */
-                cb->AndReg (rd, rn, rm, false, sf);
+                cb->AndReg (rd, rn, GPR_DUMMY, false, sf);
                 break;
         case 3: /* ANDS */
-                cb->AndReg (rd, rn, rm, true, sf);
+                cb->AndReg (rd, rn, GPR_DUMMY, true, sf);
                 break;
         case 1: /* ORR */
-                cb->OrrReg (rd, rn, rm, sf);
+                cb->OrrReg (rd, rn, GPR_DUMMY, sf);
                 break;
         case 2: /* EOR */
-                cb->EorReg (rd, rn, rm, sf);
+                cb->EorReg (rd, rn, GPR_DUMMY, sf);
                 break;
         case 4: /* BIC */
-                cb->BicReg (rd, rn, rm, false, sf);
+                cb->BicReg (rd, rn, GPR_DUMMY, false, sf);
                 break;
         case 7: /* BICS */
-                cb->BicReg (rd, rn, rm, true, sf);
+                cb->BicReg (rd, rn, GPR_DUMMY, true, sf);
                 break;
         case 5: /* ORN */
-                cb->NotReg (rm, rm, sf);
-                cb->OrrReg (rd, rn, rm, sf);
+                cb->NotReg (GPR_DUMMY, GPR_DUMMY, sf);
+                cb->OrrReg (rd, rn, GPR_DUMMY, sf);
                 break;
         case 6: /* EON */
-                cb->NotReg (rm, rm, sf);
-                cb->EorReg (rd, rn, rm, sf);
+                cb->NotReg (GPR_DUMMY, GPR_DUMMY, sf);
+                cb->EorReg (rd, rn, GPR_DUMMY, sf);
                 break;
         default:
                 ns_abort ("Invalid Logical(Reg) opcode: %u\n", opc);
@@ -644,11 +650,14 @@ static void DisasCondSel(uint32_t insn, DisasCallback *cb) {
                  * CSETM (CSINV <Wd>, WZR, WZR, invert(<cond>)) */
                 cond = cond ^ 1; // i.e. invert(<cond>)
         }
-        if (else_inv)
-                cb->NotReg (rm, rm, sf);
-        if (else_inc)
-                cb->AddI64 (rm, rm, 1, false, sf);
-        cb->CondMovReg (cond, rd, rn, rm);
+        cb->MovReg (GPR_DUMMY, rm, true);
+        if (else_inv) {
+                cb->NotReg (GPR_DUMMY, GPR_DUMMY, sf);
+        }
+        if (else_inc) {
+                cb->AddI64 (GPR_DUMMY, GPR_DUMMY, 1, false, sf);
+        }
+        cb->CondMovReg (cond, rd, rn, GPR_DUMMY, sf);
 }
 
 static void DisasDataProc1src(uint32_t insn, DisasCallback *cb) {

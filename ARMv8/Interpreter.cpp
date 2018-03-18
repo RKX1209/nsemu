@@ -17,15 +17,12 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3404800, mx = 10000;
+        uint64_t estimate = 3413800, mx = 10000;
 	while (Cpu::GetState () == Cpu::State::Running) {
-                char c;
-                //scanf("%c", &c);
-                //if (counter >= estimate) {
                 if (counter >= estimate){
                         Cpu::DumpMachine ();
                 }
-                if (counter > estimate + mx)
+                if (counter >= estimate + mx)
                         break;
 		SingleStep ();
                 counter++;
@@ -251,7 +248,7 @@ void IntprCallback::DepositReg(unsigned int rd_idx, unsigned int rn_idx, unsigne
 
 void IntprCallback::DepositZeroI64(unsigned int rd_idx, uint64_t imm, unsigned int pos, unsigned int len, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	//debug_print ("MOVK: %c[%u] = 0x%lx\n", regc, rd_idx, imm << pos);
+	debug_print ("DepZ: %c[%u](pos:%u, len:%u) = 0x%lx\n", regc, rd_idx, pos, len, imm);
         X(rd_idx) = (imm & ((1ULL << len) - 1)) << pos;
 }
 
@@ -275,15 +272,19 @@ void IntprCallback::MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64)
 }
 
 /* Conditional mov between registers */
-void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
+void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("MOV: %c[%u] = %c[%u]\n", regc, rd_idx, regc, rn_idx);
+	debug_print ("MOV: %c[%u] = 0: %c[%u], 1: %c[%u]\n", regc, rd_idx, regc, rm_idx, regc, rn_idx);
         if (bit64) {
                 if (CondHold(cond))
                         X(rd_idx) = X(rn_idx);
+                else
+                        X(rd_idx) = X(rm_idx);
         } else {
                 if (CondHold(cond))
                         X(rd_idx) = W(rn_idx);
+                else
+                        X(rd_idx) = W(rm_idx);
         }
 }
 
@@ -624,21 +625,29 @@ void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsign
         char regc = bit64? 'X': 'W';
 	debug_print ("SExtract: %c[%u] <= SEXT[%c[%u]: %u, %u]\n", regc, rd_idx, regc, rn_idx, pos, len);
         if (pos + len == 64) {
-                ShiftI64 (rd_idx, rn_idx, AL_TYPE_ASR, 64 - len, bit64);
-                return;
+                ShiftI64 (rd_idx, rn_idx, AL_TYPE_ASR, 64 - len, true);
+                goto fin;
         }
-        ShiftI64 (GPR_DUMMY, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
+        ShiftI64 (GPR_DUMMY, rn_idx, AL_TYPE_LSL, 64 - len - pos, true);
         ShiftI64 (rd_idx, GPR_DUMMY, AL_TYPE_ASR, 64 - len, true);
+fin:
+        if (!bit64) {
+                X(rd_idx) = (int32_t) (X(rd_idx) & 0xffffffff);
+        }
 }
 void IntprCallback::UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {
         char regc = bit64? 'X': 'W';
 	debug_print ("UExtract: %c[%u] <= SEXT[%c[%u]: %u, %u]\n", regc, rd_idx, regc, rn_idx, pos, len);
         if (pos + len == 64) {
-                ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSR, 64 - len, bit64);
-                return;
+                ShiftI64 (rd_idx, rn_idx, AL_TYPE_LSR, 64 - len, true);
+                goto fin;
         }
-        ShiftI64 (GPR_DUMMY, rn_idx, AL_TYPE_LSL, 64 - len - pos, bit64);
+        ShiftI64 (GPR_DUMMY, rn_idx, AL_TYPE_LSL, 64 - len - pos, true);
         ShiftI64 (rd_idx, GPR_DUMMY, AL_TYPE_LSR, 64 - len, true);
+fin:
+        if (!bit64) {
+                X(rd_idx) = X(rd_idx) & 0xffffffff;
+        }
 }
 
 /* Reverse bit order */
@@ -767,12 +776,11 @@ void IntprCallback::BranchFlag(unsigned int cond, uint64_t addr) {
 /* Set PC with reg */
 void IntprCallback::SetPCReg(unsigned int rt_idx) {
         PC = X(rt_idx) - 4;
-        ns_print ("Goto: 0x%lx\n", PC);
+        ns_print ("Goto: 0x%lx\n", PC + 4);
 }
 
 /* Super Visor Call */
 void IntprCallback::SVC(unsigned int svc_num) {
-        //debug_print ("SVC: %u\n", svc_num);
         ns_print ("SVC: 0x%02x\n", svc_num);
         if (SVC::svc_handlers[svc_num])
                 SVC::svc_handlers[svc_num]();
