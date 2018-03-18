@@ -17,14 +17,16 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3404800, mx = 1000;
+        uint64_t estimate = 3404800, mx = 10000;
 	while (Cpu::GetState () == Cpu::State::Running) {
                 char c;
                 //scanf("%c", &c);
-                if (counter >= estimate) {
-                //if (counter >= estimate && counter <= estimate + mx){
+                //if (counter >= estimate) {
+                if (counter >= estimate){
                         Cpu::DumpMachine ();
                 }
+                if (counter > estimate + mx)
+                        break;
 		SingleStep ();
                 counter++;
 	}
@@ -75,7 +77,18 @@ static bool CondHold(unsigned int cond) {
         return result;
 }
 
-static void UpdateFlag(uint64_t res, uint64_t arg1, uint64_t arg2) {
+static void UpdateFlag32(uint32_t res, uint32_t arg1, uint32_t arg2) {
+        /* XXX: In ARMv8, nzcv flag is only updated when ADD/SUB/AND/BIC.
+         * So following logic can work correctly(?)
+         */
+        uint32_t nzcv = 0;
+        if (res & (1UL << 31)) nzcv |= N_MASK; // N
+        if (res == 0UL) nzcv |= Z_MASK; // Z
+        if (((arg1 & arg2) + ((arg1 ^ arg2) >> 1)) >> 31) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
+        if (!(arg1 ^ arg2 && (1UL < 31)) & (arg2 ^ res && (1UL < 31))) nzcv |= V_MASK; //V
+        NZCV = nzcv;
+}
+static void UpdateFlag64(uint64_t res, uint64_t arg1, uint64_t arg2) {
         /* XXX: In ARMv8, nzcv flag is only updated when ADD/SUB/AND/BIC.
          * So following logic can work correctly(?)
          */
@@ -201,9 +214,17 @@ static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, b
                 op = AL_TYPE_ADD;
         }
         result = ALCalc (arg1, arg2, op);
-        if (setflags)
-                UpdateFlag (result, arg1, arg2);
-        X(rd_idx) = result;
+        if (setflags) {
+                if (bit64)
+                        UpdateFlag64 (result, arg1, arg2);
+                else
+                        UpdateFlag32 (result, arg1, arg2);
+        }
+        if (bit64) {
+                X(rd_idx) = result;
+        } else {
+                X(rd_idx) = result & 0xffffffff;
+        }
 }
 
 void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
@@ -323,7 +344,7 @@ void IntprCallback::MulReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
                                 X(rd_idx) = W(rn_idx) * W(rm_idx);
                 }
         } else {
-                W(rd_idx) = W(rn_idx) * W(rm_idx);
+                X(rd_idx) = (W(rn_idx) * W(rm_idx)) & 0xffffffff;
         }
 }
 //64bit * 64bit
@@ -378,7 +399,6 @@ void IntprCallback::SubcReg(unsigned int rd_idx, unsigned int rn_idx, unsigned i
 /* AND/OR/EOR... with Immediate value */
 void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("And: %c[%u] = %c[%u] & 0x%lx (flag: %s)\n", regc, rd_idx, regc, rn_idx, wmask, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, setflags, bit64, AL_TYPE_AND);
@@ -388,7 +408,6 @@ void IntprCallback::AndI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Or: %c[%u] = %c[%u] | 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_OR);
@@ -397,7 +416,6 @@ void IntprCallback::OrrI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wmask, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Eor: %c[%u] = %c[%u] ^ 0x%lx \n", regc, rd_idx, regc, rn_idx, wmask);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), wmask, false, bit64, AL_TYPE_EOR);
@@ -406,7 +424,6 @@ void IntprCallback::EorI64(unsigned int rd_idx, unsigned int rn_idx, uint64_t wm
 }
 void IntprCallback::ShiftI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int shift_type, unsigned int shift_amount, bool bit64) {
 	char regc = bit64? 'X': 'W';
-        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Shift: %c[%u] = %c[%u] %s 0x%lx \n", regc, rd_idx, regc, rn_idx, OpStrs[shift_type], shift_amount);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), shift_amount, false, bit64, (OpType)shift_type);
@@ -417,6 +434,7 @@ void IntprCallback::ShiftI64(unsigned int rd_idx, unsigned int rn_idx, unsigned 
 /* AND/OR/EOR/BIC/NOT... between registers */
 void IntprCallback::AndReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        //rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("And: %c[%u] = %c[%u] & %c[%u] (flag: %s)\n", regc, rd_idx, regc, rn_idx, regc, rm_idx, setflags? "update": "no");
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), X(rm_idx), setflags, bit64, AL_TYPE_AND);
@@ -425,6 +443,7 @@ void IntprCallback::AndReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
 }
 void IntprCallback::OrrReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Or: %c[%u] = %c[%u] | %c[%u]\n", regc, rd_idx, regc, rn_idx, regc, rm_idx);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), X(rm_idx), false, bit64, AL_TYPE_OR);
@@ -433,6 +452,7 @@ void IntprCallback::OrrReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
 }
 void IntprCallback::EorReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64) {
 	char regc = bit64? 'X': 'W';
+        rd_idx = ARMv8::HandleAsSP (rd_idx);
 	debug_print ("Eor: %c[%u] = %c[%u] ^ %c[%u]\n", regc, rd_idx, regc, rn_idx, regc, rm_idx);
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), X(rm_idx), false, bit64, AL_TYPE_EOR);
