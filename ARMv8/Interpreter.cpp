@@ -21,7 +21,8 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3413800, mx = 10000;
+        //uint64_t estimate = 3413000, mx = 10000;
+        uint64_t estimate = 3414000, mx = 10000;
 	while (Cpu::GetState () == Cpu::State::Running) {
                 if (counter >= estimate){
                         Cpu::DumpMachine ();
@@ -780,7 +781,7 @@ void IntprCallback::BranchFlag(unsigned int cond, uint64_t addr) {
 /* Set PC with reg */
 void IntprCallback::SetPCReg(unsigned int rt_idx) {
         PC = X(rt_idx) - 4;
-        ns_print ("Goto: 0x%lx\n", PC + 4);
+        debug_print ("Goto: 0x%lx\n", PC + 4);
 }
 
 /* Super Visor Call */
@@ -848,7 +849,7 @@ void IntprCallback::DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, i
 
 /* Read/Write Sysreg */
 void IntprCallback::ReadWriteSysReg(unsigned int rd_idx, int offset, bool read) {
-        uint64_t *sysr = (uint64_t *)(&SYSR + offset);
+        uint64_t *sysr = (uint64_t *)((uint8_t *)&SYSR + offset);
         if (read) {
                 X(rd_idx) = *sysr;
         } else {
