@@ -407,6 +407,10 @@ static const A64SysRegInfo cp_reginfo[] = {
         // name, state, opc0, opc1, opc2, crn, crm, offset
         A64SysRegInfo("TPIDRRO_EL0", ARM_CP_STATE_AA64,
                         3, 3, 3, 13, 0, offsetof(ARMv8::ARMv8State::SysReg, tpidrro_el[0])),
+        A64SysRegInfo("DCZID_EL0", ARM_CP_STATE_AA64,
+                        3, 3, 7, 0, 0, offsetof(ARMv8::ARMv8State::SysReg, tczid_el[0])),
+        A64SysRegInfo("DC_ZVA", ARM_CP_STATE_AA64,
+                        1, 3, 1, 7, 4, -1),
         A64SysRegInfo(ARM_CP_SENTINEL)
 };
 
@@ -464,6 +468,23 @@ const A64SysRegInfo* GetSysReg(uint32_t encoded_op) {
         return it->second;
 }
 
+static void DisasHint(uint32_t insn, unsigned int op1, unsigned int op2, unsigned int crm, DisasCallback *cb) {
+        unsigned int selector = crm << 3 | op2;
+
+        if (op1 != 3) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        switch (selector) {
+        case 0: /* NOP */
+                return;
+        default:
+                UnsupportedOp ("HINT ops (except NOP)");
+                break;
+        }
+}
+
 static void DisasSystem(uint32_t insn, DisasCallback *cb) {
         unsigned int l, op0, op1, crn, crm, op2, rt;
         const A64SysRegInfo *ri;
@@ -481,7 +502,7 @@ static void DisasSystem(uint32_t insn, DisasCallback *cb) {
                 }
                 switch (crn) {
                 case 2: /* HINT (including allocated hints like NOP, YIELD, etc) */
-                        UnsupportedOp ("HINT");
+                        DisasHint (insn, op1, op2, crm, cb);
                         break;
                 case 3: /* CLREX, DSB, DMB, ISB */
                         UnsupportedOp ("SYNC");
@@ -514,7 +535,8 @@ static void DisasSystem(uint32_t insn, DisasCallback *cb) {
                 UnsupportedOp ("MSR/MRS Current EL");
                 return;
         case ARM_CP_DC_ZVA:
-                UnsupportedOp ("MSR/MRS ZVA");
+                /* TODO: */
+                debug_print("DC ZVA (clear cache. future work...)\n");
                 return;
         }
         cb->ReadWriteSysReg(rt, ri->offset, isread);

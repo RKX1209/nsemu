@@ -259,11 +259,32 @@ uint64_t Break(uint64_t X0, uint64_t X1, uint64_t info) {
 
 uint64_t OutputDebugString(uint64_t ptr, uint64_t size) {
         ns_print("OutputDebugString addr=0x%lx, size=%llu\n", ptr, size);
+        unsigned char *str = new unsigned char[size + 1];
+        ARMv8::ReadBytes (ptr, str, size);
+        ns_print("String: %s\n", str);
+        delete[] str;
 	return 0;
 }
-
+#define matchone(a, v) do { if(id1 == (a)) return make_tuple(0, (v)); } while(0)
+#define matchpair(a, b, v) do { if(id1 == (a) && id2 == (b)) return make_tuple(0, (v)); } while(0)
 std::tuple<uint64_t, uint64_t> GetInfo(uint64_t id1, uint32_t handle, uint64_t id2) {
-        return make_tuple(0, 0);
+        ns_print("GetInfo id1: %llu, id2: %llu, handle: %u\n", id1, id2, handle);
+        matchpair(0, 0, 0xF);
+	matchpair(1, 0, 0xFFFFFFFF00000000);
+	matchpair(2, 0, 0xbb0000000); // map region
+	matchpair(3, 0, 0x1000000000); // size
+	matchpair(4, 0, Memory::heap_base); // heap region
+	matchpair(5, 0, Memory::heap_size); // size
+	matchpair(6, 0, 0x400000);
+	matchpair(7, 0, 0x10000);
+	matchpair(12, 0, 0x8000000);
+	matchpair(13, 0, 0x7ff8000000);
+	matchpair(14, 0, 0xbb0000000); // new map region
+	matchpair(15, 0, 0x1000000000); // size
+	matchpair(18, 0, 0x0100000000000036); // Title ID
+	matchone(11, 0);
+
+        ns_abort ("Unknown getinfo %llu, %llu\n", id1, id2);
 }
 
 std::tuple<uint64_t, uint64_t, uint64_t> CreateSession(uint32_t clientOut, uint32_t serverOut, uint64_t unk) {

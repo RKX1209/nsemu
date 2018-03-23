@@ -32,6 +32,14 @@ static void WriteToRAM(const uint64_t gpa, T value) {
         bindump (ptr, sizeof(T));
 }
 
+void ReadBytes(uint64_t gva, uint8_t *ptr, int size) {
+        uint64_t gpa = gva;
+        for (int i = 0; i < size; i++) {
+                uint8_t byte = ReadU8 (gpa + i);
+                ptr[i] = byte;
+        }
+}
+
 uint8_t ReadU8(const uint64_t gva) {
 	/* XXX: Implement Page translation */
 	uint64_t gpa = gva;

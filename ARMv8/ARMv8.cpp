@@ -13,6 +13,7 @@ void Init() {
         //PC = 0x30f0;
         SP = 0x3100000;
         SYSR.tpidrro_el[0] = (1 << 24) + 0x1000 * 1;
+        SYSR.tczid_el[0] = 0x4; //FIXME: calclulate at runtime
 }
 
 void RunLoop() {

@@ -15,6 +15,9 @@ RAMBlock::RAMBlock (std::string _name, uint64_t _addr, size_t _length, int _perm
 
 namespace Memory
 {
+uint64_t heap_base = 0x9000000;
+//uint64_t heap_size = 0x2000000;
+uint64_t heap_size = 0x0;
 uint8_t *pRAM;	// XXX: Replace raw pointer to View wrapper.
 static RAMBlock mem_map[] =
 {
@@ -22,6 +25,7 @@ static RAMBlock mem_map[] =
 	RAMBlock (".rdata", 0x1000000, 0x1000000, PROT_READ | PROT_WRITE),
 	RAMBlock (".data", 0x2000000, 0x1000000, PROT_READ | PROT_WRITE),
 	RAMBlock ("[stack]", 0x3000000, 0x6000000, PROT_READ | PROT_WRITE),
+	//RAMBlock ("[heap]", heap_base, heap_size, PROT_READ | PROT_WRITE),
 };
 
 void InitMemmap(Nsemu *nsemu) {

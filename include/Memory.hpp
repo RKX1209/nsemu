@@ -23,6 +23,9 @@ class Nsemu;
 namespace Memory
 {
 extern uint8_t *pRAM;	// XXX: Replace raw pointer to View wrapper.
+extern uint64_t heap_base;
+extern uint64_t heap_size;
+
 void InitMemmap(Nsemu *nsemu);
 RAMBlock *FindRAMBlock(Nsemu *nsemu, uint64_t addr, size_t len);
 bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len);
