@@ -53,6 +53,8 @@ void LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, in
 void LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sign, bool extend);
 void StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool is_sign, bool extend, bool post, bool bit64);
 void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sign, bool extend);
+void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend);
+void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend);
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
@@ -98,6 +100,11 @@ void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int
 /* Duplicate an general register into vector register */
 void DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize);
 
+/* Read/Write Sysreg */
+void ReadWriteSysReg(unsigned int rd_idx, int offset, bool read);
+/* Read/Write NZCV */
+void ReadWriteNZCV(unsigned int rd_idx, bool read);
+
 /* Write to FP register */
 void WriteFpReg(unsigned int fd_idx, unsigned int fn_idx);
 void WriteFpRegI64(unsigned int fd_idx, uint64_t imm);
@@ -117,6 +124,8 @@ Interpreter(const Interpreter&) = delete;
 Interpreter& operator=(const Interpreter&) = delete;
 Interpreter(Interpreter&&) = delete;
 Interpreter& operator=(Interpreter&&) = delete;
+
+void Init();
 
 static Interpreter *get_instance() {
 	return inst;

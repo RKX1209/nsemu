@@ -401,6 +401,125 @@ static void DisasException(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+std::map<uint32_t, const A64SysRegInfo*> sysreg_table;
+
+static const A64SysRegInfo cp_reginfo[] = {
+        // name, state, opc0, opc1, opc2, crn, crm, offset
+        A64SysRegInfo("TPIDRRO_EL0", ARM_CP_STATE_AA64,
+                        3, 3, 3, 13, 0, offsetof(ARMv8::ARMv8State::SysReg, tpidrro_el[0])),
+        A64SysRegInfo(ARM_CP_SENTINEL)
+};
+
+static void AddSysReg(const A64SysRegInfo *r, int state, int secstate, int crm, int opc1, int opc2) {
+        uint32_t key;
+        uint8_t cp = r->cp;
+        if (state == ARM_CP_STATE_AA64) {
+                if (r->cp == 0 || r->state == ARM_CP_STATE_BOTH) {
+                        cp = CP_REG_ARM64_SYSREG_CP;
+                }
+                key = ENCODE_SYSTEM_REG (cp, r->crn, crm, r->opc0, opc1, opc2);
+                sysreg_table[key] = r;
+        }
+}
+
+static void DefineSysReg(const A64SysRegInfo *r) {
+        int crm, opc1, opc2, state;
+        int crmmin = (r->crm == CP_ANY) ? 0 : r->crm;
+        int crmmax = (r->crm == CP_ANY) ? 15 : r->crm;
+        int opc1min = (r->opc1 == CP_ANY) ? 0 : r->opc1;
+        int opc1max = (r->opc1 == CP_ANY) ? 7 : r->opc1;
+        int opc2min = (r->opc2 == CP_ANY) ? 0 : r->opc2;
+        int opc2max = (r->opc2 == CP_ANY) ? 7 : r->opc2;
+        for (crm = crmmin; crm <= crmmax; crm++) {
+        for (opc1 = opc1min; opc1 <= opc1max; opc1++) {
+                for (opc2 = opc2min; opc2 <= opc2max; opc2++) {
+                        for (state = ARM_CP_STATE_AA32;
+                                state <= ARM_CP_STATE_AA64; state++) {
+                                        if (r->state != state && r->state != ARM_CP_STATE_BOTH) {
+                                                continue;
+                                        }
+                                        if (state == ARM_CP_STATE_AA32) {
+                                                /* TODO: */
+                                        } else {
+                                                AddSysReg (r, state, ARM_CP_SECSTATE_NS, crm, opc1, opc2);
+                                        }
+                                }
+                        }
+                }
+        }
+}
+
+static void DefineSysRegs(const A64SysRegInfo *regs) {
+        const A64SysRegInfo *r;
+        for (r = regs; r->type != ARM_CP_SENTINEL; r++) {
+                DefineSysReg(r);
+        }
+}
+
+const A64SysRegInfo* GetSysReg(uint32_t encoded_op) {
+        decltype(sysreg_table)::iterator it = sysreg_table.find(encoded_op);
+        if (it == sysreg_table.end()) {
+                return NULL;
+        }
+        return it->second;
+}
+
+static void DisasSystem(uint32_t insn, DisasCallback *cb) {
+        unsigned int l, op0, op1, crn, crm, op2, rt;
+        const A64SysRegInfo *ri;
+        l = extract32(insn, 21, 1);
+        op0 = extract32(insn, 19, 2);
+        op1 = extract32(insn, 16, 3);
+        crn = extract32(insn, 12, 4);
+        crm = extract32(insn, 8, 4);
+        op2 = extract32(insn, 5, 3);
+        rt = extract32(insn, 0, 5);
+        if (op0 == 0) {
+                if (l || rt != 31) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                switch (crn) {
+                case 2: /* HINT (including allocated hints like NOP, YIELD, etc) */
+                        UnsupportedOp ("HINT");
+                        break;
+                case 3: /* CLREX, DSB, DMB, ISB */
+                        UnsupportedOp ("SYNC");
+                        //handle_sync(s, insn, op1, op2, crm);
+                        break;
+                case 4: /* MSR (immediate) */
+                        UnsupportedOp ("MSR immediate");
+                        //handle_msr_i(s, insn, op1, op2, crm);
+                        break;
+                default:
+                        UnallocatedOp (insn);
+                        break;
+                }
+                return;
+        }
+        bool isread = l;
+        ri = GetSysReg(ENCODE_SYSTEM_REG(CP_REG_ARM64_SYSREG_CP,
+                                          crn, crm, op0, op1, op2));
+        if (!ri) {
+                ns_abort("Unknown system register\n");
+        }
+        /* Handle special cases first */
+        switch (ri->type & ~(ARM_CP_FLAG_MASK & ~ARM_CP_SPECIAL)) {
+        case ARM_CP_NOP:
+                return;
+        case ARM_CP_NZCV:
+                cb->ReadWriteNZCV (rt, isread);
+                return;
+        case ARM_CP_CURRENTEL:
+                UnsupportedOp ("MSR/MRS Current EL");
+                return;
+        case ARM_CP_DC_ZVA:
+                UnsupportedOp ("MSR/MRS ZVA");
+                return;
+        }
+        cb->ReadWriteSysReg(rt, ri->offset, isread);
+}
+
 static void DisasBranchExcSys(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 25, 7)) {
         case 0x0a: case 0x0b:
@@ -418,9 +537,7 @@ static void DisasBranchExcSys(uint32_t insn, DisasCallback *cb) {
                 break;
         case 0x6a: /* Exception generation / System */
                 if (insn & (1 << 24)) {
-                        //TODO:
-                        //DisasSystem (insn, cb);
-                        UnsupportedOp ("System");
+                        DisasSystem (insn, cb);
                 } else {
                         DisasException (insn, cb);
                 }
@@ -1378,6 +1495,10 @@ void DisasA64(uint32_t insn, DisasCallback *cb) {
 		ns_abort ("Invalid encoding operation: 0x%016lx\n", insn);	/* all 15 cases should be handled above */
 		break;
 	}
+}
+
+void Init() {
+        DefineSysRegs(cp_reginfo);
 }
 
 };

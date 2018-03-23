@@ -8,8 +8,11 @@ ARMv8State arm_state;
 void Init() {
 	Interpreter::create ();
 	cpu_engine = Interpreter::get_instance ();
+        cpu_engine->Init ();
         PC = 0x0;
+        //PC = 0x30f0;
         SP = 0x3100000;
+        SYSR.tpidrro_el[0] = (1 << 24) + 0x1000 * 1;
 }
 
 void RunLoop() {

@@ -53,6 +53,8 @@ virtual void LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm
 virtual void LoadRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sign, bool extend) = 0;
 virtual void StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool is_sign, bool extend, bool post, bool bit64) = 0;
 virtual void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sign, bool extend) = 0;
+virtual void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) = 0;
+virtual void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) = 0;
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
@@ -98,6 +100,11 @@ virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int i
 virtual void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize) = 0;
 /* Duplicate an general register into vector register */
 virtual void DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize) = 0;
+
+/* Read/Write Sysreg */
+virtual void ReadWriteSysReg(unsigned int rd_idx, int offset, bool read) = 0;
+/* Read/Write NZCV */
+virtual void ReadWriteNZCV(unsigned int rd_idx, bool read) = 0;
 
 /* Write to FP register */
 virtual void WriteFpReg(unsigned int fd_idx, unsigned int fn_idx) = 0;
@@ -145,15 +152,111 @@ enum CondType {
         CondType_NV
 };
 
+#define CP_REG_ARM64                   0x6000000000000000ULL
+#define CP_REG_ARM_COPROC_MASK         0x000000000FFF0000
+#define CP_REG_ARM_COPROC_SHIFT        16
+#define CP_REG_ARM64_SYSREG            (0x0013 << CP_REG_ARM_COPROC_SHIFT)
+#define CP_REG_ARM64_SYSREG_OP0_MASK   0x000000000000c000
+#define CP_REG_ARM64_SYSREG_OP0_SHIFT  14
+#define CP_REG_ARM64_SYSREG_OP1_MASK   0x0000000000003800
+#define CP_REG_ARM64_SYSREG_OP1_SHIFT  11
+#define CP_REG_ARM64_SYSREG_CRN_MASK   0x0000000000000780
+#define CP_REG_ARM64_SYSREG_CRN_SHIFT  7
+#define CP_REG_ARM64_SYSREG_CRM_MASK   0x0000000000000078
+#define CP_REG_ARM64_SYSREG_CRM_SHIFT  3
+#define CP_REG_ARM64_SYSREG_OP2_MASK   0x0000000000000007
+#define CP_REG_ARM64_SYSREG_OP2_SHIFT  0
+
+#define CP_REG_ARM64_SYSREG_CP (CP_REG_ARM64_SYSREG >> CP_REG_ARM_COPROC_SHIFT)
+
+#define CP_REG_AA64_SHIFT 28
+#define CP_REG_AA64_MASK (1 << CP_REG_AA64_SHIFT)
+
+#define CP_ANY 0xff
+
+#define ARM_CP_SPECIAL           0x0001
+#define ARM_CP_CONST             0x0002
+#define ARM_CP_64BIT             0x0004
+#define ARM_CP_SUPPRESS_TB_END   0x0008
+#define ARM_CP_OVERRIDE          0x0010
+#define ARM_CP_ALIAS             0x0020
+#define ARM_CP_IO                0x0040
+#define ARM_CP_NO_RAW            0x0080
+#define ARM_CP_NOP               (ARM_CP_SPECIAL | 0x0100)
+#define ARM_CP_WFI               (ARM_CP_SPECIAL | 0x0200)
+#define ARM_CP_NZCV              (ARM_CP_SPECIAL | 0x0300)
+#define ARM_CP_CURRENTEL         (ARM_CP_SPECIAL | 0x0400)
+#define ARM_CP_DC_ZVA            (ARM_CP_SPECIAL | 0x0500)
+#define ARM_LAST_SPECIAL         ARM_CP_DC_ZVA
+#define ARM_CP_FPU               0x1000
+#define ARM_CP_SVE               0x2000
+#define ARM_CP_SENTINEL          0xffff
+#define ARM_CP_FLAG_MASK         0x30ff
+
+enum {
+    ARM_CP_STATE_AA32 = 0,
+    ARM_CP_STATE_AA64 = 1,
+    ARM_CP_STATE_BOTH = 2,
+};
+enum {
+    ARM_CP_SECSTATE_S =   (1 << 0), /* bit[0]: Secure state register */
+    ARM_CP_SECSTATE_NS =  (1 << 1), /* bit[1]: Non-secure state register */
+};
+#define PL3_R 0x80
+#define PL3_W 0x40
+#define PL2_R (0x20 | PL3_R)
+#define PL2_W (0x10 | PL3_W)
+#define PL1_R (0x08 | PL2_R)
+#define PL1_W (0x04 | PL2_W)
+#define PL0_R (0x02 | PL1_R)
+#define PL0_W (0x01 | PL1_W)
+
+#define PL3_RW (PL3_R | PL3_W)
+#define PL2_RW (PL2_R | PL2_W)
+#define PL1_RW (PL1_R | PL1_W)
+#define PL0_RW (PL0_R | PL0_W)
+
+#define ENCODE_SYSTEM_REG(cp, crn, crm, op0, op1, op2) \
+        (CP_REG_AA64_MASK |                                 \
+        ((cp) << CP_REG_ARM_COPROC_SHIFT) |                \
+        ((op0) << CP_REG_ARM64_SYSREG_OP0_SHIFT) |         \
+        ((op1) << CP_REG_ARM64_SYSREG_OP1_SHIFT) |         \
+        ((crn) << CP_REG_ARM64_SYSREG_CRN_SHIFT) |         \
+        ((crm) << CP_REG_ARM64_SYSREG_CRM_SHIFT) |         \
+        ((op2) << CP_REG_ARM64_SYSREG_OP2_SHIFT))
+
 typedef void A64DecodeFn(uint32_t insn, DisasCallback *cb);
 
+class A64SysRegInfo {
+public:
+        std::string name;
+        uint8_t cp;
+        uint8_t crn;
+        uint8_t crm;
+        uint8_t opc0;
+        uint8_t opc1;
+        uint8_t opc2;
+        int access;
+        int state;
+        int type;
+        int offset;
+        A64SysRegInfo (std::string _name, int _state, uint8_t _cp, uint8_t _opc0, uint8_t _opc1, uint8_t _opc2,
+                        uint8_t _crn, uint8_t _crm, int _o) : name(_name), state(_state), cp(_cp), crn(_crn),
+                        crm(_crm), opc0(_opc0), opc1(_opc1), opc2(_opc2), offset(_o) {}
+        A64SysRegInfo (std::string _name, int _state, uint8_t _opc0, uint8_t _opc1, uint8_t _opc2,
+                        uint8_t _crn, uint8_t _crm, int _o) : name(_name), state(_state),
+                        opc0(_opc0), opc1(_opc1), opc2(_opc2), crn(_crn), crm(_crm), offset(_o) {}
+        A64SysRegInfo (int _type) : type(_type) {}
+};
+
 typedef struct AArch64DecodeTable {
-    uint32_t pattern;
-    uint32_t mask;
-    A64DecodeFn *disas_fn;
+        uint32_t pattern;
+        uint32_t mask;
+        A64DecodeFn *disas_fn;
 } A64DecodeTable;
 
 void DisasA64(uint32_t insn, DisasCallback *cb);
 
+void Init();
 };
 #endif

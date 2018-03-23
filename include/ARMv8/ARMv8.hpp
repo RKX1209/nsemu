@@ -27,6 +27,14 @@ struct ARMv8State {
         vreg_t vreg[33];
 
         uint32_t nzcv;  // flag register
+
+        /* System register */
+        struct SysReg {
+                union {
+                        uint64_t tpidr_el[4];
+                };
+                uint64_t tpidrro_el[1];
+        } sysr;
 };
 
 extern ARMv8State arm_state;
@@ -43,6 +51,7 @@ extern ARMv8State arm_state;
 
 #define GPR(r) ARMv8::arm_state.gpr[r]
 #define VREG(r) ARMv8::arm_state.vreg[r] // SIMD registers
+#define SYSR (ARMv8::arm_state.sysr)
 
 #define X(r) GPR(r).x
 #define W(r) GPR(r).w[0]

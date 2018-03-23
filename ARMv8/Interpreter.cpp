@@ -4,6 +4,10 @@
 Interpreter *Interpreter::inst = nullptr;
 IntprCallback *Interpreter::disas_cb = nullptr;
 
+void Interpreter::Init() {
+        Disassembler::Init();
+}
+
 int Interpreter::SingleStep() {
 	uint32_t inst = ARMv8::ReadInst (PC);
 	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
@@ -523,7 +527,7 @@ void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned
 }
 
 /* Load/Store */
-static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) {
+void IntprCallback::_LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) {
                 debug_print ("Read from addr:0x%lx(%d)\n", addr, size);
                 if (size == 0) {
                         X(rd_idx) = ARMv8::ReadU8 (addr);
@@ -546,7 +550,7 @@ static void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign,
                 }
 }
 
-static void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) {
+void IntprCallback::_StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) {
                 debug_print ("Write to addr:0x%lx(%d)\n", addr, size);
                 if (size == 0) {
                         ARMv8::WriteU8 (addr, (uint8_t) (W(rd_idx) & 0xff));
@@ -842,6 +846,24 @@ void IntprCallback::DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, i
         }
 }
 
+/* Read/Write Sysreg */
+void IntprCallback::ReadWriteSysReg(unsigned int rd_idx, int offset, bool read) {
+        uint64_t *sysr = (uint64_t *)(&SYSR + offset);
+        if (read) {
+                X(rd_idx) = *sysr;
+        } else {
+                *sysr = X(rd_idx);
+        }
+}
+
+/* Read/Write NZCV */
+void IntprCallback::ReadWriteNZCV(unsigned int rd_idx, bool read) {
+        if (read) {
+                X(rd_idx) = NZCV;
+        } else {
+                NZCV = (uint32_t)(X(rd_idx) & 0xffffffff);
+        }
+}
 /* Write to FP register */
 void IntprCallback::WriteFpReg(unsigned int fd_idx, unsigned int fn_idx)  {
         D(fd_idx) = D(fn_idx);
