@@ -24,13 +24,17 @@ void Interpreter::Run() {
         //uint64_t estimate = 3413000, mx = 10000;
         uint64_t estimate = 3414000, mx = 10000;
 	while (Cpu::GetState () == Cpu::State::Running) {
-                if (counter >= estimate){
-                        Cpu::DumpMachine ();
-                }
-                if (counter >= estimate + mx)
-                        break;
-		SingleStep ();
-                counter++;
+		if (GdbStub::enabled) {
+			GdbStub::HandlePacket();
+		} else {
+			if (counter >= estimate){
+				Cpu::DumpMachine ();
+		    }
+		    if (counter >= estimate + mx)
+		        break;
+			SingleStep ();
+		    counter++;
+		}
 	}
 }
 

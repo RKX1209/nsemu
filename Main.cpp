@@ -76,14 +76,15 @@ void Banner() {
 }
 
 enum  optionIndex {
-	UNKNOWN, HELP, ENABLE_TRACE
+	UNKNOWN, HELP, ENABLE_TRACE, ENABLE_GDB,
 };
 const option::Descriptor usage[] =
 {
 	{ UNKNOWN, 0, "", "", Arg::None, "USAGE: nsemu [options] <nso-binary>\n\n"
 	  "Options:" },
 	{ HELP, 0, "", "help", Arg::None, "  --help  \tPrint help message" },
-        { ENABLE_TRACE, 0, "t","enable-trace", Arg::None, "  --enable-trace, -t  \tEnable Trace" },
+    { ENABLE_TRACE, 0, "t","enable-trace", Arg::None, "  --enable-trace, -t  \tEnable Trace" },
+    { ENABLE_GDB, 0, "s","enable-gdb", Arg::None, "  --enable-gdb -s  \tEnable GDBServer" },
 	{ 0, 0, nullptr, nullptr, nullptr, nullptr }
 };
 
@@ -106,8 +107,11 @@ printUsage:
 			option::printUsage (cout, usage);
 			return 0;
 		}
-                if (options[ENABLE_TRACE].count () > 0) {
-                        InitTrace ("nsemu_trace.json");
+        if (options[ENABLE_TRACE].count () > 0) {
+			InitTrace ("nsemu_trace.json");
+		}
+        if (options[ENABLE_GDB].count () > 0) {
+			GdbStub::Init();
 		}
 #if 0
 		if (options[NSO].count () > 0) {

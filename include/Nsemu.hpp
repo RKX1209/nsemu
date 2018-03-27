@@ -16,6 +16,7 @@
 
 using namespace std;
 
+#include "GdbStub.hpp"
 #include "Memory.hpp"
 #include "Util.hpp"
 #include "NintendoObject.hpp"
