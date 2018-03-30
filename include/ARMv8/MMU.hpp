@@ -11,6 +11,7 @@ uint16_t ReadU16(const uint64_t gva);
 uint32_t ReadU32(const uint64_t gva);
 uint64_t ReadU64(const uint64_t gva);
 void ReadBytes(uint64_t gva, uint8_t *ptr, int size);
+void WriteBytes(uint64_t gva, uint8_t *ptr, int size);
 
 void WriteU8(const uint64_t gva, uint8_t value);
 void WriteU16(const uint64_t gva, uint16_t value);

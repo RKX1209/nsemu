@@ -40,6 +40,13 @@ void ReadBytes(uint64_t gva, uint8_t *ptr, int size) {
         }
 }
 
+void WriteBytes(uint64_t gva, uint8_t *ptr, int size) {
+        uint64_t gpa = gva;
+        for (int i = 0; i < size; i++) {
+                WriteU8 (gpa + i, ptr[i]);
+        }
+}
+
 uint8_t ReadU8(const uint64_t gva) {
 	/* XXX: Implement Page translation */
 	uint64_t gpa = gva;

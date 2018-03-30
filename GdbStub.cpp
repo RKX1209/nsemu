@@ -32,6 +32,7 @@ static inline int FromHex(int v)
     else
         return 0;
 }
+
 static inline int ToHex(int v)
 {
     if (v < 10)
@@ -40,11 +41,55 @@ static inline int ToHex(int v)
         return v - 10 + 'a';
 }
 
+static void MemToHex(char *buf, const uint8_t *mem, int len)
+{
+        char *q;
+        q = buf;
+        for(int i = 0; i < len; i++) {
+                int c = mem[i];
+                *q++ = ToHex(c >> 4);
+                *q++ = ToHex(c & 0xf);
+        }
+        *q = '\0';
+}
+
 static int IsQueryPacket (const char *p, const char *query, char separator)
 {
     unsigned int query_len = strlen(query);
 
     return strncmp(p, query, query_len) == 0 && (p[query_len] == '\0' || p[query_len] == separator);
+}
+
+static int TargetMemoryRW(uint64_t addr, uint8_t *buf, int len, bool is_write) {
+        ns_print("[%s] addr 0x%016lx(%d byte)\n", (is_write?"WRITE":"READ"), addr, len);
+        if ((int64_t)addr < 0) {
+                return -1; //FIXME: Correct validation is required
+        }
+        if (is_write) {
+                ARMv8::WriteBytes (addr, buf, len);
+        } else {
+                ARMv8::ReadBytes (addr, buf, len);
+        }
+        return 0;
+}
+
+static int ReadRegister (uint8_t *buf, int reg) {
+        if (reg < GPR_ZERO) {
+                *(uint64_t*)buf = X(reg);
+        } else {
+                switch(reg) {
+                        case 31:
+                                *(uint64_t *)buf = X(GPR_SP);
+                                break;
+                        case 32:
+                                *(uint64_t *)buf = X(PC_IDX);
+                                break;
+                        default:
+                                *(uint64_t *)buf = 0xdeadbeef;
+                                break;
+                }
+        }
+        return sizeof(uint64_t);
 }
 
 void Init() {
@@ -57,7 +102,6 @@ void Init() {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(1234);
     addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_len = sizeof(addr);
 
     if (::bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
         ns_abort ("bind failed");
@@ -110,9 +154,10 @@ void SendPacket(uint8_t *buf, size_t len) {
   }
 }
 
-void WritePacket(char *buf) {
-    SendPacket ((uint8_t *)buf, strlen(buf));
+void WritePacket(std::string buf) {
+    SendPacket ((uint8_t *)buf.c_str(), buf.size());
 }
+
 static RSState HandleCommand(char *line_buf) {
     const char *p;
     uint32_t thread;
@@ -139,15 +184,15 @@ static RSState HandleCommand(char *line_buf) {
         break;
     case 'g':
         len = 0;
-        // for (addr = 0; addr < GENERAL_REG_MAX; addr++) {
-        //     //reg_size = gdb_read_register(mem_buf + len, addr);
-        //     len += reg_size;
-        // }
-        //   memtohex(buf, mem_buf, len);
-        //   WritePacket(buf);
-          break;
+        for (addr = 0; addr < 33; addr++) {
+                reg_size = ReadRegister (mem_buf + len, addr);
+                len += reg_size;
+        }
+        MemToHex(buf, mem_buf, len);
+        WritePacket(buf);
+        break;
     case 'm':
-        addr = strtol(p, (char **)&p, 16);
+        addr = strtoul(p, (char **)&p, 16);
         if (*p == ',')
             p++;
         len = strtol(p, NULL, 16);
@@ -158,21 +203,21 @@ static RSState HandleCommand(char *line_buf) {
             break;
         }
 
-        // if (target_memory_rw (addr, mem_buf, len, false) != 0) {
-        //     WritePacket ("E14");
-        // } else {
-        //     //memtohex(buf, mem_buf, len);
-        //     //WritePacket(buf);
-        // }
+        if (TargetMemoryRW (addr, mem_buf, len, false) != 0) {
+                WritePacket ("E14");
+        } else {
+                MemToHex(buf, mem_buf, len);
+                WritePacket(buf);
+        }
         break;
     case 'p':
         addr = strtol(p, (char **)&p, 16);
-        //reg_size = gdb_read_register(mem_buf, addr);
+        reg_size = ReadRegister (mem_buf, addr);
         if (reg_size) {
-            //memtohex(buf, mem_buf, reg_size);
-            WritePacket(buf);
+                MemToHex(buf, mem_buf, reg_size);
+                WritePacket(buf);
         } else {
-            WritePacket("E14");
+                WritePacket("E14");
         }
         break;
     case 'q':
