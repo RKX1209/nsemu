@@ -12,6 +12,7 @@
 namespace GdbStub {
 
 extern volatile bool enabled;
+extern volatile bool step;
 
 enum RSState {
     RS_INACTIVE,
@@ -37,6 +38,7 @@ enum {
 
 void Init();
 void HandlePacket();
+void Trap();
 
 };
 #endif

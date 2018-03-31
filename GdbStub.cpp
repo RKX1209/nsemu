@@ -16,6 +16,7 @@ static int buf_index, line_sum, checksum, last_packet_len;
 static RSState state = RS_IDLE;
 
 volatile bool enabled = false;
+volatile bool step = false;
 
 static inline bool IsXdigit(char ch) {
     return ('a' <= ch && ch <= 'f') || ('A' <= ch && ch <= 'F') || ('0' <= ch && ch <= '9');
@@ -51,45 +52,6 @@ static void MemToHex(char *buf, const uint8_t *mem, int len)
                 *q++ = ToHex(c & 0xf);
         }
         *q = '\0';
-}
-
-static int IsQueryPacket (const char *p, const char *query, char separator)
-{
-    unsigned int query_len = strlen(query);
-
-    return strncmp(p, query, query_len) == 0 && (p[query_len] == '\0' || p[query_len] == separator);
-}
-
-static int TargetMemoryRW(uint64_t addr, uint8_t *buf, int len, bool is_write) {
-        ns_print("[%s] addr 0x%016lx(%d byte)\n", (is_write?"WRITE":"READ"), addr, len);
-        if ((int64_t)addr < 0) {
-                return -1; //FIXME: Correct validation is required
-        }
-        if (is_write) {
-                ARMv8::WriteBytes (addr, buf, len);
-        } else {
-                ARMv8::ReadBytes (addr, buf, len);
-        }
-        return 0;
-}
-
-static int ReadRegister (uint8_t *buf, int reg) {
-        if (reg < GPR_ZERO) {
-                *(uint64_t*)buf = X(reg);
-        } else {
-                switch(reg) {
-                        case 31:
-                                *(uint64_t *)buf = X(GPR_SP);
-                                break;
-                        case 32:
-                                *(uint64_t *)buf = X(PC_IDX);
-                                break;
-                        default:
-                                *(uint64_t *)buf = 0xdeadbeef;
-                                break;
-                }
-        }
-        return sizeof(uint64_t);
 }
 
 void Init() {
@@ -158,6 +120,59 @@ void WritePacket(std::string buf) {
     SendPacket ((uint8_t *)buf.c_str(), buf.size());
 }
 
+static int IsQueryPacket (const char *p, const char *query, char separator)
+{
+    unsigned int query_len = strlen(query);
+
+    return strncmp(p, query, query_len) == 0 && (p[query_len] == '\0' || p[query_len] == separator);
+}
+
+static int TargetMemoryRW(uint64_t addr, uint8_t *buf, int len, bool is_write) {
+        ns_print("[%s] addr 0x%016lx(%d byte)\n", (is_write?"WRITE":"READ"), addr, len);
+        if ((int64_t)addr < 0) {
+                return -1; //FIXME: Correct validation is required
+        }
+        if (is_write) {
+                ARMv8::WriteBytes (addr, buf, len);
+        } else {
+                ARMv8::ReadBytes (addr, buf, len);
+        }
+        return 0;
+}
+
+static int ReadRegister (uint8_t *buf, int reg) {
+        if (reg < GPR_ZERO) {
+                *(uint64_t*)buf = X(reg);
+        } else {
+                switch(reg) {
+                        case 31:
+                                *(uint64_t *)buf = X(GPR_SP);
+                                break;
+                        case 32:
+                                *(uint64_t *)buf = X(PC_IDX);
+                                break;
+                        default:
+                                *(uint64_t *)buf = 0xdeadbeef;
+                                break;
+                }
+        }
+        return sizeof(uint64_t);
+}
+
+static void SendSignal(uint32_t signal) {
+        char buf[GDB_BUFFER_SIZE];
+        snprintf(buf, sizeof(buf), "T%02xthread:%02x;", signal, 1);
+        WritePacket(buf);
+}
+
+void Trap() {
+        SendSignal(GDB_SIGNAL_TRAP);
+}
+
+static void Stepi() {
+        step = true;
+}
+
 static RSState HandleCommand(char *line_buf) {
     const char *p;
     uint32_t thread;
@@ -173,8 +188,7 @@ static RSState HandleCommand(char *line_buf) {
     switch(ch) {
     case '?':
         /* XXX: Is it correct to fix thread id to '1'? */
-        snprintf(buf, sizeof(buf), "T%02xthread:%02x;", GDB_SIGNAL_TRAP, 1);
-        WritePacket(buf);
+        SendSignal(GDB_SIGNAL_TRAP);
         break;
     case 'c':
         if (*p != '\0') {
@@ -250,7 +264,9 @@ static RSState HandleCommand(char *line_buf) {
         else
         WritePacket("E22");
         break;
-
+    case 's':
+        Stepi();
+        break;
     case 'H':
         type = *p++;
         thread = strtol(p, (char **)&p, 16);

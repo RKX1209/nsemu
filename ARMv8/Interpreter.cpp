@@ -26,6 +26,11 @@ void Interpreter::Run() {
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
 			GdbStub::HandlePacket();
+                        if (GdbStub::step) {
+                                SingleStep ();
+                                GdbStub::step = false;
+                                GdbStub::Trap(); // Notify SIGTRAP to gdb client
+                        }
 		} else {
 			if (counter >= estimate){
 				Cpu::DumpMachine ();
