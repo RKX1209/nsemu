@@ -7,6 +7,11 @@ uint32_t ReadInst(uint64_t gva) {
 	return ReadU32 (gva);
 }
 
+uint64_t GvaToHva(const uint64_t gva) {
+        uint64_t gpa = gva;
+        return (uint64_t) &Memory::pRAM[gpa];
+}
+
 template<typename T>
 static T ReadFromRAM(const uint64_t gpa) {
 	T value = 0;
