@@ -11,10 +11,13 @@
 
 #define DEBUG_REG_MAX   4
 
+#define BRK_0x0_INST    0xd4200000
+
 namespace GdbStub {
 
 extern volatile bool enabled;
 extern volatile bool step;
+extern volatile bool cont;
 
 enum RSState {
     RS_INACTIVE,
@@ -49,10 +52,11 @@ enum {
 class Breakpoint {
 public:
         uint64_t addr;
+        uint32_t oldop;
         unsigned int len;
         int type;
         Breakpoint() { }
-        Breakpoint(uint64_t a, unsigned int l, int t) : addr(a), len(l), type(t) { }
+        Breakpoint(uint64_t a, unsigned int l, int t);
         bool operator < (const Breakpoint& bp) {
                 if (addr == bp.addr) {
                         if (len == bp.len) {

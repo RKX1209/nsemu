@@ -25,11 +25,15 @@ void Interpreter::Run() {
         uint64_t estimate = 0, mx = 3420000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
-			GdbStub::HandlePacket();
-                        if (GdbStub::step) {
-                                SingleStep ();
-                                GdbStub::step = false;
-                                GdbStub::Trap(); // Notify SIGTRAP to gdb client
+                        if (GdbStub::cont) {
+                                SingleStep();
+                        } else {
+        			GdbStub::HandlePacket();
+                                if (GdbStub::step) {
+                                        SingleStep ();
+                                        GdbStub::step = false;
+                                        GdbStub::Trap(); // Notify SIGTRAP to gdb client
+                                }
                         }
 		} else {
 			if (counter >= estimate){
@@ -800,6 +804,12 @@ void IntprCallback::SVC(unsigned int svc_num) {
                 SVC::svc_handlers[svc_num]();
         else
                 ns_print ("Invalid svc number: %u\n", svc_num);
+}
+/* Breakpoint exception */
+void IntprCallback::BRK(unsigned int memo) {
+        ns_print ("BRK: (0x%x)\n", memo);
+        PC -= sizeof(uint32_t); //XXX
+        GdbStub::Trap();
 }
 
 /* Read Vector register to FP register */

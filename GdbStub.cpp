@@ -17,8 +17,13 @@ static RSState state = RS_IDLE;
 
 volatile bool enabled = false;
 volatile bool step = false;
+volatile bool cont = false;
 
 std::vector<Breakpoint> bp_list;
+
+Breakpoint::Breakpoint(uint64_t a, unsigned int l, int t) : addr(a), len(l), type(t) {
+        oldop = ARMv8::ReadInst (a);
+}
 
 static inline bool IsXdigit(char ch) {
     return ('a' <= ch && ch <= 'f') || ('A' <= ch && ch <= 'F') || ('0' <= ch && ch <= '9');
@@ -168,6 +173,7 @@ static void SendSignal(uint32_t signal) {
 }
 
 void Trap() {
+        cont = false;
         SendSignal(GDB_SIGNAL_TRAP);
 }
 
@@ -175,123 +181,27 @@ static void Stepi() {
         step = true;
 }
 
-static inline void AsmWridr0 (uint64_t dr0) {
-	// asm volatile ("movq %0, %%dr0"
-	// 	      :
-	// 	      : "rm" ((uint64_t) dr0));
-}
-static inline void AsmWridr1 (unsigned long dr1) {
-	// asm volatile ("movl %0, %%dr1"
-	// 	      :
-	// 	      : "rm" ((unsigned long) dr1));
-}
-static inline void AsmWridr2 (unsigned long dr2) {
-	// asm volatile ("movl %0, %%dr2"
-	// 	      :
-	// 	      : "rm" ((unsigned long) dr2));
-}
-static inline void AsmWridr3 (unsigned long dr3) {
-	// asm volatile ("movl %0, %%dr3"
-	// 	      :
-	// 	      : "rm" ((unsigned long) dr3));
-}
-static inline void AsmWridr7 (unsigned long dr7) {
-	// asm volatile ("movl %0, %%dr7"
-	// 	      :
-	// 	      : "rm" ((unsigned long) dr7));
-}
-
-static inline void AsmRddr0 (unsigned long *dr0) {
-	// asm volatile ("movl %%dr0,%0"
-	// 	      : "=r" (*dr0));
-}
-static inline void AsmRddr1 (unsigned long *dr1) {
-	// asm volatile ("movl %%dr1,%0"
-	// 	      : "=r" (*dr1));
-}
-static inline void AsmRddr2 (unsigned long *dr2) {
-	// asm volatile ("movl %%dr2,%0"
-	// 	      : "=r" (*dr2));
-}
-static inline void AsmRddr3 (unsigned long *dr3) {
-	// asm volatile ("movl %%dr3,%0"
-	// 	      : "=r" (*dr3));
-}
-static inline void AsmRddr7 (unsigned long *dr7) {
-	// asm volatile ("movl %%dr7,%0"
-	// 	      : "=r" (*dr7));
-}
-
-void ReadDr(enum debug_reg reg, unsigned long *val)
-{
-	if (reg == DEBUG_REG_DR0)
-		AsmRddr0 (val);
-	else if (reg == DEBUG_REG_DR1)
-		AsmRddr1 (val);
-	else if (reg == DEBUG_REG_DR2)
-		AsmRddr2 (val);
-	else if (reg == DEBUG_REG_DR3)
-		AsmRddr3 (val);
-	else if (reg == DEBUG_REG_DR7)
-		AsmRddr7 (val);
-}
-
-void WriteDr(enum debug_reg reg, unsigned long val)
-{
-	ns_print ("Write: dr%d = 0x%016lx\n", reg, val);
-	if (reg == DEBUG_REG_DR0)
-		AsmWridr0 (val);
-	else if (reg == DEBUG_REG_DR1)
-		AsmWridr1 (val);
-	else if (reg == DEBUG_REG_DR2)
-		AsmWridr2 (val);
-	else if (reg == DEBUG_REG_DR3)
-		AsmWridr3 (val);
-	else if (reg == DEBUG_REG_DR7)
-                AsmWridr7 (val);
-}
-
-static int SyncDebugReg() {
-        std::map<int, uint8_t> type_code;
-        type_code[GDB_BREAKPOINT_HW] = 0x0;
-        type_code[GDB_WATCHPOINT_WRITE] = 0x1;
-        type_code[GDB_WATCHPOINT_ACCESS] = 0x3;
-        std::map<int, uint8_t> len_code;
-        len_code[1] = 0x0;
-        len_code[2] = 0x1;
-        len_code[4] = 0x3;
-        len_code[8] = 0x2;
-        unsigned long dr7 = 0x0600;
-        int n = 0;
-        for (int n = 0; n < bp_list.size(); n++) {
-                uint64_t addr = ARMv8::GvaToHva (bp_list[n].addr);
-                ns_print("Set breakpoint at 0x%lx(0x%lx)\n", bp_list[n].addr, addr);
-                WriteDr ((enum debug_reg) n, addr);
-                dr7 |= (2 << (n * 2)) |
-                (type_code[bp_list[n].type] << (16 + n * 4)) |
-                ((uint32_t)len_code[bp_list[n].len] << (18 + n * 4));
-        }
-        WriteDr (DEBUG_REG_DR7, dr7);
-        return 0;
-}
-
-static int HwBreakpointInsert(unsigned long addr, unsigned long len, int type) {
-        if (bp_list.size() > DEBUG_REG_MAX) {
-                return -1;
-        }
+static int SwBreakpointInsert(unsigned long addr, unsigned long len, int type) {
         Breakpoint bp(addr, len, type);
         bp_list.push_back(bp);
-        SyncDebugReg();
+        ns_print("[Add bp] 0x%lx, %u, %d, (oldop: 0x%08lx)\n", addr, len, type, bp.oldop);
+        ARMv8::WriteU32(addr, BRK_0x0_INST);
         return 0;
 }
 
-static int HwBreakpointRemove(unsigned long addr, unsigned long len, int type) {
+static int SwBreakpointRemove(unsigned long addr, unsigned long len, int type) {
         if (bp_list.empty()) {
                 return -1;
         }
-        Breakpoint bp(addr, len, type);
-        bp_list.erase(std::remove(bp_list.begin(), bp_list.end(), bp), bp_list.end());
-        SyncDebugReg();
+
+        auto bp_it = std::find(bp_list.begin(), bp_list.end(), Breakpoint(addr, len, type));
+        if (bp_it == bp_list.end()) {
+                ns_print ("Breakpoint not found\n");
+                return -1;
+        }
+        ns_print("[Remove bp] 0x%lx, %u, %d, (oldop: 0x%08lx)\n", addr, len, type, (*bp_it).oldop);
+        ARMv8::WriteU32((*bp_it).addr, (*bp_it).oldop); // Restore an original operation
+        bp_list.erase(bp_it);
         return 0;
 }
 
@@ -300,7 +210,7 @@ static int BreakpointInsert(unsigned long addr, unsigned long len, int type) {
         switch (type) {
                 case GDB_BREAKPOINT_SW:
                 case GDB_BREAKPOINT_HW:
-                        return HwBreakpointInsert (addr, len, type);
+                        return SwBreakpointInsert (addr, len, type);
                 case GDB_WATCHPOINT_WRITE:
                 case GDB_WATCHPOINT_READ:
                 case GDB_WATCHPOINT_ACCESS:
@@ -317,7 +227,7 @@ static int BreakpointRemove(unsigned long addr, unsigned long len, int type) {
         switch (type) {
                 case GDB_BREAKPOINT_SW:
                 case GDB_BREAKPOINT_HW:
-                        return HwBreakpointRemove (addr, len, type);
+                        return SwBreakpointRemove (addr, len, type);
                 case GDB_WATCHPOINT_WRITE:
                 case GDB_WATCHPOINT_READ:
                 case GDB_WATCHPOINT_ACCESS:
@@ -327,6 +237,10 @@ static int BreakpointRemove(unsigned long addr, unsigned long len, int type) {
                         break;
         }
         return err;
+}
+
+static void Continue() {
+        cont = true;
 }
 
 static RSState HandleCommand(char *line_buf) {
@@ -350,7 +264,7 @@ static RSState HandleCommand(char *line_buf) {
         if (*p != '\0') {
             addr = strtol(p, (char **)&p, 16);
         }
-        //Continue ();
+        Continue ();
         break;
     case 'g':
         len = 0;
@@ -558,7 +472,6 @@ void HandlePacket() {
                 WriteBytes (&reply, 1);
                 state = RS_IDLE;
             } else {
-                ns_print("Gdb: valid packet!\n");
                 /* send ACK reply */
                 reply = '+';
                 WriteBytes (&reply, 1);

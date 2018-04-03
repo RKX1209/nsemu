@@ -93,6 +93,8 @@ virtual void SetPCReg(unsigned int rt_idx) = 0;
 
 /* Super Visor Call */
 virtual void SVC(unsigned int svc_num) = 0;
+/* Breakpoint exception */
+virtual void BRK(unsigned int memo) = 0;
 
 /* Read Vector register to FP regsiter */
 virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;

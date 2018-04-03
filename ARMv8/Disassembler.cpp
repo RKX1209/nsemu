@@ -383,8 +383,7 @@ static void DisasException(uint32_t insn, DisasCallback *cb) {
                 }
                 break;
         case 1: /* BRK */
-                //TODO:
-                UnsupportedOp ("BRK");
+                cb->BRK(imm16);
                 break;
         case 2: /* HLT */
                 UnsupportedOp ("HLT");
