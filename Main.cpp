@@ -1,5 +1,6 @@
 /* nsemu - LGPL - Copyright 2017 rkx1209<rkx1209dev@gmail.com> */
 #include "Nsemu.hpp"
+#include <csignal>
 #include "optionparser.h"
 using namespace std;
 struct Arg : public option::Arg {
@@ -88,6 +89,14 @@ const option::Descriptor usage[] =
 	{ 0, 0, nullptr, nullptr, nullptr, nullptr }
 };
 
+static void SignalHandler(int sig, siginfo_t* sig_info, void* sig_data) {
+        if(sig == SIGSEGV) {
+                ns_print ("SEGV: %p\n", sig_info->si_addr );
+                ARMv8::Dump();
+                _Exit(-1);
+        }
+}
+
 int main(int argc, char **argv) {
 	Nsemu::create ();
 	Nsemu *nsemu = Nsemu::get_instance ();
@@ -141,6 +150,16 @@ printUsage:
 		              goto printUsage;
 		}
 	}
+        /* ### Register SEGV handler for debugging ### */
+        struct sigaction segv_act;
+        sigemptyset(&segv_act.sa_mask);
+        sigaddset(&segv_act.sa_mask, SIGSEGV);
+        segv_act.sa_sigaction = SignalHandler;
+        segv_act.sa_flags     = SA_SIGINFO|SA_RESTART|SA_ONSTACK;
+        if( sigaction( SIGSEGV, &segv_act, NULL ) == -1 ){
+                ns_abort ("Failed to set my signal handler.\n");
+        }
+
         Banner ();
 	nsemu->BootUp (parse.nonOption (0));
 	Nsemu::destroy ();
