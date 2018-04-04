@@ -34,7 +34,7 @@ struct ARMv8State {
                         uint64_t tpidr_el[4];
                 };
                 uint64_t tpidrro_el[1];
-                uint64_t tczid_el[1];                
+                uint64_t tczid_el[1];
         } sysr;
 };
 
@@ -86,6 +86,8 @@ void RunLoop();
 void Dump();
 
 void DumpJson(FILE *fp);
+
+uint64_t GetTls();
 
 }
 

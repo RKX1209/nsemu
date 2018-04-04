@@ -231,10 +231,19 @@ uint64_t SignalProcessWideKey(uint64_t semaAddr, uint64_t target) {
 }
 
 std::tuple<uint64_t, uint32_t> ConnectToPort(uint64_t name) {
-	return make_tuple(0, 0);
+        ns_print("ConnectToPort\n");
+	return make_tuple(0, IPC::ConnectToPort(ARMv8::ReadString(name)));
 }
 
 uint64_t SendSyncRequest(uint32_t handle) {
+	ns_print("SendSyncRequest\n");
+	uint8_t msgbuf[0x100];
+        ARMv8::ReadBytes (ARMv8::GetTls(), msgbuf, 0x100);
+        auto handler = IPC::GetHandle(handle);
+        if (!handler) {
+                ns_abort ("Cannnot find session handler\n");
+        }
+        IPC::ProcMessage(handler, msgbuf);
         return 0;
 }
 

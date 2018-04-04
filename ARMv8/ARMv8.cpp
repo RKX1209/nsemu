@@ -50,4 +50,8 @@ void DumpJson(FILE *fp) {
         file_print (fp, "},\n");
 }
 
+uint64_t GetTls() {
+	return SYSR.tpidrro_el[0];
+}
+
 }

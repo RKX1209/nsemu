@@ -45,6 +45,26 @@ void ReadBytes(uint64_t gva, uint8_t *ptr, int size) {
         }
 }
 
+std::string ReadString(uint64_t gva) {
+        uint64_t gpa = gva;
+        uint64_t mx_size = (1 << 32);
+        char byte;
+        int sz = 0;
+        do {
+                byte = (char)ReadU8(gpa + sz);
+                sz++;
+        } while (sz < mx_size && byte != '\0');
+        if (sz >= mx_size) {
+                ns_abort("Can not find any string from addr 0x%lx\n", gva);
+        }
+        char *bytes = new char[sz];
+        for (int i = 0; i < sz; i++) {
+                bytes[i] = (char)ReadU8(gpa + i);
+        }
+        std::string str = std::string(bytes);
+        delete[] bytes;
+        return str;
+}
 void WriteBytes(uint64_t gva, uint8_t *ptr, int size) {
         uint64_t gpa = gva;
         for (int i = 0; i < size; i++) {
