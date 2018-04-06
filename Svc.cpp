@@ -121,6 +121,8 @@ uint64_t UnmapMemory(uint64_t dest, uint64_t src, uint64_t size) {
 }
 
 std::tuple<uint64_t, uint64_t> QueryMemory(uint64_t meminfo, uint64_t pageinfo, uint64_t addr) {
+        ns_print("QueryMemory 0x%lx\n", addr);
+        
 	return make_tuple(0, 0);
 }
 

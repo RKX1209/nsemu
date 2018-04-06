@@ -28,6 +28,7 @@ extern uint64_t heap_size;
 
 void InitMemmap(Nsemu *nsemu);
 RAMBlock *FindRAMBlock(Nsemu *nsemu, uint64_t addr, size_t len);
+std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions();
 bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len);
 bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len);
 bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len);

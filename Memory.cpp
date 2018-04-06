@@ -48,6 +48,17 @@ RAMBlock *FindRAMBlock(Nsemu *nsemu, uint64_t addr, size_t len) {
 	return nullptr;
 }
 
+std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions() {
+        std::list<std::tuple<uint64_t,uint64_t, int>> ret;
+        for (int i = 0; i < sizeof(mem_map) / sizeof(RAMBlock); i++) {
+                uint64_t addr = mem_map[i].addr;
+                size_t length = mem_map[i].length;
+                int perm = mem_map[i].perm;
+                ret.push_back(make_tuple(addr, addr + length, perm));
+        }
+        return ret;
+}
+
 static bool _CopyMemEmu(void *data, uint64_t gpa, size_t len, bool load) {
 	void *emu_mem = (void *)&pRAM[gpa];
 	if (load) {

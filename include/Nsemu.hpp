@@ -10,7 +10,10 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <list>
+#include <tuple>
 #include <map>
+#include <unordered_map>
 #include <memory>
 #include <vector>
 
