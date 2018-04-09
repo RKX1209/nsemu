@@ -76,18 +76,6 @@ void IpcMessage::SetErrorCode(uint32_t error_code) {
         }
 }
 
-uint32_t SmService::Dispatch(IpcMessage *req, IpcMessage *resp) {
-
-}
-uint32_t SmService::GetService(std::string name, IpcService *service) {
-        if (IPC::services.find(name) == IPC::services.end()) {
-                ns_print("Unknown service name %s\n", name.c_str());
-                return 0xC15; //error code
-        }
-        *service = IPC::services[name];
-        return 0;
-}
-
 namespace IPC {
 
 static uint32_t handle_id;
@@ -126,13 +114,48 @@ uint32_t ProcMessage(IpcService *handler, uint8_t buf[]) {
 
         switch(req.type) {
         case 2: //Close
+                resp.GenBuf(0, 0, 0);
+                resp.SetErrorCode(0);
+                ret = 0x25a0b;
                 break;
         case 4: //Normal
                 ret = handler->Dispatch(&req, &resp);
                 break;
         case 5: //Control
-                break;
-
+                switch(req.cmd_id) {
+                    case 0: // ConvertSessionToDomain
+                        debug_print("IPC: ConvertSessionToDomain\n");
+                        resp.GenBuf(0, 0, 4);
+                        is_domainobj = true;
+                        *resp.GetDataPointer<uint32_t*>(8) = handler->handle;
+                        resp.SetErrorCode(0);
+                        break;
+                    case 2: // DuplicateSession
+                        debug_print("DuplicateSession\n");
+                        is_domainobj = false;
+                        resp.GenBuf(1, 0, 0);
+                        resp.SetMove(0, NewHandle(handler));
+                        resp.SetErrorCode(0);
+                        ret = 0;
+                        break;
+                    case 3: // QueryPointerBufferSize
+                        debug_print("QueryPointerBufferSize\n");
+                        resp.GenBuf(0, 0, 4);
+                        *resp.GetDataPointer<uint32_t *>(8) = 0x500;
+                        resp.SetErrorCode(0);
+                        ret = 0;
+                        break;
+                    case 4: // DuplicateSession
+                        debug_print("DuplicateSessionEx\n");
+                        is_domainobj = false;
+                        resp.GenBuf(1, 0, 0);
+                        resp.SetMove(0, NewHandle(handler));
+                        resp.SetErrorCode(0);
+                        ret = 0;
+                        break;
+                    default:
+                        ns_abort("Unknown cmdId to control %u\n", req.cmd_id);
+                }
         }
         return 0;
 }
