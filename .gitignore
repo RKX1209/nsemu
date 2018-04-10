@@ -58,3 +58,6 @@ nsemu
 *.diff
 *.md
 test/
+*.pyc
+
+Ipcdefs/cache

@@ -15,6 +15,7 @@ testall:
 distclean:
 	$(MAKE) clean -C test/
 	$(MAKE)	clean
+	rm -f include/IpcStubs.h
 clean:
 	rm -f *.o */*.o
 	rm -f nsemu

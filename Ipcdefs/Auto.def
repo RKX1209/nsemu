@@ -1,0 +1,4260 @@
+type nn::ApplicationId = u64;
+type nn::TimeSpan = u64;
+type nn::TimeSpanType = u64;
+
+type nn::account::CallbackUri = unknown;
+type nn::account::NetworkServiceAccountId = u64;
+type nn::account::Nickname = bytes<0x21>;
+type nn::account::NintendoAccountAuthorizationRequestParameters = unknown;
+type nn::account::NintendoAccountId = u64;
+type nn::account::ProfileDigest = u128;
+type nn::account::RequestUrl = unknown;
+type nn::account::SystemProgramIdentification = unknown;
+type nn::account::Uid = u128;
+
+type nn::account::detail::Uuid = u128;
+
+type nn::account::nas::NasClientInfo = unknown;
+type nn::account::nas::NasUserBase = unknown;
+type nn::account::nas::NasUserBaseForApplication = unknown;
+type nn::account::nas::State = unknown;
+
+type nn::account::profile::ProfileBase = bytes<0x38>;
+type nn::account::profile::UserData = unknown;
+
+type nn::am::AppletAttribute = unknown;
+type nn::am::AppletMessage = u32;
+
+type nn::am::service::AppletIdentityInfo = u128;
+type nn::am::service::AppletKind = u64;
+type nn::am::service::AppletProcessLaunchReason = u32;
+type nn::am::service::EmulatedButtonEvent = u32;
+type nn::am::service::LibraryAppletInfo = u64;
+type nn::am::service::WindowCreationOption = u32;
+
+type nn::apm::EventTarget = u32;
+type nn::apm::PerformanceConfiguration = u32;
+type nn::apm::PerformanceMode = u32;
+type nn::apm::ThrottlingState = bytes<0x28>;
+
+type nn::applet::AppletResourceUserId = u64;
+
+type nn::bcat::DeliveryCacheDirectoryEntry = unknown;
+type nn::bcat::Digest = u128;
+type nn::bcat::DirectoryName = bytes<0x20>;
+type nn::bcat::FileName = bytes<0x20>;
+type nn::bcat::PushNotificationLog = unknown;
+type nn::bcat::TaskInfo = unknown;
+
+type nn::bcat::detail::DeliveryCacheProgressImpl = unknown;
+
+type nn::bluetooth::Address = bytes<6>;
+
+type nn::capsrv::ApplicationAlbumEntry = bytes<0x20>;
+
+type nn::capsrv::detail::ScreenShotAttributeEx0 = bytes<0x40>;
+
+type nn::err::ErrorCode = u64;
+
+type nn::fgm::Module = u32;
+
+type nn::friends::ApplicationInfo = u128;
+type nn::friends::ExternalApplicationCatalog = unknown;
+type nn::friends::ExternalApplicationCatalogId = u128;
+type nn::friends::FacedFriendRequestRegistrationKey = bytes<0x40>;
+type nn::friends::FriendCode = bytes<0x20>;
+type nn::friends::InAppScreenName = unknown;
+type nn::friends::MiiImageUrlParam = u128;
+type nn::friends::MiiName = bytes<0x20>;
+type nn::friends::NintendoNetworkIdUserInfo = unknown;
+type nn::friends::PlayHistoryRegistrationKey = unknown;
+type nn::friends::PlayHistoryStatistics = u128;
+type nn::friends::Relationship = u64;
+type nn::friends::RequestId = u64;
+type nn::friends::Url = bytes<0xa0>;
+
+type nn::friends::detail::BlockedUserImpl = unknown;
+type nn::friends::detail::FriendCandidateImpl = unknown;
+type nn::friends::detail::FriendDetailedInfoImpl = unknown;
+type nn::friends::detail::FriendImpl = unknown;
+type nn::friends::detail::FriendRequestImpl = unknown;
+type nn::friends::detail::FriendSettingImpl = unknown;
+type nn::friends::detail::NintendoNetworkIdFriendImpl = unknown;
+type nn::friends::detail::PlayHistoryImpl = unknown;
+type nn::friends::detail::ProfileExtraImpl = unknown;
+type nn::friends::detail::ProfileImpl = unknown;
+type nn::friends::detail::UserPresenceImpl = unknown;
+type nn::friends::detail::UserPresenceViewImpl = unknown;
+type nn::friends::detail::UserSettingImpl = unknown;
+
+type nn::friends::detail::ipc::SizedFriendFilter = u128;
+type nn::friends::detail::ipc::SizedNotificationInfo = u128;
+
+type nn::hid::BasicXpadId = u32;
+type nn::hid::ConsoleSixAxisSensorHandle = u32;
+type nn::hid::JoyXpadId = u32;
+type nn::hid::NpadStyleTag = u32;
+type nn::hid::SixAxisSensorHandle = u32;
+type nn::hid::TouchState = unknown;
+type nn::hid::VibrationDeviceHandle = u32;
+type nn::hid::VibrationDeviceInfoForIpc = u64;
+type nn::hid::VibrationValue = u128;
+
+type nn::hid::debug::BasicXpadAutoPilotState = bytes<0x1c>;
+type nn::hid::debug::CaptureButtonAutoPilotState = u64;
+type nn::hid::debug::DebugPadAutoPilotState = bytes<0x18>;
+type nn::hid::debug::HomeButtonAutoPilotState = u64;
+type nn::hid::debug::KeyboardAutoPilotState = bytes<0x28>;
+type nn::hid::debug::MouseAutoPilotState = bytes<0x1c>;
+type nn::hid::debug::SleepButtonAutoPilotState = u64;
+
+type nn::hid::system::DeviceType = u32;
+type nn::hid::system::FirmwareUpdateDeviceHandle = u64;
+type nn::hid::system::FirmwareUpdateState = u32;
+type nn::hid::system::FirmwareVersion = u128;
+type nn::hid::system::InputSourceId = u32;
+type nn::hid::system::KeyboardLockKeyEvent = u32;
+type nn::hid::system::PlayReportControllerUsage = unknown;
+type nn::hid::system::RegisteredDevice = unknown;
+type nn::hid::system::UniquePadId = u64;
+type nn::hid::system::UniqueSixAxisSensorHandle = u32;
+
+type nn::hid::tmp::ConsoleSixAxisSensorCalibrationValues = bytes<0x18>;
+
+type nn::irsensor::ImageTransferProcessorState = u128;
+type nn::irsensor::IrCameraHandle = u32;
+type nn::irsensor::PackedClusteringProcessorConfig = bytes<0x28>;
+type nn::irsensor::PackedDpdProcessorConfig = bytes<0xc>;
+type nn::irsensor::PackedImageTransferProcessorConfig = bytes<0x18>;
+type nn::irsensor::PackedMcuVersion = u32;
+type nn::irsensor::PackedMomentProcessorConfig = bytes<0x20>;
+type nn::irsensor::PackedTeraPluginProcessorConfig = u64;
+
+type nn::mii::CharInfo = bytes<0x58>;
+type nn::mii::CharInfoElement = unknown;
+type nn::mii::CreateId = u128;
+type nn::mii::StoreData = bytes<0x44>;
+type nn::mii::StoreDataElement = unknown;
+
+type nn::ncm::ApplicationId = u64;
+type nn::ncm::ProgramId = u64;
+type nn::ncm::StorageId = u8;
+type nn::ncm::SystemApplicationId = u64;
+
+type nn::nifm::AdditionalInfo = unknown;
+type nn::nifm::ClientId = unknown;
+type nn::nifm::DnsSetting = bytes<9>;
+type nn::nifm::IpAddressSetting = bytes<0xd>;
+type nn::nifm::IpSettingData = unknown;
+type nn::nifm::IpV4Address = u32;
+type nn::nifm::Requirement = bytes<0x24>;
+type nn::nifm::SsidListVersion = u128;
+type nn::nifm::TelemetryInfo = unknown;
+
+type nn::nifm::detail::sf::AccessPointData = unknown;
+type nn::nifm::detail::sf::InternetConnectionStatus = bytes<3>;
+type nn::nifm::detail::sf::NetworkInterfaceInfo = unknown;
+type nn::nifm::detail::sf::NetworkProfileBasicInfo = unknown;
+type nn::nifm::detail::sf::NetworkProfileData = unknown;
+
+type nn::npns::NotificationToken = bytes<0x28>;
+
+type nn::ns::ApplicationControlProperty = unknown;
+
+type nn::oe::DisplayVersion = u128;
+
+type nn::pctl::FreeCommunicationApplicationInfo = unknown;
+type nn::pctl::InquiryCode = bytes<0x20>;
+type nn::pctl::PlayTimerSettings = bytes<0x34>;
+type nn::pctl::SafetyLevelSettings = bytes<3>;
+
+type nn::pctl::detail::AsyncData = u64;
+type nn::pctl::detail::PairingAccountInfoBase = u128;
+type nn::pctl::detail::PairingInfoBase = u128;
+
+type nn::pcv::ModuleState = bytes<0xc>;
+type nn::pcv::PowerControlTarget = u32;
+type nn::pcv::PowerDomainState = unknown;
+type nn::pcv::TemperatureThreshold = unknown;
+
+type nn::settings::LanguageCode = u64;
+type nn::settings::SettingsItemKey = unknown;
+type nn::settings::SettingsName = unknown;
+
+type nn::settings::factory::AccelerometerOffset = bytes<6>;
+type nn::settings::factory::AccelerometerScale = bytes<6>;
+type nn::settings::factory::BatteryLot = bytes<0x18>;
+type nn::settings::factory::BdAddress = bytes<6>;
+type nn::settings::factory::ConfigurationId1 = bytes<0x1e>;
+type nn::settings::factory::CountryCode = unknown;
+type nn::settings::factory::EccB233DeviceCertificate = unknown;
+type nn::settings::factory::EccB233DeviceKey = bytes<0x54>;
+type nn::settings::factory::GameCardCertificate = unknown;
+type nn::settings::factory::GameCardKey = unknown;
+type nn::settings::factory::GyroscopeOffset = bytes<6>;
+type nn::settings::factory::GyroscopeScale = bytes<6>;
+type nn::settings::factory::MacAddress = bytes<6>;
+type nn::settings::factory::Rsa2048DeviceCertificate = unknown;
+type nn::settings::factory::Rsa2048DeviceKey = unknown;
+type nn::settings::factory::SerialNumber = bytes<0x18>;
+type nn::settings::factory::SpeakerParameter = bytes<0x5a>;
+type nn::settings::factory::SslCertificate = unknown;
+type nn::settings::factory::SslKey = unknown;
+
+type nn::settings::system::AccountNotificationSettings = unknown;
+type nn::settings::system::AccountSettings = u32;
+type nn::settings::system::AudioVolume = u64;
+type nn::settings::system::BacklightSettings = bytes<0x28>;
+type nn::settings::system::BacklightSettingsEx = bytes<0x2c>;
+type nn::settings::system::BatteryLot = bytes<0x18>;
+type nn::settings::system::BluetoothDevicesSettings = unknown;
+type nn::settings::system::DataDeletionSettings = u64;
+type nn::settings::system::DeviceNickName = unknown;
+type nn::settings::system::Edid = unknown;
+type nn::settings::system::EulaVersion = unknown;
+type nn::settings::system::FatalDirtyFlag = u128;
+type nn::settings::system::FirmwareVersion = unknown;
+type nn::settings::system::InitialLaunchSettings = bytes<0x20>;
+type nn::settings::system::NetworkSettings = unknown;
+type nn::settings::system::NotificationSettings = bytes<0x18>;
+type nn::settings::system::NxControllerSettings = unknown;
+type nn::settings::system::PtmFuelGaugeParameter = bytes<0x18>;
+type nn::settings::system::SerialNumber = bytes<0x18>;
+type nn::settings::system::SleepSettings = bytes<0xc>;
+type nn::settings::system::TelemetryDirtyFlag = u128;
+type nn::settings::system::TvSettings = bytes<0x20>;
+
+type nn::ssl::sf::CertificateFormat = u32;
+type nn::ssl::sf::ContextOption = u32;
+type nn::ssl::sf::InternalPki = u32;
+type nn::ssl::sf::IoMode = u32;
+type nn::ssl::sf::OptionType = u32;
+type nn::ssl::sf::PollEvent = u32;
+type nn::ssl::sf::RenegotiationMode = u32;
+type nn::ssl::sf::SessionCacheMode = u32;
+type nn::ssl::sf::SslVersion = u32;
+type nn::ssl::sf::VerifyOption = u32;
+
+type nn::time::CalendarTime = u64;
+type nn::time::LocationName = bytes<0x24>;
+type nn::time::PosixTime = u64;
+type nn::time::SteadyClockTimePoint = bytes<0x18>;
+type nn::time::SystemClockContext = bytes<0x20>;
+type nn::time::TimeZoneRule = unknown;
+type nn::time::TimeZoneRuleVersion = u128;
+
+type nn::time::sf::CalendarAdditionalInfo = bytes<0x18>;
+
+type nn::util::Unorm8x4 = u32;
+type nn::util::Uuid = u128;
+
+type nn::vi::DisplayInfo = unknown;
+type nn::vi::DisplayModeInfo = u128;
+type nn::vi::DisplayName = bytes<0x40>;
+type nn::vi::ProxyName = u64;
+
+
+interface nn::account::IAccountServiceForAdministrator is acc:su {
+	[0] GetUserCount() -> i32;
+	[1] GetUserExistence(nn::account::Uid) -> bool;
+	[2] ListAllUsers() -> array<nn::account::Uid, 0xa>;
+	[3] ListOpenUsers() -> array<nn::account::Uid, 0xa>;
+	[4] GetLastOpenedUser() -> nn::account::Uid;
+	[5] GetProfile(nn::account::Uid) -> object<nn::account::profile::IProfile>;
+	[6] GetProfileDigest(nn::account::Uid) -> nn::account::ProfileDigest;
+	[50] IsUserRegistrationRequestPermitted(u64, pid) -> bool;
+	[51] TrySelectUserWithoutInteraction(bool) -> nn::account::Uid;
+	[100] GetUserRegistrationNotifier() -> object<nn::account::detail::INotifier>;
+	[101] GetUserStateChangeNotifier() -> object<nn::account::detail::INotifier>;
+	[102] GetBaasAccountManagerForSystemService(nn::account::Uid) -> object<nn::account::baas::IManagerForSystemService>;
+	[103] GetBaasUserAvailabilityChangeNotifier() -> object<nn::account::detail::INotifier>;
+	[104] GetProfileUpdateNotifier() -> object<nn::account::detail::INotifier>;
+	[110] StoreSaveDataThumbnail(nn::account::Uid, nn::ApplicationId, buffer<unknown, 5, 0>);
+	[111] ClearSaveDataThumbnail(nn::account::Uid, nn::ApplicationId);
+	[112] LoadSaveDataThumbnail(nn::account::Uid, nn::ApplicationId) -> (u32, buffer<unknown, 6, 0>);
+	[190] GetUserLastOpenedApplication(nn::account::Uid) -> (u32, nn::ApplicationId);
+	[200] BeginUserRegistration() -> nn::account::Uid;
+	[201] CompleteUserRegistration(nn::account::Uid);
+	[202] CancelUserRegistration(nn::account::Uid);
+	[203] DeleteUser(nn::account::Uid);
+	[204] SetUserPosition(i32, nn::account::Uid);
+	[205] GetProfileEditor(nn::account::Uid) -> object<nn::account::profile::IProfileEditor>;
+	[206] CompleteUserRegistrationForcibly(nn::account::Uid);
+	[210] CreateFloatingRegistrationRequest(u32, KObject) -> object<nn::account::baas::IFloatingRegistrationRequest>;
+	[230] AuthenticateServiceAsync() -> object<nn::account::detail::IAsyncContext>;
+	[250] GetBaasAccountAdministrator(nn::account::Uid) -> object<nn::account::baas::IAdministrator>;
+	[290] ProxyProcedureForGuestLoginWithNintendoAccount(nn::account::detail::Uuid) -> object<nn::account::nas::IOAuthProcedureForExternalNsa>;
+	[291] ProxyProcedureForFloatingRegistrationWithNintendoAccount(nn::account::detail::Uuid) -> object<nn::account::nas::IOAuthProcedureForExternalNsa>;
+	[299] SuspendBackgroundDaemon() -> object<nn::account::detail::ISessionObject>;
+	[997] DebugInvalidateTokenCacheForUser(nn::account::Uid);
+	[998] DebugSetUserStateClose(nn::account::Uid);
+	[999] DebugSetUserStateOpen(nn::account::Uid);
+}
+
+interface nn::account::IAccountServiceForApplication is acc:u0 {
+	[0] GetUserCount() -> i32;
+	[1] GetUserExistence(nn::account::Uid) -> bool;
+	[2] ListAllUsers() -> array<nn::account::Uid, 0xa>;
+	[3] ListOpenUsers() -> array<nn::account::Uid, 0xa>;
+	[4] GetLastOpenedUser() -> nn::account::Uid;
+	[5] GetProfile(nn::account::Uid) -> object<nn::account::profile::IProfile>;
+	[6] GetProfileDigest(nn::account::Uid) -> nn::account::ProfileDigest;
+	[50] IsUserRegistrationRequestPermitted(u64, pid) -> bool;
+	[51] TrySelectUserWithoutInteraction(bool) -> nn::account::Uid;
+	[100] InitializeApplicationInfo(u64, pid);
+	[101] GetBaasAccountManagerForApplication(nn::account::Uid) -> object<nn::account::baas::IManagerForApplication>;
+	[102] AuthenticateApplicationAsync() -> object<nn::account::detail::IAsyncContext>;
+	[110] StoreSaveDataThumbnail(nn::account::Uid, buffer<unknown, 5, 0>);
+	[111] ClearSaveDataThumbnail(nn::account::Uid);
+	[120] CreateGuestLoginRequest(u32, KObject) -> object<nn::account::baas::IGuestLoginRequest>;
+}
+
+interface nn::account::IAccountServiceForSystemService is acc:u1 {
+	[0] GetUserCount() -> i32;
+	[1] GetUserExistence(nn::account::Uid) -> bool;
+	[2] ListAllUsers() -> array<nn::account::Uid, 0xa>;
+	[3] ListOpenUsers() -> array<nn::account::Uid, 0xa>;
+	[4] GetLastOpenedUser() -> nn::account::Uid;
+	[5] GetProfile(nn::account::Uid) -> object<nn::account::profile::IProfile>;
+	[6] GetProfileDigest(nn::account::Uid) -> nn::account::ProfileDigest;
+	[50] IsUserRegistrationRequestPermitted(u64, pid) -> bool;
+	[51] TrySelectUserWithoutInteraction(bool) -> nn::account::Uid;
+	[100] GetUserRegistrationNotifier() -> object<nn::account::detail::INotifier>;
+	[101] GetUserStateChangeNotifier() -> object<nn::account::detail::INotifier>;
+	[102] GetBaasAccountManagerForSystemService(nn::account::Uid) -> object<nn::account::baas::IManagerForSystemService>;
+	[103] GetBaasUserAvailabilityChangeNotifier() -> object<nn::account::detail::INotifier>;
+	[104] GetProfileUpdateNotifier() -> object<nn::account::detail::INotifier>;
+	[110] StoreSaveDataThumbnail(nn::account::Uid, nn::ApplicationId, buffer<unknown, 5, 0>);
+	[111] ClearSaveDataThumbnail(nn::account::Uid, nn::ApplicationId);
+	[112] LoadSaveDataThumbnail(nn::account::Uid, nn::ApplicationId) -> (u32, buffer<unknown, 6, 0>);
+	[190] GetUserLastOpenedApplication(nn::account::Uid) -> (u32, nn::ApplicationId);
+	[997] DebugInvalidateTokenCacheForUser(nn::account::Uid);
+	[998] DebugSetUserStateClose(nn::account::Uid);
+	[999] DebugSetUserStateOpen(nn::account::Uid);
+}
+
+interface nn::account::IBaasAccessTokenAccessor is acc:aa {
+	[0] EnsureCacheAsync(nn::account::Uid) -> object<nn::account::detail::IAsyncContext>;
+	[1] LoadCache(nn::account::Uid) -> (u32, buffer<unknown, 6, 0>);
+	[2] GetDeviceAccountId(nn::account::Uid) -> u64;
+	[50] RegisterNotificationTokenAsync(nn::npns::NotificationToken, nn::account::Uid) -> object<nn::account::detail::IAsyncContext>;
+	[51] UnregisterNotificationTokenAsync(nn::account::Uid) -> object<nn::account::detail::IAsyncContext>;
+}
+
+interface nn::account::baas::IAdministrator {
+	[0] CheckAvailability();
+	[1] GetAccountId() -> nn::account::NetworkServiceAccountId;
+	[2] EnsureIdTokenCacheAsync() -> object<nn::account::detail::IAsyncContext>;
+	[3] LoadIdTokenCache() -> (u32, buffer<unknown, 6, 0>);
+	[100] SetSystemProgramIdentification(u64, pid, buffer<nn::account::SystemProgramIdentification, 0x19, 0x10>);
+	[120] GetNintendoAccountId() -> nn::account::NintendoAccountId;
+	[130] GetNintendoAccountUserResourceCache() -> (nn::account::NintendoAccountId, buffer<nn::account::nas::NasUserBase, 0x1a, 0x24f>, buffer<unknown, 6, 0>);
+	[131] RefreshNintendoAccountUserResourceCacheAsync() -> object<nn::account::detail::IAsyncContext>;
+	[132] RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(u32) -> (bool, object<nn::account::detail::IAsyncContext>);
+	[150] CreateAuthorizationRequest(u32, KObject, buffer<nn::account::nas::NasClientInfo, 0x19, 0x108>, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
+	[200] IsRegistered() -> bool;
+	[201] RegisterAsync() -> object<nn::account::detail::IAsyncContext>;
+	[202] UnregisterAsync() -> object<nn::account::detail::IAsyncContext>;
+	[203] DeleteRegistrationInfoLocally();
+	[220] SynchronizeProfileAsync() -> object<nn::account::detail::IAsyncContext>;
+	[221] UploadProfileAsync() -> object<nn::account::detail::IAsyncContext>;
+	[222] SynchronizeProfileAsyncIfSecondsElapsed(u32) -> (bool, object<nn::account::detail::IAsyncContext>);
+	[250] IsLinkedWithNintendoAccount() -> bool;
+	[251] CreateProcedureToLinkWithNintendoAccount() -> object<nn::account::nas::IOAuthProcedureForNintendoAccountLinkage>;
+	[252] ResumeProcedureToLinkWithNintendoAccount(nn::account::detail::Uuid) -> object<nn::account::nas::IOAuthProcedureForNintendoAccountLinkage>;
+	[255] CreateProcedureToUpdateLinkageStateOfNintendoAccount() -> object<nn::account::http::IOAuthProcedure>;
+	[256] ResumeProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::detail::Uuid) -> object<nn::account::http::IOAuthProcedure>;
+	[260] CreateProcedureToLinkNnidWithNintendoAccount() -> object<nn::account::http::IOAuthProcedure>;
+	[261] ResumeProcedureToLinkNnidWithNintendoAccount(nn::account::detail::Uuid) -> object<nn::account::http::IOAuthProcedure>;
+	[280] ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount(nn::account::detail::Uuid) -> object<nn::account::http::IOAuthProcedure>;
+	[997] DebugUnlinkNintendoAccountAsync() -> object<nn::account::detail::IAsyncContext>;
+	[998] DebugSetAvailabilityErrorDetail(u32);
+}
+
+interface nn::account::baas::IFloatingRegistrationRequest {
+	[0] GetSessionId() -> nn::account::detail::Uuid;
+	[12] GetAccountId() -> nn::account::NetworkServiceAccountId;
+	[13] GetLinkedNintendoAccountId() -> nn::account::NintendoAccountId;
+	[14] GetNickname() -> array<i8, 0xa>;
+	[15] GetProfileImage() -> (u32, buffer<unknown, 6, 0>);
+	[21] LoadIdTokenCache() -> (u32, buffer<unknown, 6, 0>);
+	[100] RegisterAsync() -> (nn::account::Uid, object<nn::account::detail::IAsyncContext>);
+	[101] RegisterWithUidAsync(nn::account::Uid) -> object<nn::account::detail::IAsyncContext>;
+	[110] SetSystemProgramIdentification(u64, pid, buffer<nn::account::SystemProgramIdentification, 0x19, 0x10>);
+	[111] EnsureIdTokenCacheAsync() -> object<nn::account::detail::IAsyncContext>;
+}
+
+interface nn::account::baas::IGuestLoginRequest {
+	[0] GetSessionId() -> nn::account::detail::Uuid;
+	[12] GetAccountId() -> nn::account::NetworkServiceAccountId;
+	[13] GetLinkedNintendoAccountId() -> nn::account::NintendoAccountId;
+	[14] GetNickname() -> array<i8, 0xa>;
+	[15] GetProfileImage() -> (u32, buffer<unknown, 6, 0>);
+	[21] LoadIdTokenCache() -> (u32, buffer<unknown, 6, 0>);
+}
+
+interface nn::account::baas::IManagerForApplication {
+	[0] CheckAvailability();
+	[1] GetAccountId() -> nn::account::NetworkServiceAccountId;
+	[2] EnsureIdTokenCacheAsync() -> object<nn::account::detail::IAsyncContext>;
+	[3] LoadIdTokenCache() -> (u32, buffer<unknown, 6, 0>);
+	[130] GetNintendoAccountUserResourceCacheForApplication() -> (nn::account::NintendoAccountId, buffer<nn::account::nas::NasUserBaseForApplication, 0x1a, 0x68>, buffer<unknown, 6, 0>);
+	[150] CreateAuthorizationRequest(u32, KObject, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
+}
+
+interface nn::account::baas::IManagerForSystemService {
+	[0] CheckAvailability();
+	[1] GetAccountId() -> nn::account::NetworkServiceAccountId;
+	[2] EnsureIdTokenCacheAsync() -> object<nn::account::detail::IAsyncContext>;
+	[3] LoadIdTokenCache() -> (u32, buffer<unknown, 6, 0>);
+	[100] SetSystemProgramIdentification(u64, pid, buffer<nn::account::SystemProgramIdentification, 0x19, 0x10>);
+	[120] GetNintendoAccountId() -> nn::account::NintendoAccountId;
+	[130] GetNintendoAccountUserResourceCache() -> (nn::account::NintendoAccountId, buffer<nn::account::nas::NasUserBase, 0x1a, 0x24f>, buffer<unknown, 6, 0>);
+	[131] RefreshNintendoAccountUserResourceCacheAsync() -> object<nn::account::detail::IAsyncContext>;
+	[132] RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(u32) -> (bool, object<nn::account::detail::IAsyncContext>);
+	[150] CreateAuthorizationRequest(u32, KObject, buffer<nn::account::nas::NasClientInfo, 0x19, 0x108>, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
+}
+
+interface nn::account::detail::IAsyncContext {
+	[0] GetSystemEvent() -> KObject;
+	[1] Cancel();
+	[2] HasDone() -> bool;
+	[3] GetResult();
+}
+
+interface nn::account::detail::INotifier {
+	[0] GetSystemEvent() -> KObject;
+}
+
+interface nn::account::detail::ISessionObject {
+	[999] Dummy();
+}
+
+interface nn::account::http::IOAuthProcedure {
+	[0] PrepareAsync() -> object<nn::account::detail::IAsyncContext>;
+	[1] GetRequest() -> (buffer<nn::account::RequestUrl, 0x1a, 0x1000>, buffer<nn::account::CallbackUri, 0x1a, 0x100>);
+	[2] ApplyResponse(array<i8, 9>);
+	[3] ApplyResponseAsync(array<i8, 9>) -> object<nn::account::detail::IAsyncContext>;
+	[10] Suspend() -> nn::account::detail::Uuid;
+}
+
+interface nn::account::nas::IAuthorizationRequest {
+	[0] GetSessionId() -> nn::account::detail::Uuid;
+	[10] InvokeWithoutInteractionAsync() -> object<nn::account::detail::IAsyncContext>;
+	[19] IsAuthorized() -> bool;
+	[20] GetAuthorizationCode() -> (u32, buffer<unknown, 6, 0>);
+	[21] GetIdToken() -> (u32, buffer<unknown, 6, 0>);
+	[22] GetState() -> buffer<nn::account::nas::State, 0x1a, 0x80>;
+}
+
+interface nn::account::nas::IOAuthProcedureForExternalNsa {
+	[0] PrepareAsync() -> object<nn::account::detail::IAsyncContext>;
+	[1] GetRequest() -> (buffer<nn::account::RequestUrl, 0x1a, 0x1000>, buffer<nn::account::CallbackUri, 0x1a, 0x100>);
+	[2] ApplyResponse(array<i8, 9>);
+	[3] ApplyResponseAsync(array<i8, 9>) -> object<nn::account::detail::IAsyncContext>;
+	[10] Suspend() -> nn::account::detail::Uuid;
+	[100] GetAccountId() -> nn::account::NetworkServiceAccountId;
+	[101] GetLinkedNintendoAccountId() -> nn::account::NintendoAccountId;
+	[102] GetNickname() -> array<i8, 0xa>;
+	[103] GetProfileImage() -> (u32, buffer<unknown, 6, 0>);
+}
+
+interface nn::account::nas::IOAuthProcedureForNintendoAccountLinkage {
+	[0] PrepareAsync() -> object<nn::account::detail::IAsyncContext>;
+	[1] GetRequest() -> (buffer<nn::account::RequestUrl, 0x1a, 0x1000>, buffer<nn::account::CallbackUri, 0x1a, 0x100>);
+	[2] ApplyResponse(array<i8, 9>);
+	[3] ApplyResponseAsync(array<i8, 9>) -> object<nn::account::detail::IAsyncContext>;
+	[10] Suspend() -> nn::account::detail::Uuid;
+	[100] GetRequestWithTheme(i32) -> (buffer<nn::account::RequestUrl, 0x1a, 0x1000>, buffer<nn::account::CallbackUri, 0x1a, 0x100>);
+	[101] IsNetworkServiceAccountReplaced() -> bool;
+	[199] GetUrlForIntroductionOfExtraMembership() -> buffer<nn::account::RequestUrl, 0x1a, 0x1000>;
+}
+
+interface nn::account::profile::IProfile {
+	[0] Get() -> (nn::account::profile::ProfileBase, buffer<nn::account::profile::UserData, 0x1a, 0x80>);
+	[1] GetBase() -> nn::account::profile::ProfileBase;
+	[10] GetImageSize() -> u32;
+	[11] LoadImage() -> (u32, buffer<unknown, 6, 0>);
+}
+
+interface nn::account::profile::IProfileEditor {
+	[0] Get() -> (nn::account::profile::ProfileBase, buffer<nn::account::profile::UserData, 0x1a, 0x80>);
+	[1] GetBase() -> nn::account::profile::ProfileBase;
+	[10] GetImageSize() -> u32;
+	[11] LoadImage() -> (u32, buffer<unknown, 6, 0>);
+	[100] Store(nn::account::profile::ProfileBase, buffer<nn::account::profile::UserData, 0x19, 0x80>);
+	[101] StoreWithImage(nn::account::profile::ProfileBase, buffer<nn::account::profile::UserData, 0x19, 0x80>, buffer<unknown, 5, 0>);
+}
+
+interface nn::ahid::ICtrlSession {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+}
+
+interface nn::ahid::IReadSession {
+	[0] Unknown0();
+}
+
+interface nn::ahid::IServerSession is ahid:cd {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+}
+
+interface nn::ahid::hdr::ISession is ahid:hdr {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+}
+
+interface nn::am::service::IAllSystemAppletProxiesService is appletAE {
+	[100] OpenSystemAppletProxy(u64, pid, KObject) -> object<nn::am::service::ISystemAppletProxy>;
+	[200] OpenLibraryAppletProxyOld(u64, pid, KObject) -> object<nn::am::service::ILibraryAppletProxy>;
+	[201] OpenLibraryAppletProxy(u64, pid, KObject, buffer<nn::am::AppletAttribute, 0x15, 0x80>) -> object<nn::am::service::ILibraryAppletProxy>;
+	[300] OpenOverlayAppletProxy(u64, pid, KObject) -> object<nn::am::service::IOverlayAppletProxy>;
+	[350] OpenSystemApplicationProxy(u64, pid, KObject) -> object<nn::am::service::IApplicationProxy>;
+	[400] CreateSelfLibraryAppletCreatorForDevelop(u64, pid) -> object<nn::am::service::ILibraryAppletCreator>;
+}
+
+interface nn::am::service::IAppletAccessor {
+	[0] GetAppletStateChangedEvent() -> KObject;
+	[1] IsCompleted() -> bool;
+	[10] Start();
+	[20] RequestExit();
+	[25] Terminate();
+	[30] GetResult();
+}
+
+interface nn::am::service::IApplicationAccessor {
+	[0] GetAppletStateChangedEvent() -> KObject;
+	[1] IsCompleted() -> bool;
+	[10] Start();
+	[20] RequestExit();
+	[25] Terminate();
+	[30] GetResult();
+	[101] RequestForApplicationToGetForeground();
+	[110] TerminateAllLibraryApplets();
+	[111] AreAnyLibraryAppletsLeft() -> bool;
+	[112] GetCurrentLibraryApplet() -> object<nn::am::service::IAppletAccessor>;
+	[120] GetApplicationId() -> nn::ncm::ApplicationId;
+	[121] PushLaunchParameter(u32, object<nn::am::service::IStorage>);
+	[122] GetApplicationControlProperty() -> buffer<unknown, 6, 0>;
+	[123] GetApplicationLaunchProperty() -> buffer<unknown, 6, 0>;
+}
+
+interface nn::am::service::IApplicationCreator {
+	[0] CreateApplication(nn::ncm::ApplicationId) -> object<nn::am::service::IApplicationAccessor>;
+	[1] PopLaunchRequestedApplication() -> object<nn::am::service::IApplicationAccessor>;
+	[10] CreateSystemApplication(nn::ncm::SystemApplicationId) -> object<nn::am::service::IApplicationAccessor>;
+	[100] PopFloatingApplicationForDevelopment() -> object<nn::am::service::IApplicationAccessor>;
+}
+
+interface nn::am::service::IApplicationFunctions {
+	[1] PopLaunchParameter(u32) -> object<nn::am::service::IStorage>;
+	[10] CreateApplicationAndPushAndRequestToStart(nn::ncm::ApplicationId, object<nn::am::service::IStorage>);
+	[11] CreateApplicationAndPushAndRequestToStartForQuest(u32, u32, nn::ncm::ApplicationId, object<nn::am::service::IStorage>);
+	[20] EnsureSaveData(nn::account::Uid) -> i64;
+	[21] GetDesiredLanguage() -> nn::settings::LanguageCode;
+	[22] SetTerminateResult(u32);
+	[23] GetDisplayVersion() -> nn::oe::DisplayVersion;
+	[24] GetLaunchStorageInfoForDebug() -> (nn::ncm::StorageId, nn::ncm::StorageId);
+	[25] ExtendSaveData(u8, nn::account::Uid, i64, i64) -> i64;
+	[26] GetSaveDataSize(u8, nn::account::Uid) -> (i64, i64);
+	[30] BeginBlockingHomeButtonShortAndLongPressed(i64);
+	[31] EndBlockingHomeButtonShortAndLongPressed();
+	[32] BeginBlockingHomeButton(i64);
+	[33] EndBlockingHomeButton();
+	[40] NotifyRunning() -> bool;
+	[50] GetPseudoDeviceId() -> nn::util::Uuid;
+	[60] SetMediaPlaybackStateForApplication(bool);
+	[65] IsGamePlayRecordingSupported() -> bool;
+	[66] InitializeGamePlayRecording(u64, KObject);
+	[67] SetGamePlayRecordingState(i32);
+	[70] RequestToShutdown();
+	[71] RequestToReboot();
+}
+
+interface nn::am::service::IApplicationProxy {
+	[0] GetCommonStateGetter() -> object<nn::am::service::ICommonStateGetter>;
+	[1] GetSelfController() -> object<nn::am::service::ISelfController>;
+	[2] GetWindowController() -> object<nn::am::service::IWindowController>;
+	[3] GetAudioController() -> object<nn::am::service::IAudioController>;
+	[4] GetDisplayController() -> object<nn::am::service::IDisplayController>;
+	[10] GetProcessWindingController() -> object<nn::am::service::IProcessWindingController>;
+	[11] GetLibraryAppletCreator() -> object<nn::am::service::ILibraryAppletCreator>;
+	[20] GetApplicationFunctions() -> object<nn::am::service::IApplicationFunctions>;
+	[1000] GetDebugFunctions() -> object<nn::am::service::IDebugFunctions>;
+}
+
+interface nn::am::service::IApplicationProxyService is appletOE {
+	[0] OpenApplicationProxy(u64, pid, KObject) -> object<nn::am::service::IApplicationProxy>;
+}
+
+interface nn::am::service::IAudioController {
+	[0] SetExpectedMasterVolume(f32, f32);
+	[1] GetMainAppletExpectedMasterVolume() -> f32;
+	[2] GetLibraryAppletExpectedMasterVolume() -> f32;
+	[3] ChangeMainAppletMasterVolume(f32, i64);
+	[4] SetTransparentVolumeRate(f32);
+}
+
+interface nn::am::service::ICommonStateGetter {
+	[0] GetEventHandle() -> KObject;
+	[1] ReceiveMessage() -> nn::am::AppletMessage;
+	[2] GetThisAppletKind() -> nn::am::service::AppletKind;
+	[3] AllowToEnterSleep();
+	[4] DisallowToEnterSleep();
+	[5] GetOperationMode() -> u8;
+	[6] GetPerformanceMode() -> u32;
+	[7] GetCradleStatus() -> u8;
+	[8] GetBootMode() -> u8;
+	[9] GetCurrentFocusState() -> u8;
+	[10] RequestToAcquireSleepLock();
+	[11] ReleaseSleepLock();
+	[12] ReleaseSleepLockTransiently();
+	[13] GetAcquiredSleepLockEvent() -> KObject;
+	[20] PushToGeneralChannel(object<nn::am::service::IStorage>);
+	[30] GetHomeButtonReaderLockAccessor() -> object<nn::am::service::ILockAccessor>;
+	[31] GetReaderLockAccessorEx(i32) -> object<nn::am::service::ILockAccessor>;
+	[40] GetCradleFwVersion() -> (u32, u32, u32, u32);
+	[50] IsVrModeEnabled() -> bool;
+	[51] SetVrModeEnabled(bool);
+	[55] IsInControllerFirmwareUpdateSection() -> bool;
+	[60] GetDefaultDisplayResolution() -> (i32, i32);
+	[61] GetDefaultDisplayResolutionChangeEvent() -> KObject;
+}
+
+interface nn::am::service::IDebugFunctions {
+	[0] NotifyMessageToHomeMenuForDebug(nn::am::AppletMessage);
+	[1] OpenMainApplication() -> object<nn::am::service::IApplicationAccessor>;
+	[10] EmulateButtonEvent(nn::am::service::EmulatedButtonEvent);
+	[20] InvalidateTransitionLayer();
+}
+
+interface nn::am::service::IDisplayController {
+	[0] GetLastForegroundCaptureImage() -> buffer<unknown, 6, 0>;
+	[1] UpdateLastForegroundCaptureImage();
+	[2] GetLastApplicationCaptureImage() -> buffer<unknown, 6, 0>;
+	[3] GetCallerAppletCaptureImage() -> buffer<unknown, 6, 0>;
+	[4] UpdateCallerAppletCaptureImage();
+	[5] GetLastForegroundCaptureImageEx() -> (bool, buffer<unknown, 6, 0>);
+	[6] GetLastApplicationCaptureImageEx() -> (bool, buffer<unknown, 6, 0>);
+	[7] GetCallerAppletCaptureImageEx() -> (bool, buffer<unknown, 6, 0>);
+	[8] TakeScreenShotOfOwnLayer(bool, i32);
+	[10] AcquireLastApplicationCaptureBuffer() -> KObject;
+	[11] ReleaseLastApplicationCaptureBuffer();
+	[12] AcquireLastForegroundCaptureBuffer() -> KObject;
+	[13] ReleaseLastForegroundCaptureBuffer();
+	[14] AcquireCallerAppletCaptureBuffer() -> KObject;
+	[15] ReleaseCallerAppletCaptureBuffer();
+	[16] AcquireLastApplicationCaptureBufferEx() -> (bool, KObject);
+	[17] AcquireLastForegroundCaptureBufferEx() -> (bool, KObject);
+	[18] AcquireCallerAppletCaptureBufferEx() -> (bool, KObject);
+	[20] ClearCaptureBuffer(bool, i32, u32);
+	[21] ClearAppletTransitionBuffer(u32);
+}
+
+interface nn::am::service::IGlobalStateController {
+	[0] RequestToEnterSleep();
+	[1] EnterSleep();
+	[2] StartSleepSequence(bool);
+	[3] StartShutdownSequence();
+	[4] StartRebootSequence();
+	[10] LoadAndApplyIdlePolicySettings();
+	[11] NotifyCecSettingsChanged();
+	[12] SetDefaultHomeButtonLongPressTime(i64);
+	[13] UpdateDefaultDisplayResolution();
+	[14] ShouldSleepOnBoot() -> bool;
+}
+
+interface nn::am::service::IHomeMenuFunctions {
+	[10] RequestToGetForeground();
+	[11] LockForeground();
+	[12] UnlockForeground();
+	[20] PopFromGeneralChannel() -> object<nn::am::service::IStorage>;
+	[21] GetPopFromGeneralChannelEvent() -> KObject;
+	[30] GetHomeButtonWriterLockAccessor() -> object<nn::am::service::ILockAccessor>;
+	[31] GetWriterLockAccessorEx(i32) -> object<nn::am::service::ILockAccessor>;
+}
+
+interface nn::am::service::ILibraryAppletAccessor {
+	[0] GetAppletStateChangedEvent() -> KObject;
+	[1] IsCompleted() -> bool;
+	[10] Start();
+	[20] RequestExit();
+	[25] Terminate();
+	[30] GetResult();
+	[50] SetOutOfFocusApplicationSuspendingEnabled(bool);
+	[100] PushInData(object<nn::am::service::IStorage>);
+	[101] PopOutData() -> object<nn::am::service::IStorage>;
+	[102] PushExtraStorage(object<nn::am::service::IStorage>);
+	[103] PushInteractiveInData(object<nn::am::service::IStorage>);
+	[104] PopInteractiveOutData() -> object<nn::am::service::IStorage>;
+	[105] GetPopOutDataEvent() -> KObject;
+	[106] GetPopInteractiveOutDataEvent() -> KObject;
+	[110] NeedsToExitProcess() -> bool;
+	[120] GetLibraryAppletInfo() -> nn::am::service::LibraryAppletInfo;
+	[150] RequestForAppletToGetForeground();
+	[160] GetIndirectLayerConsumerHandle(nn::applet::AppletResourceUserId, pid) -> u64;
+}
+
+interface nn::am::service::ILibraryAppletCreator {
+	[0] CreateLibraryApplet(u32, u32) -> object<nn::am::service::ILibraryAppletAccessor>;
+	[1] TerminateAllLibraryApplets();
+	[2] AreAnyLibraryAppletsLeft() -> bool;
+	[10] CreateStorage(i64) -> object<nn::am::service::IStorage>;
+	[11] CreateTransferMemoryStorage(bool, i64, KObject) -> object<nn::am::service::IStorage>;
+	[12] CreateHandleStorage(i64, KObject) -> object<nn::am::service::IStorage>;
+}
+
+interface nn::am::service::ILibraryAppletProxy {
+	[0] GetCommonStateGetter() -> object<nn::am::service::ICommonStateGetter>;
+	[1] GetSelfController() -> object<nn::am::service::ISelfController>;
+	[2] GetWindowController() -> object<nn::am::service::IWindowController>;
+	[3] GetAudioController() -> object<nn::am::service::IAudioController>;
+	[4] GetDisplayController() -> object<nn::am::service::IDisplayController>;
+	[10] GetProcessWindingController() -> object<nn::am::service::IProcessWindingController>;
+	[11] GetLibraryAppletCreator() -> object<nn::am::service::ILibraryAppletCreator>;
+	[20] OpenLibraryAppletSelfAccessor() -> object<nn::am::service::ILibraryAppletSelfAccessor>;
+	[1000] GetDebugFunctions() -> object<nn::am::service::IDebugFunctions>;
+}
+
+interface nn::am::service::ILibraryAppletSelfAccessor {
+	[0] PopInData() -> object<nn::am::service::IStorage>;
+	[1] PushOutData(object<nn::am::service::IStorage>);
+	[2] PopInteractiveInData() -> object<nn::am::service::IStorage>;
+	[3] PushInteractiveOutData(object<nn::am::service::IStorage>);
+	[5] GetPopInDataEvent() -> KObject;
+	[6] GetPopInteractiveInDataEvent() -> KObject;
+	[10] ExitProcessAndReturn();
+	[11] GetLibraryAppletInfo() -> nn::am::service::LibraryAppletInfo;
+	[12] GetMainAppletIdentityInfo() -> nn::am::service::AppletIdentityInfo;
+	[13] CanUseApplicationCore() -> bool;
+	[14] GetCallerAppletIdentityInfo() -> nn::am::service::AppletIdentityInfo;
+	[15] GetMainAppletApplicationControlProperty() -> buffer<nn::ns::ApplicationControlProperty, 0x16, 0x4000>;
+	[16] GetMainAppletStorageId() -> nn::ncm::StorageId;
+	[17] GetCallerAppletIdentityInfoStack() -> (i32, array<nn::am::service::AppletIdentityInfo, 6>);
+	[20] PopExtraStorage() -> object<nn::am::service::IStorage>;
+	[25] GetPopExtraStorageEvent() -> KObject;
+	[30] UnpopInData(object<nn::am::service::IStorage>);
+	[31] UnpopExtraStorage(object<nn::am::service::IStorage>);
+	[40] GetIndirectLayerProducerHandle() -> u64;
+	[50] ReportVisibleError(nn::err::ErrorCode);
+}
+
+interface nn::am::service::ILockAccessor {
+	[1] TryLock(bool) -> (bool, KObject);
+	[2] Unlock();
+	[3] GetEvent() -> KObject;
+}
+
+interface nn::am::service::IOverlayAppletProxy {
+	[0] GetCommonStateGetter() -> object<nn::am::service::ICommonStateGetter>;
+	[1] GetSelfController() -> object<nn::am::service::ISelfController>;
+	[2] GetWindowController() -> object<nn::am::service::IWindowController>;
+	[3] GetAudioController() -> object<nn::am::service::IAudioController>;
+	[4] GetDisplayController() -> object<nn::am::service::IDisplayController>;
+	[10] GetProcessWindingController() -> object<nn::am::service::IProcessWindingController>;
+	[11] GetLibraryAppletCreator() -> object<nn::am::service::ILibraryAppletCreator>;
+	[20] GetOverlayFunctions() -> object<nn::am::service::IOverlayFunctions>;
+	[1000] GetDebugFunctions() -> object<nn::am::service::IDebugFunctions>;
+}
+
+interface nn::am::service::IOverlayFunctions {
+	[0] BeginToWatchShortHomeButtonMessage();
+	[1] EndToWatchShortHomeButtonMessage();
+	[2] GetApplicationIdForLogo() -> nn::ncm::ApplicationId;
+	[3] SetGpuTimeSliceBoost(u64);
+	[4] SetAutoSleepTimeAndDimmingTimeEnabled(bool);
+	[5] TerminateApplicationAndSetReason(u32);
+	[6] SetScreenShotPermissionGlobally(bool);
+}
+
+interface nn::am::service::IProcessWindingController {
+	[0] GetLaunchReason() -> nn::am::service::AppletProcessLaunchReason;
+	[11] OpenCallingLibraryApplet() -> object<nn::am::service::ILibraryAppletAccessor>;
+	[21] PushContext(object<nn::am::service::IStorage>);
+	[22] PopContext() -> object<nn::am::service::IStorage>;
+	[23] CancelWindingReservation();
+	[30] WindAndDoReserved();
+	[40] ReserveToStartAndWaitAndUnwindThis(object<nn::am::service::ILibraryAppletAccessor>);
+}
+
+interface nn::am::service::ISelfController {
+	[0] Exit();
+	[1] LockExit();
+	[2] UnlockExit();
+	[3] EnterFatalSection();
+	[4] LeaveFatalSection();
+	[9] GetLibraryAppletLaunchableEvent() -> KObject;
+	[10] SetScreenShotPermission(i32);
+	[11] SetOperationModeChangedNotification(bool);
+	[12] SetPerformanceModeChangedNotification(bool);
+	[13] SetFocusHandlingMode(bool, bool, bool);
+	[14] SetRestartMessageEnabled(bool);
+	[15] SetScreenShotAppletIdentityInfo(nn::am::service::AppletIdentityInfo);
+	[16] SetOutOfFocusSuspendingEnabled(bool);
+	[17] SetControllerFirmwareUpdateSection(bool);
+	[18] SetRequiresCaptureButtonShortPressedMessage(bool);
+	[19] SetScreenShotImageOrientation(i32);
+	[40] CreateManagedDisplayLayer() -> u64;
+	[50] SetHandlesRequestToDisplay(bool);
+	[51] ApproveToDisplay();
+	[60] OverrideAutoSleepTimeAndDimmingTime(i32, i32, i32, i32);
+	[61] SetMediaPlaybackState(bool);
+	[62] SetIdleTimeDetectionExtension(u32);
+	[63] GetIdleTimeDetectionExtension() -> u32;
+	[64] SetInputDetectionSourceSet(u32);
+	[65] ReportUserIsActive();
+	[66] GetCurrentIlluminance() -> f32;
+	[67] IsIlluminanceAvailable() -> bool;
+}
+
+interface nn::am::service::IStorage {
+	[0] Open() -> object<nn::am::service::IStorageAccessor>;
+	[1] OpenTransferStorage() -> object<nn::am::service::ITransferStorageAccessor>;
+}
+
+interface nn::am::service::IStorageAccessor {
+	[0] GetSize() -> i64;
+	[10] Write(i64, buffer<unknown, 0x21, 0>);
+	[11] Read(i64) -> buffer<unknown, 0x22, 0>;
+}
+
+interface nn::am::service::ISystemAppletProxy {
+	[0] GetCommonStateGetter() -> object<nn::am::service::ICommonStateGetter>;
+	[1] GetSelfController() -> object<nn::am::service::ISelfController>;
+	[2] GetWindowController() -> object<nn::am::service::IWindowController>;
+	[3] GetAudioController() -> object<nn::am::service::IAudioController>;
+	[4] GetDisplayController() -> object<nn::am::service::IDisplayController>;
+	[10] GetProcessWindingController() -> object<nn::am::service::IProcessWindingController>;
+	[11] GetLibraryAppletCreator() -> object<nn::am::service::ILibraryAppletCreator>;
+	[20] GetHomeMenuFunctions() -> object<nn::am::service::IHomeMenuFunctions>;
+	[21] GetGlobalStateController() -> object<nn::am::service::IGlobalStateController>;
+	[22] GetApplicationCreator() -> object<nn::am::service::IApplicationCreator>;
+	[1000] GetDebugFunctions() -> object<nn::am::service::IDebugFunctions>;
+}
+
+interface nn::am::service::ITransferStorageAccessor {
+	[0] GetSize() -> i64;
+	[1] GetHandle() -> (u64, KObject);
+}
+
+interface nn::am::service::IWindow {
+	[12345] Unknown12345();
+}
+
+interface nn::am::service::IWindowController {
+	[0] CreateWindow(nn::am::service::WindowCreationOption) -> object<nn::am::service::IWindow>;
+	[1] GetAppletResourceUserId() -> nn::applet::AppletResourceUserId;
+	[10] AcquireForegroundRights();
+	[11] ReleaseForegroundRights();
+	[12] RejectToChangeIntoBackground();
+}
+
+interface nn::aocsrv::detail::IAddOnContentManager is aoc:u {
+	[0] CountAddOnContentByApplicationId(nn::ncm::ApplicationId) -> i32;
+	[1] ListAddOnContentByApplicationId(i32, i32, nn::ncm::ApplicationId) -> (i32, array<i32, 6>);
+	[2] CountAddOnContent(u64, pid) -> i32;
+	[3] ListAddOnContent(i32, i32, u64, pid) -> (i32, array<i32, 6>);
+	[4] GetAddOnContentBaseIdByApplicationId(nn::ncm::ApplicationId) -> u64;
+	[5] GetAddOnContentBaseId(u64, pid) -> u64;
+	[6] PrepareAddOnContentByApplicationId(i32, nn::ncm::ApplicationId);
+	[7] PrepareAddOnContent(i32, u64, pid);
+}
+
+interface nn::apm::IManager is apm {
+	[0] OpenSession() -> object<nn::apm::ISession>;
+	[1] GetPerformanceMode() -> nn::apm::PerformanceMode;
+}
+
+interface nn::apm::IManagerPrivileged is apm:p {
+	[0] OpenSession() -> object<nn::apm::ISession>;
+}
+
+interface nn::apm::ISession {
+	[0] SetPerformanceConfiguration(nn::apm::PerformanceMode, nn::apm::PerformanceConfiguration);
+	[1] GetPerformanceConfiguration(nn::apm::PerformanceMode) -> nn::apm::PerformanceConfiguration;
+}
+
+interface nn::apm::ISystemManager is apm:sys {
+	[0] RequestPerformanceMode(nn::apm::PerformanceMode);
+	[1] GetPerformanceEvent(nn::apm::EventTarget) -> KObject;
+	[2] GetThrottlingState() -> nn::apm::ThrottlingState;
+	[3] GetLastThrottlingState() -> nn::apm::ThrottlingState;
+	[4] ClearLastThrottlingState();
+}
+
+interface nn::arp::detail::IReader is arp:r {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+}
+
+interface nn::arp::detail::IRegistrar {
+	[0] Unknown0(u64);
+	[1] Unknown1(u128);
+	[2] Unknown2();
+}
+
+interface nn::arp::detail::IWriter is arp:w {
+	[0] Unknown0() -> object<IUnknown>;
+	[1] Unknown1(u64);
+}
+
+interface nn::audio::detail::IAudioDebugManager {
+	[0] Unknown0(u32, u64, KObject);
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+}
+
+interface nn::audio::detail::IAudioDevice {
+	[0] Unknown0() -> (u32, buffer<unknown, 6, 0>);
+	[1] Unknown1(u32, buffer<unknown, 5, 0>);
+	[2] Unknown2(buffer<unknown, 5, 0>) -> u32;
+	[3] Unknown3() -> buffer<unknown, 6, 0>;
+	[4] Unknown4() -> KObject;
+	[5] Unknown5() -> u32;
+	[6] Unknown6() -> (u32, buffer<unknown, 0x22, 0>);
+	[7] Unknown7(u32, buffer<unknown, 0x21, 0>);
+	[8] Unknown8(buffer<unknown, 0x21, 0>) -> u32;
+	[10] Unknown10() -> buffer<unknown, 0x22, 0>;
+	[11] Unknown11() -> KObject;
+	[12] Unknown12() -> KObject;
+}
+
+interface nn::audio::detail::IAudioIn {
+	[0] Unknown0() -> u32;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3(u64, buffer<unknown, 5, 0>);
+	[4] Unknown4() -> KObject;
+	[5] Unknown5() -> (u32, buffer<unknown, 6, 0>);
+	[6] Unknown6(u64) -> u8;
+	[7] Unknown7(u64, KObject, buffer<unknown, 5, 0>);
+	[8] Unknown8(u64, buffer<unknown, 0x21, 0>);
+	[9] Unknown9() -> (u32, buffer<unknown, 0x22, 0>);
+	[10] Unknown10(u64, KObject, buffer<unknown, 0x21, 0>);
+}
+
+interface nn::audio::detail::IAudioInManager is audin:u {
+	[0] Unknown0() -> (u32, buffer<unknown, 6, 0>);
+	[1] Unknown1(u64, u64, pid, KObject, buffer<unknown, 5, 0>) -> (u128, object<IUnknown>, buffer<unknown, 6, 0>);
+	[2] Unknown2() -> (u32, buffer<unknown, 0x22, 0>);
+	[3] Unknown3(u64, u64, pid, KObject, buffer<unknown, 0x21, 0>) -> (u128, object<IUnknown>, buffer<unknown, 0x22, 0>);
+	[4] Unknown4() -> (u32, buffer<unknown, 0x22, 0>);
+}
+
+interface nn::audio::detail::IAudioInManagerForApplet is audin:a {
+	[0] Unknown0(u64, u64) -> KObject;
+	[1] Unknown1(u64, u64) -> KObject;
+	[2] Unknown2(u64) -> u32;
+	[3] Unknown3(u32, u64, u64);
+}
+
+interface nn::audio::detail::IAudioInManagerForDebugger is audin:d {
+	[0] Unknown0(u64);
+	[1] Unknown1(u64);
+}
+
+interface nn::audio::detail::IAudioOut {
+	[0] Unknown0() -> u32;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3(u64, buffer<unknown, 5, 0>);
+	[4] Unknown4() -> KObject;
+	[5] Unknown5() -> (u32, buffer<unknown, 6, 0>);
+	[6] Unknown6(u64) -> u8;
+	[7] Unknown7(u64, buffer<unknown, 0x21, 0>);
+	[8] Unknown8() -> (u32, buffer<unknown, 0x22, 0>);
+}
+
+interface nn::audio::detail::IAudioOutManager is audout:u {
+	[0] Unknown0() -> (u32, buffer<unknown, 6, 0>);
+	[1] Unknown1(u64, u64, pid, KObject, buffer<unknown, 5, 0>) -> (u128, object<IUnknown>, buffer<unknown, 6, 0>);
+	[2] Unknown2() -> (u32, buffer<unknown, 0x22, 0>);
+	[3] Unknown3(u64, u64, pid, KObject, buffer<unknown, 0x21, 0>) -> (u128, object<IUnknown>, buffer<unknown, 0x22, 0>);
+}
+
+interface nn::audio::detail::IAudioOutManagerForApplet is audout:a {
+	[0] Unknown0(u64, u64) -> KObject;
+	[1] Unknown1(u64, u64) -> KObject;
+	[2] Unknown2(u64) -> u32;
+	[3] Unknown3(u32, u64, u64);
+}
+
+interface nn::audio::detail::IAudioOutManagerForDebugger is audout:d {
+	[0] Unknown0(u64);
+	[1] Unknown1(u64);
+}
+
+interface nn::audio::detail::IAudioRenderer {
+	[0] Unknown0() -> u32;
+	[1] Unknown1() -> u32;
+	[2] Unknown2() -> u32;
+	[3] Unknown3() -> u32;
+	[4] Unknown4(buffer<unknown, 5, 0>) -> (buffer<unknown, 6, 0>, buffer<unknown, 6, 0>);
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7() -> KObject;
+	[8] Unknown8(u32);
+	[9] Unknown9() -> u32;
+	[10] Unknown10(buffer<unknown, 0x21, 0>) -> (buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>);
+	[11] Unknown11();
+}
+
+interface nn::audio::detail::IAudioRendererManager is audren:u {
+	[0] Unknown0(bytes<0x34>, u64, u64, pid, KObject, KObject) -> object<IUnknown>;
+	[1] Unknown1(bytes<0x34>) -> u64;
+	[2] Unknown2(u64) -> object<IUnknown>;
+	[3] Unknown3(bytes<0x34>, u64, u64, u64, pid, KObject) -> object<IUnknown>;
+}
+
+interface nn::audio::detail::IAudioRendererManagerForApplet is audren:a {
+	[0] Unknown0(u64, u64) -> KObject;
+	[1] Unknown1(u64, u64) -> KObject;
+	[2] Unknown2(u64) -> u32;
+	[3] Unknown3(u32, u64, u64);
+	[4] Unknown4(u64);
+	[5] Unknown5(u64);
+}
+
+interface nn::audio::detail::IAudioRendererManagerForDebugger is audren:d {
+	[0] Unknown0(u64);
+	[1] Unknown1(u64);
+}
+
+interface nn::audio::detail::IFinalOutputRecorder {
+	[0] Unknown0() -> u32;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3(u64, buffer<unknown, 5, 0>);
+	[4] Unknown4() -> KObject;
+	[5] Unknown5() -> (u32, u64, buffer<unknown, 6, 0>);
+	[6] Unknown6(u64) -> u8;
+	[7] Unknown7(u64) -> u64;
+	[8] Unknown8(u64, buffer<unknown, 0x21, 0>);
+	[9] Unknown9() -> (u32, u64, buffer<unknown, 0x22, 0>);
+}
+
+interface nn::audio::detail::IFinalOutputRecorderManager is audrec:u {
+	[0] Unknown0(u64, u64, KObject) -> (u128, object<IUnknown>);
+}
+
+interface nn::audio::detail::IFinalOutputRecorderManagerForApplet is audrec:a {
+	[0] Unknown0(u64, u64) -> KObject;
+	[1] Unknown1(u64, u64) -> KObject;
+}
+
+interface nn::audio::detail::IFinalOutputRecorderManagerForDebugger is audrec:d {
+	[0] Unknown0(u64);
+	[1] Unknown1(u64);
+}
+
+interface nn::audioctrl::detail::IAudioController is audctl {
+	[0] Unknown0(u32) -> u32;
+	[1] Unknown1(u32, u32);
+	[2] Unknown2() -> u32;
+	[3] Unknown3() -> u32;
+	[4] Unknown4();
+	[5] Unknown5(u8, u32);
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8() -> u32;
+	[9] Unknown9(u32) -> u32;
+	[10] Unknown10(u32, u32);
+	[11] Unknown11(u32);
+	[12] Unknown12() -> u32;
+	[13] Unknown13(u32) -> u32;
+	[14] Unknown14(u32, u32);
+	[15] Unknown15(u32);
+	[16] Unknown16(u8);
+	[17] Unknown17(u32);
+	[18] Unknown18() -> u32;
+	[19] Unknown19() -> KObject;
+	[20] Unknown20() -> KObject;
+	[21] Unknown21() -> u32;
+	[22] Unknown22();
+}
+
+interface nn::bcat::detail::ipc::IBcatService {
+	[10100] RequestSyncDeliveryCache() -> object<nn::bcat::detail::ipc::IDeliveryCacheProgressService>;
+	[20100] RequestSyncDeliveryCacheWithApplicationId(u32, nn::ApplicationId) -> object<nn::bcat::detail::ipc::IDeliveryCacheProgressService>;
+	[30100] SetPassphrase(nn::ApplicationId, array<i8, 9>);
+	[30200] RegisterBackgroundDeliveryTask(u32, nn::ApplicationId);
+	[30201] UnregisterBackgroundDeliveryTask(nn::ApplicationId);
+	[30202] BlockDeliveryTask(nn::ApplicationId);
+	[30203] UnblockDeliveryTask(nn::ApplicationId);
+	[90100] EnumerateBackgroundDeliveryTask() -> (i32, array<nn::bcat::TaskInfo, 6>);
+	[90200] GetDeliveryList(nn::ApplicationId) -> (u64, buffer<unknown, 6, 0>);
+	[90201] ClearDeliveryCacheStorage(nn::ApplicationId);
+	[90300] GetPushNotificationLog() -> (i32, array<nn::bcat::PushNotificationLog, 6>);
+}
+
+interface nn::bcat::detail::ipc::IDeliveryCacheDirectoryService {
+	[0] Open(nn::bcat::DirectoryName);
+	[1] Read() -> (i32, array<nn::bcat::DeliveryCacheDirectoryEntry, 6>);
+	[2] GetCount() -> i32;
+}
+
+interface nn::bcat::detail::ipc::IDeliveryCacheFileService {
+	[0] Open(nn::bcat::DirectoryName, nn::bcat::FileName);
+	[1] Read(i64) -> (u64, buffer<unknown, 6, 0>);
+	[2] GetSize() -> i64;
+	[3] GetDigest() -> nn::bcat::Digest;
+}
+
+interface nn::bcat::detail::ipc::IDeliveryCacheProgressService {
+	[0] GetEvent() -> KObject;
+	[1] GetImpl() -> buffer<nn::bcat::detail::DeliveryCacheProgressImpl, 0x1a, 0x200>;
+}
+
+interface nn::bcat::detail::ipc::IDeliveryCacheStorageService {
+	[0] CreateFileService() -> object<nn::bcat::detail::ipc::IDeliveryCacheFileService>;
+	[1] CreateDirectoryService() -> object<nn::bcat::detail::ipc::IDeliveryCacheDirectoryService>;
+	[10] EnumerateDeliveryCacheDirectory() -> (i32, array<nn::bcat::DirectoryName, 6>);
+}
+
+interface nn::bcat::detail::ipc::IServiceCreator is bcat:a, bcat:m, bcat:u, bcat:s {
+	[0] CreateBcatService(u64, pid) -> object<nn::bcat::detail::ipc::IBcatService>;
+	[1] CreateDeliveryCacheStorageService(u64, pid) -> object<nn::bcat::detail::ipc::IDeliveryCacheStorageService>;
+	[2] CreateDeliveryCacheStorageServiceWithApplicationId(nn::ApplicationId) -> object<nn::bcat::detail::ipc::IDeliveryCacheStorageService>;
+}
+
+interface nn::bgtc::IStateControlService is bgtc:sc {
+	[1] Unknown1() -> u32;
+	[2] Unknown2() -> KObject;
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5(u8);
+}
+
+interface nn::bgtc::ITaskService is bgtc:t {
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3() -> KObject;
+	[4] Unknown4() -> u8;
+	[5] Unknown5();
+	[6] Unknown6() -> u8;
+	[11] Unknown11(u32);
+	[12] Unknown12() -> u32;
+	[13] Unknown13();
+	[14] Unknown14() -> KObject;
+	[15] Unknown15(u32, u32);
+	[101] Unknown101() -> u32;
+	[102] Unknown102() -> u8;
+	[103] Unknown103() -> u8;
+}
+
+interface nn::bluetooth::IBluetoothDriver is btdrv {
+	[0] Unknown0();
+	[1] Unknown1() -> KObject;
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11(bytes<6>);
+	[12] Unknown12(bytes<6>);
+	[13] Unknown13();
+	[14] Unknown14();
+	[15] Unknown15() -> (u32, buffer<unknown, 0xa, 0>);
+	[16] Unknown16();
+	[17] Unknown17(bytes<6>);
+	[18] Unknown18(bytes<6>);
+	[19] Unknown19();
+	[20] Unknown20();
+	[21] Unknown21();
+	[22] Unknown22();
+	[23] Unknown23(bytes<6>);
+	[24] Unknown24();
+	[25] Unknown25();
+	[26] Unknown26();
+	[27] Unknown27() -> (u32, buffer<unknown, 0xa, 0>);
+	[28] Unknown28();
+	[29] Unknown29();
+	[30] Unknown30();
+	[31] Unknown31(u8);
+	[32] Unknown32();
+	[33] Unknown33();
+	[34] Unknown34(u8);
+	[35] Unknown35();
+	[36] Unknown36() -> KObject;
+	[37] Unknown37() -> (u32, buffer<unknown, 0xa, 0>);
+	[38] Unknown38();
+	[39] Unknown39();
+	[40] Unknown40();
+	[41] Unknown41(u8);
+	[42] Unknown42() -> u8;
+	[43] Unknown43(u8);
+	[44] Unknown44() -> u8;
+}
+
+interface nn::bpc::IBoardPowerControlManager is bpc {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2() -> u32;
+	[3] Unknown3() -> u32;
+	[4] Unknown4() -> u8;
+	[5] Unknown5(u32) -> KObject;
+	[6] Unknown6() -> u32;
+	[7] Unknown7(u32) -> KObject;
+	[8] Unknown8(u64) -> u32;
+	[9] Unknown9(u32);
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12() -> u32;
+	[13] Unknown13(u32);
+}
+
+interface nn::bpc::IRtcManager is bpc:r {
+	[0] Unknown0() -> u64;
+	[1] Unknown1(u64);
+	[2] Unknown2() -> u8;
+	[3] Unknown3();
+	[4] Unknown4();
+}
+
+interface nn::bsdsocket::cfg::ServerInterface is bsdcfg {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2(buffer<unknown, 5, 0>);
+	[3] Unknown3(u32, buffer<unknown, 5, 0>);
+	[4] Unknown4();
+	[5] Unknown5(buffer<unknown, 5, 0>);
+	[6] Unknown6();
+	[7] Unknown7(u32);
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11(buffer<unknown, 5, 0>);
+	[12] Unknown12();
+}
+
+interface nn::btm::IBtm is btm {
+	[0] Unknown0() -> u32;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6(u32);
+	[7] Unknown7(u32);
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11(bytes<6>);
+	[12] Unknown12(bytes<6>);
+	[13] Unknown13(bytes<6>);
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16(bytes<6>);
+	[17] Unknown17();
+	[18] Unknown18();
+}
+
+interface nn::btm::IBtmDebug is btm:dbg {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+}
+
+interface nn::btm::IBtmSystem is btm:sys {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::btm::IBtmSystemCore {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3() -> u8;
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6() -> u8;
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9() -> u8;
+}
+
+interface nn::capsrv::sf::IAlbumAccessorService is caps:a {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13();
+	[14] Unknown14();
+	[301] Unknown301();
+	[401] Unknown401() -> u8;
+	[501] Unknown501();
+	[1001] Unknown1001();
+	[1002] Unknown1002();
+	[8001] Unknown8001(u8);
+	[8002] Unknown8002(u8);
+	[8011] Unknown8011(u8);
+	[8012] Unknown8012();
+	[8021] Unknown8021();
+	[10011] Unknown10011(u8);
+}
+
+interface nn::capsrv::sf::IAlbumControlService is caps:c {
+	[2001] Unknown2001(u8);
+	[2002] Unknown2002(u8);
+	[2011] Unknown2011(u64, u64);
+	[2012] Unknown2012(u64, u64);
+	[2013] Unknown2013(u64) -> u64;
+	[2014] Unknown2014(u64);
+	[2101] Unknown2101();
+	[2102] Unknown2102();
+	[2201] Unknown2201();
+	[2301] Unknown2301();
+}
+
+interface nn::capsrv::sf::IScreenShotApplicationService is caps:su {
+	[201] SaveScreenShot(u32, u32, nn::applet::AppletResourceUserId, pid, buffer<unknown, 0x45, 0>) -> nn::capsrv::ApplicationAlbumEntry;
+	[203] SaveScreenShotEx0(nn::capsrv::detail::ScreenShotAttributeEx0, u32, nn::applet::AppletResourceUserId, pid, buffer<unknown, 0x45, 0>) -> nn::capsrv::ApplicationAlbumEntry;
+}
+
+interface nn::capsrv::sf::IScreenShotControlService is caps:sc {
+	[1] Unknown1();
+	[2] Unknown2();
+	[1001] Unknown1001(u64, u64);
+	[1002] Unknown1002(u64, u64, u64);
+	[1003] Unknown1003();
+	[1011] Unknown1011(u64);
+	[1012] Unknown1012(u64);
+	[1201] Unknown1201();
+	[1202] Unknown1202();
+	[1203] Unknown1203(u64) -> (u64, buffer<unknown, 6, 0>);
+}
+
+interface nn::capsrv::sf::IScreenShotService is caps:ss {
+	[201] Unknown201();
+	[202] Unknown202();
+	[203] Unknown203();
+	[204] Unknown204();
+}
+
+interface nn::cec::ICecManager is cec-mgr {
+	[0] Unknown0();
+	[1] Unknown1(u32) -> u32;
+	[2] Unknown2(u32);
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+}
+
+interface nn::codec::detail::IHardwareOpusDecoder {
+	[0] Unknown0(buffer<unknown, 5, 0>) -> (u32, u32, buffer<unknown, 6, 0>);
+	[1] Unknown1(buffer<unknown, 5, 0>);
+	[2] Unknown2(buffer<unknown, 5, 0>) -> (u32, u32, buffer<unknown, 6, 0>);
+	[3] Unknown3(buffer<unknown, 5, 0>);
+}
+
+interface nn::codec::detail::IHardwareOpusDecoderManager is hwopus {
+	[0] Unknown0(u64, u32, KObject) -> object<IUnknown>;
+	[1] Unknown1(u64) -> u32;
+	[2] Unknown2(u32, KObject, buffer<unknown, 0x19, 0x110>) -> object<IUnknown>;
+	[3] Unknown3(buffer<unknown, 0x19, 0x110>) -> u32;
+}
+
+interface nn::erpt::sf::IContext is erpt:c {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+}
+
+interface nn::erpt::sf::IManager {
+	[0] Unknown0();
+	[1] Unknown1() -> KObject;
+}
+
+interface nn::erpt::sf::IReport {
+	[0] Unknown0();
+	[1] Unknown1() -> (u32, buffer<unknown, 6, 0>);
+	[2] Unknown2(u32);
+	[3] Unknown3() -> u32;
+	[4] Unknown4();
+	[5] Unknown5() -> u64;
+}
+
+interface nn::erpt::sf::ISession is erpt:r {
+	[0] Unknown0() -> object<IUnknown>;
+	[1] Unknown1() -> object<IUnknown>;
+}
+
+interface nn::es::IETicketService is es {
+	[1] Unknown1();
+	[2] Unknown2(buffer<unknown, 5, 0>);
+	[3] Unknown3(buffer<unknown, 5, 0>);
+	[4] Unknown4(u32);
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7(buffer<unknown, 5, 0>);
+	[8] Unknown8();
+	[9] Unknown9() -> u32;
+	[10] Unknown10() -> u32;
+	[11] Unknown11() -> (u32, buffer<unknown, 6, 0>);
+	[12] Unknown12() -> (u32, buffer<unknown, 6, 0>);
+	[13] Unknown13();
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16();
+	[17] Unknown17();
+	[18] Unknown18();
+	[19] Unknown19();
+	[20] Unknown20();
+	[21] Unknown21();
+}
+
+interface nn::eth::sf::IEthInterface is ethc:c {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4(u32);
+	[5] Unknown5();
+}
+
+interface nn::eth::sf::IEthInterfaceGroup is ethc:i {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4() -> u32;
+}
+
+interface nn::eupld::sf::IControl is eupld:c {
+	[0] Unknown0(buffer<unknown, 5, 0>);
+	[1] Unknown1(buffer<unknown, 5, 0>);
+	[2] Unknown2();
+	[3] Unknown3();
+}
+
+interface nn::eupld::sf::IRequest is eupld:r {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1();
+	[2] Unknown2(buffer<unknown, 5, 0>);
+	[3] Unknown3() -> buffer<unknown, 6, 0>;
+	[4] Unknown4();
+	[5] Unknown5();
+}
+
+interface nn::fan::detail::IController {
+	[0] Unknown0(u32);
+	[1] Unknown1(u32) -> u32;
+	[2] Unknown2() -> u32;
+	[3] Unknown3(u32);
+	[4] Unknown4() -> u32;
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7() -> u32;
+}
+
+interface nn::fan::detail::IManager is fan {
+	[0] Unknown0(u32) -> object<IUnknown>;
+}
+
+interface nn::fatalsrv::IPrivateService is fatal:p {
+	[0] Unknown0() -> KObject;
+}
+
+interface nn::fatalsrv::IService is fatal:u {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+}
+
+interface nn::fgm::sf::IDebugger {
+	[0] Initialize(u64, KObject) -> KObject;
+	[1] Read() -> (u32, u32, u32, buffer<unknown, 6, 0>);
+	[2] Cancel();
+}
+
+interface nn::fgm::sf::IRequest {
+	[0] Initialize(nn::fgm::Module, u64, pid) -> KObject;
+	[1] Set(u32, u32);
+	[2] Get() -> u32;
+	[3] Cancel();
+}
+
+interface nn::fgm::sf::ISession is fgm:0, fgm, fgm:9 {
+	[0] Initialize() -> object<nn::fgm::sf::IRequest>;
+}
+
+interface nn::friends::detail::ipc::IFriendService {
+	[0] GetCompletionEvent() -> KObject;
+	[1] Cancel();
+	[10100] GetFriendListIds(i32, nn::account::Uid, nn::friends::detail::ipc::SizedFriendFilter, u64, pid) -> (i32, array<nn::account::NetworkServiceAccountId, 0xa>);
+	[10101] GetFriendList(i32, nn::account::Uid, nn::friends::detail::ipc::SizedFriendFilter, u64, pid) -> (i32, array<nn::friends::detail::FriendImpl, 6>);
+	[10102] UpdateFriendInfo(nn::account::Uid, u64, pid, array<nn::account::NetworkServiceAccountId, 9>) -> array<nn::friends::detail::FriendImpl, 6>;
+	[10110] GetFriendProfileImage(nn::account::Uid, nn::account::NetworkServiceAccountId) -> (i32, buffer<unknown, 6, 0>);
+	[10200] SendFriendRequestForApplication(nn::account::Uid, nn::account::NetworkServiceAccountId, u64, pid, buffer<nn::friends::InAppScreenName, 0x19, 0x48>, buffer<nn::friends::InAppScreenName, 0x19, 0x48>);
+	[10211] AddFacedFriendRequestForApplication(nn::friends::FacedFriendRequestRegistrationKey, nn::account::Nickname, nn::account::Uid, u64, pid, buffer<unknown, 5, 0>, buffer<nn::friends::InAppScreenName, 0x19, 0x48>, buffer<nn::friends::InAppScreenName, 0x19, 0x48>);
+	[10400] GetBlockedUserListIds(i32, nn::account::Uid) -> (i32, array<nn::account::NetworkServiceAccountId, 0xa>);
+	[10500] GetProfileList(nn::account::Uid, array<nn::account::NetworkServiceAccountId, 9>) -> array<nn::friends::detail::ProfileImpl, 6>;
+	[10600] DeclareOpenOnlinePlaySession(nn::account::Uid);
+	[10601] DeclareCloseOnlinePlaySession(nn::account::Uid);
+	[10610] UpdateUserPresence(nn::account::Uid, u64, pid, buffer<nn::friends::detail::UserPresenceImpl, 0x19, 0xe0>);
+	[10700] GetPlayHistoryRegistrationKey(bool, nn::account::Uid) -> buffer<nn::friends::PlayHistoryRegistrationKey, 0x1a, 0x40>;
+	[10701] GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId(bool, nn::account::NetworkServiceAccountId) -> buffer<nn::friends::PlayHistoryRegistrationKey, 0x1a, 0x40>;
+	[10702] AddPlayHistory(nn::account::Uid, u64, pid, buffer<nn::friends::PlayHistoryRegistrationKey, 0x19, 0x40>, buffer<nn::friends::InAppScreenName, 0x19, 0x48>, buffer<nn::friends::InAppScreenName, 0x19, 0x48>);
+	[11000] GetProfileImageUrl(nn::friends::Url, i32) -> nn::friends::Url;
+	[20100] GetFriendCount(nn::account::Uid, nn::friends::detail::ipc::SizedFriendFilter, u64, pid) -> i32;
+	[20101] GetNewlyFriendCount(nn::account::Uid) -> i32;
+	[20102] GetFriendDetailedInfo(nn::account::Uid, nn::account::NetworkServiceAccountId) -> buffer<nn::friends::detail::FriendDetailedInfoImpl, 0x1a, 0x800>;
+	[20103] SyncFriendList(nn::account::Uid);
+	[20104] RequestSyncFriendList(nn::account::Uid);
+	[20110] LoadFriendSetting(nn::account::Uid, nn::account::NetworkServiceAccountId) -> buffer<nn::friends::detail::FriendSettingImpl, 0x1a, 0x40>;
+	[20200] GetReceivedFriendRequestCount(nn::account::Uid) -> (i32, i32);
+	[20201] GetFriendRequestList(i32, i32, nn::account::Uid) -> (i32, array<nn::friends::detail::FriendRequestImpl, 6>);
+	[20300] GetFriendCandidateList(i32, nn::account::Uid) -> (i32, array<nn::friends::detail::FriendCandidateImpl, 6>);
+	[20301] GetNintendoNetworkIdInfo(i32, nn::account::Uid) -> (i32, buffer<nn::friends::NintendoNetworkIdUserInfo, 0x1a, 0x38>, array<nn::friends::detail::NintendoNetworkIdFriendImpl, 6>);
+	[20400] GetBlockedUserList(i32, nn::account::Uid) -> (i32, array<nn::friends::detail::BlockedUserImpl, 6>);
+	[20401] SyncBlockedUserList(nn::account::Uid);
+	[20500] GetProfileExtraList(nn::account::Uid, array<nn::account::NetworkServiceAccountId, 9>) -> array<nn::friends::detail::ProfileExtraImpl, 6>;
+	[20501] GetRelationship(nn::account::Uid, nn::account::NetworkServiceAccountId) -> nn::friends::Relationship;
+	[20600] GetUserPresenceView(nn::account::Uid) -> buffer<nn::friends::detail::UserPresenceViewImpl, 0x1a, 0xe0>;
+	[20700] GetPlayHistoryList(i32, nn::account::Uid) -> (i32, array<nn::friends::detail::PlayHistoryImpl, 6>);
+	[20701] GetPlayHistoryStatistics(nn::account::Uid) -> nn::friends::PlayHistoryStatistics;
+	[20800] LoadUserSetting(nn::account::Uid) -> buffer<nn::friends::detail::UserSettingImpl, 0x1a, 0x800>;
+	[20801] SyncUserSetting(nn::account::Uid);
+	[20900] RequestListSummaryOverlayNotification();
+	[21000] GetExternalApplicationCatalog(nn::settings::LanguageCode, nn::friends::ExternalApplicationCatalogId) -> buffer<nn::friends::ExternalApplicationCatalog, 0x1a, 0x4b8>;
+	[30100] DropFriendNewlyFlags(nn::account::Uid);
+	[30101] DeleteFriend(nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30110] DropFriendNewlyFlag(nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30120] ChangeFriendFavoriteFlag(bool, nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30121] ChangeFriendOnlineNotificationFlag(bool, nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30200] SendFriendRequest(i32, nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30201] SendFriendRequestWithApplicationInfo(i32, nn::account::Uid, nn::account::NetworkServiceAccountId, nn::friends::ApplicationInfo, buffer<nn::friends::InAppScreenName, 0x19, 0x48>, buffer<nn::friends::InAppScreenName, 0x19, 0x48>);
+	[30202] CancelFriendRequest(nn::account::Uid, nn::friends::RequestId);
+	[30203] AcceptFriendRequest(nn::account::Uid, nn::friends::RequestId);
+	[30204] RejectFriendRequest(nn::account::Uid, nn::friends::RequestId);
+	[30205] ReadFriendRequest(nn::account::Uid, nn::friends::RequestId);
+	[30210] GetFacedFriendRequestRegistrationKey(nn::account::Uid) -> nn::friends::FacedFriendRequestRegistrationKey;
+	[30211] AddFacedFriendRequest(nn::friends::FacedFriendRequestRegistrationKey, nn::account::Nickname, nn::account::Uid, buffer<unknown, 5, 0>);
+	[30212] CancelFacedFriendRequest(nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30213] GetFacedFriendRequestProfileImage(nn::account::Uid, nn::account::NetworkServiceAccountId) -> (i32, buffer<unknown, 6, 0>);
+	[30214] GetFacedFriendRequestProfileImageFromPath(array<i8, 9>) -> (i32, buffer<unknown, 6, 0>);
+	[30215] SendFriendRequestWithExternalApplicationCatalogId(i32, nn::account::Uid, nn::account::NetworkServiceAccountId, nn::friends::ExternalApplicationCatalogId, buffer<nn::friends::InAppScreenName, 0x19, 0x48>, buffer<nn::friends::InAppScreenName, 0x19, 0x48>);
+	[30216] ResendFacedFriendRequest(nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30217] SendFriendRequestWithNintendoNetworkIdInfo(nn::friends::MiiName, nn::friends::MiiImageUrlParam, nn::friends::MiiName, nn::friends::MiiImageUrlParam, i32, nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30400] BlockUser(i32, nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30401] BlockUserWithApplicationInfo(i32, nn::account::Uid, nn::account::NetworkServiceAccountId, nn::friends::ApplicationInfo, buffer<nn::friends::InAppScreenName, 0x19, 0x48>);
+	[30402] UnblockUser(nn::account::Uid, nn::account::NetworkServiceAccountId);
+	[30500] GetProfileExtraFromFriendCode(nn::friends::FriendCode, nn::account::Uid) -> buffer<nn::friends::detail::ProfileExtraImpl, 0x1a, 0x400>;
+	[30700] DeletePlayHistory(nn::account::Uid);
+	[30810] ChangePresencePermission(i32, nn::account::Uid);
+	[30811] ChangeFriendRequestReception(bool, nn::account::Uid);
+	[30812] ChangePlayLogPermission(i32, nn::account::Uid);
+	[30820] IssueFriendCode(nn::account::Uid);
+	[30830] ClearPlayLog(nn::account::Uid);
+	[49900] DeleteNetworkServiceAccountCache(nn::account::Uid);
+}
+
+interface nn::friends::detail::ipc::INotificationService {
+	[0] GetEvent() -> KObject;
+	[1] Clear();
+	[2] Pop() -> nn::friends::detail::ipc::SizedNotificationInfo;
+}
+
+interface nn::friends::detail::ipc::IServiceCreator is friend:v, friend:u, friend:m, friend:s, friend:a {
+	[0] CreateFriendService() -> object<nn::friends::detail::ipc::IFriendService>;
+	[1] CreateNotificationService(nn::account::Uid) -> object<nn::friends::detail::ipc::INotificationService>;
+}
+
+interface nn::fssrv::sf::IDeviceOperator {
+	[0] Unknown0() -> u8;
+	[1] Unknown1() -> u64;
+	[2] Unknown2(u64) -> buffer<unknown, 6, 0>;
+	[3] Unknown3() -> u64;
+	[4] Unknown4() -> u64;
+	[5] Unknown5(u64) -> (u128, u64, buffer<unknown, 6, 0>);
+	[100] Unknown100(u64) -> buffer<unknown, 6, 0>;
+	[101] Unknown101() -> u64;
+	[110] Unknown110(u32);
+	[111] Unknown111(u32) -> u64;
+	[112] Unknown112() -> u32;
+	[113] Unknown113(u64) -> (u128, u64, buffer<unknown, 6, 0>);
+	[114] Unknown114(u64) -> buffer<unknown, 6, 0>;
+	[200] Unknown200() -> u8;
+	[201] Unknown201(u32, u64);
+	[202] Unknown202() -> u32;
+	[203] Unknown203(u32) -> (u32, u64);
+	[204] Unknown204();
+	[205] Unknown205(u32) -> u8;
+	[206] Unknown206(u32, u64) -> buffer<unknown, 6, 0>;
+	[207] Unknown207(u64, u64, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
+	[208] Unknown208(u64) -> buffer<unknown, 6, 0>;
+	[209] Unknown209(u64, u64) -> buffer<unknown, 6, 0>;
+	[210] Unknown210(u8);
+	[211] Unknown211(u32, u64) -> buffer<unknown, 6, 0>;
+	[212] Unknown212(u64, u64, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
+	[213] Unknown213(u64, buffer<unknown, 5, 0>);
+	[214] Unknown214(u64) -> buffer<unknown, 6, 0>;
+	[215] Unknown215();
+	[216] Unknown216() -> u128;
+	[217] Unknown217() -> bytes<0x40>;
+	[218] Unknown218(u64) -> buffer<unknown, 6, 0>;
+	[300] Unknown300(u32);
+	[301] Unknown301() -> u32;
+}
+
+interface nn::fssrv::sf::IDirectory {
+	[0] Unknown0() -> (u64, buffer<unknown, 6, 0>);
+	[1] Unknown1() -> u64;
+}
+
+interface nn::fssrv::sf::IEventNotifier {
+	[0] Unknown0() -> KObject;
+}
+
+interface nn::fssrv::sf::IFile {
+	[0] Unknown0(u32, u64, u64) -> (u64, buffer<unknown, 0x46, 0>);
+	[1] Unknown1(u32, u64, u64, buffer<unknown, 0x45, 0>);
+	[2] Unknown2();
+	[3] Unknown3(u64);
+	[4] Unknown4() -> u64;
+}
+
+interface nn::fssrv::sf::IFileSystem {
+	[0] Unknown0(u32, u64, buffer<unknown, 0x19, 0x301>);
+	[1] Unknown1(buffer<unknown, 0x19, 0x301>);
+	[2] Unknown2(buffer<unknown, 0x19, 0x301>);
+	[3] Unknown3(buffer<unknown, 0x19, 0x301>);
+	[4] Unknown4(buffer<unknown, 0x19, 0x301>);
+	[5] Unknown5(buffer<unknown, 0x19, 0x301>, buffer<unknown, 0x19, 0x301>);
+	[6] Unknown6(buffer<unknown, 0x19, 0x301>, buffer<unknown, 0x19, 0x301>);
+	[7] Unknown7(buffer<unknown, 0x19, 0x301>) -> u32;
+	[8] Unknown8(u32, buffer<unknown, 0x19, 0x301>) -> object<IUnknown>;
+	[9] Unknown9(u32, buffer<unknown, 0x19, 0x301>) -> object<IUnknown>;
+	[10] Unknown10();
+	[11] Unknown11(buffer<unknown, 0x19, 0x301>) -> u64;
+	[12] Unknown12(buffer<unknown, 0x19, 0x301>) -> u64;
+	[13] Unknown13(buffer<unknown, 0x19, 0x301>);
+	[14] Unknown14(buffer<unknown, 0x19, 0x301>) -> bytes<0x20>;
+}
+
+interface nn::fssrv::sf::IFileSystemProxy is fsp-srv {
+	[1] Unknown1(u64, pid);
+	[2] Unknown2() -> object<IUnknown>;
+	[7] Unknown7(u32, u64) -> object<IUnknown>;
+	[8] Unknown8(u32, u64, buffer<unknown, 0x19, 0x301>) -> object<IUnknown>;
+	[9] Unknown9(u64) -> object<IUnknown>;
+	[11] Unknown11(u32, buffer<unknown, 0x19, 0x301>) -> object<IUnknown>;
+	[12] Unknown12(u32) -> object<IUnknown>;
+	[13] Unknown13();
+	[17] Unknown17(buffer<unknown, 0x19, 0x301>) -> object<IUnknown>;
+	[18] Unknown18() -> object<IUnknown>;
+	[19] Unknown19();
+	[21] Unknown21(u64);
+	[22] Unknown22(bytes<0x40>, bytes<0x40>, u128);
+	[23] Unknown23(bytes<0x40>, bytes<0x40>);
+	[24] Unknown24(buffer<unknown, 5, 0>);
+	[25] Unknown25(u8, u64);
+	[26] Unknown26();
+	[27] Unknown27() -> u8;
+	[30] Unknown30(u32, u32) -> object<IUnknown>;
+	[31] Unknown31(u32, u32) -> object<IUnknown>;
+	[32] Unknown32(u8, u64, u64, u64);
+	[51] Unknown51(u8, bytes<0x40>) -> object<IUnknown>;
+	[52] Unknown52(u8, bytes<0x40>) -> object<IUnknown>;
+	[53] Unknown53(u8, bytes<0x40>) -> object<IUnknown>;
+	[57] Unknown57(u8, u64) -> buffer<unknown, 6, 0>;
+	[58] Unknown58(u64) -> buffer<unknown, 6, 0>;
+	[59] Unknown59(u8, u64, buffer<unknown, 5, 0>);
+	[60] Unknown60() -> object<IUnknown>;
+	[61] Unknown61(u8) -> object<IUnknown>;
+	[80] Unknown80(u8, u32, bytes<0x40>) -> object<IUnknown>;
+	[100] Unknown100(u32) -> object<IUnknown>;
+	[110] Unknown110(u32) -> object<IUnknown>;
+	[200] Unknown200() -> object<IUnknown>;
+	[201] Unknown201(u64) -> object<IUnknown>;
+	[202] Unknown202(u8, u64) -> object<IUnknown>;
+	[203] Unknown203() -> object<IUnknown>;
+	[400] Unknown400() -> object<IUnknown>;
+	[500] Unknown500() -> object<IUnknown>;
+	[501] Unknown501() -> object<IUnknown>;
+	[600] Unknown600(u64);
+	[601] Unknown601(u64, u64) -> u64;
+	[602] Unknown602(u64) -> buffer<unknown, 6, 0>;
+	[603] Unknown603(u64);
+	[604] Unknown604(u64);
+	[605] Unknown605();
+	[606] Unknown606(u8, u64) -> u128;
+	[607] Unknown607(u128, u128);
+	[608] Unknown608();
+	[609] Unknown609(buffer<unknown, 0x19, 0x301>) -> u128;
+	[610] Unknown610(buffer<unknown, 0x19, 0x301>) -> (u8, u128);
+	[620] Unknown620(u128);
+	[800] Unknown800() -> bytes<0x80>;
+	[1000] Unknown1000(u32, buffer<unknown, 0x19, 0x301>);
+	[1001] Unknown1001(u64, u64);
+	[1002] Unknown1002(buffer<unknown, 0x19, 0x301>);
+	[1003] Unknown1003();
+	[1004] Unknown1004(u32);
+	[1005] Unknown1005() -> u32;
+	[1006] Unknown1006(buffer<unknown, 5, 0>);
+}
+
+interface nn::fssrv::sf::IFileSystemProxyForLoader is fsp-ldr {
+	[0] Unknown0(u64, buffer<unknown, 0x19, 0x301>) -> object<IUnknown>;
+	[1] Unknown1(u64) -> u8;
+}
+
+interface nn::fssrv::sf::IProgramRegistry is fsp-pr {
+	[0] Unknown0(u8, u64, u64, u64, u64, buffer<unknown, 5, 0>, buffer<unknown, 5, 0>);
+	[1] Unknown1(u64);
+	[256] Unknown256(u8);
+}
+
+interface nn::fssrv::sf::ISaveDataInfoReader {
+	[0] Unknown0() -> (u64, buffer<unknown, 6, 0>);
+}
+
+interface nn::fssrv::sf::IStorage {
+	[0] Unknown0(u64, u64) -> buffer<unknown, 0x46, 0>;
+	[1] Unknown1(u64, u64, buffer<unknown, 0x45, 0>);
+	[2] Unknown2();
+	[3] Unknown3(u64);
+	[4] Unknown4() -> u64;
+}
+
+interface nn::gpio::IManager is gpio {
+	[0] Unknown0(u32) -> object<IUnknown>;
+	[1] Unknown1(u32) -> object<IUnknown>;
+	[2] Unknown2(u32) -> object<IUnknown>;
+	[3] Unknown3(u32) -> u8;
+	[4] Unknown4() -> u128;
+	[5] Unknown5(u8, u32);
+	[6] Unknown6(u8);
+}
+
+interface nn::gpio::IPadSession {
+	[0] Unknown0(u32);
+	[1] Unknown1() -> u32;
+	[2] Unknown2(u32);
+	[3] Unknown3() -> u32;
+	[4] Unknown4(u8);
+	[5] Unknown5() -> u8;
+	[6] Unknown6() -> u32;
+	[7] Unknown7();
+	[8] Unknown8(u32);
+	[9] Unknown9() -> u32;
+	[10] Unknown10() -> KObject;
+	[11] Unknown11();
+	[12] Unknown12(u8);
+	[13] Unknown13() -> u8;
+	[14] Unknown14(u32);
+	[15] Unknown15() -> u32;
+}
+
+interface nn::hid::IActiveVibrationDeviceList {
+	[0] ActivateVibrationDevice(nn::hid::VibrationDeviceHandle);
+}
+
+interface nn::hid::IAppletResource {
+	[0] GetSharedMemoryHandle() -> KObject;
+}
+
+interface nn::hid::IHidDebugServer is hid:dbg {
+	[0] DeactivateDebugPad();
+	[1] SetDebugPadAutoPilotState(nn::hid::debug::DebugPadAutoPilotState);
+	[2] UnsetDebugPadAutoPilotState();
+	[10] DeactivateTouchScreen();
+	[11] SetTouchScreenAutoPilotState(array<nn::hid::TouchState, 5>);
+	[12] UnsetTouchScreenAutoPilotState();
+	[20] DeactivateMouse();
+	[21] SetMouseAutoPilotState(nn::hid::debug::MouseAutoPilotState);
+	[22] UnsetMouseAutoPilotState();
+	[30] DeactivateKeyboard();
+	[31] SetKeyboardAutoPilotState(nn::hid::debug::KeyboardAutoPilotState);
+	[32] UnsetKeyboardAutoPilotState();
+	[50] DeactivateXpad(nn::hid::BasicXpadId);
+	[51] SetXpadAutoPilotState(nn::hid::BasicXpadId, align<4, nn::hid::debug::BasicXpadAutoPilotState>);
+	[52] UnsetXpadAutoPilotState(nn::hid::BasicXpadId);
+	[60] DeactivateJoyXpad(nn::hid::JoyXpadId);
+	[91] DeactivateGesture();
+	[110] DeactivateHomeButton();
+	[111] SetHomeButtonAutoPilotState(nn::hid::debug::HomeButtonAutoPilotState);
+	[112] UnsetHomeButtonAutoPilotState();
+	[120] DeactivateSleepButton();
+	[121] SetSleepButtonAutoPilotState(nn::hid::debug::SleepButtonAutoPilotState);
+	[122] UnsetSleepButtonAutoPilotState();
+	[123] DeactivateInputDetector();
+	[130] DeactivateCaptureButton();
+	[131] SetCaptureButtonAutoPilotState(nn::hid::debug::CaptureButtonAutoPilotState);
+	[132] UnsetCaptureButtonAutoPilotState();
+	[133] SetShiftAccelerometerCalibrationValue(nn::hid::SixAxisSensorHandle, f32, f32, nn::applet::AppletResourceUserId, pid);
+	[134] GetShiftAccelerometerCalibrationValue(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> (f32, f32);
+	[135] SetShiftGyroscopeCalibrationValue(nn::hid::SixAxisSensorHandle, f32, f32, nn::applet::AppletResourceUserId, pid);
+	[136] GetShiftGyroscopeCalibrationValue(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> (f32, f32);
+	[140] DeactivateConsoleSixAxisSensor();
+	[201] ActivateFirmwareUpdate();
+	[202] DeactivateFirmwareUpdate();
+	[203] StartFirmwareUpdate(nn::hid::system::UniquePadId);
+	[204] GetFirmwareUpdateStage() -> (i64, i64);
+	[205] GetFirmwareVersion(u32, nn::hid::system::DeviceType) -> nn::hid::system::FirmwareVersion;
+	[206] GetDestinationFirmwareVersion(u32, nn::hid::system::DeviceType) -> nn::hid::system::FirmwareVersion;
+	[207] DiscardFirmwareInfoCacheForRevert();
+	[208] StartFirmwareUpdateForRevert(nn::hid::system::UniquePadId);
+	[209] GetAvailableFirmwareVersionForRevert(nn::hid::system::UniquePadId) -> nn::hid::system::FirmwareVersion;
+	[221] UpdateControllerColor(nn::util::Unorm8x4, nn::util::Unorm8x4, nn::hid::system::UniquePadId);
+}
+
+interface nn::hid::IHidServer is hid {
+	[0] CreateAppletResource(nn::applet::AppletResourceUserId, pid) -> object<nn::hid::IAppletResource>;
+	[1] ActivateDebugPad(nn::applet::AppletResourceUserId, pid);
+	[11] ActivateTouchScreen(nn::applet::AppletResourceUserId, pid);
+	[21] ActivateMouse(nn::applet::AppletResourceUserId, pid);
+	[31] ActivateKeyboard(nn::applet::AppletResourceUserId, pid);
+	[40] AcquireXpadIdEventHandle(u64) -> KObject;
+	[41] ReleaseXpadIdEventHandle(u64);
+	[51] ActivateXpad(nn::hid::BasicXpadId, nn::applet::AppletResourceUserId, pid);
+	[55] GetXpadIds() -> (i64, array<nn::hid::BasicXpadId, 0xa>);
+	[56] ActivateJoyXpad(nn::hid::JoyXpadId);
+	[58] GetJoyXpadLifoHandle(nn::hid::JoyXpadId) -> KObject;
+	[59] GetJoyXpadIds() -> (i64, array<nn::hid::JoyXpadId, 0xa>);
+	[60] ActivateSixAxisSensor(nn::hid::BasicXpadId);
+	[61] DeactivateSixAxisSensor(nn::hid::BasicXpadId);
+	[62] GetSixAxisSensorLifoHandle(nn::hid::BasicXpadId) -> KObject;
+	[63] ActivateJoySixAxisSensor(nn::hid::JoyXpadId);
+	[64] DeactivateJoySixAxisSensor(nn::hid::JoyXpadId);
+	[65] GetJoySixAxisSensorLifoHandle(nn::hid::JoyXpadId) -> KObject;
+	[66] StartSixAxisSensor(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[67] StopSixAxisSensor(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[68] IsSixAxisSensorFusionEnabled(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> bool;
+	[69] EnableSixAxisSensorFusion(bool, nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[70] SetSixAxisSensorFusionParameters(nn::hid::SixAxisSensorHandle, f32, f32, nn::applet::AppletResourceUserId, pid);
+	[71] GetSixAxisSensorFusionParameters(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> (f32, f32);
+	[72] ResetSixAxisSensorFusionParameters(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[73] SetAccelerometerParameters(nn::hid::SixAxisSensorHandle, f32, f32, nn::applet::AppletResourceUserId, pid);
+	[74] GetAccelerometerParameters(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> (f32, f32);
+	[75] ResetAccelerometerParameters(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[76] SetAccelerometerPlayMode(nn::hid::SixAxisSensorHandle, u32, nn::applet::AppletResourceUserId, pid);
+	[77] GetAccelerometerPlayMode(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> u32;
+	[78] ResetAccelerometerPlayMode(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[79] SetGyroscopeZeroDriftMode(nn::hid::SixAxisSensorHandle, u32, nn::applet::AppletResourceUserId, pid);
+	[80] GetGyroscopeZeroDriftMode(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> u32;
+	[81] ResetGyroscopeZeroDriftMode(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[82] IsSixAxisSensorAtRest(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> bool;
+	[91] ActivateGesture(i32, nn::applet::AppletResourceUserId, pid);
+	[100] SetSupportedNpadStyleSet(nn::hid::NpadStyleTag, nn::applet::AppletResourceUserId, pid);
+	[101] GetSupportedNpadStyleSet(nn::applet::AppletResourceUserId, pid) -> nn::hid::NpadStyleTag;
+	[102] SetSupportedNpadIdType(nn::applet::AppletResourceUserId, pid, array<u32, 9>);
+	[103] ActivateNpad(nn::applet::AppletResourceUserId, pid);
+	[104] DeactivateNpad(nn::applet::AppletResourceUserId, pid);
+	[106] AcquireNpadStyleSetUpdateEventHandle(u32, nn::applet::AppletResourceUserId, u64, pid) -> KObject;
+	[107] DisconnectNpad(u32, nn::applet::AppletResourceUserId, pid);
+	[108] GetPlayerLedPattern(u32) -> u64;
+	[120] SetNpadJoyHoldType(nn::applet::AppletResourceUserId, i64, pid);
+	[121] GetNpadJoyHoldType(nn::applet::AppletResourceUserId, pid) -> i64;
+	[122] SetNpadJoyAssignmentModeSingleByDefault(u32, nn::applet::AppletResourceUserId, pid);
+	[123] SetNpadJoyAssignmentModeSingle(u32, nn::applet::AppletResourceUserId, i64, pid);
+	[124] SetNpadJoyAssignmentModeDual(u32, nn::applet::AppletResourceUserId, pid);
+	[125] MergeSingleJoyAsDualJoy(u32, u32, nn::applet::AppletResourceUserId, pid);
+	[126] StartLrAssignmentMode(nn::applet::AppletResourceUserId, pid);
+	[127] StopLrAssignmentMode(nn::applet::AppletResourceUserId, pid);
+	[128] SetNpadHandheldActivationMode(nn::applet::AppletResourceUserId, i64, pid);
+	[129] GetNpadHandheldActivationMode(nn::applet::AppletResourceUserId, pid) -> i64;
+	[130] SwapNpadAssignment(u32, u32, nn::applet::AppletResourceUserId, pid);
+	[131] IsUnintendedHomeButtonInputProtectionEnabled(u32, nn::applet::AppletResourceUserId, pid) -> bool;
+	[132] EnableUnintendedHomeButtonInputProtection(bool, u32, nn::applet::AppletResourceUserId, pid);
+	[200] GetVibrationDeviceInfo(nn::hid::VibrationDeviceHandle) -> nn::hid::VibrationDeviceInfoForIpc;
+	[201] SendVibrationValue(nn::hid::VibrationDeviceHandle, align<4, nn::hid::VibrationValue>, nn::applet::AppletResourceUserId, pid);
+	[202] GetActualVibrationValue(nn::hid::VibrationDeviceHandle, nn::applet::AppletResourceUserId, pid) -> nn::hid::VibrationValue;
+	[203] CreateActiveVibrationDeviceList() -> object<nn::hid::IActiveVibrationDeviceList>;
+	[204] PermitVibration(bool);
+	[205] IsVibrationPermitted() -> bool;
+	[206] SendVibrationValues(nn::applet::AppletResourceUserId, array<nn::hid::VibrationDeviceHandle, 9>, array<nn::hid::VibrationValue, 9>);
+	[300] ActivateConsoleSixAxisSensor(nn::applet::AppletResourceUserId, pid);
+	[301] StartConsoleSixAxisSensor(nn::hid::ConsoleSixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[302] StopConsoleSixAxisSensor(nn::hid::ConsoleSixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
+	[400] IsUsbFullKeyControllerEnabled() -> bool;
+	[401] EnableUsbFullKeyController(bool);
+	[402] IsUsbFullKeyControllerConnected(u32) -> bool;
+	[1000] SetNpadCommunicationMode(nn::applet::AppletResourceUserId, i64, pid);
+	[1001] GetNpadCommunicationMode() -> i64;
+}
+
+interface nn::hid::IHidSystemServer is hid:sys {
+	[31] SendKeyboardLockKeyEvent(nn::hid::system::KeyboardLockKeyEvent);
+	[101] AcquireHomeButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[111] ActivateHomeButton(nn::applet::AppletResourceUserId, pid);
+	[121] AcquireSleepButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[131] ActivateSleepButton(nn::applet::AppletResourceUserId, pid);
+	[141] AcquireCaptureButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[151] ActivateCaptureButton(nn::applet::AppletResourceUserId, pid);
+	[210] AcquireNfcDeviceUpdateEventHandle() -> KObject;
+	[211] GetNpadsWithNfc() -> (i64, array<u32, 0xa>);
+	[212] AcquireNfcActivateEventHandle(u32) -> KObject;
+	[213] ActivateNfc(bool, u32, nn::applet::AppletResourceUserId, pid);
+	[230] AcquireIrSensorEventHandle(u32) -> KObject;
+	[231] ActivateIrSensor(bool, u32, nn::applet::AppletResourceUserId, pid);
+	[301] ActivateNpadSystem(u32);
+	[303] ApplyNpadSystemCommonPolicy(nn::applet::AppletResourceUserId, pid);
+	[304] EnableAssigningSingleOnSlSrPress(nn::applet::AppletResourceUserId, pid);
+	[305] DisableAssigningSingleOnSlSrPress(nn::applet::AppletResourceUserId, pid);
+	[306] GetLastActiveNpad() -> u32;
+	[307] GetNpadSystemExtStyle(u32) -> (i64, i64);
+	[311] SetNpadPlayerLedBlinkingDevice(u32, nn::hid::system::DeviceType, nn::applet::AppletResourceUserId, pid);
+	[321] GetUniquePadsFromNpad(u32) -> (i64, array<nn::hid::system::UniquePadId, 0xa>);
+	[322] GetIrSensorState(u32, nn::applet::AppletResourceUserId, pid) -> i64;
+	[323] GetXcdHandleForNpadWithIrSensor(u32, nn::applet::AppletResourceUserId, pid) -> u64;
+	[500] SetAppletResourceUserId(nn::applet::AppletResourceUserId);
+	[501] RegisterAppletResourceUserId(bool, nn::applet::AppletResourceUserId);
+	[502] UnregisterAppletResourceUserId(nn::applet::AppletResourceUserId);
+	[503] EnableAppletToGetInput(bool, nn::applet::AppletResourceUserId);
+	[504] SetAruidValidForVibration(bool, nn::applet::AppletResourceUserId);
+	[505] EnableAppletToGetSixAxisSensor(bool, nn::applet::AppletResourceUserId);
+	[510] SetVibrationMasterVolume(f32);
+	[511] GetVibrationMasterVolume() -> f32;
+	[512] BeginPermitVibrationSession(nn::applet::AppletResourceUserId);
+	[513] EndPermitVibrationSession();
+	[520] EnableHandheldHids();
+	[521] DisableHandheldHids();
+	[540] AcquirePlayReportControllerUsageUpdateEvent() -> KObject;
+	[541] GetPlayReportControllerUsages() -> (i64, array<nn::hid::system::PlayReportControllerUsage, 0xa>);
+	[542] AcquirePlayReportRegisteredDeviceUpdateEvent() -> KObject;
+	[543] GetRegisteredDevices() -> (i64, array<nn::hid::system::RegisteredDevice, 0xa>);
+	[544] AcquireConnectionTriggerTimeoutEvent() -> KObject;
+	[545] SendConnectionTrigger(nn::bluetooth::Address);
+	[546] AcquireDeviceRegisteredEventForControllerSupport() -> KObject;
+	[547] GetAllowedBluetoothLinksCount() -> i64;
+	[700] ActivateUniquePad(nn::applet::AppletResourceUserId, nn::hid::system::UniquePadId, pid);
+	[702] AcquireUniquePadConnectionEventHandle() -> KObject;
+	[703] GetUniquePadIds() -> (i64, array<nn::hid::system::UniquePadId, 0xa>);
+	[751] AcquireJoyDetachOnBluetoothOffEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[800] ListSixAxisSensorHandles(nn::hid::system::UniquePadId) -> (i64, array<nn::hid::system::UniqueSixAxisSensorHandle, 0xa>);
+	[801] IsSixAxisSensorUserCalibrationSupported(nn::hid::system::UniqueSixAxisSensorHandle) -> bool;
+	[802] ResetSixAxisSensorCalibrationValues(nn::hid::system::UniqueSixAxisSensorHandle);
+	[803] StartSixAxisSensorUserCalibration(nn::hid::system::UniqueSixAxisSensorHandle);
+	[804] CancelSixAxisSensorUserCalibration(nn::hid::system::UniqueSixAxisSensorHandle);
+	[805] GetUniquePadBluetoothAddress(nn::hid::system::UniquePadId) -> nn::bluetooth::Address;
+	[806] DisconnectUniquePad(nn::hid::system::UniquePadId);
+	[821] StartAnalogStickManualCalibration(nn::hid::system::UniquePadId, i64);
+	[822] RetryCurrentAnalogStickManualCalibrationStage(nn::hid::system::UniquePadId, i64);
+	[823] CancelAnalogStickManualCalibration(nn::hid::system::UniquePadId, i64);
+	[824] ResetAnalogStickManualCalibration(nn::hid::system::UniquePadId, i64);
+	[850] IsUsbFullKeyControllerEnabled() -> bool;
+	[851] EnableUsbFullKeyController(bool);
+	[852] IsUsbConnected(nn::hid::system::UniquePadId) -> bool;
+	[900] ActivateInputDetector(nn::applet::AppletResourceUserId, pid);
+	[901] NotifyInputDetector(nn::hid::system::InputSourceId);
+	[1000] InitializeFirmwareUpdate();
+	[1001] GetFirmwareVersion(nn::hid::system::UniquePadId) -> nn::hid::system::FirmwareVersion;
+	[1002] GetAvailableFirmwareVersion(nn::hid::system::UniquePadId) -> nn::hid::system::FirmwareVersion;
+	[1003] IsFirmwareUpdateAvailable(nn::hid::system::UniquePadId) -> bool;
+	[1004] CheckFirmwareUpdateRequired(nn::hid::system::UniquePadId) -> i64;
+	[1005] StartFirmwareUpdate(nn::hid::system::UniquePadId) -> nn::hid::system::FirmwareUpdateDeviceHandle;
+	[1006] AbortFirmwareUpdate();
+	[1007] GetFirmwareUpdateState(nn::hid::system::FirmwareUpdateDeviceHandle) -> nn::hid::system::FirmwareUpdateState;
+}
+
+interface nn::hid::IHidTemporaryServer is hid:tmp {
+	[0] GetConsoleSixAxisSensorCalibrationValues(nn::hid::ConsoleSixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> nn::hid::tmp::ConsoleSixAxisSensorCalibrationValues;
+}
+
+interface nn::htc::tenv::IService {
+	[0] Unknown0(bytes<0x40>) -> (u64, buffer<unknown, 6, 0>);
+	[1] Unknown1(bytes<0x40>) -> u64;
+	[2] Unknown2(u64);
+}
+
+interface nn::htc::tenv::IServiceManager {
+	[0] Unknown0(u64, pid) -> object<IUnknown>;
+}
+
+interface nn::i2c::IManager is i2c:pcv, i2c {
+	[0] Unknown0(u16, u32, u32, u32) -> object<IUnknown>;
+	[1] Unknown1(u32) -> object<IUnknown>;
+	[2] Unknown2(u32) -> u8;
+	[3] Unknown3(u16, u32, u32, u32) -> u8;
+}
+
+interface nn::i2c::ISession {
+	[0] Unknown0(u32, buffer<unknown, 5, 0>);
+	[1] Unknown1(u32) -> buffer<unknown, 6, 0>;
+	[2] Unknown2(buffer<unknown, 9, 0>) -> buffer<unknown, 6, 0>;
+	[10] Unknown10(u32, buffer<unknown, 0x21, 0>);
+	[11] Unknown11(u32) -> buffer<unknown, 0x22, 0>;
+	[12] Unknown12(buffer<unknown, 9, 0>) -> buffer<unknown, 0x22, 0>;
+}
+
+interface nn::idle::detail::IPolicyManagerSystem is idle:sys {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+}
+
+interface nn::irsensor::IIrSensorServer is irs {
+	[302] ActivateIrsensor(nn::applet::AppletResourceUserId, pid);
+	[303] DeactivateIrsensor(nn::applet::AppletResourceUserId, pid);
+	[304] GetIrsensorSharedMemoryHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[305] StopImageProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, pid);
+	[306] RunMomentProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, nn::irsensor::PackedMomentProcessorConfig, pid);
+	[307] RunClusteringProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, nn::irsensor::PackedClusteringProcessorConfig, pid);
+	[308] RunImageTransferProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, nn::irsensor::PackedImageTransferProcessorConfig, u64, pid, KObject);
+	[309] GetImageTransferProcessorState(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, pid) -> (nn::irsensor::ImageTransferProcessorState, buffer<unknown, 6, 0>);
+	[310] RunTeraPluginProcessor(nn::irsensor::IrCameraHandle, align<2, nn::irsensor::PackedTeraPluginProcessorConfig>, nn::applet::AppletResourceUserId, pid);
+	[311] GetNpadIrCameraHandle(u32) -> nn::irsensor::IrCameraHandle;
+	[312] RunDpdProcessor(nn::irsensor::IrCameraHandle, align<2, nn::irsensor::PackedDpdProcessorConfig>, nn::applet::AppletResourceUserId, pid);
+	[313] SuspendImageProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, pid);
+	[314] CheckFirmwareVersion(nn::irsensor::IrCameraHandle, nn::irsensor::PackedMcuVersion, nn::applet::AppletResourceUserId, pid);
+}
+
+interface nn::irsensor::IIrSensorSystemServer is irs:sys {
+	[500] SetAppletResourceUserId(nn::applet::AppletResourceUserId);
+	[501] RegisterAppletResourceUserId(bool, nn::applet::AppletResourceUserId);
+	[502] UnregisterAppletResourceUserId(nn::applet::AppletResourceUserId);
+	[503] EnableAppletToGetInput(bool, nn::applet::AppletResourceUserId);
+}
+
+interface nn::lbl::detail::ILblController is lbl {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2(u32);
+	[3] Unknown3() -> u32;
+	[4] Unknown4();
+	[5] Unknown5() -> u32;
+	[6] Unknown6(u64);
+	[7] Unknown7(u64);
+	[8] Unknown8() -> u32;
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11() -> u8;
+	[12] Unknown12();
+	[13] Unknown13();
+	[14] Unknown14() -> u8;
+	[15] Unknown15(u32);
+	[16] Unknown16() -> u32;
+	[17] Unknown17(u32, u32);
+	[18] Unknown18(u32) -> u32;
+	[19] Unknown19(bytes<0xc>);
+	[20] Unknown20() -> bytes<0xc>;
+	[21] Unknown21(bytes<0xc>);
+	[22] Unknown22() -> bytes<0xc>;
+	[23] Unknown23() -> u8;
+	[24] Unknown24(u32);
+	[25] Unknown25() -> u32;
+	[26] Unknown26();
+	[27] Unknown27();
+	[28] Unknown28() -> u8;
+}
+
+interface nn::ldn::detail::IMonitorService {
+	[0] Unknown0() -> u32;
+	[1] Unknown1() -> buffer<unknown, 0x1a, 0x480>;
+	[2] Unknown2() -> (u32, u32);
+	[3] Unknown3() -> u16;
+	[4] Unknown4() -> bytes<0x20>;
+	[5] Unknown5() -> bytes<0x20>;
+	[100] Unknown100();
+	[101] Unknown101();
+}
+
+interface nn::ldn::detail::IMonitorServiceCreator is ldn:m {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::ldn::detail::ISystemLocalCommunicationService {
+	[0] Unknown0() -> u32;
+	[1] Unknown1() -> buffer<unknown, 0x1a, 0x480>;
+	[2] Unknown2() -> (u32, u32);
+	[3] Unknown3() -> u16;
+	[4] Unknown4() -> bytes<0x20>;
+	[5] Unknown5() -> bytes<0x20>;
+	[100] Unknown100() -> KObject;
+	[101] Unknown101() -> (buffer<unknown, 0x1a, 0x480>, buffer<unknown, 0xa, 0>);
+	[102] Unknown102(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
+	[103] Unknown103(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
+	[200] Unknown200();
+	[201] Unknown201();
+	[202] Unknown202(bytes<0x44>, align<1, bytes<0x30>>, bytes<0x20>);
+	[203] Unknown203(bytes<0x44>, align<1, bytes<0x20>>, align<1, bytes<0x30>>, bytes<0x20>, buffer<unknown, 9, 0>);
+	[204] Unknown204();
+	[205] Unknown205(u32);
+	[206] Unknown206(buffer<unknown, 0x21, 0>);
+	[207] Unknown207(u8);
+	[208] Unknown208(bytes<6>);
+	[209] Unknown209();
+	[300] Unknown300();
+	[301] Unknown301();
+	[302] Unknown302(bytes<0x44>, align<1, bytes<0x30>>, u32, u32, buffer<unknown, 0x19, 0x480>);
+	[303] Unknown303(bytes<0x44>, align<1, bytes<0x20>>, align<1, bytes<0x30>>, u32, u32, bytes<0x20>);
+	[304] Unknown304();
+	[400] Unknown400(u64, pid);
+	[401] Unknown401();
+}
+
+interface nn::ldn::detail::ISystemServiceCreator is ldn:s {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::ldn::detail::IUserLocalCommunicationService {
+	[0] Unknown0() -> u32;
+	[1] Unknown1() -> buffer<unknown, 0x1a, 0x480>;
+	[2] Unknown2() -> (u32, u32);
+	[3] Unknown3() -> u16;
+	[4] Unknown4() -> bytes<0x20>;
+	[5] Unknown5() -> bytes<0x20>;
+	[100] Unknown100() -> KObject;
+	[101] Unknown101() -> (buffer<unknown, 0x1a, 0x480>, buffer<unknown, 0xa, 0>);
+	[102] Unknown102(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
+	[103] Unknown103(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
+	[200] Unknown200();
+	[201] Unknown201();
+	[202] Unknown202(bytes<0x44>, align<1, bytes<0x30>>, bytes<0x20>);
+	[203] Unknown203(bytes<0x44>, align<1, bytes<0x20>>, align<1, bytes<0x30>>, bytes<0x20>, buffer<unknown, 9, 0>);
+	[204] Unknown204();
+	[205] Unknown205(u32);
+	[206] Unknown206(buffer<unknown, 0x21, 0>);
+	[207] Unknown207(u8);
+	[208] Unknown208(bytes<6>);
+	[209] Unknown209();
+	[300] Unknown300();
+	[301] Unknown301();
+	[302] Unknown302(bytes<0x44>, align<1, bytes<0x30>>, u32, u32, buffer<unknown, 0x19, 0x480>);
+	[303] Unknown303(bytes<0x44>, align<1, bytes<0x20>>, align<1, bytes<0x30>>, u32, u32, bytes<0x20>);
+	[304] Unknown304();
+	[400] Unknown400(u64, pid);
+	[401] Unknown401();
+}
+
+interface nn::ldn::detail::IUserServiceCreator is ldn:u {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::ldr::detail::IShellInterface is ldr:shel {
+	[0] Unknown0();
+	[1] Unknown1();
+}
+
+interface nn::lm::ILogService is lm {
+	[0] Unknown0(u64, pid) -> object<IUnknown>;
+}
+
+interface nn::lm::ILogger {
+	[0] Unknown0(buffer<unknown, 0x21, 0>);
+	[1] Unknown1(u32);
+}
+
+interface nn::lr::IAddOnContentLocationResolver {
+	[0] Unknown0();
+	[1] Unknown1(u8, u64);
+	[2] Unknown2();
+}
+
+interface nn::lr::ILocationResolver {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+}
+
+interface nn::lr::ILocationResolverManager is lr {
+	[0] Unknown0();
+	[1] Unknown1() -> object<IUnknown>;
+	[2] Unknown2(u8);
+	[3] Unknown3() -> object<IUnknown>;
+}
+
+interface nn::lr::IRegisteredLocationResolver {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2(u64);
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6(u64);
+	[7] Unknown7();
+}
+
+interface nn::mii::detail::IDatabaseService {
+	[0] IsUpdated(i32) -> bool;
+	[1] IsFullDatabase() -> bool;
+	[2] GetCount(i32) -> i32;
+	[3] Get(i32) -> (i32, array<nn::mii::CharInfoElement, 6>);
+	[4] Get1(i32) -> (i32, array<nn::mii::CharInfo, 6>);
+	[5] UpdateLatest(nn::mii::CharInfo, i32) -> nn::mii::CharInfo;
+	[6] BuildRandom(i32, i32, i32) -> nn::mii::CharInfo;
+	[7] BuildDefault(i32) -> nn::mii::CharInfo;
+	[8] Get2(i32) -> (i32, array<nn::mii::StoreDataElement, 6>);
+	[9] Get3(i32) -> (i32, array<nn::mii::StoreData, 6>);
+	[10] UpdateLatest1(nn::mii::StoreData, i32) -> nn::mii::StoreData;
+	[11] FindIndex(nn::mii::CreateId, bool) -> i32;
+	[12] Move(nn::mii::CreateId, i32);
+	[13] AddOrReplace(nn::mii::StoreData);
+	[14] Delete(nn::mii::CreateId);
+	[15] DestroyFile();
+	[16] DeleteFile();
+	[17] Format();
+	[18] Import(buffer<unknown, 5, 0>);
+	[19] Export() -> buffer<unknown, 6, 0>;
+	[20] IsBrokenDatabaseWithClearFlag() -> bool;
+	[21] GetIndex(nn::mii::CharInfo) -> i32;
+}
+
+interface nn::mii::detail::IStaticService is mii:e, mii:u {
+	[0] GetDatabaseService(i32) -> object<nn::mii::detail::IDatabaseService>;
+}
+
+interface nn::mmnv::IRequest is mm:u {
+	[0] Unknown0(u32, u32, u32);
+	[1] Unknown1(u32);
+	[2] Unknown2(u32, u32, u32);
+	[3] Unknown3(u32) -> u32;
+	[4] Unknown4();
+	[5] Unknown5(u32);
+	[6] Unknown6(u32, u32, u32);
+	[7] Unknown7(u32) -> u32;
+}
+
+interface nn::ncm::IContentManager is ncm {
+	[0] Unknown0(u8);
+	[1] Unknown1(u8);
+	[2] Unknown2(u8);
+	[3] Unknown3(u8);
+	[4] Unknown4();
+	[5] Unknown5();
+	[8] Unknown8(u8);
+	[9] Unknown9(u8);
+	[10] Unknown10(u8);
+	[11] Unknown11(u8);
+	[12] Unknown12(u8);
+}
+
+interface nn::ncm::IContentMetaDatabase {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13();
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16();
+	[17] Unknown17();
+	[18] Unknown18();
+	[19] Unknown19();
+}
+
+interface nn::ncm::IContentStorage {
+	[0] Unknown0() -> u128;
+	[1] Unknown1();
+	[2] Unknown2(u128);
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6(u128);
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11() -> (u32, buffer<unknown, 6, 0>);
+	[12] Unknown12() -> u32;
+	[13] Unknown13();
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16();
+	[17] Unknown17();
+	[18] Unknown18();
+	[19] Unknown19();
+	[20] Unknown20();
+	[21] Unknown21();
+	[22] Unknown22() -> u64;
+	[23] Unknown23() -> u64;
+	[24] Unknown24();
+}
+
+interface nn::news::detail::ipc::INewlyArrivedEventHolder {
+	[0] Unknown0() -> KObject;
+}
+
+interface nn::news::detail::ipc::INewsDataService {
+	[0] Unknown0(buffer<unknown, 9, 0>);
+	[1] Unknown1();
+	[2] Unknown2(u64) -> (u64, buffer<unknown, 6, 0>);
+	[3] Unknown3() -> u64;
+}
+
+interface nn::news::detail::ipc::INewsDatabaseService {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+}
+
+interface nn::news::detail::ipc::INewsService {
+	[10100] Unknown10100(buffer<unknown, 5, 0>);
+	[20100] Unknown20100(u64, buffer<unknown, 9, 0>);
+	[30100] Unknown30100();
+	[30101] Unknown30101(u32) -> (u32, buffer<unknown, 6, 0>);
+	[30200] Unknown30200() -> u8;
+	[30300] Unknown30300(buffer<unknown, 9, 0>);
+	[30400] Unknown30400();
+	[40100] Unknown40100();
+	[40101] Unknown40101(u64);
+	[40200] Unknown40200();
+	[40201] Unknown40201();
+	[90100] Unknown90100() -> (u64, buffer<unknown, 6, 0>);
+}
+
+interface nn::news::detail::ipc::IOverwriteEventHolder {
+	[0] Unknown0() -> KObject;
+}
+
+interface nn::news::detail::ipc::IServiceCreator is news:a, news:c, news:m, news:p, news:v {
+	[0] Unknown0() -> object<IUnknown>;
+	[1] Unknown1() -> object<IUnknown>;
+	[2] Unknown2() -> object<IUnknown>;
+	[3] Unknown3() -> object<IUnknown>;
+	[4] Unknown4() -> object<IUnknown>;
+}
+
+interface nn::nfc::am::detail::IAm {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2(u64);
+}
+
+interface nn::nfc::am::detail::IAmManager is nfc:am {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::nfc::detail::ISystem {
+	[0] Unknown0(u64, u64, pid, buffer<unknown, 5, 0>);
+	[1] Unknown1();
+	[2] Unknown2() -> u32;
+	[3] Unknown3() -> u8;
+	[100] Unknown100(u8);
+}
+
+interface nn::nfc::detail::ISystemManager is nfc:sys {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::nfc::detail::IUser {
+	[0] Unknown0(u64, u64, pid, buffer<unknown, 5, 0>);
+	[1] Unknown1();
+	[2] Unknown2() -> u32;
+	[3] Unknown3() -> u8;
+}
+
+interface nn::nfc::detail::IUserManager is nfc:user {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::nfc::mifare::detail::IUser {
+	[0] Unknown0(u64, u64, pid, buffer<unknown, 5, 0>);
+	[1] Unknown1();
+	[2] Unknown2() -> (u32, buffer<unknown, 0xa, 0>);
+	[3] Unknown3(u64);
+	[4] Unknown4(u64);
+	[5] Unknown5(u64, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
+	[6] Unknown6(u64, buffer<unknown, 5, 0>);
+	[7] Unknown7(u64) -> buffer<unknown, 0x1a, 0x58>;
+	[8] Unknown8(u64) -> KObject;
+	[9] Unknown9(u64) -> KObject;
+	[10] Unknown10() -> u32;
+	[11] Unknown11(u64) -> u32;
+	[12] Unknown12(u64) -> u32;
+	[13] Unknown13() -> KObject;
+}
+
+interface nn::nfc::mifare::detail::IUserManager is nfc:mf:u {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::nfp::detail::IDebug {
+	[0] Unknown0(u64, u64, pid, buffer<unknown, 5, 0>);
+	[1] Unknown1();
+	[2] Unknown2() -> (u32, buffer<unknown, 0xa, 0>);
+	[3] Unknown3(u64);
+	[4] Unknown4(u64);
+	[5] Unknown5(u64, u32, u32);
+	[6] Unknown6(u64);
+	[7] Unknown7(u64, u32);
+	[8] Unknown8(u64) -> (u32, buffer<unknown, 6, 0>);
+	[9] Unknown9(u64, buffer<unknown, 5, 0>);
+	[10] Unknown10(u64);
+	[11] Unknown11(u64);
+	[12] Unknown12(u64, u32, buffer<unknown, 5, 0>);
+	[13] Unknown13(u64) -> buffer<unknown, 0x1a, 0x58>;
+	[14] Unknown14(u64) -> buffer<unknown, 0x1a, 0x100>;
+	[15] Unknown15(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[16] Unknown16(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[17] Unknown17(u64) -> KObject;
+	[18] Unknown18(u64) -> KObject;
+	[19] Unknown19() -> u32;
+	[20] Unknown20(u64) -> u32;
+	[21] Unknown21(u64) -> u32;
+	[22] Unknown22(u64) -> u32;
+	[23] Unknown23() -> KObject;
+	[24] Unknown24(u64, u32, buffer<unknown, 5, 0>);
+	[100] Unknown100(u64);
+	[101] Unknown101(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[102] Unknown102(u64) -> buffer<unknown, 0x1a, 0x100>;
+	[103] Unknown103(u64, buffer<unknown, 0x19, 0x100>);
+	[104] Unknown104(u64);
+	[105] Unknown105(u64);
+	[106] Unknown106(u64) -> u8;
+	[200] Unknown200(u64) -> buffer<unknown, 0x1a, 0x298>;
+	[201] Unknown201(u64, buffer<unknown, 0x19, 0x298>);
+	[202] Unknown202(u64);
+	[203] Unknown203(u64, u32);
+	[204] Unknown204() -> (u32, buffer<unknown, 6, 0>);
+	[205] Unknown205(buffer<unknown, 5, 0>);
+	[206] Unknown206(u64, u32, buffer<unknown, 5, 0>);
+	[300] Unknown300(u64, u64, pid, buffer<unknown, 5, 0>);
+	[301] Unknown301();
+	[302] Unknown302() -> (u32, buffer<unknown, 0xa, 0>);
+	[303] Unknown303(u64, u32);
+	[304] Unknown304(u64);
+	[305] Unknown305(u64, u64, buffer<unknown, 5, 0>) -> (u32, buffer<unknown, 6, 0>);
+	[306] Unknown306(u64) -> buffer<unknown, 0x1a, 0x58>;
+	[307] Unknown307(u64) -> KObject;
+	[308] Unknown308(u64) -> KObject;
+	[309] Unknown309() -> u32;
+	[310] Unknown310(u64) -> u32;
+	[311] Unknown311(u64) -> u32;
+	[312] Unknown312(u64);
+	[313] Unknown313(u64);
+	[314] Unknown314() -> KObject;
+}
+
+interface nn::nfp::detail::IDebugManager is nfp:dbg {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::nfp::detail::ISystem {
+	[0] Unknown0(u64, u64, pid, buffer<unknown, 5, 0>);
+	[1] Unknown1();
+	[2] Unknown2() -> (u32, buffer<unknown, 0xa, 0>);
+	[3] Unknown3(u64);
+	[4] Unknown4(u64);
+	[5] Unknown5(u64, u32, u32);
+	[6] Unknown6(u64);
+	[10] Unknown10(u64);
+	[11] Unknown11(u64);
+	[13] Unknown13(u64) -> buffer<unknown, 0x1a, 0x58>;
+	[14] Unknown14(u64) -> buffer<unknown, 0x1a, 0x100>;
+	[15] Unknown15(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[16] Unknown16(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[17] Unknown17(u64) -> KObject;
+	[18] Unknown18(u64) -> KObject;
+	[19] Unknown19() -> u32;
+	[20] Unknown20(u64) -> u32;
+	[21] Unknown21(u64) -> u32;
+	[23] Unknown23() -> KObject;
+	[100] Unknown100(u64);
+	[101] Unknown101(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[102] Unknown102(u64) -> buffer<unknown, 0x1a, 0x100>;
+	[103] Unknown103(u64, buffer<unknown, 0x19, 0x100>);
+	[104] Unknown104(u64);
+	[105] Unknown105(u64);
+	[106] Unknown106(u64) -> u8;
+}
+
+interface nn::nfp::detail::ISystemManager is nfp:sys {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::nfp::detail::IUser {
+	[0] Unknown0(u64, u64, pid, buffer<unknown, 5, 0>);
+	[1] Unknown1();
+	[2] Unknown2() -> (u32, buffer<unknown, 0xa, 0>);
+	[3] Unknown3(u64);
+	[4] Unknown4(u64);
+	[5] Unknown5(u64, u32, u32);
+	[6] Unknown6(u64);
+	[7] Unknown7(u64, u32);
+	[8] Unknown8(u64) -> (u32, buffer<unknown, 6, 0>);
+	[9] Unknown9(u64, buffer<unknown, 5, 0>);
+	[10] Unknown10(u64);
+	[11] Unknown11(u64);
+	[12] Unknown12(u64, u32, buffer<unknown, 5, 0>);
+	[13] Unknown13(u64) -> buffer<unknown, 0x1a, 0x58>;
+	[14] Unknown14(u64) -> buffer<unknown, 0x1a, 0x100>;
+	[15] Unknown15(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[16] Unknown16(u64) -> buffer<unknown, 0x1a, 0x40>;
+	[17] Unknown17(u64) -> KObject;
+	[18] Unknown18(u64) -> KObject;
+	[19] Unknown19() -> u32;
+	[20] Unknown20(u64) -> u32;
+	[21] Unknown21(u64) -> u32;
+	[22] Unknown22(u64) -> u32;
+	[23] Unknown23() -> KObject;
+	[24] Unknown24(u64, u32, buffer<unknown, 5, 0>);
+}
+
+interface nn::nfp::detail::IUserManager is nfp:user {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::nifm::detail::IGeneralService {
+	[1] GetClientId() -> buffer<nn::nifm::ClientId, 0x1a, 4>;
+	[2] CreateScanRequest() -> object<nn::nifm::detail::IScanRequest>;
+	[4] CreateRequest(i32) -> object<nn::nifm::detail::IRequest>;
+	[5] GetCurrentNetworkProfile() -> buffer<nn::nifm::detail::sf::NetworkProfileData, 0x1a, 0x17c>;
+	[6] EnumerateNetworkInterfaces(u32) -> (i32, array<nn::nifm::detail::sf::NetworkInterfaceInfo, 0xa>);
+	[7] EnumerateNetworkProfiles(u8) -> (i32, array<nn::nifm::detail::sf::NetworkProfileBasicInfo, 6>);
+	[8] GetNetworkProfile(nn::util::Uuid) -> buffer<nn::nifm::detail::sf::NetworkProfileData, 0x1a, 0x17c>;
+	[9] SetNetworkProfile(buffer<nn::nifm::detail::sf::NetworkProfileData, 0x19, 0x17c>) -> nn::util::Uuid;
+	[10] RemoveNetworkProfile(nn::util::Uuid);
+	[11] GetScanData() -> (i32, array<nn::nifm::detail::sf::AccessPointData, 6>);
+	[12] GetCurrentIpAddress() -> nn::nifm::IpV4Address;
+	[13] GetCurrentAccessPoint() -> buffer<nn::nifm::detail::sf::AccessPointData, 0x1a, 0x34>;
+	[14] CreateTemporaryNetworkProfile(buffer<nn::nifm::detail::sf::NetworkProfileData, 0x19, 0x17c>) -> (nn::util::Uuid, object<nn::nifm::detail::INetworkProfile>);
+	[15] GetCurrentIpConfigInfo() -> (nn::nifm::IpAddressSetting, align<1, nn::nifm::DnsSetting>);
+	[16] SetWirelessCommunicationEnabled(bool);
+	[17] IsWirelessCommunicationEnabled() -> bool;
+	[18] GetInternetConnectionStatus() -> nn::nifm::detail::sf::InternetConnectionStatus;
+	[19] SetEthernetCommunicationEnabled(bool);
+	[20] IsEthernetCommunicationEnabled() -> bool;
+	[21] IsAnyInternetRequestAccepted(buffer<nn::nifm::ClientId, 0x19, 4>) -> bool;
+	[22] IsAnyForegroundRequestAccepted() -> bool;
+	[23] PutToSleep();
+	[24] WakeUp();
+	[25] GetSsidListVersion() -> nn::nifm::SsidListVersion;
+	[26] SetExclusiveClient(buffer<nn::nifm::ClientId, 0x19, 4>);
+	[27] GetDefaultIpSetting() -> buffer<nn::nifm::IpSettingData, 0x1a, 0xc2>;
+	[28] SetDefaultIpSetting(buffer<nn::nifm::IpSettingData, 0x19, 0xc2>);
+	[29] SetWirelessCommunicationEnabledForTest(bool);
+	[30] SetEthernetCommunicationEnabledForTest(bool);
+	[31] GetTelemetorySystemEventReadableHandle() -> KObject;
+	[32] GetTelemetryInfo() -> buffer<nn::nifm::TelemetryInfo, 0x16, 0x20c>;
+	[33] ConfirmSystemAvailability();
+}
+
+interface nn::nifm::detail::INetworkProfile {
+	[0] Update(buffer<nn::nifm::detail::sf::NetworkProfileData, 0x19, 0x17c>) -> nn::util::Uuid;
+	[1] PersistOld(nn::util::Uuid) -> nn::util::Uuid;
+	[2] Persist() -> nn::util::Uuid;
+}
+
+interface nn::nifm::detail::IRequest {
+	[0] GetRequestState() -> i32;
+	[1] GetResult();
+	[2] GetSystemEventReadableHandles() -> (KObject, KObject);
+	[3] Cancel();
+	[4] Submit();
+	[5] SetRequirement(nn::nifm::Requirement);
+	[6] SetRequirementPreset(i32);
+	[8] SetPriority(u8);
+	[9] SetNetworkProfileId(nn::util::Uuid);
+	[10] SetRejectable(bool);
+	[11] SetConnectionConfirmationOption(i8);
+	[12] SetPersistent(bool);
+	[13] SetInstant(bool);
+	[14] SetSustainable(bool, u8);
+	[15] SetRawPriority(u8);
+	[16] SetGreedy(bool);
+	[17] SetSharable(bool);
+	[18] SetRequirementByRevision(u32);
+	[19] GetRequirement() -> nn::nifm::Requirement;
+	[20] GetRevision() -> u32;
+	[21] GetAppletInfo(u32) -> (u32, u32, u32, buffer<unknown, 6, 0>);
+	[22] GetAdditionalInfo() -> (u32, buffer<nn::nifm::AdditionalInfo, 0x16, 0x410>);
+	[23] SetKeptInSleep(bool);
+	[24] RegisterSocketDescriptor(i32);
+	[25] UnregisterSocketDescriptor(i32);
+}
+
+interface nn::nifm::detail::IScanRequest {
+	[0] Submit();
+	[1] IsProcessing() -> bool;
+	[2] GetResult();
+	[3] GetSystemEventReadableHandle() -> KObject;
+}
+
+interface nn::nifm::detail::IStaticService is nifm:a, nifm:s, nifm:u {
+	[4] CreateGeneralServiceOld() -> object<nn::nifm::detail::IGeneralService>;
+	[5] CreateGeneralService(u64, pid) -> object<nn::nifm::detail::IGeneralService>;
+}
+
+interface nn::nim::detail::IAsyncData {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2() -> u64;
+	[3] Unknown3();
+	[4] Unknown4();
+}
+
+interface nn::nim::detail::IAsyncProgressResult {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2() -> u128;
+}
+
+interface nn::nim::detail::IAsyncResult {
+	[0] Unknown0();
+	[1] Unknown1();
+}
+
+interface nn::nim::detail::IAsyncValue {
+	[0] Unknown0() -> u64;
+	[1] Unknown1() -> buffer<unknown, 6, 0>;
+	[2] Unknown2();
+}
+
+interface nn::nim::detail::INetworkInstallManager is nim {
+	[0] Unknown0();
+	[1] Unknown1(u128);
+	[2] Unknown2() -> (u32, buffer<unknown, 6, 0>);
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5(u128);
+	[6] Unknown6();
+	[7] Unknown7(u128);
+	[8] Unknown8() -> (u32, buffer<unknown, 6, 0>);
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11(u128);
+	[12] Unknown12();
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16();
+	[17] Unknown17();
+	[18] Unknown18();
+	[19] Unknown19();
+	[20] Unknown20();
+	[21] Unknown21();
+	[22] Unknown22() -> u128;
+	[23] Unknown23();
+	[24] Unknown24();
+	[25] Unknown25();
+	[26] Unknown26();
+	[27] Unknown27();
+	[28] Unknown28();
+	[29] Unknown29();
+	[30] Unknown30();
+	[31] Unknown31();
+	[32] Unknown32(u128);
+	[33] Unknown33();
+	[34] Unknown34();
+	[35] Unknown35();
+	[36] Unknown36();
+	[37] Unknown37(u128);
+	[38] Unknown38();
+	[39] Unknown39();
+	[40] Unknown40() -> (u32, buffer<unknown, 6, 0>);
+	[41] Unknown41(u128);
+	[42] Unknown42();
+	[43] Unknown43() -> u128;
+	[44] Unknown44();
+	[45] Unknown45();
+	[46] Unknown46();
+}
+
+interface nn::nim::detail::IShopServiceManager is nim:shp {
+	[0] Unknown0();
+	[1] Unknown1();
+	[100] Unknown100();
+	[101] Unknown101();
+	[102] Unknown102();
+	[103] Unknown103() -> bytes<0x20>;
+	[104] Unknown104();
+	[105] Unknown105();
+	[106] Unknown106();
+	[107] Unknown107(u64) -> u8;
+	[200] Unknown200();
+	[300] Unknown300();
+	[301] Unknown301();
+	[302] Unknown302();
+	[303] Unknown303();
+	[400] Unknown400();
+	[500] Unknown500();
+	[501] Unknown501();
+}
+
+interface nn::npns::INpnsSystem is npns:s {
+	[1] Unknown1();
+	[2] Unknown2(u64);
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5() -> KObject;
+	[6] Unknown6();
+	[7] Unknown7() -> KObject;
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13();
+	[21] Unknown21();
+	[22] Unknown22();
+	[23] Unknown23();
+	[24] Unknown24();
+	[25] Unknown25();
+	[31] Unknown31();
+	[32] Unknown32();
+	[101] Unknown101();
+	[102] Unknown102();
+	[103] Unknown103() -> u32;
+	[104] Unknown104() -> buffer<unknown, 6, 0>;
+	[105] Unknown105() -> KObject;
+	[111] Unknown111();
+	[112] Unknown112();
+	[113] Unknown113();
+	[114] Unknown114();
+	[115] Unknown115();
+	[201] Unknown201();
+	[202] Unknown202(u32);
+}
+
+interface nn::npns::INpnsUser is npns:u {
+	[1] Unknown1();
+	[2] Unknown2(u64);
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5() -> KObject;
+	[7] Unknown7() -> KObject;
+	[21] Unknown21();
+	[23] Unknown23();
+	[25] Unknown25();
+	[101] Unknown101();
+	[102] Unknown102();
+	[103] Unknown103() -> u32;
+	[104] Unknown104() -> buffer<unknown, 6, 0>;
+	[111] Unknown111();
+}
+
+interface nn::ns::detail::IAccountProxyInterface {
+	[0] Unknown0();
+}
+
+interface nn::ns::detail::IApplicationManagerInterface {
+	[0] Unknown0();
+	[1] Unknown1() -> u64;
+	[2] Unknown2() -> KObject;
+	[3] Unknown3();
+	[4] Unknown4(u64);
+	[5] Unknown5(u64);
+	[6] Unknown6() -> u8;
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9(u8, u64);
+	[11] Unknown11();
+	[16] Unknown16();
+	[17] Unknown17();
+	[19] Unknown19(u64) -> u64;
+	[21] Unknown21();
+	[22] Unknown22(u64);
+	[23] Unknown23(u8, u64);
+	[26] Unknown26();
+	[27] Unknown27(u64);
+	[30] Unknown30();
+	[31] Unknown31();
+	[32] Unknown32(u64);
+	[33] Unknown33(u64);
+	[35] Unknown35(buffer<unknown, 5, 0>);
+	[36] Unknown36(u32, u64);
+	[37] Unknown37() -> (u32, buffer<unknown, 6, 0>);
+	[38] Unknown38(u64);
+	[39] Unknown39(u64);
+	[40] Unknown40();
+	[41] Unknown41();
+	[42] Unknown42();
+	[43] Unknown43();
+	[44] Unknown44() -> KObject;
+	[45] Unknown45() -> KObject;
+	[46] Unknown46() -> u128;
+	[47] Unknown47();
+	[48] Unknown48();
+	[49] Unknown49() -> KObject;
+	[52] Unknown52() -> KObject;
+	[53] Unknown53(u64);
+	[54] Unknown54(u64);
+	[55] Unknown55(u32) -> u8;
+	[56] Unknown56(u32, u64);
+	[57] Unknown57(u64);
+	[58] Unknown58();
+	[59] Unknown59();
+	[60] Unknown60();
+	[61] Unknown61() -> u128;
+	[62] Unknown62() -> object<IUnknown>;
+	[63] Unknown63(u64) -> u8;
+	[64] Unknown64(u64);
+	[65] Unknown65() -> object<IUnknown>;
+	[66] Unknown66() -> u128;
+	[67] Unknown67(u64);
+	[68] Unknown68(u64);
+	[69] Unknown69();
+	[70] Unknown70();
+	[71] Unknown71();
+	[80] Unknown80();
+	[81] Unknown81();
+	[82] Unknown82();
+	[100] Unknown100();
+	[101] Unknown101();
+	[102] Unknown102();
+	[200] Unknown200();
+	[201] Unknown201();
+	[210] Unknown210();
+	[220] Unknown220();
+	[300] Unknown300() -> KObject;
+	[301] Unknown301() -> (u32, buffer<unknown, 6, 0>);
+	[302] Unknown302(u64) -> u64;
+	[303] Unknown303(u64);
+	[304] Unknown304() -> u64;
+	[305] Unknown305(u64);
+	[306] Unknown306() -> u64;
+	[307] Unknown307(u64);
+	[400] Unknown400();
+	[401] Unknown401();
+	[402] Unknown402();
+	[403] Unknown403() -> u32;
+	[404] Unknown404(u64);
+	[405] Unknown405() -> (u32, buffer<unknown, 6, 0>);
+	[502] Unknown502();
+	[503] Unknown503();
+	[504] Unknown504();
+	[505] Unknown505() -> KObject;
+	[506] Unknown506() -> u8;
+	[507] Unknown507();
+	[508] Unknown508();
+	[600] Unknown600(u64) -> u32;
+	[601] Unknown601();
+	[602] Unknown602();
+	[603] Unknown603();
+	[604] Unknown604(u64, u64);
+	[605] Unknown605();
+	[606] Unknown606();
+	[700] Unknown700(buffer<unknown, 5, 0>);
+	[701] Unknown701();
+	[702] Unknown702();
+	[703] Unknown703();
+	[704] Unknown704() -> (u32, buffer<unknown, 6, 0>);
+	[705] Unknown705();
+	[800] Unknown800();
+	[801] Unknown801() -> (u32, buffer<unknown, 6, 0>);
+	[802] Unknown802();
+	[900] Unknown900();
+	[901] Unknown901();
+	[902] Unknown902(u64);
+	[903] Unknown903(u64);
+	[904] Unknown904(u64);
+	[905] Unknown905(u32, u64);
+	[906] Unknown906();
+	[907] Unknown907(u64);
+	[908] Unknown908();
+	[909] Unknown909(u64);
+	[1000] Unknown1000();
+	[1001] Unknown1001();
+	[1002] Unknown1002();
+	[1200] Unknown1200() -> u8;
+	[1300] Unknown1300(u64) -> u8;
+	[1301] Unknown1301();
+	[1302] Unknown1302(u64);
+	[1303] Unknown1303(u64);
+	[1304] Unknown1304();
+	[1400] Unknown1400();
+	[1500] Unknown1500();
+	[1501] Unknown1501() -> u8;
+	[1502] Unknown1502();
+	[1504] Unknown1504();
+	[1505] Unknown1505();
+	[1600] Unknown1600() -> bytes<0x20>;
+	[1601] Unknown1601();
+	[1700] Unknown1700();
+	[1701] Unknown1701();
+	[1702] Unknown1702(u64) -> u8;
+	[1800] Unknown1800() -> u8;
+	[1801] Unknown1801() -> u64;
+	[1802] Unknown1802() -> (u32, buffer<unknown, 6, 0>);
+	[1803] Unknown1803() -> (u32, buffer<unknown, 6, 0>);
+	[1900] Unknown1900(u32) -> u8;
+}
+
+interface nn::ns::detail::IAsyncResult {
+	[0] Unknown0();
+	[1] Unknown1();
+}
+
+interface nn::ns::detail::IAsyncValue {
+	[0] Unknown0() -> u64;
+	[1] Unknown1() -> buffer<unknown, 6, 0>;
+	[2] Unknown2();
+}
+
+interface nn::ns::detail::IContentManagementInterface {
+	[11] Unknown11();
+	[43] Unknown43();
+	[47] Unknown47();
+	[48] Unknown48();
+	[600] Unknown600(u64) -> u32;
+	[601] Unknown601();
+	[605] Unknown605();
+	[607] Unknown607() -> u8;
+}
+
+interface nn::ns::detail::IDevelopInterface is ns:dev {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+}
+
+interface nn::ns::detail::IDocumentInterface {
+	[21] Unknown21();
+	[23] Unknown23(u8, u64);
+}
+
+interface nn::ns::detail::IDownloadTaskInterface {
+	[701] Unknown701();
+	[702] Unknown702();
+	[703] Unknown703();
+	[704] Unknown704() -> (u32, buffer<unknown, 6, 0>);
+	[705] Unknown705();
+}
+
+interface nn::ns::detail::IFactoryResetInterface {
+	[100] Unknown100();
+	[101] Unknown101();
+	[102] Unknown102();
+}
+
+interface nn::ns::detail::IProgressAsyncResult {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2() -> buffer<unknown, 6, 0>;
+	[3] Unknown3();
+}
+
+interface nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1() -> u8;
+	[2] Unknown2();
+	[10] Unknown10() -> bytes<0x28>;
+}
+
+interface nn::ns::detail::IServiceGetterInterface is ns:rid, ns:web, ns:ec, ns:am2, ns:rt {
+	[7994] Unknown7994() -> object<IUnknown>;
+	[7995] Unknown7995() -> object<IUnknown>;
+	[7996] Unknown7996() -> object<IUnknown>;
+	[7997] Unknown7997() -> object<IUnknown>;
+	[7998] Unknown7998() -> object<IUnknown>;
+	[7999] Unknown7999() -> object<IUnknown>;
+}
+
+interface nn::ns::detail::ISystemUpdateControl {
+	[0] Unknown0() -> u8;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3() -> u128;
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6() -> u128;
+	[7] Unknown7() -> u8;
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13();
+}
+
+interface nn::ns::detail::ISystemUpdateInterface is ns:su {
+	[0] Unknown0() -> u8;
+	[1] Unknown1() -> object<IUnknown>;
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[9] Unknown9() -> KObject;
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12() -> KObject;
+	[13] Unknown13();
+	[14] Unknown14() -> KObject;
+	[15] Unknown15();
+}
+
+interface nn::ns::detail::IVulnerabilityManagerInterface is ns:vm {
+	[1200] Unknown1200() -> u8;
+}
+
+interface nn::nsd::detail::IManager is nsd:a, nsd:u {
+	[10] Unknown10() -> buffer<unknown, 0x16, 0x100>;
+	[11] Unknown11() -> buffer<unknown, 0x16, 8>;
+	[12] Unknown12() -> u128;
+	[13] Unknown13(u32);
+	[14] Unknown14(u32, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
+	[20] Unknown20(buffer<unknown, 0x15, 0x100>) -> buffer<unknown, 0x16, 0x100>;
+	[21] Unknown21(buffer<unknown, 0x15, 0x100>) -> (u32, buffer<unknown, 0x16, 0x100>);
+	[30] Unknown30(buffer<unknown, 0x15, 0x10>) -> buffer<unknown, 0x16, 0x108>;
+	[31] Unknown31(buffer<unknown, 0x15, 0x10>) -> (u32, buffer<unknown, 0x16, 0x108>);
+	[40] Unknown40() -> buffer<unknown, 0x16, 0x100>;
+	[41] Unknown41() -> (u32, buffer<unknown, 0x16, 0x100>);
+	[42] Unknown42() -> buffer<unknown, 0x16, 0x100>;
+	[43] Unknown43() -> (u32, buffer<unknown, 0x16, 0x100>);
+	[50] Unknown50() -> buffer<unknown, 0x16, 0x12bf0>;
+	[60] Unknown60() -> buffer<unknown, 0x16, 0x12bf0>;
+	[61] Unknown61(buffer<unknown, 0x15, 0x12bf0>);
+	[62] Unknown62();
+}
+
+interface nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService {
+	[0] Unknown0();
+	[1] Unknown1() -> KObject;
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4() -> u8;
+	[5] Unknown5() -> u64;
+}
+
+interface nn::ntc::detail::service::IStaticService is ntc {
+	[0] Unknown0(u32, u32) -> object<IUnknown>;
+	[100] Unknown100();
+	[101] Unknown101();
+}
+
+interface nn::omm::detail::IOperationModeManager is omm {
+	[0] Unknown0() -> u8;
+	[1] Unknown1() -> KObject;
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5() -> u8;
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10(u8);
+	[11] Unknown11();
+	[12] Unknown12() -> KObject;
+	[13] Unknown13();
+	[14] Unknown14() -> u8;
+}
+
+interface nn::ovln::IReceiver {
+	[0] Unknown0(u128);
+	[1] Unknown1(u128);
+	[2] Unknown2() -> KObject;
+	[3] Unknown3();
+	[4] Unknown4();
+}
+
+interface nn::ovln::IReceiverService is ovln:rcv {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::ovln::ISender {
+	[0] Unknown0();
+	[1] Unknown1() -> u32;
+}
+
+interface nn::ovln::ISenderService is ovln:snd {
+	[0] Unknown0();
+}
+
+interface nn::pcie::detail::IManager is pcie {
+	[0] Unknown0();
+	[1] Unknown1();
+}
+
+interface nn::pcie::detail::ISession {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2(u32);
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13();
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16(u8, u32);
+	[17] Unknown17();
+	[18] Unknown18(u32);
+	[19] Unknown19();
+	[20] Unknown20(u8, u32);
+	[21] Unknown21(u8, u32);
+}
+
+interface nn::pctl::detail::ipc::IParentalControlService {
+	[1001] CheckFreeCommunicationPermission();
+	[1002] ConfirmLaunchApplicationPermission(bool, nn::ncm::ApplicationId, array<i8, 9>);
+	[1003] ConfirmResumeApplicationPermission(bool, nn::ncm::ApplicationId, array<i8, 9>);
+	[1004] ConfirmSnsPostPermission();
+	[1005] ConfirmSystemSettingsPermission();
+	[1006] IsRestrictionTemporaryUnlocked() -> bool;
+	[1007] RevertRestrictionTemporaryUnlocked();
+	[1008] EnterRestrictedSystemSettings();
+	[1009] LeaveRestrictedSystemSettings();
+	[1010] IsRestrictedSystemSettingsEntered() -> bool;
+	[1011] RevertRestrictedSystemSettingsEntered();
+	[1012] GetRestrictedFeatures() -> i32;
+	[1031] IsRestrictionEnabled() -> bool;
+	[1032] GetSafetyLevel() -> i32;
+	[1033] SetSafetyLevel(i32);
+	[1034] GetSafetyLevelSettings(i32) -> nn::pctl::SafetyLevelSettings;
+	[1035] GetCurrentSettings() -> nn::pctl::SafetyLevelSettings;
+	[1036] SetCustomSafetyLevelSettings(nn::pctl::SafetyLevelSettings);
+	[1037] GetDefaultRatingOrganization() -> i32;
+	[1038] SetDefaultRatingOrganization(i32);
+	[1039] GetFreeCommunicationApplicationListCount() -> i32;
+	[1042] AddToFreeCommunicationApplicationList(nn::ncm::ApplicationId);
+	[1043] DeleteSettings();
+	[1044] GetFreeCommunicationApplicationList(i32) -> (i32, array<nn::pctl::FreeCommunicationApplicationInfo, 6>);
+	[1045] UpdateFreeCommunicationApplicationList(array<nn::pctl::FreeCommunicationApplicationInfo, 5>);
+	[1046] DisableFeaturesForReset();
+	[1047] NotifyApplicationDownloadStarted(nn::ncm::ApplicationId);
+	[1201] UnlockRestrictionTemporarily(array<i8, 9>);
+	[1202] UnlockSystemSettingsRestriction(array<i8, 9>);
+	[1203] SetPinCode(array<i8, 9>);
+	[1204] GenerateInquiryCode() -> nn::pctl::InquiryCode;
+	[1205] CheckMasterKey(nn::pctl::InquiryCode, array<i8, 9>) -> bool;
+	[1206] GetPinCodeLength() -> i32;
+	[1207] GetPinCodeChangedEvent() -> KObject;
+	[1403] IsPairingActive() -> bool;
+	[1406] GetSettingsLastUpdated() -> nn::time::PosixTime;
+	[1411] GetPairingAccountInfo(nn::pctl::detail::PairingInfoBase) -> nn::pctl::detail::PairingAccountInfoBase;
+	[1421] GetAccountNickname(nn::pctl::detail::PairingAccountInfoBase) -> (u32, array<i8, 0xa>);
+	[1424] GetAccountState(nn::pctl::detail::PairingAccountInfoBase) -> i32;
+	[1432] GetSynchronizationEvent() -> KObject;
+	[1451] StartPlayTimer();
+	[1452] StopPlayTimer();
+	[1453] IsPlayTimerEnabled() -> bool;
+	[1454] GetPlayTimerRemainingTime() -> nn::TimeSpanType;
+	[1455] IsRestrictedByPlayTimer() -> bool;
+	[1456] GetPlayTimerSettings() -> nn::pctl::PlayTimerSettings;
+	[1457] GetPlayTimerEventToRequestSuspension() -> KObject;
+	[1471] NotifyWrongPinCodeInputManyTimes();
+	[1472] CancelNetworkRequest();
+	[1473] GetUnlinkedEvent() -> KObject;
+	[1474] ClearUnlinkedEvent();
+	[1601] DisableAllFeatures() -> bool;
+	[1602] PostEnableAllFeatures() -> bool;
+	[1603] IsAllFeaturesDisabled() -> (bool, bool);
+	[1901] DeleteFromFreeCommunicationApplicationListForDebug(nn::ncm::ApplicationId);
+	[1902] ClearFreeCommunicationApplicationListForDebug();
+	[1941] DeletePairing();
+	[1951] SetPlayTimerSettingsForDebug(nn::pctl::PlayTimerSettings);
+	[1952] GetPlayTimerSpentTimeForTest() -> nn::TimeSpanType;
+	[2001] RequestPairingAsync(array<i8, 9>) -> (nn::pctl::detail::AsyncData, KObject);
+	[2002] FinishRequestPairing(nn::pctl::detail::AsyncData) -> nn::pctl::detail::PairingInfoBase;
+	[2003] AuthorizePairingAsync(nn::pctl::detail::PairingInfoBase) -> (nn::pctl::detail::AsyncData, KObject);
+	[2004] FinishAuthorizePairing(nn::pctl::detail::AsyncData) -> nn::pctl::detail::PairingInfoBase;
+	[2005] RetrievePairingInfoAsync() -> (nn::pctl::detail::AsyncData, KObject);
+	[2006] FinishRetrievePairingInfo(nn::pctl::detail::AsyncData) -> nn::pctl::detail::PairingInfoBase;
+	[2007] UnlinkPairingAsync(bool) -> (nn::pctl::detail::AsyncData, KObject);
+	[2008] FinishUnlinkPairing(bool, align<4, nn::pctl::detail::AsyncData>);
+	[2009] GetAccountMiiImageAsync(nn::pctl::detail::PairingAccountInfoBase) -> (nn::pctl::detail::AsyncData, u32, KObject, buffer<unknown, 6, 0>);
+	[2010] FinishGetAccountMiiImage(nn::pctl::detail::AsyncData) -> (u32, buffer<unknown, 6, 0>);
+	[2011] GetAccountMiiImageContentTypeAsync(nn::pctl::detail::PairingAccountInfoBase) -> (nn::pctl::detail::AsyncData, u32, KObject, array<i8, 0xa>);
+	[2012] FinishGetAccountMiiImageContentType(nn::pctl::detail::AsyncData) -> (u32, array<i8, 0xa>);
+	[2013] SynchronizeParentalControlSettingsAsync() -> (nn::pctl::detail::AsyncData, KObject);
+	[2014] FinishSynchronizeParentalControlSettings(nn::pctl::detail::AsyncData);
+	[2015] FinishSynchronizeParentalControlSettingsWithLastUpdated(nn::pctl::detail::AsyncData) -> nn::time::PosixTime;
+}
+
+interface nn::pctl::detail::ipc::IParentalControlServiceFactory is pctl:s, pctl:r, pctl:a, pctl {
+	[0] CreateService(u64, pid) -> object<nn::pctl::detail::ipc::IParentalControlService>;
+}
+
+interface nn::pcv::IArbitrationManager is pcv:arb {
+	[0] ReleaseControl(i32);
+}
+
+interface nn::pcv::IImmediateManager is pcv:imm {
+	[0] SetClockRate(i32, u32);
+}
+
+interface nn::pcv::detail::IPcvService is pcv {
+	[0] SetPowerEnabled(bool, i32);
+	[1] SetClockEnabled(bool, i32);
+	[2] SetClockRate(i32, u32);
+	[3] GetClockRate(i32) -> u32;
+	[4] GetState(i32) -> nn::pcv::ModuleState;
+	[5] GetPossibleClockRates(i32, i32) -> (i32, i32, array<u32, 0xa>);
+	[6] SetMinVClockRate(i32, u32);
+	[7] SetReset(bool, i32);
+	[8] SetVoltageEnabled(bool, i32);
+	[9] GetVoltageEnabled(i32) -> bool;
+	[10] GetVoltageRange(i32) -> (i32, i32, i32);
+	[11] SetVoltageValue(i32, i32);
+	[12] GetVoltageValue(i32) -> i32;
+	[13] GetTemperatureThresholds(i32) -> (i32, array<nn::pcv::TemperatureThreshold, 0xa>);
+	[14] SetTemperature(i32);
+	[15] Initialize();
+	[16] IsInitialized() -> bool;
+	[17] Finalize();
+	[18] PowerOn(nn::pcv::PowerControlTarget, i32);
+	[19] PowerOff(nn::pcv::PowerControlTarget);
+	[20] ChangeVoltage(nn::pcv::PowerControlTarget, i32);
+	[21] GetPowerClockInfoEvent() -> KObject;
+	[22] GetOscillatorClock() -> u32;
+	[23] GetDvfsTable(i32, i32) -> (i32, array<u32, 0xa>, array<i32, 0xa>);
+	[24] GetModuleStateTable(i32) -> (i32, array<nn::pcv::ModuleState, 0xa>);
+	[25] GetPowerDomainStateTable(i32) -> (i32, array<nn::pcv::PowerDomainState, 0xa>);
+	[26] GetFuseInfo(i32) -> (i32, array<u32, 0xa>);
+}
+
+interface nn::pdm::detail::INotifyService is pdm:ntfy {
+	[0] Unknown0();
+	[2] Unknown2(u8);
+	[3] Unknown3(u8);
+	[4] Unknown4();
+	[5] Unknown5(buffer<unknown, 5, 0>);
+}
+
+interface nn::pdm::detail::IQueryService is pdm:qry {
+	[0] Unknown0();
+	[1] Unknown1() -> (u32, buffer<unknown, 6, 0>);
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+}
+
+interface nn::pinmux::IManager is pinmux {
+	[0] Unknown0(u32) -> object<IUnknown>;
+}
+
+interface nn::pinmux::ISession {
+	[0] Unknown0(u32);
+	[1] Unknown1() -> u32;
+	[2] Unknown2(u32);
+}
+
+interface nn::pl::detail::ISharedFontManager is pl:u {
+	[0] Unknown0(u32);
+	[1] Unknown1(u32) -> u32;
+	[2] Unknown2(u32) -> u32;
+	[3] Unknown3(u32) -> u32;
+	[4] Unknown4() -> KObject;
+	[5] Unknown5(u64) -> (u8, u32, buffer<unknown, 6, 0>, buffer<unknown, 6, 0>, buffer<unknown, 6, 0>);
+}
+
+interface nn::pm::detail::IBootModeInterface is pm:bm {
+	[0] Unknown0() -> u32;
+	[1] Unknown1();
+}
+
+interface nn::pm::detail::IInformationInterface is pm:info {
+	[0] Unknown0(u64) -> u64;
+}
+
+interface nn::pm::detail::IShellInterface is pm:shell {
+	[0] Unknown0();
+	[1] Unknown1(u64);
+	[2] Unknown2(u64);
+	[3] Unknown3() -> KObject;
+	[4] Unknown4() -> u128;
+	[5] Unknown5(u64);
+	[6] Unknown6(u64);
+	[7] Unknown7();
+	[8] Unknown8() -> u64;
+}
+
+interface nn::prepo::detail::ipc::IPrepoService is prepo:a, prepo:m, prepo:u, prepo:s {
+	[10100] SaveReport(u64, pid, array<i8, 9>, buffer<unknown, 5, 0>);
+	[10101] SaveReportWithUser(nn::account::Uid, u64, pid, array<i8, 9>, buffer<unknown, 5, 0>);
+	[10200] RequestImmediateTransmission();
+	[10300] GetTransmissionStatus() -> i32;
+	[20100] SaveSystemReport(nn::ApplicationId, array<i8, 9>, buffer<unknown, 5, 0>);
+	[20101] SaveSystemReportWithUser(nn::account::Uid, nn::ApplicationId, array<i8, 9>, buffer<unknown, 5, 0>);
+	[30100] ClearStorage();
+	[40100] IsUserAgreementCheckEnabled() -> bool;
+	[40101] SetUserAgreementCheckEnabled(bool);
+	[90100] GetStorageUsage() -> (i64, i64);
+}
+
+interface nn::psc::sf::IPmControl is psc:c {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1(u32, u32, u32);
+	[2] Unknown2();
+	[3] Unknown3() -> u32;
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+}
+
+interface nn::psc::sf::IPmModule {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+}
+
+interface nn::psc::sf::IPmService is psc:m {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::psm::IPsmServer is psm {
+	[0] Unknown0() -> u32;
+	[1] Unknown1() -> u32;
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4() -> u8;
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7() -> object<IUnknown>;
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12() -> u32;
+	[13] Unknown13() -> u64;
+	[14] Unknown14() -> u8;
+	[15] Unknown15() -> u64;
+	[16] Unknown16() -> KObject;
+	[17] Unknown17();
+	[18] Unknown18() -> KObject;
+}
+
+interface nn::psm::IPsmSession {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1();
+	[2] Unknown2(u8);
+	[3] Unknown3(u8);
+	[4] Unknown4(u8);
+}
+
+interface nn::pwm::IChannelSession {
+	[0] Unknown0(u64);
+	[1] Unknown1() -> u64;
+	[2] Unknown2(u32);
+	[3] Unknown3() -> u32;
+	[4] Unknown4(u8);
+	[5] Unknown5() -> u8;
+}
+
+interface nn::pwm::IManager is pwm {
+	[0] Unknown0(u32) -> object<IUnknown>;
+	[1] Unknown1(u32) -> object<IUnknown>;
+}
+
+interface nn::ro::detail::IDebugMonitorInterface is ro:dmnt {
+	[0] Unknown0();
+}
+
+interface nn::ro::detail::IRoInterface is ldr:ro {
+	[0] Unknown0(u64, u64, u64, u64, u64, pid) -> u64;
+	[1] Unknown1(u64, u64, pid);
+	[2] Unknown2(u64, u64, u64, pid);
+	[3] Unknown3(u64, u64, pid);
+	[4] Unknown4(u64, pid, KObject);
+}
+
+interface nn::sasbus::IManager is sasbus {
+	[0] Unknown0(u32) -> object<IUnknown>;
+}
+
+interface nn::sasbus::ISession {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+}
+
+interface nn::settings::IFactorySettingsServer is set:cal {
+	[0] GetBluetoothBdAddress() -> nn::settings::factory::BdAddress;
+	[1] GetConfigurationId1() -> nn::settings::factory::ConfigurationId1;
+	[2] GetAccelerometerOffset() -> nn::settings::factory::AccelerometerOffset;
+	[3] GetAccelerometerScale() -> nn::settings::factory::AccelerometerScale;
+	[4] GetGyroscopeOffset() -> nn::settings::factory::GyroscopeOffset;
+	[5] GetGyroscopeScale() -> nn::settings::factory::GyroscopeScale;
+	[6] GetWirelessLanMacAddress() -> nn::settings::factory::MacAddress;
+	[7] GetWirelessLanCountryCodeCount() -> i32;
+	[8] GetWirelessLanCountryCodes() -> (i32, array<nn::settings::factory::CountryCode, 0xa>);
+	[9] GetSerialNumber() -> nn::settings::factory::SerialNumber;
+	[10] SetInitialSystemAppletProgramId(nn::ncm::ProgramId);
+	[11] SetOverlayDispProgramId(nn::ncm::ProgramId);
+	[12] GetBatteryLot() -> nn::settings::factory::BatteryLot;
+	[14] GetEciDeviceCertificate() -> buffer<nn::settings::factory::EccB233DeviceCertificate, 0x16, 0x180>;
+	[15] GetEticketDeviceCertificate() -> buffer<nn::settings::factory::Rsa2048DeviceCertificate, 0x16, 0x240>;
+	[16] GetSslKey() -> buffer<nn::settings::factory::SslKey, 0x16, 0x134>;
+	[17] GetSslCertificate() -> buffer<nn::settings::factory::SslCertificate, 0x16, 0x804>;
+	[18] GetGameCardKey() -> buffer<nn::settings::factory::GameCardKey, 0x16, 0x134>;
+	[19] GetGameCardCertificate() -> buffer<nn::settings::factory::GameCardCertificate, 0x16, 0x400>;
+	[20] GetEciDeviceKey() -> nn::settings::factory::EccB233DeviceKey;
+	[21] GetEticketDeviceKey() -> buffer<nn::settings::factory::Rsa2048DeviceKey, 0x16, 0x244>;
+	[22] GetSpeakerParameter() -> nn::settings::factory::SpeakerParameter;
+}
+
+interface nn::settings::IFirmwareDebugSettingsServer is set:fd {
+	[2] SetSettingsItemValue(buffer<nn::settings::SettingsName, 0x19, 0x48>, buffer<nn::settings::SettingsItemKey, 0x19, 0x48>, buffer<unknown, 5, 0>);
+	[3] ResetSettingsItemValue(buffer<nn::settings::SettingsName, 0x19, 0x48>, buffer<nn::settings::SettingsItemKey, 0x19, 0x48>);
+	[4] CreateSettingsItemKeyIterator(buffer<nn::settings::SettingsName, 0x19, 0x48>) -> object<nn::settings::ISettingsItemKeyIterator>;
+}
+
+interface nn::settings::ISettingsItemKeyIterator {
+	[0] GoNext();
+	[1] GetKeySize() -> u64;
+	[2] GetKey() -> (u64, buffer<unknown, 6, 0>);
+}
+
+interface nn::settings::ISettingsServer is set {
+	[0] GetLanguageCode() -> nn::settings::LanguageCode;
+	[1] GetAvailableLanguageCodes() -> (i32, array<nn::settings::LanguageCode, 0xa>);
+	[3] GetAvailableLanguageCodeCount() -> i32;
+	[4] GetRegionCode() -> i32;
+}
+
+interface nn::settings::ISystemSettingsServer is set:sys {
+	[0] SetLanguageCode(nn::settings::LanguageCode);
+	[1] SetNetworkSettings(array<nn::settings::system::NetworkSettings, 5>);
+	[2] GetNetworkSettings() -> (i32, array<nn::settings::system::NetworkSettings, 6>);
+	[3] GetFirmwareVersion() -> buffer<nn::settings::system::FirmwareVersion, 0x1a, 0x100>;
+	[4] GetFirmwareVersion2() -> buffer<nn::settings::system::FirmwareVersion, 0x1a, 0x100>;
+	[7] GetLockScreenFlag() -> bool;
+	[8] SetLockScreenFlag(bool);
+	[9] GetBacklightSettings() -> nn::settings::system::BacklightSettings;
+	[10] SetBacklightSettings(nn::settings::system::BacklightSettings);
+	[11] SetBluetoothDevicesSettings(array<nn::settings::system::BluetoothDevicesSettings, 5>);
+	[12] GetBluetoothDevicesSettings() -> (i32, array<nn::settings::system::BluetoothDevicesSettings, 6>);
+	[13] GetExternalSteadyClockSourceId() -> nn::util::Uuid;
+	[14] SetExternalSteadyClockSourceId(nn::util::Uuid);
+	[15] GetUserSystemClockContext() -> nn::time::SystemClockContext;
+	[16] SetUserSystemClockContext(nn::time::SystemClockContext);
+	[17] GetAccountSettings() -> nn::settings::system::AccountSettings;
+	[18] SetAccountSettings(nn::settings::system::AccountSettings);
+	[19] GetAudioVolume(i32) -> nn::settings::system::AudioVolume;
+	[20] SetAudioVolume(nn::settings::system::AudioVolume, i32);
+	[21] GetEulaVersions() -> (i32, array<nn::settings::system::EulaVersion, 6>);
+	[22] SetEulaVersions(array<nn::settings::system::EulaVersion, 5>);
+	[23] GetColorSetId() -> i32;
+	[24] SetColorSetId(i32);
+	[25] GetConsoleInformationUploadFlag() -> bool;
+	[26] SetConsoleInformationUploadFlag(bool);
+	[27] GetAutomaticApplicationDownloadFlag() -> bool;
+	[28] SetAutomaticApplicationDownloadFlag(bool);
+	[29] GetNotificationSettings() -> nn::settings::system::NotificationSettings;
+	[30] SetNotificationSettings(nn::settings::system::NotificationSettings);
+	[31] GetAccountNotificationSettings() -> (i32, array<nn::settings::system::AccountNotificationSettings, 6>);
+	[32] SetAccountNotificationSettings(array<nn::settings::system::AccountNotificationSettings, 5>);
+	[35] GetVibrationMasterVolume() -> f32;
+	[36] SetVibrationMasterVolume(f32);
+	[37] GetSettingsItemValueSize(buffer<nn::settings::SettingsName, 0x19, 0x48>, buffer<nn::settings::SettingsItemKey, 0x19, 0x48>) -> u64;
+	[38] GetSettingsItemValue(buffer<nn::settings::SettingsName, 0x19, 0x48>, buffer<nn::settings::SettingsItemKey, 0x19, 0x48>) -> (u64, buffer<unknown, 6, 0>);
+	[39] GetTvSettings() -> nn::settings::system::TvSettings;
+	[40] SetTvSettings(nn::settings::system::TvSettings);
+	[41] GetEdid() -> buffer<nn::settings::system::Edid, 0x1a, 0x100>;
+	[42] SetEdid(buffer<nn::settings::system::Edid, 0x19, 0x100>);
+	[43] GetAudioOutputMode(i32) -> i32;
+	[44] SetAudioOutputMode(i32, i32);
+	[45] IsForceMuteOnHeadphoneRemoved() -> bool;
+	[46] SetForceMuteOnHeadphoneRemoved(bool);
+	[47] GetQuestFlag() -> bool;
+	[48] SetQuestFlag(bool);
+	[49] GetDataDeletionSettings() -> nn::settings::system::DataDeletionSettings;
+	[50] SetDataDeletionSettings(nn::settings::system::DataDeletionSettings);
+	[51] GetInitialSystemAppletProgramId() -> nn::ncm::ProgramId;
+	[52] GetOverlayDispProgramId() -> nn::ncm::ProgramId;
+	[53] GetDeviceTimeZoneLocationName() -> nn::time::LocationName;
+	[54] SetDeviceTimeZoneLocationName(nn::time::LocationName);
+	[55] GetWirelessCertificationFileSize() -> u64;
+	[56] GetWirelessCertificationFile() -> (u64, buffer<unknown, 6, 0>);
+	[57] SetRegionCode(i32);
+	[58] GetNetworkSystemClockContext() -> nn::time::SystemClockContext;
+	[59] SetNetworkSystemClockContext(nn::time::SystemClockContext);
+	[60] IsUserSystemClockAutomaticCorrectionEnabled() -> bool;
+	[61] SetUserSystemClockAutomaticCorrectionEnabled(bool);
+	[62] GetDebugModeFlag() -> bool;
+	[63] GetPrimaryAlbumStorage() -> i32;
+	[64] SetPrimaryAlbumStorage(i32);
+	[65] GetUsb30EnableFlag() -> bool;
+	[66] SetUsb30EnableFlag(bool);
+	[67] GetBatteryLot() -> nn::settings::system::BatteryLot;
+	[68] GetSerialNumber() -> nn::settings::system::SerialNumber;
+	[69] GetNfcEnableFlag() -> bool;
+	[70] SetNfcEnableFlag(bool);
+	[71] GetSleepSettings() -> nn::settings::system::SleepSettings;
+	[72] SetSleepSettings(nn::settings::system::SleepSettings);
+	[73] GetWirelessLanEnableFlag() -> bool;
+	[74] SetWirelessLanEnableFlag(bool);
+	[75] GetInitialLaunchSettings() -> nn::settings::system::InitialLaunchSettings;
+	[76] SetInitialLaunchSettings(nn::settings::system::InitialLaunchSettings);
+	[77] GetDeviceNickName() -> buffer<nn::settings::system::DeviceNickName, 0x16, 0x80>;
+	[78] SetDeviceNickName(buffer<nn::settings::system::DeviceNickName, 0x15, 0x80>);
+	[79] GetProductModel() -> i32;
+	[80] GetLdnChannel() -> i32;
+	[81] SetLdnChannel(i32);
+	[82] AcquireTelemetryDirtyFlagEventHandle() -> KObject;
+	[83] GetTelemetryDirtyFlags() -> nn::settings::system::TelemetryDirtyFlag;
+	[84] GetPtmBatteryLot() -> nn::settings::factory::BatteryLot;
+	[85] SetPtmBatteryLot(nn::settings::factory::BatteryLot);
+	[86] GetPtmFuelGaugeParameter() -> nn::settings::system::PtmFuelGaugeParameter;
+	[87] SetPtmFuelGaugeParameter(nn::settings::system::PtmFuelGaugeParameter);
+	[88] GetBluetoothEnableFlag() -> bool;
+	[89] SetBluetoothEnableFlag(bool);
+	[90] GetMiiAuthorId() -> nn::util::Uuid;
+	[91] SetShutdownRtcValue(i64);
+	[92] GetShutdownRtcValue() -> i64;
+	[93] AcquireFatalDirtyFlagEventHandle() -> KObject;
+	[94] GetFatalDirtyFlags() -> nn::settings::system::FatalDirtyFlag;
+	[95] GetAutoUpdateEnableFlag() -> bool;
+	[96] SetAutoUpdateEnableFlag(bool);
+	[97] GetNxControllerSettings() -> (i32, array<nn::settings::system::NxControllerSettings, 6>);
+	[98] SetNxControllerSettings(array<nn::settings::system::NxControllerSettings, 5>);
+	[99] GetBatteryPercentageFlag() -> bool;
+	[100] SetBatteryPercentageFlag(bool);
+	[101] GetExternalRtcResetFlag() -> bool;
+	[102] SetExternalRtcResetFlag(bool);
+	[103] GetUsbFullKeyEnableFlag() -> bool;
+	[104] SetUsbFullKeyEnableFlag(bool);
+	[105] SetExternalSteadyClockInternalOffset(i64);
+	[106] GetExternalSteadyClockInternalOffset() -> i64;
+	[107] GetBacklightSettingsEx() -> nn::settings::system::BacklightSettingsEx;
+	[108] SetBacklightSettingsEx(nn::settings::system::BacklightSettingsEx);
+	[109] GetHeadphoneVolumeWarningCount() -> i32;
+	[110] SetHeadphoneVolumeWarningCount(i32);
+	[111] GetBluetoothAfhEnableFlag() -> bool;
+	[112] SetBluetoothAfhEnableFlag(bool);
+	[113] GetBluetoothBoostEnableFlag() -> bool;
+	[114] SetBluetoothBoostEnableFlag(bool);
+	[115] GetInRepairProcessEnableFlag() -> bool;
+	[116] SetInRepairProcessEnableFlag(bool);
+	[117] GetHeadphoneVolumeUpdateFlag() -> bool;
+	[118] SetHeadphoneVolumeUpdateFlag(bool);
+	[119] NeedsToUpdateHeadphoneVolume(bool) -> (bool, bool, i8);
+	[120] GetPushNotificationActivityModeOnSleep() -> i32;
+	[121] SetPushNotificationActivityModeOnSleep(i32);
+}
+
+interface nn::sm::detail::IManagerInterface is sm:m {
+	[0] Unknown0(u64, buffer<unknown, 5, 0>, buffer<unknown, 5, 0>);
+	[1] Unknown1(u64);
+}
+
+interface nn::sm::detail::IUserInterface is sm: {
+	[0] Unknown0(u64, pid);
+	[1] Unknown1(u64) -> KObject;
+	[2] Unknown2(u64, u8, u32) -> KObject;
+	[3] Unknown3(u64);
+}
+
+interface nn::socket::resolver::IResolver is sfdnsres {
+	[0] Unknown0(u32, buffer<unknown, 5, 0>);
+	[1] Unknown1(u32) -> buffer<unknown, 6, 0>;
+	[2] Unknown2(u8, u32, u64, pid, buffer<unknown, 5, 0>) -> (u32, u32, u32, buffer<unknown, 6, 0>);
+	[3] Unknown3(u32, u32, u32, u64, pid, buffer<unknown, 5, 0>) -> (u32, u32, u32, buffer<unknown, 6, 0>);
+	[4] Unknown4(u32) -> buffer<unknown, 6, 0>;
+	[5] Unknown5(u32) -> buffer<unknown, 6, 0>;
+	[6] Unknown6(u8, u32, u64, pid, buffer<unknown, 5, 0>, buffer<unknown, 5, 0>, buffer<unknown, 5, 0>) -> (u32, u32, u32, buffer<unknown, 6, 0>);
+	[7] Unknown7(u32, u32, u64, pid, buffer<unknown, 5, 0>) -> (u32, u32, buffer<unknown, 6, 0>, buffer<unknown, 6, 0>);
+	[8] Unknown8(u64, pid) -> u32;
+	[9] Unknown9(u32, u64, pid);
+}
+
+interface nn::socket::sf::IClient is bsd:u, bsd:s {
+	[0] Unknown0(bytes<0x20>, u64, u64, pid, KObject) -> u32;
+	[1] Unknown1(u64, pid);
+	[2] Unknown2(u32, u32, u32) -> (u32, u32);
+	[3] Unknown3(u32, u32, u32) -> (u32, u32);
+	[4] Unknown4(u32, buffer<unknown, 0x21, 0>) -> (u32, u32);
+	[5] Unknown5(u32, bytes<0x18>, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, u32, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>);
+	[6] Unknown6(u32, u32, buffer<unknown, 0x21, 0>) -> (u32, u32, buffer<unknown, 0x22, 0>);
+	[7] Unknown7(buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, u32, u32, buffer<unknown, 0x22, 0>);
+	[8] Unknown8(u32, u32) -> (u32, u32, buffer<unknown, 0x22, 0>);
+	[9] Unknown9(u32, u32) -> (u32, u32, u32, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>);
+	[10] Unknown10(u32, u32, buffer<unknown, 0x21, 0>) -> (u32, u32);
+	[11] Unknown11(u32, u32, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, u32);
+	[12] Unknown12(u32) -> (u32, u32, u32, buffer<unknown, 0x22, 0>);
+	[13] Unknown13(u32, buffer<unknown, 0x21, 0>) -> (u32, u32);
+	[14] Unknown14(u32, buffer<unknown, 0x21, 0>) -> (u32, u32);
+	[15] Unknown15(u32) -> (u32, u32, u32, buffer<unknown, 0x22, 0>);
+	[16] Unknown16(u32) -> (u32, u32, u32, buffer<unknown, 0x22, 0>);
+	[17] Unknown17(u32, u32, u32) -> (u32, u32, u32, buffer<unknown, 0x22, 0>);
+	[18] Unknown18(u32, u32) -> (u32, u32);
+	[19] Unknown19(u32, u32, u32, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, u32, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>);
+	[20] Unknown20(u32, u32, u32) -> (u32, u32);
+	[21] Unknown21(u32, u32, u32, buffer<unknown, 0x21, 0>) -> (u32, u32);
+	[22] Unknown22(u32, u32) -> (u32, u32);
+	[23] Unknown23(u32) -> (u32, u32);
+	[24] Unknown24(u32, buffer<unknown, 0x21, 0>) -> (u32, u32);
+	[25] Unknown25(u32) -> (u32, u32, buffer<unknown, 0x22, 0>);
+	[26] Unknown26(u32) -> (u32, u32);
+	[27] Unknown27(u32, u64) -> (u32, u32);
+	[28] Unknown28(u64, pid) -> (u32, u32, buffer<unknown, 0x22, 0>);
+	[29] Unknown29(u32, u32, u32, u128) -> (u32, u32, buffer<unknown, 0x22, 0>);
+	[30] Unknown30(u32, u32, u32, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, u32);
+}
+
+interface nn::spl::detail::IGeneralInterface is spl: {
+	[0] Unknown0(u32) -> u64;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[7] Unknown7();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11() -> u8;
+	[12] Unknown12();
+	[13] Unknown13();
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16();
+	[17] Unknown17();
+	[18] Unknown18();
+	[19] Unknown19();
+	[20] Unknown20();
+	[21] Unknown21() -> u32;
+	[22] Unknown22(u32);
+	[23] Unknown23() -> KObject;
+	[24] Unknown24();
+	[25] Unknown25();
+}
+
+interface nn::spl::detail::IRandomInterface is csrng {
+	[0] Unknown0() -> buffer<unknown, 6, 0>;
+}
+
+interface nn::spsm::detail::IPowerStateInterface is spsm {
+	[0] Unknown0() -> u32;
+	[1] Unknown1() -> KObject;
+	[2] Unknown2() -> u32;
+	[3] Unknown3(u8);
+	[4] Unknown4() -> KObject;
+	[5] Unknown5() -> u32;
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8() -> buffer<unknown, 6, 0>;
+	[9] Unknown9(u64);
+	[10] Unknown10();
+	[11] Unknown11(u64);
+}
+
+interface nn::ssl::sf::ISslConnection {
+	[0] SetSocketDescriptor(i32) -> i32;
+	[1] SetHostName(buffer<unknown, 5, 0>);
+	[2] SetVerifyOption(nn::ssl::sf::VerifyOption);
+	[3] SetIoMode(nn::ssl::sf::IoMode);
+	[4] GetSocketDescriptor() -> i32;
+	[5] GetHostName() -> (u32, buffer<unknown, 6, 0>);
+	[6] GetVerifyOption() -> nn::ssl::sf::VerifyOption;
+	[7] GetIoMode() -> nn::ssl::sf::IoMode;
+	[8] DoHandshake();
+	[9] DoHandshakeGetServerCert() -> (u32, u32, buffer<unknown, 6, 0>);
+	[10] Read() -> (u32, buffer<unknown, 6, 0>);
+	[11] Write(buffer<unknown, 5, 0>) -> u32;
+	[12] Pending() -> i32;
+	[13] Peek() -> (u32, buffer<unknown, 6, 0>);
+	[14] Poll(nn::ssl::sf::PollEvent, u32) -> nn::ssl::sf::PollEvent;
+	[15] GetVerifyCertError();
+	[16] GetNeededServerCertBufferSize() -> u32;
+	[17] SetSessionCacheMode(nn::ssl::sf::SessionCacheMode);
+	[18] GetSessionCacheMode() -> nn::ssl::sf::SessionCacheMode;
+	[19] FlushSessionCache();
+	[20] SetRenegotiationMode(nn::ssl::sf::RenegotiationMode);
+	[21] GetRenegotiationMode() -> nn::ssl::sf::RenegotiationMode;
+	[22] SetOption(bool, nn::ssl::sf::OptionType);
+	[23] GetOption(nn::ssl::sf::OptionType) -> bool;
+	[24] GetVerifyCertErrors() -> (u32, u32, buffer<unknown, 6, 0>);
+}
+
+interface nn::ssl::sf::ISslContext {
+	[0] SetOption(nn::ssl::sf::ContextOption, i32);
+	[1] GetOption(nn::ssl::sf::ContextOption) -> i32;
+	[2] CreateConnection() -> object<nn::ssl::sf::ISslConnection>;
+	[3] GetConnectionCount() -> u32;
+	[4] ImportServerPki(nn::ssl::sf::CertificateFormat, buffer<unknown, 5, 0>) -> u64;
+	[5] ImportClientPki(buffer<unknown, 5, 0>, buffer<unknown, 5, 0>) -> u64;
+	[6] RemoveServerPki(u64);
+	[7] RemoveClientPki(u64);
+	[8] RegisterInternalPki(nn::ssl::sf::InternalPki) -> u64;
+	[9] AddPolicyOid(buffer<unknown, 5, 0>);
+	[10] ImportCrl(buffer<unknown, 5, 0>) -> u64;
+	[11] RemoveCrl(u64);
+}
+
+interface nn::ssl::sf::ISslService is ssl {
+	[0] CreateContext(nn::ssl::sf::SslVersion, u64, pid) -> object<nn::ssl::sf::ISslContext>;
+	[1] GetContextCount() -> u32;
+	[2] GetCertificates(buffer<unknown, 5, 0>) -> (u32, buffer<unknown, 6, 0>);
+	[3] GetCertificateBufSize(buffer<unknown, 5, 0>) -> u32;
+	[4] DebugIoctl(u64, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
+	[5] SetInterfaceVersion(u32);
+}
+
+interface nn::tc::IManager is tc {
+	[0] Unknown0(u32);
+	[1] Unknown1(u32) -> KObject;
+	[2] Unknown2(u32) -> u8;
+	[3] Unknown3(u32);
+	[4] Unknown4(u32);
+	[5] Unknown5(u32, u32);
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8() -> u8;
+}
+
+interface nn::timesrv::detail::service::IStaticService is time:s, time:u, time:r, time:a {
+	[0] GetStandardUserSystemClock() -> object<nn::timesrv::detail::service::ISystemClock>;
+	[1] GetStandardNetworkSystemClock() -> object<nn::timesrv::detail::service::ISystemClock>;
+	[2] GetStandardSteadyClock() -> object<nn::timesrv::detail::service::ISteadyClock>;
+	[3] GetTimeZoneService() -> object<nn::timesrv::detail::service::ITimeZoneService>;
+	[4] GetStandardLocalSystemClock() -> object<nn::timesrv::detail::service::ISystemClock>;
+	[100] IsStandardUserSystemClockAutomaticCorrectionEnabled() -> bool;
+	[101] SetStandardUserSystemClockAutomaticCorrectionEnabled(bool);
+	[200] IsStandardNetworkSystemClockAccuracySufficient() -> bool;
+}
+
+interface nn::timesrv::detail::service::ISteadyClock {
+	[0] GetCurrentTimePoint() -> nn::time::SteadyClockTimePoint;
+	[2] GetTestOffset() -> nn::TimeSpanType;
+	[3] SetTestOffset(nn::TimeSpanType);
+	[100] GetRtcValue() -> i64;
+	[101] IsRtcResetDetected() -> bool;
+	[102] GetSetupResutltValue() -> u32;
+	[200] GetInternalOffset() -> nn::TimeSpanType;
+	[201] SetInternalOffset(nn::TimeSpanType);
+}
+
+interface nn::timesrv::detail::service::ISystemClock {
+	[0] GetCurrentTime() -> nn::time::PosixTime;
+	[1] SetCurrentTime(nn::time::PosixTime);
+	[2] GetSystemClockContext() -> nn::time::SystemClockContext;
+	[3] SetSystemClockContext(nn::time::SystemClockContext);
+}
+
+interface nn::timesrv::detail::service::ITimeZoneService {
+	[0] GetDeviceLocationName() -> nn::time::LocationName;
+	[1] SetDeviceLocationName(nn::time::LocationName);
+	[2] GetTotalLocationNameCount() -> i32;
+	[3] LoadLocationNameList(i32) -> (i32, array<nn::time::LocationName, 6>);
+	[4] LoadTimeZoneRule(nn::time::LocationName) -> buffer<nn::time::TimeZoneRule, 0x16, 0x4000>;
+	[5] GetTimeZoneRuleVersion() -> nn::time::TimeZoneRuleVersion;
+	[100] ToCalendarTime(nn::time::PosixTime, buffer<nn::time::TimeZoneRule, 0x15, 0x4000>) -> (nn::time::CalendarTime, nn::time::sf::CalendarAdditionalInfo);
+	[101] ToCalendarTimeWithMyRule(nn::time::PosixTime) -> (nn::time::CalendarTime, nn::time::sf::CalendarAdditionalInfo);
+	[201] ToPosixTime(nn::time::CalendarTime, buffer<nn::time::TimeZoneRule, 0x15, 0x4000>) -> (i32, array<nn::time::PosixTime, 0xa>);
+	[202] ToPosixTimeWithMyRule(nn::time::CalendarTime) -> (i32, array<nn::time::PosixTime, 0xa>);
+}
+
+interface nn::tma::IHtcManager {
+	[0] Unknown0(buffer<unknown, 5, 0>) -> (u32, buffer<unknown, 6, 0>);
+	[1] Unknown1(buffer<unknown, 5, 0>) -> u32;
+	[2] Unknown2() -> KObject;
+	[3] Unknown3() -> KObject;
+	[4] Unknown4() -> KObject;
+	[5] Unknown5() -> KObject;
+	[6] Unknown6() -> buffer<unknown, 6, 0>;
+	[7] Unknown7() -> buffer<unknown, 6, 0>;
+	[8] Unknown8(u8);
+}
+
+interface nn::tma::IHtcsManager {
+	[0] Unknown0() -> (u32, u32);
+	[1] Unknown1(u32) -> (u32, u32);
+	[2] Unknown2(bytes<0x42>, u32) -> (u32, u32);
+	[3] Unknown3(bytes<0x42>, u32) -> (u32, u32);
+	[4] Unknown4(u32, u32) -> (u32, u32);
+	[5] Unknown5(u32) -> (bytes<0x42>, u32, u32);
+	[6] Unknown6(u32, u32) -> (u32, u64, buffer<unknown, 6, 0>);
+	[7] Unknown7(u32, u32, buffer<unknown, 5, 0>) -> (u32, u64);
+	[8] Unknown8(u32, u32) -> (u32, u32);
+	[9] Unknown9(u32, u32, u32) -> (u32, u32);
+	[10] Unknown10() -> bytes<0x20>;
+	[11] Unknown11() -> bytes<0x20>;
+	[12] Unknown12() -> (u32, object<IUnknown>);
+	[13] Unknown13(u8) -> (u32, object<IUnknown>);
+	[100] Unknown100(u64, pid);
+	[101] Unknown101(u64, pid);
+}
+
+interface nn::tma::ISocket {
+	[0] Unknown0() -> (u32, u32);
+	[1] Unknown1(bytes<0x42>) -> (u32, u32);
+	[2] Unknown2(bytes<0x42>) -> (u32, u32);
+	[3] Unknown3(u32) -> (u32, u32);
+	[4] Unknown4() -> (bytes<0x42>, u32, object<IUnknown>);
+	[5] Unknown5(u32) -> (u32, u64, buffer<unknown, 0x22, 0>);
+	[6] Unknown6(u32, buffer<unknown, 0x21, 0>) -> (u32, u64);
+	[7] Unknown7(u32) -> (u32, u32);
+	[8] Unknown8(u32, u32) -> (u32, u32);
+	[9] Unknown9() -> (u32, KObject);
+	[10] Unknown10(u32) -> (bytes<0x42>, u32, object<IUnknown>);
+	[11] Unknown11(u32, u32) -> (u32, KObject);
+	[12] Unknown12(u32) -> (u32, u64, buffer<unknown, 0x22, 0>);
+	[13] Unknown13(u32, u32, u32, u64, KObject) -> (u32, KObject);
+	[14] Unknown14(u32, buffer<unknown, 0x21, 0>) -> (u32, KObject);
+	[15] Unknown15(u32, u64, KObject, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, KObject);
+	[16] Unknown16(u32) -> (u32, u64);
+}
+
+interface nn::ts::server::IMeasurementServer is ts {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+}
+
+interface nn::uart::IManager is uart {
+	[0] Unknown0(u32) -> u8;
+	[1] Unknown1(u32) -> u8;
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6() -> object<IUnknown>;
+	[7] Unknown7();
+	[8] Unknown8();
+}
+
+interface nn::uart::IPortSession {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2() -> u64;
+	[3] Unknown3();
+	[4] Unknown4() -> u64;
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7(u32) -> u8;
+}
+
+interface nn::usb::ds::IDsEndpoint {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+}
+
+interface nn::usb::ds::IDsInterface {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+}
+
+interface nn::usb::ds::IDsService is usb:ds {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+}
+
+interface nn::usb::hs::IClientEpSession {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2() -> KObject;
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+}
+
+interface nn::usb::hs::IClientIfSession {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4() -> u32;
+	[5] Unknown5();
+	[6] Unknown6() -> KObject;
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+}
+
+interface nn::usb::hs::IClientRootSession is usb:hs {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5(u8);
+	[6] Unknown6() -> KObject;
+	[7] Unknown7();
+}
+
+interface nn::usb::pd::detail::IPdCradleManager is usb:pd:c {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::usb::pd::detail::IPdCradleSession {
+	[0] Unknown0(u32, u32);
+	[1] Unknown1(u32) -> u32;
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7() -> u8;
+	[8] Unknown8() -> u8;
+}
+
+interface nn::usb::pd::detail::IPdManager is usb:pd {
+	[0] Unknown0() -> object<IUnknown>;
+}
+
+interface nn::usb::pd::detail::IPdSession {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3() -> u32;
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6(u8);
+}
+
+interface nn::usb::pm::IPmService is usb:pm {
+	[0] Unknown0() -> KObject;
+	[1] Unknown1();
+	[2] Unknown2() -> KObject;
+	[3] Unknown3() -> u32;
+	[4] Unknown4(u32, u32);
+	[5] Unknown5();
+}
+
+interface nn::visrv::sf::IApplicationDisplayService {
+	[100] GetRelayService() -> object<nns::hosbinder::IHOSBinderDriver>;
+	[101] GetSystemDisplayService() -> object<nn::visrv::sf::ISystemDisplayService>;
+	[102] GetManagerDisplayService() -> object<nn::visrv::sf::IManagerDisplayService>;
+	[103] GetIndirectDisplayTransactionService() -> object<nns::hosbinder::IHOSBinderDriver>;
+	[1000] ListDisplays() -> (i64, array<nn::vi::DisplayInfo, 6>);
+	[1010] OpenDisplay(nn::vi::DisplayName) -> u64;
+	[1011] OpenDefaultDisplay() -> u64;
+	[1020] CloseDisplay(u64);
+	[1101] SetDisplayEnabled(bool, u64);
+	[1102] GetDisplayResolution(u64) -> (i64, i64);
+	[2020] OpenLayer(nn::vi::DisplayName, u64, nn::applet::AppletResourceUserId, pid) -> (i64, buffer<unknown, 6, 0>);
+	[2021] CloseLayer(u64);
+	[2030] CreateStrayLayer(u32, u64) -> (u64, i64, buffer<unknown, 6, 0>);
+	[2031] DestroyStrayLayer(u64);
+	[2101] SetLayerScalingMode(u32, u64);
+	[2450] GetIndirectLayerImageMap(i64, i64, u64, nn::applet::AppletResourceUserId, pid) -> (i64, i64, buffer<unknown, 0x46, 0>);
+	[2451] GetIndirectLayerImageCropMap(f32, f32, f32, f32, i64, i64, u64, nn::applet::AppletResourceUserId, pid) -> (i64, i64, buffer<unknown, 0x46, 0>);
+	[2460] GetIndirectLayerImageRequiredMemoryInfo(i64, i64) -> (i64, i64);
+	[5202] GetDisplayVsyncEvent(u64) -> KObject;
+	[5203] GetDisplayVsyncEventForDebug(u64) -> KObject;
+}
+
+interface nn::visrv::sf::IApplicationRootService is vi:u {
+	[0] GetDisplayService(u32) -> object<nn::visrv::sf::IApplicationDisplayService>;
+}
+
+interface nn::visrv::sf::IManagerDisplayService {
+	[1102] GetDisplayResolution(u64) -> (i64, i64);
+	[2010] CreateManagedLayer(u32, u64, nn::applet::AppletResourceUserId) -> u64;
+	[2011] DestroyManagedLayer(u64);
+	[2050] CreateIndirectLayer() -> u64;
+	[2051] DestroyIndirectLayer(u64);
+	[2052] CreateIndirectProducerEndPoint(u64, nn::applet::AppletResourceUserId) -> u64;
+	[2053] DestroyIndirectProducerEndPoint(u64);
+	[2054] CreateIndirectConsumerEndPoint(u64, nn::applet::AppletResourceUserId) -> u64;
+	[2055] DestroyIndirectConsumerEndPoint(u64);
+	[2300] AcquireLayerTexturePresentingEvent(u64) -> KObject;
+	[2301] ReleaseLayerTexturePresentingEvent(u64);
+	[2302] GetDisplayHotplugEvent(u64) -> KObject;
+	[2402] GetDisplayHotplugState(u64) -> u32;
+	[4201] SetDisplayAlpha(f32, u64);
+	[4203] SetDisplayLayerStack(u32, u64);
+	[4205] SetDisplayPowerState(u32, u64);
+	[6000] AddToLayerStack(u32, u64);
+	[6001] RemoveFromLayerStack(u32, u64);
+	[6002] SetLayerVisibility(bool, u64);
+	[7000] SetContentVisibility(bool);
+	[8000] SetConductorLayer(bool, u64);
+	[8100] SetIndirectProducerFlipOffset(u64, u64, nn::TimeSpan);
+}
+
+interface nn::visrv::sf::IManagerRootService is vi:m {
+	[2] GetDisplayService(u32) -> object<nn::visrv::sf::IApplicationDisplayService>;
+	[3] GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName, u32) -> object<nn::visrv::sf::IApplicationDisplayService>;
+}
+
+interface nn::visrv::sf::ISystemDisplayService {
+	[1200] GetZOrderCountMin(u64) -> i64;
+	[1202] GetZOrderCountMax(u64) -> i64;
+	[1203] GetDisplayLogicalResolution(u64) -> (i32, i32);
+	[1204] SetDisplayMagnification(i32, i32, i32, i32, u64);
+	[2201] SetLayerPosition(f32, f32, u64);
+	[2203] SetLayerSize(u64, i64, i64);
+	[2204] GetLayerZ(u64) -> i64;
+	[2205] SetLayerZ(u64, i64);
+	[2207] SetLayerVisibility(bool, u64);
+	[2209] SetLayerAlpha(f32, u64);
+	[2312] CreateStrayLayer(u32, u64) -> (u64, i64, buffer<unknown, 6, 0>);
+	[2400] OpenIndirectLayer(u64, nn::applet::AppletResourceUserId, pid) -> (i64, buffer<unknown, 6, 0>);
+	[2401] CloseIndirectLayer(u64);
+	[2402] FlipIndirectLayer(u64);
+	[3000] ListDisplayModes(u64) -> (i64, array<nn::vi::DisplayModeInfo, 6>);
+	[3001] ListDisplayRgbRanges(u64) -> (i64, array<u32, 6>);
+	[3002] ListDisplayContentTypes(u64) -> (i64, array<u32, 6>);
+	[3200] GetDisplayMode(u64) -> nn::vi::DisplayModeInfo;
+	[3201] SetDisplayMode(u64, nn::vi::DisplayModeInfo);
+	[3202] GetDisplayUnderscan(u64) -> i64;
+	[3203] SetDisplayUnderscan(u64, i64);
+	[3204] GetDisplayContentType(u64) -> u32;
+	[3205] SetDisplayContentType(u32, u64);
+	[3206] GetDisplayRgbRange(u64) -> u32;
+	[3207] SetDisplayRgbRange(u32, u64);
+	[3208] GetDisplayCmuMode(u64) -> u32;
+	[3209] SetDisplayCmuMode(u32, u64);
+	[3210] GetDisplayContrastRatio(u64) -> f32;
+	[3211] SetDisplayContrastRatio(f32, u64);
+	[3214] GetDisplayGamma(u64) -> f32;
+	[3215] SetDisplayGamma(f32, u64);
+	[3216] GetDisplayCmuLuma(u64) -> f32;
+	[3217] SetDisplayCmuLuma(f32, u64);
+}
+
+interface nn::visrv::sf::ISystemRootService is vi:s {
+	[1] GetDisplayService(u32) -> object<nn::visrv::sf::IApplicationDisplayService>;
+	[3] GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName, u32) -> object<nn::visrv::sf::IApplicationDisplayService>;
+}
+
+interface nn::wlan::detail::IInfraManager is wlan:inf {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10() -> u32;
+	[11] Unknown11();
+	[12] Unknown12() -> u32;
+	[13] Unknown13(u32);
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16();
+	[17] Unknown17();
+	[18] Unknown18() -> u32;
+	[19] Unknown19();
+	[20] Unknown20();
+	[21] Unknown21() -> u32;
+	[22] Unknown22(u32);
+	[23] Unknown23(u32);
+	[24] Unknown24();
+	[25] Unknown25();
+}
+
+interface nn::wlan::detail::ILocalGetActionFrame is wlan:lga {
+	[0] Unknown0();
+}
+
+interface nn::wlan::detail::ILocalGetFrame is wlan:lg {
+	[0] Unknown0();
+}
+
+interface nn::wlan::detail::ILocalManager is wlan:lcl {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13();
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16(u32);
+	[17] Unknown17();
+	[18] Unknown18();
+	[19] Unknown19();
+	[20] Unknown20() -> KObject;
+	[21] Unknown21();
+	[22] Unknown22() -> u32;
+	[23] Unknown23();
+	[24] Unknown24();
+	[25] Unknown25(u32);
+	[26] Unknown26();
+	[27] Unknown27(u32);
+	[28] Unknown28();
+	[29] Unknown29(u32);
+	[30] Unknown30();
+	[31] Unknown31();
+	[32] Unknown32();
+	[33] Unknown33();
+	[34] Unknown34();
+	[35] Unknown35();
+	[36] Unknown36();
+	[37] Unknown37();
+	[38] Unknown38();
+	[39] Unknown39(u32);
+	[40] Unknown40();
+	[41] Unknown41();
+	[42] Unknown42(u32);
+	[43] Unknown43() -> u32;
+	[44] Unknown44(u32);
+}
+
+interface nn::wlan::detail::ISocketGetFrame is wlan:sg {
+	[0] Unknown0();
+}
+
+interface nn::wlan::detail::ISocketManager is wlan:soc {
+	[0] Unknown0(buffer<unknown, 5, 0>);
+	[1] Unknown1(u32);
+	[2] Unknown2();
+	[3] Unknown3(u32);
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7(u8);
+	[8] Unknown8() -> u64;
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+}
+
+interface nn::xcd::detail::ISystemServer is xcd:sys {
+	[0] Unknown0(u64) -> u8;
+	[1] Unknown1();
+	[2] Unknown2(u64) -> u8;
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5(u64);
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13(u64);
+	[14] Unknown14();
+	[15] Unknown15();
+	[16] Unknown16();
+	[17] Unknown17();
+	[18] Unknown18();
+	[19] Unknown19();
+	[20] Unknown20();
+	[101] Unknown101() -> u64;
+	[102] Unknown102() -> u64;
+}
+
+interface nns::hosbinder::IHOSBinderDriver is dispdrv {
+	[0] TransactParcel(i32, u32, u32, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
+	[1] AdjustRefcount(i32, i32, i32);
+	[2] GetNativeHandle(i32, u32) -> KObject;
+	[3] TransactParcelAuto(i32, u32, u32, buffer<unknown, 0x21, 0>) -> buffer<unknown, 0x22, 0>;
+}
+
+interface nns::nvdrv::INvDrvDebugFSServices is nvdrvdbg {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+}
+
+interface nns::nvdrv::INvDrvServices is nvdrv:s, nvdrv:t, nvdrv:a, nvdrv {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+	[8] Unknown8();
+	[9] Unknown9();
+	[10] Unknown10();
+	[11] Unknown11();
+	[12] Unknown12();
+	[13] Unknown13();
+}
+
+interface nv::gemcontrol::INvGemControl is nvgem:c {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+	[3] Unknown3();
+	[4] Unknown4();
+	[5] Unknown5();
+	[6] Unknown6();
+	[7] Unknown7();
+}
+
+interface nv::gemcoredump::INvGemCoreDump is nvgem:cd {
+	[0] Unknown0();
+	[1] Unknown1();
+	[2] Unknown2();
+}
+
