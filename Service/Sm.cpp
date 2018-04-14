@@ -46,15 +46,19 @@ uint32_t SmService::Initialize() {
 //         		ns_abort("Unknown message cmdId %u to interface SmService", req->cmd_id);
 //         }
 // }
-// uint32_t SmService::GetService(std::string name, IpcService *service) {
-//         if (IPC::services.find(name) == IPC::services.end()) {
-//                 ns_print("Unknown service name %s\n", name.c_str());
-//                 return 0xC15; //error code
-//         }
-//         service = &IPC::services[name];
-//         return 0;
-// }
-//
-// uint32_t SmService::RegisterService(std::string name, IpcService *service) {
-//         return 0;
-// }
+uint32_t SmService::GetService(ServiceName _name, IpcService *service) {
+        std::string name = (char *) _name;
+        if (IPC::services.find(name) == IPC::services.end()) {
+                ns_print("Unknown service name %s\n", name.c_str());
+                return 0xC15; //error code
+        }
+        service = &IPC::services[name];
+        return 0;
+}
+
+uint32_t SmService::RegisterService(ServiceName _name, IpcService *service) {
+        return 0;
+}
+uint32_t SmService::UnregisterService(ServiceName _name) {
+
+}

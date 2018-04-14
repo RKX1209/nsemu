@@ -84,7 +84,7 @@ static uint32_t handle_id;
 static SmService sm;
 std::unordered_map<std::string, IpcService> services;
 bool is_domainobj = false;
-static std::unordered_map<uint32_t, IpcService *> handles;
+std::unordered_map<uint32_t, IpcService *> handles;
 
 void Initialize() {
 }
@@ -92,14 +92,6 @@ void Initialize() {
 uint32_t NewHandle(IpcService *srv) {
         handles[handle_id] = srv;
         return handle_id++;
-}
-template<typename T>
-T GetHandle(uint32_t handle) {
-        if (handles.find(handle) == handles.end()) {
-                return nullptr;
-        }
-        IpcService *srv = handles[handle];
-        return static_cast<T>(srv);
 }
 
 uint32_t ConnectToPort(std::string name) {

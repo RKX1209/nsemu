@@ -118,14 +118,21 @@ class IUnknown : public IpcService {
 namespace IPC {
 
 extern std::unordered_map<std::string, IpcService> services;
-
+extern std::unordered_map<uint32_t, IpcService *> handles;
 extern bool is_domainobj;
 
 void Initialize();
 
 uint32_t NewHandle(IpcService *srv);
 
-template<typename T> T GetHandle(uint32_t handle);
+template<typename T>
+T GetHandle(uint32_t handle) {
+        if (handles.find(handle) == handles.end()) {
+                return nullptr;
+        }
+        IpcService *srv = handles[handle];
+        return static_cast<T>(srv);
+}
 
 uint32_t ConnectToPort(std::string name);
 
