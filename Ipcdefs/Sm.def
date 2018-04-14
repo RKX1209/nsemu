@@ -2,7 +2,7 @@ type ServiceName = bytes<8>;
 
 interface SmService {
 	[0] Initialize();
-	[1] GetService(ServiceName name) -> object<IPipe>;
-	[2] RegisterService(ServiceName name) -> object<NPort>;
+	[1] GetService(ServiceName name) -> object<IpcService>;
+	[2] RegisterService(ServiceName name) -> object<IpcService>;
 	[3] UnregisterService(ServiceName name);
 }

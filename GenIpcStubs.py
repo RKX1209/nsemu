@@ -17,7 +17,7 @@ typemap = dict(
 	u32='uint32_t',
 	u64='uint64_t',
 	u128='uint128_t',
-	f32='float32_t',
+	f32='float',
 	pid='uint64_t',
 	bool='bool',
 )
@@ -90,9 +90,9 @@ def formatParam(param, input, i):
 		type = retype(spec[1]) + ' *'
 		hasSize = True
 	elif spec[0] == 'object':
-		type = 'shared_ptr<%s>' % spec[1][0]
-	elif spec[0] == 'KObject':
-		type = 'shared_ptr<KObject>'
+		type = '%s*' % spec[1][0]
+	elif spec[0] == 'IpcService':
+		type = 'IpcService*'
 	else:
 		type = typemap[spec[0]] if spec[0] in typemap else spec[0]
 
@@ -102,7 +102,7 @@ def formatParam(param, input, i):
 	else:
 		arrspec = ''
 
-	return '%s %s%s %s%s%s' % ('IN' if input else 'OUT', type, '&' if not input and (not type.endswith('*') and not arrspec) else '', name, arrspec, ', guint %s_size' % name if hasSize else '')
+	return '%s%s %s%s%s' % (type, '&' if not input and (not type.endswith('*') and not arrspec) else '', name, arrspec, ', unsigned int %s_size' % name if hasSize else '')
 
 def generatePrototype(func):
 	return ', '.join([formatParam(x, True, i) for i, x in enumerate(func['inputs'])] + [formatParam(x, False, i + len(func['inputs'])) for i, x in enumerate(func['outputs'])])
@@ -139,28 +139,28 @@ def generateCaller(qname, fname, func):
 			cbo = bufOffs[rest[1]]
 			bufOffs[rest[1]] += 1
 			an, sn, bn = tempname(), tempname(), tempname()
-			yield 'guint %s;' % sn
-			yield 'auto %s = req.getBuffer(%s, %i, %s);' % (an, emitInt(rest[1]), cbo, sn)
+			yield 'unsigned int %s;' % sn
+			yield 'auto %s = req->GetBuffer(%s, %i, %s);' % (an, emitInt(rest[1]), cbo, sn)
 			yield 'auto %s = new uint8_t[%s];' % (bn, sn)
-			yield 'ctu->cpu.readmem(%s, %s, %s);' % (an, bn, sn)
+			yield 'ARMv8::ReadBytes(%s, %s, %s);' % (an, bn, sn)
 			params.append('(%s *) %s' % (retype(rest[0]), bn))
 			params.append(sn)
-			logFmt.append('%s *%s= buffer<0x" ADDRFMT ">' % (retype(rest[0]), '%s ' % name if name else ''))
+			logFmt.append('%s *%s= buffer<0x%%lx>' % (retype(rest[0]), '%s ' % name if name else ''))
 			logElems.append(sn)
 			bufSizes += 1
 			yield AFTER, 'delete[] %s;' % bn
 		elif type == 'object':
-			params.append('ctu->getHandle<%s>(req.getMoved(%i))' % (rest[0][0], objOff))
+			params.append('IPC::GetHandle<%s*>(req->GetMoved(%i))' % (rest[0][0], objOff))
 			logFmt.append('%s %s= 0x%%x' % (rest[0][0], '%s ' % name if name else ''))
-			logElems.append('req.getMoved(%i)' % objOff)
+			logElems.append('req->GetMoved(%i)' % objOff)
 			objOff += 1
-		elif type == 'KObject':
-			params.append('ctu->getHandle<KObject>(req.getCopied(%i))' % hndOff)
+		elif type == 'IpcService':
+			params.append('IPC::GetHandle<IpcService*>(req->GetCopied(%i))' % (objOff))
 			logFmt.append('KObject %s= 0x%%x' % ('%s ' % name if name else ''))
-			logElems.append('req.getCopied(%i)' % hndOff)
+			logElems.append('req->GetCopied(%i)' % hndOff)
 			hndOff += 1
 		elif type == 'pid':
-			params.append('req.pid')
+			params.append('req->pid')
 		else:
 			if elem[0] == 'align':
 				alignment = elem[1]
@@ -170,23 +170,23 @@ def generateCaller(qname, fname, func):
 			while inpOffset % alignment:
 				inpOffset += 1
 			if isPointerType(elem):
-				params.append('req.getDataPointer<%s>(%s)' % (retype(elem, noIndex=True), emitInt(inpOffset)))
+				params.append('req->GetDataPointer<%s>(%s)' % (retype(elem, noIndex=True), emitInt(inpOffset)))
 				logFmt.append('%s %s= %%s' % (retype(elem), '%s ' % name if name else ''))
-				logElems.append('bufferToString(req.getDataPointer<uint8_t *>(%s), %s).c_str()' % (emitInt(inpOffset), emitInt(typeSize(elem))))
+				logElems.append('ARMv8::ReadString(req->GetDataPointer<uint64_t>(%s)).c_str()' % (emitInt(inpOffset)))
 			else:
-				params.append('req.getData<%s>(%s)' % (retype(elem), emitInt(inpOffset)))
+				params.append('req->GetData<%s>(%s)' % (retype(elem), emitInt(inpOffset)))
 				if typeSize(elem) == 16:
 					logFmt.append('%s %s= %%s' % (retype(elem), '%s ' % name if name else ''))
-					logElems.append('bufferToString(req.getDataPointer<uint8_t *>(%s), %s).c_str()' % (emitInt(inpOffset), emitInt(typeSize(elem))))
+					logElems.append('ARMv8::ReadString(req->GetDataPointer<uint64_t>(%s)).c_str()' % (emitInt(inpOffset)))
 				else:
 					type = retype(elem)
 					ct = '0x%x'
-					if type == 'float32_t':
+					if type == 'float':
 						ct = '%f'
 					elif typeSize(elem) == 8:
-						ct = '0x" ADDRFMT "'
+						ct = '0x%%lx'
 					logFmt.append('%s %s= %s' % (type, '%s ' % name if name else '', ct))
-					logElems.append('%sreq.getData<%s>(%s)' % ('(double) ' if type == 'float32_t' else '', type, emitInt(inpOffset)))
+					logElems.append('%sreq->GetData<%s>(%s)' % ('(double) ' if type == 'float' else '', type, emitInt(inpOffset)))
 			inpOffset += typeSize(elem)
 
 	outOffset = 8
@@ -200,27 +200,27 @@ def generateCaller(qname, fname, func):
 			cbo = bufOffs[rest[1]]
 			bufOffs[rest[1]] += 1
 			an, sn, bn = tempname(), tempname(), tempname()
-			yield 'guint %s;' % sn
-			yield 'auto %s = req.getBuffer(%s, %i, %s);' % (an, emitInt(rest[1]), cbo, sn)
+			yield 'unsigned int %s;' % sn
+			yield 'auto %s = req->GetBuffer(%s, %i, %s);' % (an, emitInt(rest[1]), cbo, sn)
 			yield 'auto %s = new uint8_t[%s];' % (bn, sn)
 			params.append('(%s *) %s' % (retype(rest[0]), bn))
 			params.append(sn)
 			bufSizes += 1
-			yield AFTER, 'ctu->cpu.writemem(%s, %s, %s);' % (an, bn, sn)
+			yield AFTER, 'ARMv8::WriteBytes(%s, %s, %s);' % (an, bn, sn)
 			yield AFTER, 'delete[] %s;' % bn
 		elif type == 'object':
 			tn = tempname()
-			yield 'shared_ptr<%s> %s;' % (rest[0][0], tn)
+			yield '%s* %s;' % (rest[0][0], tn)
 			params.append(tn)
 			yield AFTER, 'if(%s != nullptr)' % tn
-			yield AFTER, '\tresp.move(%i, createHandle(%s));' % (objOff, tn)
+			yield AFTER, '\tresp->SetMove(%i, IPC::NewHandle((IpcService *)%s));' % (objOff, tn)
 			objOff += 1
-		elif type == 'KObject':
+		elif type == 'IpcService':
 			tn = tempname()
-			yield 'shared_ptr<KObject> %s;' % tn
+			yield 'IpcService *%s;' % tn
 			params.append(tn)
 			yield AFTER, 'if(%s != nullptr)' % tn
-			yield AFTER, '\tresp.copy(%i, ctu->newHandle(%s));' % (hndOff, tn)
+			yield AFTER, '\tresp->SetCopy(%i, IPC::NewHandle(%s));' % (hndOff, tn)
 			hndOff += 1
 		elif type == 'pid':
 			assert False
@@ -234,22 +234,22 @@ def generateCaller(qname, fname, func):
 				outOffset += 1
 			if isPointerType(elem):
 				tn = tempname()
-				yield 'auto %s = resp.getDataPointer<%s>(%s);' % (tn, retype(elem, noIndex=True), emitInt(outOffset))
+				yield 'auto %s = resp->GetDataPointer<%s>(%s);' % (tn, retype(elem, noIndex=True), emitInt(outOffset))
 				params.append(tn)
 			else:
-				params.append('*resp.getDataPointer<%s *>(%s)' % (retype(elem), emitInt(outOffset)))
+				params.append('*resp->GetDataPointer<%s *>(%s)' % (retype(elem), emitInt(outOffset)))
 			outOffset += typeSize(elem)
 
 	if len(func['outputs']) + len(func['inputs']) + bufSizes != len(params):
 		yield 'return 0xf601;'
 		return
 
-	yield INIT, 'resp.initialize(%i, %i, %i);' % (objOff, hndOff, outOffset - 8)
+	yield INIT, 'resp->GenBuf(%i, %i, %i);' % (objOff, hndOff, outOffset - 8)
 	if len(logFmt):
-		yield 'LOG_DEBUG(IpcStubs, "IPC message to %s: %s"%s);' % (qname + '::' + fname, ', '.join(logFmt), (', ' + ', '.join(logElems)) if logElems else '')
+		yield 'ns_print("IPC message to %s: %s\\n"%s);' % (qname + '::' + fname, ', '.join(logFmt), (', ' + ', '.join(logElems)) if logElems else '')
 	else:
-		yield 'LOG_DEBUG(IpcStubs, "IPC message to %s");' % (qname + '::' + fname)
-	yield 'resp.errCode = %s(%s);' % (fname, ', '.join(params))
+		yield 'ns_print("IPC message to %s\\n");' % (qname + '::' + fname)
+	yield 'resp->error_code = %s(%s);' % (fname, ', '.join(params))
 	yield AFTER
 	yield 'return 0;'
 
@@ -289,13 +289,13 @@ def uniqInt(*args):
 def main():
 	global allTypes
 
-	fns = ['ipcdefs/Auto.def'] + [x for x in glob.glob('ipcdefs/*.def') if x != 'ipcdefs/Auto.def']
+	fns = ['Ipcdefs/Auto.def'] + [x for x in glob.glob('Ipcdefs/*.def') if x != 'Ipcdefs/Auto.def']
 
-	if os.path.exists('ipcdefs/cache') and all(os.path.getmtime('ipcdefs/cache') > os.path.getmtime(x) for x in fns):
-		res = json.load(file('ipcdefs/cache'))
+	if os.path.exists('Ipcdefs/cache') and all(os.path.getmtime('Ipcdefs/cache') > os.path.getmtime(x) for x in fns):
+		res = json.load(file('Ipcdefs/cache'))
 	else:
 		res = Idparser.parse('\n'.join(file(fn).read() for fn in fns))
-		with file('ipcdefs/cache', 'w') as fp:
+		with file('Ipcdefs/cache', 'w') as fp:
 			json.dump(res, fp)
 	types, ifaces, services = res
 
@@ -303,6 +303,8 @@ def main():
 
 	typesByNs = splitByNs(types)
 	ifacesByNs = splitByNs(ifaces)
+
+	#print typesByNs, ifacesByNs
 
 	namespaces = {x : [] for x in typesByNs.keys() + ifacesByNs.keys()}
 
@@ -320,12 +322,12 @@ def main():
 	print >>fp, '#define __IPCSTUBS_HPP__'
 	print >>fp
 
-	print >>fp, '#define SERVICE_MAPPING() do { \\'
-	for iname, snames in sorted(services.items(), key=lambda x: x[0]):
-		for sname in snames:
-			print >>fp, '\tSERVICE("%s", %s); \\' % (sname, iname)
-	print >>fp, '} while(0)'
-	print >>fp
+	# print >>fp, '#define SERVICE_MAPPING() do { \\'
+	# for iname, snames in sorted(services.items(), key=lambda x: x[0]):
+	# 	for sname in snames:
+	# 		print >>fp, '\tSERVICE("%s", %s); \\' % (sname, iname)
+	# print >>fp, '} while(0)'
+	# print >>fp
 
 	for ns, elems in sorted(namespaces.items(), key=lambda x: x[0]):
 		if ns is not None:
@@ -355,19 +357,19 @@ def main():
 			print >>fp, '\tclass %s : public IpcService {' % name
 			print >>fp, '\tpublic:'
 			if re.search('(^|[^a-zA-Z0-9:])%s::%s[^a-zA-Z0-9:]' % (qname, name), allcode):
-				print >>fp, '\t\t%s(Ctu *_ctu%s);' % (name, ', ' + ', '.join('%s _%s' % (k, v) for k, v in partial[1]) if partial and partial[1] else '')
+				print >>fp, '\t\t%s();' % name
 			else:
-				print >>fp, '\t\t%s(Ctu *_ctu%s) : IpcService(_ctu)%s {}' % (name, ', ' + ', '.join('%s _%s' % (k, v) for k, v in partial[1]) if partial and partial[1] else '', ', ' + ', '.join('%s(_%s)' % (v, v) for k, v in partial[1]) if partial and partial[1] else '')
+				print >>fp, '\t\t%s() {}' % name
 			if re.search('(^|[^a-zA-Z0-9:])%s::~%s[^a-zA-Z0-9:]' % (qname, name), allcode):
 				print >>fp, '\t\t~%s();' % name
-			print >>fp, '\t\tuint32_t dispatch(IncomingIpcMessage &req, OutgoingIpcMessage &resp) {'
-			print >>fp, '\t\t\tswitch(req.cmdId) {'
+			print >>fp, '\t\tuint32_t Dispatch(IpcMessage *req, IpcMessage *resp) {'
+			print >>fp, '\t\t\tswitch(req->cmd_id) {'
 			for fname, func in sorted(funcs.items(), key=lambda x: x[1]['cmdId']):
 				print >>fp, '\t\t\tcase %i: {' % func['cmdId'];
 				print >>fp, '\n'.join('\t\t\t\t' + x for x in reorder(generateCaller(qname, fname, func)))
 				print >>fp, '\t\t\t}'
 			print >>fp, '\t\t\tdefault:'
-			print >>fp, '\t\t\t\tLOG_ERROR(IpcStubs, "Unknown message cmdId %%u to interface %s", req.cmdId);' % ('%s::%s' % (ns, name) if ns else name)
+			print >>fp, '\t\t\t\tns_abort("Unknown message cmdId %%u to interface %s", req->cmd_id);' % ('%s::%s' % (ns, name) if ns else name)
 			print >>fp, '\t\t\t}'
 			print >>fp, '\t\t}'
 			for fname, func in sorted(funcs.items(), key=lambda x: x[0]):
@@ -387,30 +389,30 @@ def main():
 				implemented = re.search('[^a-zA-Z0-9:]%s::%s[^a-zA-Z0-9:]' % (qname, fname), allcode)
 				if not implemented:
 					print >>fp, 'uint32_t %s::%s(%s) {' % (qname, fname, generatePrototype(func))
-					print >>fp, '\tLOG_DEBUG(IpcStubs, "Stub implementation for %s::%s");' % (qname, fname)
+					print >>fp, '\tns_print("Stub implementation for %s::%s\\n");' % (qname, fname)
 					for i, (name, elem) in enumerate(func['outputs']):
 						if elem[0] == 'object' and elem[1][0] != 'IUnknown':
-							name = name if name else '_%i' % (len(func['inputs']) + i)
-							print >>fp, '\t%s = buildInterface(%s);' % (name, elem[1][0])
+							# name = name if name else '_%i' % (len(func['inputs']) + i)
+							# print >>fp, '\t%s = buildInterface(%s);' % (name, elem[1][0])
 							if elem[1][0] in partials and partials[elem[1][0]][1]:
 								print 'Bare construction of interface %s requiring parameters.  Created in %s::%s for parameter %s' % (elem[1][0], qname, fname, name)
 								sys.exit(1)
-						elif elem[0] == 'KObject':
-							name = name if name else '_%i' % (len(func['inputs']) + i)
-							print >>fp, '\t%s = make_shared<FauxHandle>(0x%x);' % (name, uniqInt(qname, fname, name))
+						# elif elem[0] == 'KObject':
+						# 	# name = name if name else '_%i' % (len(func['inputs']) + i)
+						# 	print >>fp, '\t%s = make_shared<FauxHandle>(0x%x);' % (name, uniqInt(qname, fname, name))
 					print >>fp, '\treturn 0;'
 					print >>fp, '}'
 		print >>fp, '#endif // DEFINE_STUBS'
 
 	print >>fp, '#endif // __IPCSTUBS_HPP__'
 	code = fp.getvalue()
-	if os.path.exists('include/IpcStubs.h'):
-		with file('include/IpcStubs.h', 'r') as fp:
+	if os.path.exists('include/IpcStubs.hpp'):
+		with file('include/IpcStubs.hpp', 'r') as fp:
 			match = fp.read() == code
 	else:
 		match = False
 	if not match:
-		with file('include/IpcStubs.h', 'w') as fp:
+		with file('include/IpcStubs.hpp', 'w') as fp:
 			fp.write(code)
 
 if __name__=='__main__':

@@ -1,5 +1,7 @@
 /* nsemu - LGPL - Copyright 2018 rkx1209<rkx1209dev@gmail.com> */
 #include "Nsemu.hpp"
+#include "IpcStubs.hpp"
+
 void IpcMessage::ParseMessage() {
         uint32_t *buf = (uint32_t *) raw_ptr;
         type = buf[0] & 0xFFFF;
@@ -91,12 +93,15 @@ uint32_t NewHandle(IpcService *srv) {
         handles[handle_id] = srv;
         return handle_id++;
 }
-IpcService *GetHandle(uint32_t handle) {
+template<typename T>
+T GetHandle(uint32_t handle) {
         if (handles.find(handle) == handles.end()) {
                 return nullptr;
         }
-        return handles[handle];
+        IpcService *srv = handles[handle];
+        return static_cast<T>(srv);
 }
+
 uint32_t ConnectToPort(std::string name) {
         if (name != "sm:") {
                 ns_abort("Attempt to connect to unknown service\n");

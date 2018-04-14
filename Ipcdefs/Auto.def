@@ -280,7 +280,7 @@ interface nn::account::IAccountServiceForAdministrator is acc:su {
 	[204] SetUserPosition(i32, nn::account::Uid);
 	[205] GetProfileEditor(nn::account::Uid) -> object<nn::account::profile::IProfileEditor>;
 	[206] CompleteUserRegistrationForcibly(nn::account::Uid);
-	[210] CreateFloatingRegistrationRequest(u32, KObject) -> object<nn::account::baas::IFloatingRegistrationRequest>;
+	[210] CreateFloatingRegistrationRequest(u32, IpcService) -> object<nn::account::baas::IFloatingRegistrationRequest>;
 	[230] AuthenticateServiceAsync() -> object<nn::account::detail::IAsyncContext>;
 	[250] GetBaasAccountAdministrator(nn::account::Uid) -> object<nn::account::baas::IAdministrator>;
 	[290] ProxyProcedureForGuestLoginWithNintendoAccount(nn::account::detail::Uuid) -> object<nn::account::nas::IOAuthProcedureForExternalNsa>;
@@ -306,7 +306,7 @@ interface nn::account::IAccountServiceForApplication is acc:u0 {
 	[102] AuthenticateApplicationAsync() -> object<nn::account::detail::IAsyncContext>;
 	[110] StoreSaveDataThumbnail(nn::account::Uid, buffer<unknown, 5, 0>);
 	[111] ClearSaveDataThumbnail(nn::account::Uid);
-	[120] CreateGuestLoginRequest(u32, KObject) -> object<nn::account::baas::IGuestLoginRequest>;
+	[120] CreateGuestLoginRequest(u32, IpcService) -> object<nn::account::baas::IGuestLoginRequest>;
 }
 
 interface nn::account::IAccountServiceForSystemService is acc:u1 {
@@ -351,7 +351,7 @@ interface nn::account::baas::IAdministrator {
 	[130] GetNintendoAccountUserResourceCache() -> (nn::account::NintendoAccountId, buffer<nn::account::nas::NasUserBase, 0x1a, 0x24f>, buffer<unknown, 6, 0>);
 	[131] RefreshNintendoAccountUserResourceCacheAsync() -> object<nn::account::detail::IAsyncContext>;
 	[132] RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(u32) -> (bool, object<nn::account::detail::IAsyncContext>);
-	[150] CreateAuthorizationRequest(u32, KObject, buffer<nn::account::nas::NasClientInfo, 0x19, 0x108>, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
+	[150] CreateAuthorizationRequest(u32, IpcService, buffer<nn::account::nas::NasClientInfo, 0x19, 0x108>, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
 	[200] IsRegistered() -> bool;
 	[201] RegisterAsync() -> object<nn::account::detail::IAsyncContext>;
 	[202] UnregisterAsync() -> object<nn::account::detail::IAsyncContext>;
@@ -399,7 +399,7 @@ interface nn::account::baas::IManagerForApplication {
 	[2] EnsureIdTokenCacheAsync() -> object<nn::account::detail::IAsyncContext>;
 	[3] LoadIdTokenCache() -> (u32, buffer<unknown, 6, 0>);
 	[130] GetNintendoAccountUserResourceCacheForApplication() -> (nn::account::NintendoAccountId, buffer<nn::account::nas::NasUserBaseForApplication, 0x1a, 0x68>, buffer<unknown, 6, 0>);
-	[150] CreateAuthorizationRequest(u32, KObject, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
+	[150] CreateAuthorizationRequest(u32, IpcService, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
 }
 
 interface nn::account::baas::IManagerForSystemService {
@@ -412,18 +412,18 @@ interface nn::account::baas::IManagerForSystemService {
 	[130] GetNintendoAccountUserResourceCache() -> (nn::account::NintendoAccountId, buffer<nn::account::nas::NasUserBase, 0x1a, 0x24f>, buffer<unknown, 6, 0>);
 	[131] RefreshNintendoAccountUserResourceCacheAsync() -> object<nn::account::detail::IAsyncContext>;
 	[132] RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(u32) -> (bool, object<nn::account::detail::IAsyncContext>);
-	[150] CreateAuthorizationRequest(u32, KObject, buffer<nn::account::nas::NasClientInfo, 0x19, 0x108>, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
+	[150] CreateAuthorizationRequest(u32, IpcService, buffer<nn::account::nas::NasClientInfo, 0x19, 0x108>, buffer<nn::account::NintendoAccountAuthorizationRequestParameters, 0x19, 0x200>) -> object<nn::account::nas::IAuthorizationRequest>;
 }
 
 interface nn::account::detail::IAsyncContext {
-	[0] GetSystemEvent() -> KObject;
+	[0] GetSystemEvent() -> IpcService;
 	[1] Cancel();
 	[2] HasDone() -> bool;
 	[3] GetResult();
 }
 
 interface nn::account::detail::INotifier {
-	[0] GetSystemEvent() -> KObject;
+	[0] GetSystemEvent() -> IpcService;
 }
 
 interface nn::account::detail::ISessionObject {
@@ -522,16 +522,16 @@ interface nn::ahid::hdr::ISession is ahid:hdr {
 }
 
 interface nn::am::service::IAllSystemAppletProxiesService is appletAE {
-	[100] OpenSystemAppletProxy(u64, pid, KObject) -> object<nn::am::service::ISystemAppletProxy>;
-	[200] OpenLibraryAppletProxyOld(u64, pid, KObject) -> object<nn::am::service::ILibraryAppletProxy>;
-	[201] OpenLibraryAppletProxy(u64, pid, KObject, buffer<nn::am::AppletAttribute, 0x15, 0x80>) -> object<nn::am::service::ILibraryAppletProxy>;
-	[300] OpenOverlayAppletProxy(u64, pid, KObject) -> object<nn::am::service::IOverlayAppletProxy>;
-	[350] OpenSystemApplicationProxy(u64, pid, KObject) -> object<nn::am::service::IApplicationProxy>;
+	[100] OpenSystemAppletProxy(u64, pid, IpcService) -> object<nn::am::service::ISystemAppletProxy>;
+	[200] OpenLibraryAppletProxyOld(u64, pid, IpcService) -> object<nn::am::service::ILibraryAppletProxy>;
+	[201] OpenLibraryAppletProxy(u64, pid, IpcService, buffer<nn::am::AppletAttribute, 0x15, 0x80>) -> object<nn::am::service::ILibraryAppletProxy>;
+	[300] OpenOverlayAppletProxy(u64, pid, IpcService) -> object<nn::am::service::IOverlayAppletProxy>;
+	[350] OpenSystemApplicationProxy(u64, pid, IpcService) -> object<nn::am::service::IApplicationProxy>;
 	[400] CreateSelfLibraryAppletCreatorForDevelop(u64, pid) -> object<nn::am::service::ILibraryAppletCreator>;
 }
 
 interface nn::am::service::IAppletAccessor {
-	[0] GetAppletStateChangedEvent() -> KObject;
+	[0] GetAppletStateChangedEvent() -> IpcService;
 	[1] IsCompleted() -> bool;
 	[10] Start();
 	[20] RequestExit();
@@ -540,7 +540,7 @@ interface nn::am::service::IAppletAccessor {
 }
 
 interface nn::am::service::IApplicationAccessor {
-	[0] GetAppletStateChangedEvent() -> KObject;
+	[0] GetAppletStateChangedEvent() -> IpcService;
 	[1] IsCompleted() -> bool;
 	[10] Start();
 	[20] RequestExit();
@@ -582,7 +582,7 @@ interface nn::am::service::IApplicationFunctions {
 	[50] GetPseudoDeviceId() -> nn::util::Uuid;
 	[60] SetMediaPlaybackStateForApplication(bool);
 	[65] IsGamePlayRecordingSupported() -> bool;
-	[66] InitializeGamePlayRecording(u64, KObject);
+	[66] InitializeGamePlayRecording(u64, IpcService);
 	[67] SetGamePlayRecordingState(i32);
 	[70] RequestToShutdown();
 	[71] RequestToReboot();
@@ -601,7 +601,7 @@ interface nn::am::service::IApplicationProxy {
 }
 
 interface nn::am::service::IApplicationProxyService is appletOE {
-	[0] OpenApplicationProxy(u64, pid, KObject) -> object<nn::am::service::IApplicationProxy>;
+	[0] OpenApplicationProxy(u64, pid, IpcService) -> object<nn::am::service::IApplicationProxy>;
 }
 
 interface nn::am::service::IAudioController {
@@ -613,7 +613,7 @@ interface nn::am::service::IAudioController {
 }
 
 interface nn::am::service::ICommonStateGetter {
-	[0] GetEventHandle() -> KObject;
+	[0] GetEventHandle() -> IpcService;
 	[1] ReceiveMessage() -> nn::am::AppletMessage;
 	[2] GetThisAppletKind() -> nn::am::service::AppletKind;
 	[3] AllowToEnterSleep();
@@ -626,7 +626,7 @@ interface nn::am::service::ICommonStateGetter {
 	[10] RequestToAcquireSleepLock();
 	[11] ReleaseSleepLock();
 	[12] ReleaseSleepLockTransiently();
-	[13] GetAcquiredSleepLockEvent() -> KObject;
+	[13] GetAcquiredSleepLockEvent() -> IpcService;
 	[20] PushToGeneralChannel(object<nn::am::service::IStorage>);
 	[30] GetHomeButtonReaderLockAccessor() -> object<nn::am::service::ILockAccessor>;
 	[31] GetReaderLockAccessorEx(i32) -> object<nn::am::service::ILockAccessor>;
@@ -635,7 +635,7 @@ interface nn::am::service::ICommonStateGetter {
 	[51] SetVrModeEnabled(bool);
 	[55] IsInControllerFirmwareUpdateSection() -> bool;
 	[60] GetDefaultDisplayResolution() -> (i32, i32);
-	[61] GetDefaultDisplayResolutionChangeEvent() -> KObject;
+	[61] GetDefaultDisplayResolutionChangeEvent() -> IpcService;
 }
 
 interface nn::am::service::IDebugFunctions {
@@ -655,15 +655,15 @@ interface nn::am::service::IDisplayController {
 	[6] GetLastApplicationCaptureImageEx() -> (bool, buffer<unknown, 6, 0>);
 	[7] GetCallerAppletCaptureImageEx() -> (bool, buffer<unknown, 6, 0>);
 	[8] TakeScreenShotOfOwnLayer(bool, i32);
-	[10] AcquireLastApplicationCaptureBuffer() -> KObject;
+	[10] AcquireLastApplicationCaptureBuffer() -> IpcService;
 	[11] ReleaseLastApplicationCaptureBuffer();
-	[12] AcquireLastForegroundCaptureBuffer() -> KObject;
+	[12] AcquireLastForegroundCaptureBuffer() -> IpcService;
 	[13] ReleaseLastForegroundCaptureBuffer();
-	[14] AcquireCallerAppletCaptureBuffer() -> KObject;
+	[14] AcquireCallerAppletCaptureBuffer() -> IpcService;
 	[15] ReleaseCallerAppletCaptureBuffer();
-	[16] AcquireLastApplicationCaptureBufferEx() -> (bool, KObject);
-	[17] AcquireLastForegroundCaptureBufferEx() -> (bool, KObject);
-	[18] AcquireCallerAppletCaptureBufferEx() -> (bool, KObject);
+	[16] AcquireLastApplicationCaptureBufferEx() -> (bool, IpcService);
+	[17] AcquireLastForegroundCaptureBufferEx() -> (bool, IpcService);
+	[18] AcquireCallerAppletCaptureBufferEx() -> (bool, IpcService);
 	[20] ClearCaptureBuffer(bool, i32, u32);
 	[21] ClearAppletTransitionBuffer(u32);
 }
@@ -686,13 +686,13 @@ interface nn::am::service::IHomeMenuFunctions {
 	[11] LockForeground();
 	[12] UnlockForeground();
 	[20] PopFromGeneralChannel() -> object<nn::am::service::IStorage>;
-	[21] GetPopFromGeneralChannelEvent() -> KObject;
+	[21] GetPopFromGeneralChannelEvent() -> IpcService;
 	[30] GetHomeButtonWriterLockAccessor() -> object<nn::am::service::ILockAccessor>;
 	[31] GetWriterLockAccessorEx(i32) -> object<nn::am::service::ILockAccessor>;
 }
 
 interface nn::am::service::ILibraryAppletAccessor {
-	[0] GetAppletStateChangedEvent() -> KObject;
+	[0] GetAppletStateChangedEvent() -> IpcService;
 	[1] IsCompleted() -> bool;
 	[10] Start();
 	[20] RequestExit();
@@ -704,8 +704,8 @@ interface nn::am::service::ILibraryAppletAccessor {
 	[102] PushExtraStorage(object<nn::am::service::IStorage>);
 	[103] PushInteractiveInData(object<nn::am::service::IStorage>);
 	[104] PopInteractiveOutData() -> object<nn::am::service::IStorage>;
-	[105] GetPopOutDataEvent() -> KObject;
-	[106] GetPopInteractiveOutDataEvent() -> KObject;
+	[105] GetPopOutDataEvent() -> IpcService;
+	[106] GetPopInteractiveOutDataEvent() -> IpcService;
 	[110] NeedsToExitProcess() -> bool;
 	[120] GetLibraryAppletInfo() -> nn::am::service::LibraryAppletInfo;
 	[150] RequestForAppletToGetForeground();
@@ -717,8 +717,8 @@ interface nn::am::service::ILibraryAppletCreator {
 	[1] TerminateAllLibraryApplets();
 	[2] AreAnyLibraryAppletsLeft() -> bool;
 	[10] CreateStorage(i64) -> object<nn::am::service::IStorage>;
-	[11] CreateTransferMemoryStorage(bool, i64, KObject) -> object<nn::am::service::IStorage>;
-	[12] CreateHandleStorage(i64, KObject) -> object<nn::am::service::IStorage>;
+	[11] CreateTransferMemoryStorage(bool, i64, IpcService) -> object<nn::am::service::IStorage>;
+	[12] CreateHandleStorage(i64, IpcService) -> object<nn::am::service::IStorage>;
 }
 
 interface nn::am::service::ILibraryAppletProxy {
@@ -738,8 +738,8 @@ interface nn::am::service::ILibraryAppletSelfAccessor {
 	[1] PushOutData(object<nn::am::service::IStorage>);
 	[2] PopInteractiveInData() -> object<nn::am::service::IStorage>;
 	[3] PushInteractiveOutData(object<nn::am::service::IStorage>);
-	[5] GetPopInDataEvent() -> KObject;
-	[6] GetPopInteractiveInDataEvent() -> KObject;
+	[5] GetPopInDataEvent() -> IpcService;
+	[6] GetPopInteractiveInDataEvent() -> IpcService;
 	[10] ExitProcessAndReturn();
 	[11] GetLibraryAppletInfo() -> nn::am::service::LibraryAppletInfo;
 	[12] GetMainAppletIdentityInfo() -> nn::am::service::AppletIdentityInfo;
@@ -749,7 +749,7 @@ interface nn::am::service::ILibraryAppletSelfAccessor {
 	[16] GetMainAppletStorageId() -> nn::ncm::StorageId;
 	[17] GetCallerAppletIdentityInfoStack() -> (i32, array<nn::am::service::AppletIdentityInfo, 6>);
 	[20] PopExtraStorage() -> object<nn::am::service::IStorage>;
-	[25] GetPopExtraStorageEvent() -> KObject;
+	[25] GetPopExtraStorageEvent() -> IpcService;
 	[30] UnpopInData(object<nn::am::service::IStorage>);
 	[31] UnpopExtraStorage(object<nn::am::service::IStorage>);
 	[40] GetIndirectLayerProducerHandle() -> u64;
@@ -757,9 +757,9 @@ interface nn::am::service::ILibraryAppletSelfAccessor {
 }
 
 interface nn::am::service::ILockAccessor {
-	[1] TryLock(bool) -> (bool, KObject);
+	[1] TryLock(bool) -> (bool, IpcService);
 	[2] Unlock();
-	[3] GetEvent() -> KObject;
+	[3] GetEvent() -> IpcService;
 }
 
 interface nn::am::service::IOverlayAppletProxy {
@@ -800,7 +800,7 @@ interface nn::am::service::ISelfController {
 	[2] UnlockExit();
 	[3] EnterFatalSection();
 	[4] LeaveFatalSection();
-	[9] GetLibraryAppletLaunchableEvent() -> KObject;
+	[9] GetLibraryAppletLaunchableEvent() -> IpcService;
 	[10] SetScreenShotPermission(i32);
 	[11] SetOperationModeChangedNotification(bool);
 	[12] SetPerformanceModeChangedNotification(bool);
@@ -851,7 +851,7 @@ interface nn::am::service::ISystemAppletProxy {
 
 interface nn::am::service::ITransferStorageAccessor {
 	[0] GetSize() -> i64;
-	[1] GetHandle() -> (u64, KObject);
+	[1] GetHandle() -> (u64, IpcService);
 }
 
 interface nn::am::service::IWindow {
@@ -893,7 +893,7 @@ interface nn::apm::ISession {
 
 interface nn::apm::ISystemManager is apm:sys {
 	[0] RequestPerformanceMode(nn::apm::PerformanceMode);
-	[1] GetPerformanceEvent(nn::apm::EventTarget) -> KObject;
+	[1] GetPerformanceEvent(nn::apm::EventTarget) -> IpcService;
 	[2] GetThrottlingState() -> nn::apm::ThrottlingState;
 	[3] GetLastThrottlingState() -> nn::apm::ThrottlingState;
 	[4] ClearLastThrottlingState();
@@ -918,7 +918,7 @@ interface nn::arp::detail::IWriter is arp:w {
 }
 
 interface nn::audio::detail::IAudioDebugManager {
-	[0] Unknown0(u32, u64, KObject);
+	[0] Unknown0(u32, u64, IpcService);
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3();
@@ -929,14 +929,14 @@ interface nn::audio::detail::IAudioDevice {
 	[1] Unknown1(u32, buffer<unknown, 5, 0>);
 	[2] Unknown2(buffer<unknown, 5, 0>) -> u32;
 	[3] Unknown3() -> buffer<unknown, 6, 0>;
-	[4] Unknown4() -> KObject;
+	[4] Unknown4() -> IpcService;
 	[5] Unknown5() -> u32;
 	[6] Unknown6() -> (u32, buffer<unknown, 0x22, 0>);
 	[7] Unknown7(u32, buffer<unknown, 0x21, 0>);
 	[8] Unknown8(buffer<unknown, 0x21, 0>) -> u32;
 	[10] Unknown10() -> buffer<unknown, 0x22, 0>;
-	[11] Unknown11() -> KObject;
-	[12] Unknown12() -> KObject;
+	[11] Unknown11() -> IpcService;
+	[12] Unknown12() -> IpcService;
 }
 
 interface nn::audio::detail::IAudioIn {
@@ -944,26 +944,26 @@ interface nn::audio::detail::IAudioIn {
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3(u64, buffer<unknown, 5, 0>);
-	[4] Unknown4() -> KObject;
+	[4] Unknown4() -> IpcService;
 	[5] Unknown5() -> (u32, buffer<unknown, 6, 0>);
 	[6] Unknown6(u64) -> u8;
-	[7] Unknown7(u64, KObject, buffer<unknown, 5, 0>);
+	[7] Unknown7(u64, IpcService, buffer<unknown, 5, 0>);
 	[8] Unknown8(u64, buffer<unknown, 0x21, 0>);
 	[9] Unknown9() -> (u32, buffer<unknown, 0x22, 0>);
-	[10] Unknown10(u64, KObject, buffer<unknown, 0x21, 0>);
+	[10] Unknown10(u64, IpcService, buffer<unknown, 0x21, 0>);
 }
 
 interface nn::audio::detail::IAudioInManager is audin:u {
 	[0] Unknown0() -> (u32, buffer<unknown, 6, 0>);
-	[1] Unknown1(u64, u64, pid, KObject, buffer<unknown, 5, 0>) -> (u128, object<IUnknown>, buffer<unknown, 6, 0>);
+	[1] Unknown1(u64, u64, pid, IpcService, buffer<unknown, 5, 0>) -> (u128, object<IUnknown>, buffer<unknown, 6, 0>);
 	[2] Unknown2() -> (u32, buffer<unknown, 0x22, 0>);
-	[3] Unknown3(u64, u64, pid, KObject, buffer<unknown, 0x21, 0>) -> (u128, object<IUnknown>, buffer<unknown, 0x22, 0>);
+	[3] Unknown3(u64, u64, pid, IpcService, buffer<unknown, 0x21, 0>) -> (u128, object<IUnknown>, buffer<unknown, 0x22, 0>);
 	[4] Unknown4() -> (u32, buffer<unknown, 0x22, 0>);
 }
 
 interface nn::audio::detail::IAudioInManagerForApplet is audin:a {
-	[0] Unknown0(u64, u64) -> KObject;
-	[1] Unknown1(u64, u64) -> KObject;
+	[0] Unknown0(u64, u64) -> IpcService;
+	[1] Unknown1(u64, u64) -> IpcService;
 	[2] Unknown2(u64) -> u32;
 	[3] Unknown3(u32, u64, u64);
 }
@@ -978,7 +978,7 @@ interface nn::audio::detail::IAudioOut {
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3(u64, buffer<unknown, 5, 0>);
-	[4] Unknown4() -> KObject;
+	[4] Unknown4() -> IpcService;
 	[5] Unknown5() -> (u32, buffer<unknown, 6, 0>);
 	[6] Unknown6(u64) -> u8;
 	[7] Unknown7(u64, buffer<unknown, 0x21, 0>);
@@ -987,14 +987,14 @@ interface nn::audio::detail::IAudioOut {
 
 interface nn::audio::detail::IAudioOutManager is audout:u {
 	[0] Unknown0() -> (u32, buffer<unknown, 6, 0>);
-	[1] Unknown1(u64, u64, pid, KObject, buffer<unknown, 5, 0>) -> (u128, object<IUnknown>, buffer<unknown, 6, 0>);
+	[1] Unknown1(u64, u64, pid, IpcService, buffer<unknown, 5, 0>) -> (u128, object<IUnknown>, buffer<unknown, 6, 0>);
 	[2] Unknown2() -> (u32, buffer<unknown, 0x22, 0>);
-	[3] Unknown3(u64, u64, pid, KObject, buffer<unknown, 0x21, 0>) -> (u128, object<IUnknown>, buffer<unknown, 0x22, 0>);
+	[3] Unknown3(u64, u64, pid, IpcService, buffer<unknown, 0x21, 0>) -> (u128, object<IUnknown>, buffer<unknown, 0x22, 0>);
 }
 
 interface nn::audio::detail::IAudioOutManagerForApplet is audout:a {
-	[0] Unknown0(u64, u64) -> KObject;
-	[1] Unknown1(u64, u64) -> KObject;
+	[0] Unknown0(u64, u64) -> IpcService;
+	[1] Unknown1(u64, u64) -> IpcService;
 	[2] Unknown2(u64) -> u32;
 	[3] Unknown3(u32, u64, u64);
 }
@@ -1012,7 +1012,7 @@ interface nn::audio::detail::IAudioRenderer {
 	[4] Unknown4(buffer<unknown, 5, 0>) -> (buffer<unknown, 6, 0>, buffer<unknown, 6, 0>);
 	[5] Unknown5();
 	[6] Unknown6();
-	[7] Unknown7() -> KObject;
+	[7] Unknown7() -> IpcService;
 	[8] Unknown8(u32);
 	[9] Unknown9() -> u32;
 	[10] Unknown10(buffer<unknown, 0x21, 0>) -> (buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>);
@@ -1020,15 +1020,15 @@ interface nn::audio::detail::IAudioRenderer {
 }
 
 interface nn::audio::detail::IAudioRendererManager is audren:u {
-	[0] Unknown0(bytes<0x34>, u64, u64, pid, KObject, KObject) -> object<IUnknown>;
+	[0] Unknown0(bytes<0x34>, u64, u64, pid, IpcService, IpcService) -> object<IUnknown>;
 	[1] Unknown1(bytes<0x34>) -> u64;
 	[2] Unknown2(u64) -> object<IUnknown>;
-	[3] Unknown3(bytes<0x34>, u64, u64, u64, pid, KObject) -> object<IUnknown>;
+	[3] Unknown3(bytes<0x34>, u64, u64, u64, pid, IpcService) -> object<IUnknown>;
 }
 
 interface nn::audio::detail::IAudioRendererManagerForApplet is audren:a {
-	[0] Unknown0(u64, u64) -> KObject;
-	[1] Unknown1(u64, u64) -> KObject;
+	[0] Unknown0(u64, u64) -> IpcService;
+	[1] Unknown1(u64, u64) -> IpcService;
 	[2] Unknown2(u64) -> u32;
 	[3] Unknown3(u32, u64, u64);
 	[4] Unknown4(u64);
@@ -1045,7 +1045,7 @@ interface nn::audio::detail::IFinalOutputRecorder {
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3(u64, buffer<unknown, 5, 0>);
-	[4] Unknown4() -> KObject;
+	[4] Unknown4() -> IpcService;
 	[5] Unknown5() -> (u32, u64, buffer<unknown, 6, 0>);
 	[6] Unknown6(u64) -> u8;
 	[7] Unknown7(u64) -> u64;
@@ -1054,12 +1054,12 @@ interface nn::audio::detail::IFinalOutputRecorder {
 }
 
 interface nn::audio::detail::IFinalOutputRecorderManager is audrec:u {
-	[0] Unknown0(u64, u64, KObject) -> (u128, object<IUnknown>);
+	[0] Unknown0(u64, u64, IpcService) -> (u128, object<IUnknown>);
 }
 
 interface nn::audio::detail::IFinalOutputRecorderManagerForApplet is audrec:a {
-	[0] Unknown0(u64, u64) -> KObject;
-	[1] Unknown1(u64, u64) -> KObject;
+	[0] Unknown0(u64, u64) -> IpcService;
+	[1] Unknown1(u64, u64) -> IpcService;
 }
 
 interface nn::audio::detail::IFinalOutputRecorderManagerForDebugger is audrec:d {
@@ -1087,8 +1087,8 @@ interface nn::audioctrl::detail::IAudioController is audctl {
 	[16] Unknown16(u8);
 	[17] Unknown17(u32);
 	[18] Unknown18() -> u32;
-	[19] Unknown19() -> KObject;
-	[20] Unknown20() -> KObject;
+	[19] Unknown19() -> IpcService;
+	[20] Unknown20() -> IpcService;
 	[21] Unknown21() -> u32;
 	[22] Unknown22();
 }
@@ -1121,7 +1121,7 @@ interface nn::bcat::detail::ipc::IDeliveryCacheFileService {
 }
 
 interface nn::bcat::detail::ipc::IDeliveryCacheProgressService {
-	[0] GetEvent() -> KObject;
+	[0] GetEvent() -> IpcService;
 	[1] GetImpl() -> buffer<nn::bcat::detail::DeliveryCacheProgressImpl, 0x1a, 0x200>;
 }
 
@@ -1139,7 +1139,7 @@ interface nn::bcat::detail::ipc::IServiceCreator is bcat:a, bcat:m, bcat:u, bcat
 
 interface nn::bgtc::IStateControlService is bgtc:sc {
 	[1] Unknown1() -> u32;
-	[2] Unknown2() -> KObject;
+	[2] Unknown2() -> IpcService;
 	[3] Unknown3();
 	[4] Unknown4();
 	[5] Unknown5(u8);
@@ -1148,14 +1148,14 @@ interface nn::bgtc::IStateControlService is bgtc:sc {
 interface nn::bgtc::ITaskService is bgtc:t {
 	[1] Unknown1();
 	[2] Unknown2();
-	[3] Unknown3() -> KObject;
+	[3] Unknown3() -> IpcService;
 	[4] Unknown4() -> u8;
 	[5] Unknown5();
 	[6] Unknown6() -> u8;
 	[11] Unknown11(u32);
 	[12] Unknown12() -> u32;
 	[13] Unknown13();
-	[14] Unknown14() -> KObject;
+	[14] Unknown14() -> IpcService;
 	[15] Unknown15(u32, u32);
 	[101] Unknown101() -> u32;
 	[102] Unknown102() -> u8;
@@ -1164,7 +1164,7 @@ interface nn::bgtc::ITaskService is bgtc:t {
 
 interface nn::bluetooth::IBluetoothDriver is btdrv {
 	[0] Unknown0();
-	[1] Unknown1() -> KObject;
+	[1] Unknown1() -> IpcService;
 	[2] Unknown2();
 	[3] Unknown3();
 	[4] Unknown4();
@@ -1199,7 +1199,7 @@ interface nn::bluetooth::IBluetoothDriver is btdrv {
 	[33] Unknown33();
 	[34] Unknown34(u8);
 	[35] Unknown35();
-	[36] Unknown36() -> KObject;
+	[36] Unknown36() -> IpcService;
 	[37] Unknown37() -> (u32, buffer<unknown, 0xa, 0>);
 	[38] Unknown38();
 	[39] Unknown39();
@@ -1216,9 +1216,9 @@ interface nn::bpc::IBoardPowerControlManager is bpc {
 	[2] Unknown2() -> u32;
 	[3] Unknown3() -> u32;
 	[4] Unknown4() -> u8;
-	[5] Unknown5(u32) -> KObject;
+	[5] Unknown5(u32) -> IpcService;
 	[6] Unknown6() -> u32;
-	[7] Unknown7(u32) -> KObject;
+	[7] Unknown7(u32) -> IpcService;
 	[8] Unknown8(u64) -> u32;
 	[9] Unknown9(u32);
 	[10] Unknown10();
@@ -1387,9 +1387,9 @@ interface nn::codec::detail::IHardwareOpusDecoder {
 }
 
 interface nn::codec::detail::IHardwareOpusDecoderManager is hwopus {
-	[0] Unknown0(u64, u32, KObject) -> object<IUnknown>;
+	[0] Unknown0(u64, u32, IpcService) -> object<IUnknown>;
 	[1] Unknown1(u64) -> u32;
-	[2] Unknown2(u32, KObject, buffer<unknown, 0x19, 0x110>) -> object<IUnknown>;
+	[2] Unknown2(u32, IpcService, buffer<unknown, 0x19, 0x110>) -> object<IUnknown>;
 	[3] Unknown3(buffer<unknown, 0x19, 0x110>) -> u32;
 }
 
@@ -1404,7 +1404,7 @@ interface nn::erpt::sf::IContext is erpt:c {
 
 interface nn::erpt::sf::IManager {
 	[0] Unknown0();
-	[1] Unknown1() -> KObject;
+	[1] Unknown1() -> IpcService;
 }
 
 interface nn::erpt::sf::IReport {
@@ -1455,7 +1455,7 @@ interface nn::eth::sf::IEthInterface is ethc:c {
 }
 
 interface nn::eth::sf::IEthInterfaceGroup is ethc:i {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3();
@@ -1470,7 +1470,7 @@ interface nn::eupld::sf::IControl is eupld:c {
 }
 
 interface nn::eupld::sf::IRequest is eupld:r {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1();
 	[2] Unknown2(buffer<unknown, 5, 0>);
 	[3] Unknown3() -> buffer<unknown, 6, 0>;
@@ -1494,7 +1494,7 @@ interface nn::fan::detail::IManager is fan {
 }
 
 interface nn::fatalsrv::IPrivateService is fatal:p {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 }
 
 interface nn::fatalsrv::IService is fatal:u {
@@ -1504,13 +1504,13 @@ interface nn::fatalsrv::IService is fatal:u {
 }
 
 interface nn::fgm::sf::IDebugger {
-	[0] Initialize(u64, KObject) -> KObject;
+	[0] Initialize(u64, IpcService) -> IpcService;
 	[1] Read() -> (u32, u32, u32, buffer<unknown, 6, 0>);
 	[2] Cancel();
 }
 
 interface nn::fgm::sf::IRequest {
-	[0] Initialize(nn::fgm::Module, u64, pid) -> KObject;
+	[0] Initialize(nn::fgm::Module, u64, pid) -> IpcService;
 	[1] Set(u32, u32);
 	[2] Get() -> u32;
 	[3] Cancel();
@@ -1521,7 +1521,7 @@ interface nn::fgm::sf::ISession is fgm:0, fgm, fgm:9 {
 }
 
 interface nn::friends::detail::ipc::IFriendService {
-	[0] GetCompletionEvent() -> KObject;
+	[0] GetCompletionEvent() -> IpcService;
 	[1] Cancel();
 	[10100] GetFriendListIds(i32, nn::account::Uid, nn::friends::detail::ipc::SizedFriendFilter, u64, pid) -> (i32, array<nn::account::NetworkServiceAccountId, 0xa>);
 	[10101] GetFriendList(i32, nn::account::Uid, nn::friends::detail::ipc::SizedFriendFilter, u64, pid) -> (i32, array<nn::friends::detail::FriendImpl, 6>);
@@ -1592,7 +1592,7 @@ interface nn::friends::detail::ipc::IFriendService {
 }
 
 interface nn::friends::detail::ipc::INotificationService {
-	[0] GetEvent() -> KObject;
+	[0] GetEvent() -> IpcService;
 	[1] Clear();
 	[2] Pop() -> nn::friends::detail::ipc::SizedNotificationInfo;
 }
@@ -1645,7 +1645,7 @@ interface nn::fssrv::sf::IDirectory {
 }
 
 interface nn::fssrv::sf::IEventNotifier {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 }
 
 interface nn::fssrv::sf::IFile {
@@ -1780,7 +1780,7 @@ interface nn::gpio::IPadSession {
 	[7] Unknown7();
 	[8] Unknown8(u32);
 	[9] Unknown9() -> u32;
-	[10] Unknown10() -> KObject;
+	[10] Unknown10() -> IpcService;
 	[11] Unknown11();
 	[12] Unknown12(u8);
 	[13] Unknown13() -> u8;
@@ -1793,7 +1793,7 @@ interface nn::hid::IActiveVibrationDeviceList {
 }
 
 interface nn::hid::IAppletResource {
-	[0] GetSharedMemoryHandle() -> KObject;
+	[0] GetSharedMemoryHandle() -> IpcService;
 }
 
 interface nn::hid::IHidDebugServer is hid:dbg {
@@ -1847,19 +1847,19 @@ interface nn::hid::IHidServer is hid {
 	[11] ActivateTouchScreen(nn::applet::AppletResourceUserId, pid);
 	[21] ActivateMouse(nn::applet::AppletResourceUserId, pid);
 	[31] ActivateKeyboard(nn::applet::AppletResourceUserId, pid);
-	[40] AcquireXpadIdEventHandle(u64) -> KObject;
+	[40] AcquireXpadIdEventHandle(u64) -> IpcService;
 	[41] ReleaseXpadIdEventHandle(u64);
 	[51] ActivateXpad(nn::hid::BasicXpadId, nn::applet::AppletResourceUserId, pid);
 	[55] GetXpadIds() -> (i64, array<nn::hid::BasicXpadId, 0xa>);
 	[56] ActivateJoyXpad(nn::hid::JoyXpadId);
-	[58] GetJoyXpadLifoHandle(nn::hid::JoyXpadId) -> KObject;
+	[58] GetJoyXpadLifoHandle(nn::hid::JoyXpadId) -> IpcService;
 	[59] GetJoyXpadIds() -> (i64, array<nn::hid::JoyXpadId, 0xa>);
 	[60] ActivateSixAxisSensor(nn::hid::BasicXpadId);
 	[61] DeactivateSixAxisSensor(nn::hid::BasicXpadId);
-	[62] GetSixAxisSensorLifoHandle(nn::hid::BasicXpadId) -> KObject;
+	[62] GetSixAxisSensorLifoHandle(nn::hid::BasicXpadId) -> IpcService;
 	[63] ActivateJoySixAxisSensor(nn::hid::JoyXpadId);
 	[64] DeactivateJoySixAxisSensor(nn::hid::JoyXpadId);
-	[65] GetJoySixAxisSensorLifoHandle(nn::hid::JoyXpadId) -> KObject;
+	[65] GetJoySixAxisSensorLifoHandle(nn::hid::JoyXpadId) -> IpcService;
 	[66] StartSixAxisSensor(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
 	[67] StopSixAxisSensor(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid);
 	[68] IsSixAxisSensorFusionEnabled(nn::hid::SixAxisSensorHandle, nn::applet::AppletResourceUserId, pid) -> bool;
@@ -1883,7 +1883,7 @@ interface nn::hid::IHidServer is hid {
 	[102] SetSupportedNpadIdType(nn::applet::AppletResourceUserId, pid, array<u32, 9>);
 	[103] ActivateNpad(nn::applet::AppletResourceUserId, pid);
 	[104] DeactivateNpad(nn::applet::AppletResourceUserId, pid);
-	[106] AcquireNpadStyleSetUpdateEventHandle(u32, nn::applet::AppletResourceUserId, u64, pid) -> KObject;
+	[106] AcquireNpadStyleSetUpdateEventHandle(u32, nn::applet::AppletResourceUserId, u64, pid) -> IpcService;
 	[107] DisconnectNpad(u32, nn::applet::AppletResourceUserId, pid);
 	[108] GetPlayerLedPattern(u32) -> u64;
 	[120] SetNpadJoyHoldType(nn::applet::AppletResourceUserId, i64, pid);
@@ -1918,17 +1918,17 @@ interface nn::hid::IHidServer is hid {
 
 interface nn::hid::IHidSystemServer is hid:sys {
 	[31] SendKeyboardLockKeyEvent(nn::hid::system::KeyboardLockKeyEvent);
-	[101] AcquireHomeButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[101] AcquireHomeButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> IpcService;
 	[111] ActivateHomeButton(nn::applet::AppletResourceUserId, pid);
-	[121] AcquireSleepButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[121] AcquireSleepButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> IpcService;
 	[131] ActivateSleepButton(nn::applet::AppletResourceUserId, pid);
-	[141] AcquireCaptureButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[141] AcquireCaptureButtonEventHandle(nn::applet::AppletResourceUserId, pid) -> IpcService;
 	[151] ActivateCaptureButton(nn::applet::AppletResourceUserId, pid);
-	[210] AcquireNfcDeviceUpdateEventHandle() -> KObject;
+	[210] AcquireNfcDeviceUpdateEventHandle() -> IpcService;
 	[211] GetNpadsWithNfc() -> (i64, array<u32, 0xa>);
-	[212] AcquireNfcActivateEventHandle(u32) -> KObject;
+	[212] AcquireNfcActivateEventHandle(u32) -> IpcService;
 	[213] ActivateNfc(bool, u32, nn::applet::AppletResourceUserId, pid);
-	[230] AcquireIrSensorEventHandle(u32) -> KObject;
+	[230] AcquireIrSensorEventHandle(u32) -> IpcService;
 	[231] ActivateIrSensor(bool, u32, nn::applet::AppletResourceUserId, pid);
 	[301] ActivateNpadSystem(u32);
 	[303] ApplyNpadSystemCommonPolicy(nn::applet::AppletResourceUserId, pid);
@@ -1952,18 +1952,18 @@ interface nn::hid::IHidSystemServer is hid:sys {
 	[513] EndPermitVibrationSession();
 	[520] EnableHandheldHids();
 	[521] DisableHandheldHids();
-	[540] AcquirePlayReportControllerUsageUpdateEvent() -> KObject;
+	[540] AcquirePlayReportControllerUsageUpdateEvent() -> IpcService;
 	[541] GetPlayReportControllerUsages() -> (i64, array<nn::hid::system::PlayReportControllerUsage, 0xa>);
-	[542] AcquirePlayReportRegisteredDeviceUpdateEvent() -> KObject;
+	[542] AcquirePlayReportRegisteredDeviceUpdateEvent() -> IpcService;
 	[543] GetRegisteredDevices() -> (i64, array<nn::hid::system::RegisteredDevice, 0xa>);
-	[544] AcquireConnectionTriggerTimeoutEvent() -> KObject;
+	[544] AcquireConnectionTriggerTimeoutEvent() -> IpcService;
 	[545] SendConnectionTrigger(nn::bluetooth::Address);
-	[546] AcquireDeviceRegisteredEventForControllerSupport() -> KObject;
+	[546] AcquireDeviceRegisteredEventForControllerSupport() -> IpcService;
 	[547] GetAllowedBluetoothLinksCount() -> i64;
 	[700] ActivateUniquePad(nn::applet::AppletResourceUserId, nn::hid::system::UniquePadId, pid);
-	[702] AcquireUniquePadConnectionEventHandle() -> KObject;
+	[702] AcquireUniquePadConnectionEventHandle() -> IpcService;
 	[703] GetUniquePadIds() -> (i64, array<nn::hid::system::UniquePadId, 0xa>);
-	[751] AcquireJoyDetachOnBluetoothOffEventHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[751] AcquireJoyDetachOnBluetoothOffEventHandle(nn::applet::AppletResourceUserId, pid) -> IpcService;
 	[800] ListSixAxisSensorHandles(nn::hid::system::UniquePadId) -> (i64, array<nn::hid::system::UniqueSixAxisSensorHandle, 0xa>);
 	[801] IsSixAxisSensorUserCalibrationSupported(nn::hid::system::UniqueSixAxisSensorHandle) -> bool;
 	[802] ResetSixAxisSensorCalibrationValues(nn::hid::system::UniqueSixAxisSensorHandle);
@@ -2021,7 +2021,7 @@ interface nn::i2c::ISession {
 }
 
 interface nn::idle::detail::IPolicyManagerSystem is idle:sys {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3();
@@ -2032,11 +2032,11 @@ interface nn::idle::detail::IPolicyManagerSystem is idle:sys {
 interface nn::irsensor::IIrSensorServer is irs {
 	[302] ActivateIrsensor(nn::applet::AppletResourceUserId, pid);
 	[303] DeactivateIrsensor(nn::applet::AppletResourceUserId, pid);
-	[304] GetIrsensorSharedMemoryHandle(nn::applet::AppletResourceUserId, pid) -> KObject;
+	[304] GetIrsensorSharedMemoryHandle(nn::applet::AppletResourceUserId, pid) -> IpcService;
 	[305] StopImageProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, pid);
 	[306] RunMomentProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, nn::irsensor::PackedMomentProcessorConfig, pid);
 	[307] RunClusteringProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, nn::irsensor::PackedClusteringProcessorConfig, pid);
-	[308] RunImageTransferProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, nn::irsensor::PackedImageTransferProcessorConfig, u64, pid, KObject);
+	[308] RunImageTransferProcessor(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, nn::irsensor::PackedImageTransferProcessorConfig, u64, pid, IpcService);
 	[309] GetImageTransferProcessorState(nn::irsensor::IrCameraHandle, nn::applet::AppletResourceUserId, pid) -> (nn::irsensor::ImageTransferProcessorState, buffer<unknown, 6, 0>);
 	[310] RunTeraPluginProcessor(nn::irsensor::IrCameraHandle, align<2, nn::irsensor::PackedTeraPluginProcessorConfig>, nn::applet::AppletResourceUserId, pid);
 	[311] GetNpadIrCameraHandle(u32) -> nn::irsensor::IrCameraHandle;
@@ -2106,7 +2106,7 @@ interface nn::ldn::detail::ISystemLocalCommunicationService {
 	[3] Unknown3() -> u16;
 	[4] Unknown4() -> bytes<0x20>;
 	[5] Unknown5() -> bytes<0x20>;
-	[100] Unknown100() -> KObject;
+	[100] Unknown100() -> IpcService;
 	[101] Unknown101() -> (buffer<unknown, 0x1a, 0x480>, buffer<unknown, 0xa, 0>);
 	[102] Unknown102(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
 	[103] Unknown103(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
@@ -2140,7 +2140,7 @@ interface nn::ldn::detail::IUserLocalCommunicationService {
 	[3] Unknown3() -> u16;
 	[4] Unknown4() -> bytes<0x20>;
 	[5] Unknown5() -> bytes<0x20>;
-	[100] Unknown100() -> KObject;
+	[100] Unknown100() -> IpcService;
 	[101] Unknown101() -> (buffer<unknown, 0x1a, 0x480>, buffer<unknown, 0xa, 0>);
 	[102] Unknown102(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
 	[103] Unknown103(u16, bytes<0x60>) -> (u16, buffer<unknown, 0x22, 0>);
@@ -2324,7 +2324,7 @@ interface nn::ncm::IContentStorage {
 }
 
 interface nn::news::detail::ipc::INewlyArrivedEventHolder {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 }
 
 interface nn::news::detail::ipc::INewsDataService {
@@ -2359,7 +2359,7 @@ interface nn::news::detail::ipc::INewsService {
 }
 
 interface nn::news::detail::ipc::IOverwriteEventHolder {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 }
 
 interface nn::news::detail::ipc::IServiceCreator is news:a, news:c, news:m, news:p, news:v {
@@ -2412,12 +2412,12 @@ interface nn::nfc::mifare::detail::IUser {
 	[5] Unknown5(u64, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
 	[6] Unknown6(u64, buffer<unknown, 5, 0>);
 	[7] Unknown7(u64) -> buffer<unknown, 0x1a, 0x58>;
-	[8] Unknown8(u64) -> KObject;
-	[9] Unknown9(u64) -> KObject;
+	[8] Unknown8(u64) -> IpcService;
+	[9] Unknown9(u64) -> IpcService;
 	[10] Unknown10() -> u32;
 	[11] Unknown11(u64) -> u32;
 	[12] Unknown12(u64) -> u32;
-	[13] Unknown13() -> KObject;
+	[13] Unknown13() -> IpcService;
 }
 
 interface nn::nfc::mifare::detail::IUserManager is nfc:mf:u {
@@ -2442,13 +2442,13 @@ interface nn::nfp::detail::IDebug {
 	[14] Unknown14(u64) -> buffer<unknown, 0x1a, 0x100>;
 	[15] Unknown15(u64) -> buffer<unknown, 0x1a, 0x40>;
 	[16] Unknown16(u64) -> buffer<unknown, 0x1a, 0x40>;
-	[17] Unknown17(u64) -> KObject;
-	[18] Unknown18(u64) -> KObject;
+	[17] Unknown17(u64) -> IpcService;
+	[18] Unknown18(u64) -> IpcService;
 	[19] Unknown19() -> u32;
 	[20] Unknown20(u64) -> u32;
 	[21] Unknown21(u64) -> u32;
 	[22] Unknown22(u64) -> u32;
-	[23] Unknown23() -> KObject;
+	[23] Unknown23() -> IpcService;
 	[24] Unknown24(u64, u32, buffer<unknown, 5, 0>);
 	[100] Unknown100(u64);
 	[101] Unknown101(u64) -> buffer<unknown, 0x1a, 0x40>;
@@ -2471,14 +2471,14 @@ interface nn::nfp::detail::IDebug {
 	[304] Unknown304(u64);
 	[305] Unknown305(u64, u64, buffer<unknown, 5, 0>) -> (u32, buffer<unknown, 6, 0>);
 	[306] Unknown306(u64) -> buffer<unknown, 0x1a, 0x58>;
-	[307] Unknown307(u64) -> KObject;
-	[308] Unknown308(u64) -> KObject;
+	[307] Unknown307(u64) -> IpcService;
+	[308] Unknown308(u64) -> IpcService;
 	[309] Unknown309() -> u32;
 	[310] Unknown310(u64) -> u32;
 	[311] Unknown311(u64) -> u32;
 	[312] Unknown312(u64);
 	[313] Unknown313(u64);
-	[314] Unknown314() -> KObject;
+	[314] Unknown314() -> IpcService;
 }
 
 interface nn::nfp::detail::IDebugManager is nfp:dbg {
@@ -2499,12 +2499,12 @@ interface nn::nfp::detail::ISystem {
 	[14] Unknown14(u64) -> buffer<unknown, 0x1a, 0x100>;
 	[15] Unknown15(u64) -> buffer<unknown, 0x1a, 0x40>;
 	[16] Unknown16(u64) -> buffer<unknown, 0x1a, 0x40>;
-	[17] Unknown17(u64) -> KObject;
-	[18] Unknown18(u64) -> KObject;
+	[17] Unknown17(u64) -> IpcService;
+	[18] Unknown18(u64) -> IpcService;
 	[19] Unknown19() -> u32;
 	[20] Unknown20(u64) -> u32;
 	[21] Unknown21(u64) -> u32;
-	[23] Unknown23() -> KObject;
+	[23] Unknown23() -> IpcService;
 	[100] Unknown100(u64);
 	[101] Unknown101(u64) -> buffer<unknown, 0x1a, 0x40>;
 	[102] Unknown102(u64) -> buffer<unknown, 0x1a, 0x100>;
@@ -2536,13 +2536,13 @@ interface nn::nfp::detail::IUser {
 	[14] Unknown14(u64) -> buffer<unknown, 0x1a, 0x100>;
 	[15] Unknown15(u64) -> buffer<unknown, 0x1a, 0x40>;
 	[16] Unknown16(u64) -> buffer<unknown, 0x1a, 0x40>;
-	[17] Unknown17(u64) -> KObject;
-	[18] Unknown18(u64) -> KObject;
+	[17] Unknown17(u64) -> IpcService;
+	[18] Unknown18(u64) -> IpcService;
 	[19] Unknown19() -> u32;
 	[20] Unknown20(u64) -> u32;
 	[21] Unknown21(u64) -> u32;
 	[22] Unknown22(u64) -> u32;
-	[23] Unknown23() -> KObject;
+	[23] Unknown23() -> IpcService;
 	[24] Unknown24(u64, u32, buffer<unknown, 5, 0>);
 }
 
@@ -2580,7 +2580,7 @@ interface nn::nifm::detail::IGeneralService {
 	[28] SetDefaultIpSetting(buffer<nn::nifm::IpSettingData, 0x19, 0xc2>);
 	[29] SetWirelessCommunicationEnabledForTest(bool);
 	[30] SetEthernetCommunicationEnabledForTest(bool);
-	[31] GetTelemetorySystemEventReadableHandle() -> KObject;
+	[31] GetTelemetorySystemEventReadableHandle() -> IpcService;
 	[32] GetTelemetryInfo() -> buffer<nn::nifm::TelemetryInfo, 0x16, 0x20c>;
 	[33] ConfirmSystemAvailability();
 }
@@ -2594,7 +2594,7 @@ interface nn::nifm::detail::INetworkProfile {
 interface nn::nifm::detail::IRequest {
 	[0] GetRequestState() -> i32;
 	[1] GetResult();
-	[2] GetSystemEventReadableHandles() -> (KObject, KObject);
+	[2] GetSystemEventReadableHandles() -> (IpcService, IpcService);
 	[3] Cancel();
 	[4] Submit();
 	[5] SetRequirement(nn::nifm::Requirement);
@@ -2623,7 +2623,7 @@ interface nn::nifm::detail::IScanRequest {
 	[0] Submit();
 	[1] IsProcessing() -> bool;
 	[2] GetResult();
-	[3] GetSystemEventReadableHandle() -> KObject;
+	[3] GetSystemEventReadableHandle() -> IpcService;
 }
 
 interface nn::nifm::detail::IStaticService is nifm:a, nifm:s, nifm:u {
@@ -2731,9 +2731,9 @@ interface nn::npns::INpnsSystem is npns:s {
 	[2] Unknown2(u64);
 	[3] Unknown3();
 	[4] Unknown4();
-	[5] Unknown5() -> KObject;
+	[5] Unknown5() -> IpcService;
 	[6] Unknown6();
-	[7] Unknown7() -> KObject;
+	[7] Unknown7() -> IpcService;
 	[11] Unknown11();
 	[12] Unknown12();
 	[13] Unknown13();
@@ -2748,7 +2748,7 @@ interface nn::npns::INpnsSystem is npns:s {
 	[102] Unknown102();
 	[103] Unknown103() -> u32;
 	[104] Unknown104() -> buffer<unknown, 6, 0>;
-	[105] Unknown105() -> KObject;
+	[105] Unknown105() -> IpcService;
 	[111] Unknown111();
 	[112] Unknown112();
 	[113] Unknown113();
@@ -2763,8 +2763,8 @@ interface nn::npns::INpnsUser is npns:u {
 	[2] Unknown2(u64);
 	[3] Unknown3();
 	[4] Unknown4();
-	[5] Unknown5() -> KObject;
-	[7] Unknown7() -> KObject;
+	[5] Unknown5() -> IpcService;
+	[7] Unknown7() -> IpcService;
 	[21] Unknown21();
 	[23] Unknown23();
 	[25] Unknown25();
@@ -2782,7 +2782,7 @@ interface nn::ns::detail::IAccountProxyInterface {
 interface nn::ns::detail::IApplicationManagerInterface {
 	[0] Unknown0();
 	[1] Unknown1() -> u64;
-	[2] Unknown2() -> KObject;
+	[2] Unknown2() -> IpcService;
 	[3] Unknown3();
 	[4] Unknown4(u64);
 	[5] Unknown5(u64);
@@ -2812,13 +2812,13 @@ interface nn::ns::detail::IApplicationManagerInterface {
 	[41] Unknown41();
 	[42] Unknown42();
 	[43] Unknown43();
-	[44] Unknown44() -> KObject;
-	[45] Unknown45() -> KObject;
+	[44] Unknown44() -> IpcService;
+	[45] Unknown45() -> IpcService;
 	[46] Unknown46() -> u128;
 	[47] Unknown47();
 	[48] Unknown48();
-	[49] Unknown49() -> KObject;
-	[52] Unknown52() -> KObject;
+	[49] Unknown49() -> IpcService;
+	[52] Unknown52() -> IpcService;
 	[53] Unknown53(u64);
 	[54] Unknown54(u64);
 	[55] Unknown55(u32) -> u8;
@@ -2848,7 +2848,7 @@ interface nn::ns::detail::IApplicationManagerInterface {
 	[201] Unknown201();
 	[210] Unknown210();
 	[220] Unknown220();
-	[300] Unknown300() -> KObject;
+	[300] Unknown300() -> IpcService;
 	[301] Unknown301() -> (u32, buffer<unknown, 6, 0>);
 	[302] Unknown302(u64) -> u64;
 	[303] Unknown303(u64);
@@ -2865,7 +2865,7 @@ interface nn::ns::detail::IApplicationManagerInterface {
 	[502] Unknown502();
 	[503] Unknown503();
 	[504] Unknown504();
-	[505] Unknown505() -> KObject;
+	[505] Unknown505() -> IpcService;
 	[506] Unknown506() -> u8;
 	[507] Unknown507();
 	[508] Unknown508();
@@ -2983,7 +2983,7 @@ interface nn::ns::detail::IProgressAsyncResult {
 }
 
 interface nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1() -> u8;
 	[2] Unknown2();
 	[10] Unknown10() -> bytes<0x28>;
@@ -3023,12 +3023,12 @@ interface nn::ns::detail::ISystemUpdateInterface is ns:su {
 	[4] Unknown4();
 	[5] Unknown5();
 	[6] Unknown6();
-	[9] Unknown9() -> KObject;
+	[9] Unknown9() -> IpcService;
 	[10] Unknown10();
 	[11] Unknown11();
-	[12] Unknown12() -> KObject;
+	[12] Unknown12() -> IpcService;
 	[13] Unknown13();
-	[14] Unknown14() -> KObject;
+	[14] Unknown14() -> IpcService;
 	[15] Unknown15();
 }
 
@@ -3058,7 +3058,7 @@ interface nn::nsd::detail::IManager is nsd:a, nsd:u {
 
 interface nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService {
 	[0] Unknown0();
-	[1] Unknown1() -> KObject;
+	[1] Unknown1() -> IpcService;
 	[2] Unknown2();
 	[3] Unknown3();
 	[4] Unknown4() -> u8;
@@ -3073,7 +3073,7 @@ interface nn::ntc::detail::service::IStaticService is ntc {
 
 interface nn::omm::detail::IOperationModeManager is omm {
 	[0] Unknown0() -> u8;
-	[1] Unknown1() -> KObject;
+	[1] Unknown1() -> IpcService;
 	[2] Unknown2();
 	[3] Unknown3();
 	[4] Unknown4();
@@ -3084,7 +3084,7 @@ interface nn::omm::detail::IOperationModeManager is omm {
 	[9] Unknown9();
 	[10] Unknown10(u8);
 	[11] Unknown11();
-	[12] Unknown12() -> KObject;
+	[12] Unknown12() -> IpcService;
 	[13] Unknown13();
 	[14] Unknown14() -> u8;
 }
@@ -3092,7 +3092,7 @@ interface nn::omm::detail::IOperationModeManager is omm {
 interface nn::ovln::IReceiver {
 	[0] Unknown0(u128);
 	[1] Unknown1(u128);
-	[2] Unknown2() -> KObject;
+	[2] Unknown2() -> IpcService;
 	[3] Unknown3();
 	[4] Unknown4();
 }
@@ -3174,23 +3174,23 @@ interface nn::pctl::detail::ipc::IParentalControlService {
 	[1204] GenerateInquiryCode() -> nn::pctl::InquiryCode;
 	[1205] CheckMasterKey(nn::pctl::InquiryCode, array<i8, 9>) -> bool;
 	[1206] GetPinCodeLength() -> i32;
-	[1207] GetPinCodeChangedEvent() -> KObject;
+	[1207] GetPinCodeChangedEvent() -> IpcService;
 	[1403] IsPairingActive() -> bool;
 	[1406] GetSettingsLastUpdated() -> nn::time::PosixTime;
 	[1411] GetPairingAccountInfo(nn::pctl::detail::PairingInfoBase) -> nn::pctl::detail::PairingAccountInfoBase;
 	[1421] GetAccountNickname(nn::pctl::detail::PairingAccountInfoBase) -> (u32, array<i8, 0xa>);
 	[1424] GetAccountState(nn::pctl::detail::PairingAccountInfoBase) -> i32;
-	[1432] GetSynchronizationEvent() -> KObject;
+	[1432] GetSynchronizationEvent() -> IpcService;
 	[1451] StartPlayTimer();
 	[1452] StopPlayTimer();
 	[1453] IsPlayTimerEnabled() -> bool;
 	[1454] GetPlayTimerRemainingTime() -> nn::TimeSpanType;
 	[1455] IsRestrictedByPlayTimer() -> bool;
 	[1456] GetPlayTimerSettings() -> nn::pctl::PlayTimerSettings;
-	[1457] GetPlayTimerEventToRequestSuspension() -> KObject;
+	[1457] GetPlayTimerEventToRequestSuspension() -> IpcService;
 	[1471] NotifyWrongPinCodeInputManyTimes();
 	[1472] CancelNetworkRequest();
-	[1473] GetUnlinkedEvent() -> KObject;
+	[1473] GetUnlinkedEvent() -> IpcService;
 	[1474] ClearUnlinkedEvent();
 	[1601] DisableAllFeatures() -> bool;
 	[1602] PostEnableAllFeatures() -> bool;
@@ -3200,19 +3200,19 @@ interface nn::pctl::detail::ipc::IParentalControlService {
 	[1941] DeletePairing();
 	[1951] SetPlayTimerSettingsForDebug(nn::pctl::PlayTimerSettings);
 	[1952] GetPlayTimerSpentTimeForTest() -> nn::TimeSpanType;
-	[2001] RequestPairingAsync(array<i8, 9>) -> (nn::pctl::detail::AsyncData, KObject);
+	[2001] RequestPairingAsync(array<i8, 9>) -> (nn::pctl::detail::AsyncData, IpcService);
 	[2002] FinishRequestPairing(nn::pctl::detail::AsyncData) -> nn::pctl::detail::PairingInfoBase;
-	[2003] AuthorizePairingAsync(nn::pctl::detail::PairingInfoBase) -> (nn::pctl::detail::AsyncData, KObject);
+	[2003] AuthorizePairingAsync(nn::pctl::detail::PairingInfoBase) -> (nn::pctl::detail::AsyncData, IpcService);
 	[2004] FinishAuthorizePairing(nn::pctl::detail::AsyncData) -> nn::pctl::detail::PairingInfoBase;
-	[2005] RetrievePairingInfoAsync() -> (nn::pctl::detail::AsyncData, KObject);
+	[2005] RetrievePairingInfoAsync() -> (nn::pctl::detail::AsyncData, IpcService);
 	[2006] FinishRetrievePairingInfo(nn::pctl::detail::AsyncData) -> nn::pctl::detail::PairingInfoBase;
-	[2007] UnlinkPairingAsync(bool) -> (nn::pctl::detail::AsyncData, KObject);
+	[2007] UnlinkPairingAsync(bool) -> (nn::pctl::detail::AsyncData, IpcService);
 	[2008] FinishUnlinkPairing(bool, align<4, nn::pctl::detail::AsyncData>);
-	[2009] GetAccountMiiImageAsync(nn::pctl::detail::PairingAccountInfoBase) -> (nn::pctl::detail::AsyncData, u32, KObject, buffer<unknown, 6, 0>);
+	[2009] GetAccountMiiImageAsync(nn::pctl::detail::PairingAccountInfoBase) -> (nn::pctl::detail::AsyncData, u32, IpcService, buffer<unknown, 6, 0>);
 	[2010] FinishGetAccountMiiImage(nn::pctl::detail::AsyncData) -> (u32, buffer<unknown, 6, 0>);
-	[2011] GetAccountMiiImageContentTypeAsync(nn::pctl::detail::PairingAccountInfoBase) -> (nn::pctl::detail::AsyncData, u32, KObject, array<i8, 0xa>);
+	[2011] GetAccountMiiImageContentTypeAsync(nn::pctl::detail::PairingAccountInfoBase) -> (nn::pctl::detail::AsyncData, u32, IpcService, array<i8, 0xa>);
 	[2012] FinishGetAccountMiiImageContentType(nn::pctl::detail::AsyncData) -> (u32, array<i8, 0xa>);
-	[2013] SynchronizeParentalControlSettingsAsync() -> (nn::pctl::detail::AsyncData, KObject);
+	[2013] SynchronizeParentalControlSettingsAsync() -> (nn::pctl::detail::AsyncData, IpcService);
 	[2014] FinishSynchronizeParentalControlSettings(nn::pctl::detail::AsyncData);
 	[2015] FinishSynchronizeParentalControlSettingsWithLastUpdated(nn::pctl::detail::AsyncData) -> nn::time::PosixTime;
 }
@@ -3251,7 +3251,7 @@ interface nn::pcv::detail::IPcvService is pcv {
 	[18] PowerOn(nn::pcv::PowerControlTarget, i32);
 	[19] PowerOff(nn::pcv::PowerControlTarget);
 	[20] ChangeVoltage(nn::pcv::PowerControlTarget, i32);
-	[21] GetPowerClockInfoEvent() -> KObject;
+	[21] GetPowerClockInfoEvent() -> IpcService;
 	[22] GetOscillatorClock() -> u32;
 	[23] GetDvfsTable(i32, i32) -> (i32, array<u32, 0xa>, array<i32, 0xa>);
 	[24] GetModuleStateTable(i32) -> (i32, array<nn::pcv::ModuleState, 0xa>);
@@ -3296,7 +3296,7 @@ interface nn::pl::detail::ISharedFontManager is pl:u {
 	[1] Unknown1(u32) -> u32;
 	[2] Unknown2(u32) -> u32;
 	[3] Unknown3(u32) -> u32;
-	[4] Unknown4() -> KObject;
+	[4] Unknown4() -> IpcService;
 	[5] Unknown5(u64) -> (u8, u32, buffer<unknown, 6, 0>, buffer<unknown, 6, 0>, buffer<unknown, 6, 0>);
 }
 
@@ -3313,7 +3313,7 @@ interface nn::pm::detail::IShellInterface is pm:shell {
 	[0] Unknown0();
 	[1] Unknown1(u64);
 	[2] Unknown2(u64);
-	[3] Unknown3() -> KObject;
+	[3] Unknown3() -> IpcService;
 	[4] Unknown4() -> u128;
 	[5] Unknown5(u64);
 	[6] Unknown6(u64);
@@ -3335,7 +3335,7 @@ interface nn::prepo::detail::ipc::IPrepoService is prepo:a, prepo:m, prepo:u, pr
 }
 
 interface nn::psc::sf::IPmControl is psc:c {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1(u32, u32, u32);
 	[2] Unknown2();
 	[3] Unknown3() -> u32;
@@ -3372,13 +3372,13 @@ interface nn::psm::IPsmServer is psm {
 	[13] Unknown13() -> u64;
 	[14] Unknown14() -> u8;
 	[15] Unknown15() -> u64;
-	[16] Unknown16() -> KObject;
+	[16] Unknown16() -> IpcService;
 	[17] Unknown17();
-	[18] Unknown18() -> KObject;
+	[18] Unknown18() -> IpcService;
 }
 
 interface nn::psm::IPsmSession {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1();
 	[2] Unknown2(u8);
 	[3] Unknown3(u8);
@@ -3408,7 +3408,7 @@ interface nn::ro::detail::IRoInterface is ldr:ro {
 	[1] Unknown1(u64, u64, pid);
 	[2] Unknown2(u64, u64, u64, pid);
 	[3] Unknown3(u64, u64, pid);
-	[4] Unknown4(u64, pid, KObject);
+	[4] Unknown4(u64, pid, IpcService);
 }
 
 interface nn::sasbus::IManager is sasbus {
@@ -3545,7 +3545,7 @@ interface nn::settings::ISystemSettingsServer is set:sys {
 	[79] GetProductModel() -> i32;
 	[80] GetLdnChannel() -> i32;
 	[81] SetLdnChannel(i32);
-	[82] AcquireTelemetryDirtyFlagEventHandle() -> KObject;
+	[82] AcquireTelemetryDirtyFlagEventHandle() -> IpcService;
 	[83] GetTelemetryDirtyFlags() -> nn::settings::system::TelemetryDirtyFlag;
 	[84] GetPtmBatteryLot() -> nn::settings::factory::BatteryLot;
 	[85] SetPtmBatteryLot(nn::settings::factory::BatteryLot);
@@ -3556,7 +3556,7 @@ interface nn::settings::ISystemSettingsServer is set:sys {
 	[90] GetMiiAuthorId() -> nn::util::Uuid;
 	[91] SetShutdownRtcValue(i64);
 	[92] GetShutdownRtcValue() -> i64;
-	[93] AcquireFatalDirtyFlagEventHandle() -> KObject;
+	[93] AcquireFatalDirtyFlagEventHandle() -> IpcService;
 	[94] GetFatalDirtyFlags() -> nn::settings::system::FatalDirtyFlag;
 	[95] GetAutoUpdateEnableFlag() -> bool;
 	[96] SetAutoUpdateEnableFlag(bool);
@@ -3594,8 +3594,8 @@ interface nn::sm::detail::IManagerInterface is sm:m {
 
 interface nn::sm::detail::IUserInterface is sm: {
 	[0] Unknown0(u64, pid);
-	[1] Unknown1(u64) -> KObject;
-	[2] Unknown2(u64, u8, u32) -> KObject;
+	[1] Unknown1(u64) -> IpcService;
+	[2] Unknown2(u64, u8, u32) -> IpcService;
 	[3] Unknown3(u64);
 }
 
@@ -3613,7 +3613,7 @@ interface nn::socket::resolver::IResolver is sfdnsres {
 }
 
 interface nn::socket::sf::IClient is bsd:u, bsd:s {
-	[0] Unknown0(bytes<0x20>, u64, u64, pid, KObject) -> u32;
+	[0] Unknown0(bytes<0x20>, u64, u64, pid, IpcService) -> u32;
 	[1] Unknown1(u64, pid);
 	[2] Unknown2(u32, u32, u32) -> (u32, u32);
 	[3] Unknown3(u32, u32, u32) -> (u32, u32);
@@ -3668,7 +3668,7 @@ interface nn::spl::detail::IGeneralInterface is spl: {
 	[20] Unknown20();
 	[21] Unknown21() -> u32;
 	[22] Unknown22(u32);
-	[23] Unknown23() -> KObject;
+	[23] Unknown23() -> IpcService;
 	[24] Unknown24();
 	[25] Unknown25();
 }
@@ -3679,10 +3679,10 @@ interface nn::spl::detail::IRandomInterface is csrng {
 
 interface nn::spsm::detail::IPowerStateInterface is spsm {
 	[0] Unknown0() -> u32;
-	[1] Unknown1() -> KObject;
+	[1] Unknown1() -> IpcService;
 	[2] Unknown2() -> u32;
 	[3] Unknown3(u8);
-	[4] Unknown4() -> KObject;
+	[4] Unknown4() -> IpcService;
 	[5] Unknown5() -> u32;
 	[6] Unknown6();
 	[7] Unknown7();
@@ -3746,7 +3746,7 @@ interface nn::ssl::sf::ISslService is ssl {
 
 interface nn::tc::IManager is tc {
 	[0] Unknown0(u32);
-	[1] Unknown1(u32) -> KObject;
+	[1] Unknown1(u32) -> IpcService;
 	[2] Unknown2(u32) -> u8;
 	[3] Unknown3(u32);
 	[4] Unknown4(u32);
@@ -3801,10 +3801,10 @@ interface nn::timesrv::detail::service::ITimeZoneService {
 interface nn::tma::IHtcManager {
 	[0] Unknown0(buffer<unknown, 5, 0>) -> (u32, buffer<unknown, 6, 0>);
 	[1] Unknown1(buffer<unknown, 5, 0>) -> u32;
-	[2] Unknown2() -> KObject;
-	[3] Unknown3() -> KObject;
-	[4] Unknown4() -> KObject;
-	[5] Unknown5() -> KObject;
+	[2] Unknown2() -> IpcService;
+	[3] Unknown3() -> IpcService;
+	[4] Unknown4() -> IpcService;
+	[5] Unknown5() -> IpcService;
 	[6] Unknown6() -> buffer<unknown, 6, 0>;
 	[7] Unknown7() -> buffer<unknown, 6, 0>;
 	[8] Unknown8(u8);
@@ -3839,13 +3839,13 @@ interface nn::tma::ISocket {
 	[6] Unknown6(u32, buffer<unknown, 0x21, 0>) -> (u32, u64);
 	[7] Unknown7(u32) -> (u32, u32);
 	[8] Unknown8(u32, u32) -> (u32, u32);
-	[9] Unknown9() -> (u32, KObject);
+	[9] Unknown9() -> (u32, IpcService);
 	[10] Unknown10(u32) -> (bytes<0x42>, u32, object<IUnknown>);
-	[11] Unknown11(u32, u32) -> (u32, KObject);
+	[11] Unknown11(u32, u32) -> (u32, IpcService);
 	[12] Unknown12(u32) -> (u32, u64, buffer<unknown, 0x22, 0>);
-	[13] Unknown13(u32, u32, u32, u64, KObject) -> (u32, KObject);
-	[14] Unknown14(u32, buffer<unknown, 0x21, 0>) -> (u32, KObject);
-	[15] Unknown15(u32, u64, KObject, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, KObject);
+	[13] Unknown13(u32, u32, u32, u64, IpcService) -> (u32, IpcService);
+	[14] Unknown14(u32, buffer<unknown, 0x21, 0>) -> (u32, IpcService);
+	[15] Unknown15(u32, u64, IpcService, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (u32, IpcService);
 	[16] Unknown16(u32) -> (u32, u64);
 }
 
@@ -3915,7 +3915,7 @@ interface nn::usb::ds::IDsService is usb:ds {
 interface nn::usb::hs::IClientEpSession {
 	[0] Unknown0();
 	[1] Unknown1();
-	[2] Unknown2() -> KObject;
+	[2] Unknown2() -> IpcService;
 	[3] Unknown3();
 	[4] Unknown4();
 	[5] Unknown5();
@@ -3923,13 +3923,13 @@ interface nn::usb::hs::IClientEpSession {
 }
 
 interface nn::usb::hs::IClientIfSession {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3();
 	[4] Unknown4() -> u32;
 	[5] Unknown5();
-	[6] Unknown6() -> KObject;
+	[6] Unknown6() -> IpcService;
 	[7] Unknown7();
 	[8] Unknown8();
 	[9] Unknown9();
@@ -3942,7 +3942,7 @@ interface nn::usb::hs::IClientRootSession is usb:hs {
 	[3] Unknown3();
 	[4] Unknown4();
 	[5] Unknown5(u8);
-	[6] Unknown6() -> KObject;
+	[6] Unknown6() -> IpcService;
 	[7] Unknown7();
 }
 
@@ -3967,7 +3967,7 @@ interface nn::usb::pd::detail::IPdManager is usb:pd {
 }
 
 interface nn::usb::pd::detail::IPdSession {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1();
 	[2] Unknown2();
 	[3] Unknown3() -> u32;
@@ -3977,9 +3977,9 @@ interface nn::usb::pd::detail::IPdSession {
 }
 
 interface nn::usb::pm::IPmService is usb:pm {
-	[0] Unknown0() -> KObject;
+	[0] Unknown0() -> IpcService;
 	[1] Unknown1();
-	[2] Unknown2() -> KObject;
+	[2] Unknown2() -> IpcService;
 	[3] Unknown3() -> u32;
 	[4] Unknown4(u32, u32);
 	[5] Unknown5();
@@ -4004,8 +4004,8 @@ interface nn::visrv::sf::IApplicationDisplayService {
 	[2450] GetIndirectLayerImageMap(i64, i64, u64, nn::applet::AppletResourceUserId, pid) -> (i64, i64, buffer<unknown, 0x46, 0>);
 	[2451] GetIndirectLayerImageCropMap(f32, f32, f32, f32, i64, i64, u64, nn::applet::AppletResourceUserId, pid) -> (i64, i64, buffer<unknown, 0x46, 0>);
 	[2460] GetIndirectLayerImageRequiredMemoryInfo(i64, i64) -> (i64, i64);
-	[5202] GetDisplayVsyncEvent(u64) -> KObject;
-	[5203] GetDisplayVsyncEventForDebug(u64) -> KObject;
+	[5202] GetDisplayVsyncEvent(u64) -> IpcService;
+	[5203] GetDisplayVsyncEventForDebug(u64) -> IpcService;
 }
 
 interface nn::visrv::sf::IApplicationRootService is vi:u {
@@ -4022,9 +4022,9 @@ interface nn::visrv::sf::IManagerDisplayService {
 	[2053] DestroyIndirectProducerEndPoint(u64);
 	[2054] CreateIndirectConsumerEndPoint(u64, nn::applet::AppletResourceUserId) -> u64;
 	[2055] DestroyIndirectConsumerEndPoint(u64);
-	[2300] AcquireLayerTexturePresentingEvent(u64) -> KObject;
+	[2300] AcquireLayerTexturePresentingEvent(u64) -> IpcService;
 	[2301] ReleaseLayerTexturePresentingEvent(u64);
-	[2302] GetDisplayHotplugEvent(u64) -> KObject;
+	[2302] GetDisplayHotplugEvent(u64) -> IpcService;
 	[2402] GetDisplayHotplugState(u64) -> u32;
 	[4201] SetDisplayAlpha(f32, u64);
 	[4203] SetDisplayLayerStack(u32, u64);
@@ -4141,7 +4141,7 @@ interface nn::wlan::detail::ILocalManager is wlan:lcl {
 	[17] Unknown17();
 	[18] Unknown18();
 	[19] Unknown19();
-	[20] Unknown20() -> KObject;
+	[20] Unknown20() -> IpcService;
 	[21] Unknown21();
 	[22] Unknown22() -> u32;
 	[23] Unknown23();
@@ -4212,7 +4212,7 @@ interface nn::xcd::detail::ISystemServer is xcd:sys {
 interface nns::hosbinder::IHOSBinderDriver is dispdrv {
 	[0] TransactParcel(i32, u32, u32, buffer<unknown, 5, 0>) -> buffer<unknown, 6, 0>;
 	[1] AdjustRefcount(i32, i32, i32);
-	[2] GetNativeHandle(i32, u32) -> KObject;
+	[2] GetNativeHandle(i32, u32) -> IpcService;
 	[3] TransactParcelAuto(i32, u32, u32, buffer<unknown, 0x21, 0>) -> buffer<unknown, 0x22, 0>;
 }
 
@@ -4257,4 +4257,3 @@ interface nv::gemcoredump::INvGemCoreDump is nvgem:cd {
 	[1] Unknown1();
 	[2] Unknown2();
 }
-

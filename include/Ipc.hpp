@@ -1,5 +1,10 @@
 #ifndef _IPC_HPP
 #define _IPC_HPP
+class KObject {
+public:
+        virtual ~KObject() {}
+        virtual void Close() {}
+};
 
 class IpcMessage {
 public:
@@ -22,9 +27,53 @@ public:
             return *((T *) (raw_ptr + payload_off + 8 + offset));
         }
         template<typename T>
-	T GetDataPointer(uint offset) {
+        T GetDataPointer(uint offset) {
                 return (T) (raw_ptr + payload_off + 8 + offset);
-	}
+        }
+        uint64_t GetBuffer(int btype, int num, unsigned int& size) {
+                if(btype & 0x20) {
+                        auto buf = GetBuffer((btype & ~0x20) | 4, num, size);
+                        if(size != 0)
+                                return buf;
+                        return GetBuffer((btype & ~0x20) | 8, num, size);
+                }
+                size = 0;
+                auto ax = (btype & 3) == 1;
+                auto flags_ = btype & 0xC0;
+                auto flags = flags_ == 0x80 ? 3 : (flags_ == 0x40 ? 1 : 0);
+                auto cx = (btype & 0xC) == 8;
+                switch((ax << 1) | cx) {
+                        case 0: { // B
+                                auto t = (uint32_t *) (raw_ptr + desc_off + x_cnt * 8 + a_cnt * 12 + num * 12);
+                                uint64_t a = t[0], b = t[1], c = t[2];
+                                size = (unsigned int) (a | (((c >> 24) & 0xF) << 32));
+                                if((c & 0x3) != flags)
+                                        ns_print("B descriptor flags don't match: %u vs expected %u", (unsigned int) (c & 0x3), flags);
+                                return b | (((((c >> 2) << 4) & 0x70) | ((c >> 28) & 0xF)) << 32);
+                        }
+                        case 1: { // C
+                                auto t = (uint32_t *) (raw_ptr + raw_off + w_cnt * 4);
+                                uint64_t a = t[0], b = t[1];
+                                size = b >> 16;
+                                return a | ((b & 0xFFFF) << 32);
+                        }
+                        case 2: { // A
+                                auto t = (uint32_t *) (raw_ptr + desc_off + x_cnt * 8 + num * 12);
+                                uint64_t a = t[0], b = t[1], c = t[2];
+                                size = (unsigned int) (a | (((c >> 24) & 0xF) << 32));
+                                if((c & 0x3) != flags)
+                                        ns_print("A descriptor flags don't match: %u vs expected %u", (uint) (c & 0x3), flags);
+                                return b | (((((c >> 2) << 4) & 0x70) | ((c >> 28) & 0xF)) << 32);
+                        }
+                        case 3: { // X
+                                auto t = (uint32_t *) (raw_ptr + desc_off + num * 8);
+                                uint64_t a = t[0], b = t[1];
+                                size = (unsigned int) (a >> 16);
+                                return b | ((((a >> 12) & 0xF) | ((a >> 2) & 0x70)) << 32);
+                        }
+                }
+                return 0;
+        }
         void GenBuf(unsigned int _move_cnt, unsigned int _copy_cnt, unsigned int _data_bytes);
         void SetErrorCode(uint32_t error_code);
         void ParseMessage();
@@ -44,6 +93,12 @@ public:
             uint32_t *buf = (uint32_t *) raw_ptr;
             buf[3 + offset] = handler;
         }
+        uint32_t GetMoved(int off) {
+		return *(uint32_t *) (raw_ptr + move_off + off * 4);
+	}
+	uint32_t GetCopied(int off) {
+		return *(uint32_t *) (raw_ptr + copy_off + off * 4);
+	}
 private:
         unsigned int copy_off, move_off, desc_off, raw_off, payload_off, realdata_off;
         uint8_t *raw_ptr;
@@ -57,13 +112,7 @@ public:
         int handle;
 };
 
-class SmService : public IpcService {
-public:
-        SmService() { }
-        uint32_t Initialize();
-        uint32_t GetService(std::string name, IpcService *service);
-        uint32_t RegisterService(std::string name, IpcService *service);        
-        uint32_t Dispatch(IpcMessage *req, IpcMessage *resp);
+class IUnknown : public IpcService {
 };
 
 namespace IPC {
@@ -76,7 +125,7 @@ void Initialize();
 
 uint32_t NewHandle(IpcService *srv);
 
-IpcService *GetHandle(uint32_t handle);
+template<typename T> T GetHandle(uint32_t handle);
 
 uint32_t ConnectToPort(std::string name);
 

@@ -122,7 +122,7 @@ uint64_t UnmapMemory(uint64_t dest, uint64_t src, uint64_t size) {
 
 std::tuple<uint64_t, uint64_t> QueryMemory(uint64_t meminfo, uint64_t pageinfo, uint64_t addr) {
         ns_print("QueryMemory 0x%lx\n", addr);
-        
+
 	return make_tuple(0, 0);
 }
 
@@ -241,7 +241,7 @@ uint64_t SendSyncRequest(uint32_t handle) {
 	ns_print("SendSyncRequest\n");
 	uint8_t msgbuf[0x100];
         ARMv8::ReadBytes (ARMv8::GetTls(), msgbuf, 0x100);
-        auto handler = IPC::GetHandle(handle);
+        auto handler = IPC::GetHandle<IpcService*>(handle);
         if (!handler) {
                 ns_abort ("Cannnot find session handler\n");
         }

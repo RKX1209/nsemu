@@ -8,6 +8,7 @@
 
 #define LINE_BREAK 15
 
+typedef __uint128_t uint128_t;
 enum RunLevel {
 	RUN_LEVEL_RELEASE = 0,
 	RUN_LEVEL_DEBUG,
