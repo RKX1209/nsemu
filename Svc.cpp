@@ -120,9 +120,43 @@ uint64_t UnmapMemory(uint64_t dest, uint64_t src, uint64_t size) {
 	return 0;
 }
 
+typedef struct {
+	uint64_t begin;
+	uint64_t size;
+	uint32_t memory_type;
+	uint32_t memory_attribute;
+	uint32_t permission;
+	uint32_t device_ref_count;
+	uint32_t ipc_ref_count;
+	uint32_t padding;
+} MemInfo;
+
 std::tuple<uint64_t, uint64_t> QueryMemory(uint64_t meminfo, uint64_t pageinfo, uint64_t addr) {
         ns_print("QueryMemory 0x%lx\n", addr);
-
+        for(auto [begin, end, perm] : Memory::GetRegions()) {
+                if (begin <= addr && addr <= end) {
+                        ns_print("found region at 0x%lx, 0x%lx\n", begin, end);
+                        MemInfo minfo;
+                        minfo.begin = begin;
+                        minfo.size = end - begin + 1;
+			minfo.memory_type = perm == -1 ? 0 : 3; // FREE or CODE
+			minfo.memory_attribute = 0;
+                        if(addr >= Memory::heap_base && addr < Memory::heap_base + Memory::heap_size) {
+				minfo.memory_type = 5; // HEAP
+			}
+                        minfo.permission = 0;
+			if(perm != -1) {
+				auto offset = *ARMv8::GuestPtr<uint32_t>(begin + 4);
+				if(begin + offset + 4 < end && *ARMv8::GuestPtr<uint32_t>(begin + offset) == byte_swap32_str("MOD0"))
+					minfo.permission = 5;
+				else
+					minfo.permission = 3;
+			}
+                        MemInfo *ptr = ARMv8::GuestPtr<MemInfo>(meminfo);
+                        *ptr = minfo;
+                        break;
+                }
+        }
 	return make_tuple(0, 0);
 }
 
@@ -269,10 +303,9 @@ uint64_t Break(uint64_t X0, uint64_t X1, uint64_t info) {
 }
 
 uint64_t OutputDebugString(uint64_t ptr, uint64_t size) {
-        ns_print("OutputDebugString addr=0x%lx, size=%llu\n", ptr, size);
         unsigned char *str = new unsigned char[size + 1];
         ARMv8::ReadBytes (ptr, str, size);
-        ns_print("String: %s\n", str);
+        ns_print("[PRINT]: %s\n", str);
         delete[] str;
 	return 0;
 }

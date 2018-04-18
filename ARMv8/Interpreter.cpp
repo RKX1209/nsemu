@@ -21,7 +21,7 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3415400, mx = 1000;
+        uint64_t estimate = 3456400, mx = 10000;
         //uint64_t estimate = 0, mx = 3420000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
@@ -222,18 +222,23 @@ static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
         return 0;
 }
 
-static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType op) {
+static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType _op) {
         uint64_t result;
-        if (op == AL_TYPE_SUB) {
-                arg2 = -arg2;
+        OpType op = _op;
+        if (_op == AL_TYPE_SUB) {
+                arg2 = -(int64_t) arg2;
                 op = AL_TYPE_ADD;
         }
         result = ALCalc (arg1, arg2, op);
         if (setflags) {
-                if (bit64)
+                if (bit64) {
                         UpdateFlag64 (result, arg1, arg2);
-                else
+                        if (_op == AL_TYPE_SUB && arg2 == 0) {
+                                NZCV |= C_MASK;
+                        }
+                } else {
                         UpdateFlag32 (result, arg1, arg2);
+                }
         }
         if (bit64) {
                 X(rd_idx) = result;

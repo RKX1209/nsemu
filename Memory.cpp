@@ -16,8 +16,8 @@ RAMBlock::RAMBlock (std::string _name, uint64_t _addr, size_t _length, int _perm
 namespace Memory
 {
 uint64_t heap_base = 0x9000000;
-//uint64_t heap_size = 0x2000000;
-uint64_t heap_size = 0x0;
+uint64_t heap_size = 0x2000000;
+//uint64_t heap_size = 0x0;
 uint8_t *pRAM;	// XXX: Replace raw pointer to View wrapper.
 static RAMBlock mem_map[] =
 {
@@ -25,7 +25,7 @@ static RAMBlock mem_map[] =
 	RAMBlock (".rdata", 0x1000000, 0x1000000, PROT_READ | PROT_WRITE),
 	RAMBlock (".data", 0x2000000, 0x1000000, PROT_READ | PROT_WRITE),
 	RAMBlock ("[stack]", 0x3000000, 0x6000000, PROT_READ | PROT_WRITE),
-	//RAMBlock ("[heap]", heap_base, heap_size, PROT_READ | PROT_WRITE),
+	RAMBlock ("[heap]", heap_base, heap_size, PROT_READ | PROT_WRITE),
 };
 
 void InitMemmap(Nsemu *nsemu) {
@@ -50,12 +50,15 @@ RAMBlock *FindRAMBlock(Nsemu *nsemu, uint64_t addr, size_t len) {
 
 std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions() {
         std::list<std::tuple<uint64_t,uint64_t, int>> ret;
+        uint64_t last;
         for (int i = 0; i < sizeof(mem_map) / sizeof(RAMBlock); i++) {
                 uint64_t addr = mem_map[i].addr;
                 size_t length = mem_map[i].length;
                 int perm = mem_map[i].perm;
                 ret.push_back(make_tuple(addr, addr + length, perm));
+                last = addr + length + 1;
         }
+        ret.push_back(make_tuple(last, 0xFFFFFFFFFFFFFFFF, -1));
         return ret;
 }
 

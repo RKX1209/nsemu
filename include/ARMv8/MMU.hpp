@@ -20,6 +20,9 @@ void WriteU32(const uint64_t gva, uint32_t value);
 void WriteU64(const uint64_t gva, uint64_t value);
 
 uint64_t GvaToHva(const uint64_t gva);
+template<typename T> T* GuestPtr(uint64_t addr) {
+        return reinterpret_cast<T*>(GvaToHva(addr));
+}
 
 }
 #endif
