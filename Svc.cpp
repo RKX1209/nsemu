@@ -117,13 +117,7 @@ uint64_t MirrorStack(uint64_t dest, uint64_t src, uint64_t size) {
         Memory::AddMemmap (dest, size);
         uint8_t *temp = new uint8_t[size];
         ARMv8::ReadBytes(src, temp, size);
-        bindump(temp, size / 10);
-        ns_print("#############\n");
         ARMv8::WriteBytes(dest, temp, size);
-        ns_print("hoge\n");
-        ARMv8::ReadBytes(dest, temp, size);
-        bindump(temp, size / 10);
-        ns_print("#############\n");
         delete[] temp;
 	return 0;
 }
@@ -281,7 +275,7 @@ uint64_t SignalProcessWideKey(uint64_t semaAddr, uint64_t target) {
 }
 
 std::tuple<uint64_t, uint32_t> ConnectToPort(uint64_t name) {
-        ns_print("ConnectToPort\n");
+        ns_print("ConnectToPort str=0x%lx\n", name);
 	return make_tuple(0, IPC::ConnectToPort(ARMv8::ReadString(name)));
 }
 

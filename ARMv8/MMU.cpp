@@ -46,7 +46,7 @@ void ReadBytes(uint64_t gva, uint8_t *ptr, int size) {
 
 std::string ReadString(uint64_t gva) {
         uint64_t gpa = gva;
-        uint64_t mx_size = (1 << 32);
+        int mx_size = (1 << 30);
         char byte;
         int sz = 0;
         do {

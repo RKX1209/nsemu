@@ -34,6 +34,7 @@ static void util_print(RunLevel level, FILE *fp, const char *format, ...) {
 #define ns_abort(format, ...)		\
 	ns_print ("%s: ", __func__);	\
 	ns_print (format, ## __VA_ARGS__);\
+        ARMv8::Dump(); \
 	abort ()
 
 inline void bindump(uint8_t *ptr, size_t size) {
