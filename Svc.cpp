@@ -113,10 +113,24 @@ uint64_t SetMemoryAttribute(uint64_t addr, uint64_t size, uint64_t state0, uint6
 }
 
 uint64_t MirrorStack(uint64_t dest, uint64_t src, uint64_t size) {
+        ns_print("MirrorStack 0x%lx 0x%lx 0x%lx\n", dest, src, size);
+        Memory::AddMemmap (dest, size);
+        uint8_t *temp = new uint8_t[size];
+        ARMv8::ReadBytes(src, temp, size);
+        bindump(temp, size / 10);
+        ns_print("#############\n");
+        ARMv8::WriteBytes(dest, temp, size);
+        ns_print("hoge\n");
+        ARMv8::ReadBytes(dest, temp, size);
+        bindump(temp, size / 10);
+        ns_print("#############\n");
+        delete[] temp;
 	return 0;
 }
 
 uint64_t UnmapMemory(uint64_t dest, uint64_t src, uint64_t size) {
+        ns_print("UnmapMemory 0x%lx 0x%lx 0x%lx\n", dest, src, size);
+        Memory::DelMemmap(dest, size);
 	return 0;
 }
 

@@ -15,26 +15,25 @@ uint64_t GvaToHva(const uint64_t gva) {
 template<typename T>
 static T ReadFromRAM(const uint64_t gpa) {
 	T value = 0;
-        //ns_print("ReadFromRAM: 0x%lx, (%d)\n", gpa, sizeof(T));
+        uint8_t *emu_mem = static_cast<uint8_t *>(Memory::GetRawPtr(gpa, sizeof(T)));
+        debug_print("ReadFromRAM: 0x%lx, (%d)\n", gpa, sizeof(T));
 	for (uint64_t addr = gpa; addr < gpa + sizeof(T); addr++) {
 		uint8_t byte;
-		std::memcpy (&byte, &Memory::pRAM[addr], sizeof(uint8_t));
+		std::memcpy (&byte, &emu_mem[addr - gpa], sizeof(uint8_t));
 		value = value | ((uint64_t)byte << (8 * (addr - gpa)));
 	}
-        uint8_t *ptr = &Memory::pRAM[gpa];
-        bindump (ptr, sizeof(T));
 	return value;
 }
 
 template<typename T>
 static void WriteToRAM(const uint64_t gpa, T value) {
+        uint8_t *emu_mem = static_cast<uint8_t *>(Memory::GetRawPtr(gpa, sizeof(T)));
+        debug_print("WriteToRAM: 0x%lx, (%d)\n", gpa, sizeof(T));
 	for (uint64_t addr = gpa; addr < gpa + sizeof(T); addr++) {
                 uint8_t byte = value & 0xff;
-		std::memcpy (&Memory::pRAM[addr], &byte, sizeof(uint8_t));
+		std::memcpy (&emu_mem[addr - gpa], &byte, sizeof(uint8_t));
 		value >>= 8;
 	}
-        uint8_t *ptr = &Memory::pRAM[gpa];
-        bindump (ptr, sizeof(T));
 }
 
 void ReadBytes(uint64_t gva, uint8_t *ptr, int size) {

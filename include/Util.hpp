@@ -39,16 +39,16 @@ static void util_print(RunLevel level, FILE *fp, const char *format, ...) {
 inline void bindump(uint8_t *ptr, size_t size) {
 	int i = 0;
 	while (i < size) {
-		debug_print ("%02x", ptr[i]);
+		ns_print ("%02x", ptr[i]);
 		if ((i + 1) % LINE_BREAK == 0) {
-			debug_print ("\n");
+			ns_print ("\n");
 		} else {
-			debug_print (" ");
+			ns_print (" ");
 		}
 		i++;
 	}
 	if (i % LINE_BREAK != 0) {
-		debug_print ("\n");
+		ns_print ("\n");
 	}
 }
 

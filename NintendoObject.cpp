@@ -41,11 +41,12 @@ int Nso::load(Nsemu *nsemu) {
 		ns_abort ("Failed to copy to .text\n");
 	}
 	/* --- For test --- */
-	// uint8_t *txt_dump = new uint8_t[hdr.textSize];
-	// Memory::CopyfromEmuByName (nsemu, (void *) txt_dump, ".text", hdr.textSize);
-	// bindump (txt_dump, 105);
-	// /* ---------------- */
-	// delete[] text;
+	uint8_t *txt_dump = new uint8_t[hdr.textSize];
+	Memory::CopyfromEmu (nsemu, (void *) txt_dump, base + hdr.textLoc, hdr.textSize);
+        bindump ((uint8_t*)text, 105);
+	bindump (txt_dump, 105);
+	/* ---------------- */
+	delete[] text;
         ns_print(".text[0x%x] size = 0x%x\n", hdr.textOff, hdr.textSize);
         ns_print(".rdata[0x%x] size = 0x%x\n", hdr.rdataOff, hdr.rdataSize);
         ns_print(".data[0x%x] size = 0x%x\n", hdr.dataOff, hdr.dataSize);
