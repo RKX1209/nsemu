@@ -6,9 +6,7 @@ static inline void UnsupportedOp (const char *op) {
         ns_abort ("[TODO] Unsupported op %s (Disas fail)\n", op);
 }
 
-static inline void UnallocatedOp(uint32_t insn) {
-	ns_abort ("Unallocated operation 0x%08lx\n", insn);
-}
+#define UnallocatedOp(insn) ns_abort ("Unallocated operation 0x%08lx\n", insn)
 
 static inline bool FpAccessCheck(uint32_t insn) {
         /* TODO: */
@@ -664,7 +662,7 @@ static void DisasAddSubReg(uint32_t insn, DisasCallback *cb) {
         unsigned setflags = extract32(insn, 29, 1);
         unsigned sub_op = extract32(insn, 30, 1);
         unsigned sf = extract32(insn, 31, 1);
-        if (extract32(insn, 10, 6) != 0) {
+        if ((shift_type == 3) || (!sf && (imm6 > 31))) {
                 UnallocatedOp (insn);
                 return;
         }
@@ -924,6 +922,72 @@ static void DisasDataProcReg(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static bool DisasLdstCompute64bit(unsigned int size, bool is_signed, unsigned int opc) {
+        unsigned int opc0 = extract32(opc, 0, 1);
+        unsigned int regsize;
+
+        if (is_signed) {
+                regsize = opc0 ? 32 : 64;
+        } else {
+                regsize = size == 3 ? 64 : 32;
+        }
+        return regsize == 64;
+}
+
+/* Load/Store exclusive ... literal means PC-relative immediate value */
+static void DisasLdstExcl(uint32_t insn, DisasCallback *cb) {
+        unsigned int rt = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rt2 = extract32(insn, 10, 5);
+        unsigned int is_lasr = extract32(insn, 15, 1);
+        unsigned int rs = extract32(insn, 16, 5);
+        unsigned int is_pair = extract32(insn, 21, 1);
+        unsigned int is_store = !extract32(insn, 22, 1);
+        unsigned int is_excl = !extract32(insn, 23, 1);
+        unsigned int size = extract32(insn, 30, 2);
+        if ((!is_excl && !is_pair && !is_lasr) ||
+                (!is_excl && is_pair) ||
+                (is_pair && size < 2)) {
+                UnallocatedOp(insn);
+                return;
+        }
+        if (is_excl) {
+                /* FIXME: It is not exclusive. */
+                cb->MovReg (GPR_DUMMY, rn, true);
+                if (!is_store) {
+                        if (is_pair) {
+                                cb->LoadRegI64 (rt, GPR_DUMMY, size, false, false);
+                                cb->AddI64 (GPR_DUMMY, GPR_DUMMY, 1 << size, false, true);
+                                cb->LoadRegI64 (rt2, GPR_DUMMY, size, false, false);
+                        } else {
+                                cb->LoadRegI64(rt, rn, size, false, false);
+                        }
+                } else {
+                        if (is_pair) {
+                                cb->StoreRegI64 (rt, GPR_DUMMY, size, false, false);
+                                cb->AddI64 (GPR_DUMMY, GPR_DUMMY, 1 << size, false, true);
+                                cb->StoreRegI64 (rt2, GPR_DUMMY, size, false, false);
+                        } else {
+                                cb->StoreRegI64(rt, rn, size, false, false);
+                        }
+                }
+        } else {
+                bool sf = DisasLdstCompute64bit(size, false, 0);
+                /* Generate ISS for non-exclusive accesses including LASR.  */
+                if (is_store) {
+                        if (is_lasr) {
+                                /* TODO: MB */
+                        }
+                        cb->StoreRegI64(rt, rn, size, false, false);
+
+                } else {
+                        cb->LoadRegI64(rt, rn, size, false, false);
+                        if (is_lasr) {
+                                /* TODO: MB */
+                        }
+                }
+        }
+}
 /* Load register (literal) ... literal means PC-relative immediate value */
 static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
         unsigned int rt = extract32(insn, 0, 5);
@@ -945,18 +1009,6 @@ static void DisasLdLit(uint32_t insn, DisasCallback *cb) {
         }
         cb->AddI64 (rt, PC_IDX, imm - 4, false, true);
         cb->LoadRegI64 (rt, rt, size, is_signed, false);
-}
-
-static bool DisasLdstCompute64bit(unsigned int size, bool is_signed, unsigned int opc) {
-        unsigned int opc0 = extract32(opc, 0, 1);
-        unsigned int regsize;
-
-        if (is_signed) {
-                regsize = opc0 ? 32 : 64;
-        } else {
-                regsize = size == 3 ? 64 : 32;
-        }
-        return regsize == 64;
 }
 
 /* Load/Store register ... register offset */
@@ -1262,8 +1314,7 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
 static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 24, 6)) {
         case 0x08: /* Load/store exclusive */
-                //DisasLdstExcl (insn, cb);
-                UnsupportedOp("Load/Store Exclusive");
+                DisasLdstExcl (insn, cb);
                 break;
         case 0x18: case 0x1c: /* Load register (literal) */
                 DisasLdLit (insn, cb);

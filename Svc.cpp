@@ -275,8 +275,9 @@ uint64_t SignalProcessWideKey(uint64_t semaAddr, uint64_t target) {
 }
 
 std::tuple<uint64_t, uint32_t> ConnectToPort(uint64_t name) {
-        ns_print("ConnectToPort str=0x%lx\n", name);
-	return make_tuple(0, IPC::ConnectToPort(ARMv8::ReadString(name)));
+        std::string s_name = ARMv8::ReadString(name);
+        ns_print("ConnectToPort %s\n", s_name.c_str());
+	return make_tuple(0, IPC::ConnectToPort(s_name));
 }
 
 uint64_t SendSyncRequest(uint32_t handle) {
