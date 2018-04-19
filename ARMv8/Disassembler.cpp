@@ -482,6 +482,40 @@ static void DisasHint(uint32_t insn, unsigned int op1, unsigned int op2, unsigne
         }
 }
 
+/* CLREX, DSB, DMB, ISB */
+static void DisasSync(uint32_t insn, unsigned int op1, unsigned int op2, unsigned int crm) {
+        if (op1 != 3) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        switch (op2) {
+        case 2: /* CLREX */
+                /* TODO */
+                return;
+        case 4: /* DSB */
+        case 5: /* DMB */
+                switch (crm & 3) {
+                case 1: /* MBReqTypes_Reads */
+                        /* TODO */
+                        break;
+                case 2: /* MBReqTypes_Writes */
+                        /* TODO */
+                        break;
+                default: /* MBReqTypes_All */
+                        /* TODO */
+                        break;
+                }
+                return;
+        case 6: /* ISB */
+                /* TODO */
+                return;
+        default:
+                UnallocatedOp (insn);
+                return;
+        }
+}
+
 static void DisasSystem(uint32_t insn, DisasCallback *cb) {
         unsigned int l, op0, op1, crn, crm, op2, rt;
         const A64SysRegInfo *ri;
@@ -502,8 +536,7 @@ static void DisasSystem(uint32_t insn, DisasCallback *cb) {
                         DisasHint (insn, op1, op2, crm, cb);
                         break;
                 case 3: /* CLREX, DSB, DMB, ISB */
-                        UnsupportedOp ("SYNC");
-                        //handle_sync(s, insn, op1, op2, crm);
+                        DisasSync(insn, op1, op2, crm);
                         break;
                 case 4: /* MSR (immediate) */
                         UnsupportedOp ("MSR immediate");
