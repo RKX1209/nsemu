@@ -39,9 +39,10 @@ void Interpreter::Run() {
 		    if (counter >= estimate){
 				Cpu::DumpMachine ();
 		    }
-		    if (counter >= estimate + mx)
+		    if (counter >= estimate + mx) {
 		        break;
-			SingleStep ();
+                     }
+                     SingleStep ();
 		    counter++;
 		}
 	}

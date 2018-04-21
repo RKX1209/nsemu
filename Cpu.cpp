@@ -29,7 +29,9 @@ State GetState() {
 }
 
 void DumpMachine() {
-        //ARMv8::Dump ();
+        if (is_debug()) {
+                ARMv8::Dump ();
+        }
         if (TraceOut)
                 ARMv8::DumpJson (TraceOut);
 }

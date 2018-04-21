@@ -14,8 +14,15 @@ enum RunLevel {
 	RUN_LEVEL_DEBUG,
 };
 
-//static RunLevel curlevel = RUN_LEVEL_DEBUG;
-static RunLevel curlevel = RUN_LEVEL_RELEASE;
+extern RunLevel curlevel;
+
+inline void enable_debug() {
+        curlevel = RUN_LEVEL_DEBUG;
+}
+
+inline bool is_debug() {
+        return curlevel == RUN_LEVEL_DEBUG;
+}
 
 static void util_print(RunLevel level, FILE *fp, const char *format, ...) {
 	if (curlevel >= level) {

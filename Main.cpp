@@ -77,7 +77,7 @@ void Banner() {
 }
 
 enum  optionIndex {
-	UNKNOWN, HELP, ENABLE_TRACE, ENABLE_GDB,
+	UNKNOWN, HELP, ENABLE_TRACE, ENABLE_GDB, ENABLE_DEBUG,
 };
 const option::Descriptor usage[] =
 {
@@ -86,6 +86,7 @@ const option::Descriptor usage[] =
 	{ HELP, 0, "", "help", Arg::None, "  --help  \tPrint help message" },
     { ENABLE_TRACE, 0, "t","enable-trace", Arg::None, "  --enable-trace, -t  \tEnable Trace" },
     { ENABLE_GDB, 0, "s","enable-gdb", Arg::None, "  --enable-gdb -s  \tEnable GDBServer" },
+    { ENABLE_DEBUG, 0, "d","enable-debug", Arg::None, "  --enable-debug -d  \tEnable debug mode" },
 	{ 0, 0, nullptr, nullptr, nullptr, nullptr }
 };
 
@@ -121,7 +122,11 @@ printUsage:
 		}
         if (options[ENABLE_GDB].count () > 0) {
 			GdbStub::Init();
-		}
+	}
+        if (options[ENABLE_DEBUG].count () > 0) {
+			enable_debug();
+	}
+
 #if 0
 		if (options[NSO].count () > 0) {
 			if (options[NSO].count () != 1) {

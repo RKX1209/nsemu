@@ -970,7 +970,7 @@ static bool DisasLdstCompute64bit(unsigned int size, bool is_signed, unsigned in
 /* Load/Store exclusive ... literal means PC-relative immediate value */
 static void DisasLdstExcl(uint32_t insn, DisasCallback *cb) {
         unsigned int rt = extract32(insn, 0, 5);
-        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rn = ARMv8::HandleAsSP(extract32(insn, 5, 5));
         unsigned int rt2 = extract32(insn, 10, 5);
         unsigned int is_lasr = extract32(insn, 15, 1);
         unsigned int rs = extract32(insn, 16, 5);
@@ -1003,6 +1003,8 @@ static void DisasLdstExcl(uint32_t insn, DisasCallback *cb) {
                         } else {
                                 cb->StoreRegI64(rt, rn, size, false, false);
                         }
+                        /* Set status code (success = 0) */
+                        cb->MoviI64(rs, 0, true);
                 }
         } else {
                 bool sf = DisasLdstCompute64bit(size, false, 0);
