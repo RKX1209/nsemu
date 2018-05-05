@@ -71,9 +71,31 @@ public:
         }
 };
 
+class Watchpoint {
+public:
+        uint64_t addr;
+        unsigned int len;
+        int type;
+        Watchpoint() { }
+        Watchpoint(uint64_t a, unsigned int l, int t);
+        bool operator < (const Watchpoint& wp) {
+                if (addr == wp.addr) {
+                        if (len == wp.len) {
+                                return type < wp.type;
+                        }
+                        return len < wp.len;
+                }
+                return addr < wp.addr;
+        }
+        bool operator == (const Watchpoint& wp) {
+                return addr == wp.addr && len == wp.len && type == wp.type;
+        }
+};
+
 void Init();
 void HandlePacket();
 void Trap();
+void NotifyMemAccess(uint64_t addr, size_t len, bool read);
 
 };
 #endif

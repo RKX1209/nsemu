@@ -20,9 +20,12 @@ volatile bool step = false;
 volatile bool cont = false;
 
 std::vector<Breakpoint> bp_list;
+std::vector<Watchpoint> wp_list;
 
 Breakpoint::Breakpoint(uint64_t a, unsigned int l, int t) : addr(a), len(l), type(t) {
         oldop = ARMv8::ReadInst (a);
+}
+Watchpoint::Watchpoint(uint64_t a, unsigned int l, int t) : addr(a), len(l), type(t) {
 }
 
 static inline bool IsXdigit(char ch) {
@@ -140,9 +143,9 @@ static int TargetMemoryRW(uint64_t addr, uint8_t *buf, int len, bool is_write) {
                 return -1; //FIXME: Correct validation is required
         }
         if (is_write) {
-                ARMv8::WriteBytes (addr, buf, len);
+                ARMv8::GdbWriteBytes (addr, buf, len);
         } else {
-                ARMv8::ReadBytes (addr, buf, len);
+                ARMv8::GdbReadBytes (addr, buf, len);
         }
         return 0;
 }
@@ -205,6 +208,59 @@ static int SwBreakpointRemove(unsigned long addr, unsigned long len, int type) {
         return 0;
 }
 
+static int WatchpointInsert(unsigned long addr, unsigned long len, int type) {
+        Watchpoint wp(addr, len, type);
+        wp_list.push_back(wp);
+        ns_print("[Add wp] 0x%lx, %u, %d\n", addr, len, type);
+        return 0;
+}
+
+static int WatchpointRemove(unsigned long addr, unsigned long len, int type) {
+        if (wp_list.empty()) {
+                return -1;
+        }
+
+        auto wp_it = std::find(wp_list.begin(), wp_list.end(), Watchpoint(addr, len, type));
+        if (wp_it == wp_list.end()) {
+                ns_print ("Watchpoint not found\n");
+                return -1;
+        }
+        ns_print("[Remove wp] 0x%lx, %u, %d\n", addr, len, type);
+        wp_list.erase(wp_it);
+        return 0;
+}
+
+static void HitWatchpoint(unsigned long addr, int type) {
+        cont = false;
+        step = false;
+        char buf[GDB_BUFFER_SIZE];
+        const char *type_s;
+        if (type == GDB_WATCHPOINT_READ) {
+                type_s = "r";
+        } else if (type == GDB_WATCHPOINT_ACCESS) {
+                type_s = "a";
+        } else {
+                type_s = "";
+        }
+
+        snprintf(buf, sizeof(buf), "T%02xthread:%02x;%swatch:%lx;", GDB_SIGNAL_TRAP, 1, type_s, addr);
+        WritePacket(buf);
+}
+
+void NotifyMemAccess(unsigned long addr, size_t len, bool read) {
+        int type = read ? GDB_WATCHPOINT_READ : GDB_WATCHPOINT_WRITE;
+        for (int i = 0; i < wp_list.size(); i++) {
+                Watchpoint wp = wp_list[i];
+                if (wp.addr <= addr && addr + len <= wp.addr + wp.len) {
+                        if (wp.type == GDB_WATCHPOINT_ACCESS || wp.type == type) {
+                                ns_print("Hit watchpoint 0x%lx, %d, %s (PC:0x%lx)\n", addr, len, (read ? "read" : "write"), PC);
+                                HitWatchpoint (addr, wp.type);
+                                return;
+                        }
+                }
+        }
+}
+
 static int BreakpointInsert(unsigned long addr, unsigned long len, int type) {
         int err = -1;
         switch (type) {
@@ -214,8 +270,7 @@ static int BreakpointInsert(unsigned long addr, unsigned long len, int type) {
                 case GDB_WATCHPOINT_WRITE:
                 case GDB_WATCHPOINT_READ:
                 case GDB_WATCHPOINT_ACCESS:
-                /* TODO: */
-                        break;
+                        return WatchpointInsert (addr, len, type);
                 default:
                         break;
         }
@@ -231,7 +286,7 @@ static int BreakpointRemove(unsigned long addr, unsigned long len, int type) {
                 case GDB_WATCHPOINT_WRITE:
                 case GDB_WATCHPOINT_READ:
                 case GDB_WATCHPOINT_ACCESS:
-                /* TODO: */
+                        return WatchpointRemove (addr, len, type);
                         break;
                 default:
                         break;

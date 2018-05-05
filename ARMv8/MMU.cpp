@@ -22,6 +22,9 @@ static T ReadFromRAM(const uint64_t gpa) {
 		std::memcpy (&byte, &emu_mem[addr - gpa], sizeof(uint8_t));
 		value = value | ((uint64_t)byte << (8 * (addr - gpa)));
 	}
+        if (GdbStub::enabled) {
+                GdbStub::NotifyMemAccess (gpa, sizeof(T), true);
+        }
 	return value;
 }
 
@@ -34,6 +37,9 @@ static void WriteToRAM(const uint64_t gpa, T value) {
 		std::memcpy (&emu_mem[addr - gpa], &byte, sizeof(uint8_t));
 		value >>= 8;
 	}
+        if (GdbStub::enabled) {
+                GdbStub::NotifyMemAccess (gpa, sizeof(T), false);
+        }
 }
 
 void ReadBytes(uint64_t gva, uint8_t *ptr, int size) {
@@ -42,6 +48,14 @@ void ReadBytes(uint64_t gva, uint8_t *ptr, int size) {
                 uint8_t byte = ReadU8 (gpa + i);
                 ptr[i] = byte;
         }
+}
+
+void GdbReadBytes(uint64_t gva, uint8_t *ptr, int size) {
+        /* XXX: temporaly, disable GdbStub */
+        bool enabled = GdbStub::enabled;
+        GdbStub::enabled = false;
+        ReadBytes (gva, ptr, size);
+        GdbStub::enabled = enabled;
 }
 
 std::string ReadString(uint64_t gva) {
@@ -69,6 +83,14 @@ void WriteBytes(uint64_t gva, uint8_t *ptr, int size) {
         for (int i = 0; i < size; i++) {
                 WriteU8 (gpa + i, ptr[i]);
         }
+}
+
+void GdbWriteBytes(uint64_t gva, uint8_t *ptr, int size) {
+        /* XXX: temporaly, disable GdbStub */
+        bool enabled = GdbStub::enabled;
+        GdbStub::enabled = false;
+        WriteBytes (gva, ptr, size);
+        GdbStub::enabled = enabled;
 }
 
 uint8_t ReadU8(const uint64_t gva) {

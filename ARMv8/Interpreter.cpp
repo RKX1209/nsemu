@@ -10,8 +10,8 @@ void Interpreter::Init() {
 
 int Interpreter::SingleStep() {
 	uint32_t inst = ARMv8::ReadInst (PC);
-	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
-        //ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+	// debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+        ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);
         X(GPR_ZERO) = 0; //Reset Zero register
@@ -37,8 +37,9 @@ void Interpreter::Run() {
                         }
 		} else {
 		    if (counter >= estimate){
-				Cpu::DumpMachine ();
+				//Cpu::DumpMachine ();
 		    }
+                    Cpu::DumpMachine ();
 		    if (counter >= estimate + mx) {
 		        break;
                      }

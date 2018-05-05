@@ -30,12 +30,15 @@ void Dump() {
                         ns_print ("LR:\t");
                 else if (r == GPR_SP)
                         ns_print ("SP:\t");
+                else if (r == PC_IDX)
+                        ns_print ("PC:\t");
+                else if (r == GPR_DUMMY)
+                        ns_print ("DUM:\t");
                 else
                         ns_print ("X%d:\t", r);
                 ns_print ("0x%016lx%c", X(r), cnt % 3 == 0 ? '\n' : '\t');
                 cnt++;
         }
-        ns_print ("PC:\t0x%016lx\n", PC);
         ns_print ("NZCV:\t0x%016lx\n", NZCV);
 }
 
