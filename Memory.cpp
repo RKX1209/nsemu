@@ -35,9 +35,9 @@ std::vector<RAMBlock*> regions;
 static RAMBlock mem_map_straight[] =
 {
 	RAMBlock (".text", 0x0, 0x0ffffff, PROT_READ | PROT_WRITE | PROT_EXEC),
-	RAMBlock (".rdata", 0x1000000, 0x0ffffff, PROT_READ | PROT_WRITE),
-	RAMBlock (".data", 0x2000000, 0x0ffffff, PROT_READ | PROT_WRITE),
-	RAMBlock ("[stack]", 0x3000000, 0x5ffffff, PROT_READ | PROT_WRITE),
+	// RAMBlock (".rdata", 0x1000000, 0x0ffffff, PROT_READ | PROT_WRITE),
+	// RAMBlock (".data", 0x2000000, 0x0ffffff, PROT_READ | PROT_WRITE),
+	RAMBlock ("[stack]", 0x3000000, 0x0ffffff, PROT_READ | PROT_WRITE),
 };
 
 static bool inline IsStraight(uint64_t addr, size_t len) {
@@ -108,15 +108,22 @@ void InitMemmap(Nsemu *nsemu) {
 
 std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions() {
         std::list<std::tuple<uint64_t,uint64_t, int>> ret;
-        uint64_t last;
+        list<tuple<uint64_t, uint64_t>> temp;
         for (int i = 0; i < regions.size(); i++) {
                 uint64_t addr = regions[i]->addr;
                 size_t length = regions[i]->length;
-                int perm = regions[i]->perm;
-                ret.push_back(make_tuple(addr, addr + length, perm));
-                last = addr + length + 1;
+                temp.push_back(make_tuple(addr, addr + length));
         }
-        ret.push_back(make_tuple(last, 0xFFFFFFFFFFFFFFFF, -1));
+        temp.sort([](auto a, auto b) { auto [ab, _] = a; auto [bb, __] = b; return ab < bb; });
+        uint64_t last;
+        for(auto [begin, end] : temp) {
+                if(last != begin)
+                        ret.push_back(make_tuple(last, begin - 1, -1));
+        	ret.push_back(make_tuple(begin, end, 0));
+        	last = end + 1;
+        }
+        if(last != 0xFFFFFFFFFFFFFFFF)
+                ret.push_back(make_tuple(last, 0xFFFFFFFFFFFFFFFF, -1));
         return ret;
 }
 

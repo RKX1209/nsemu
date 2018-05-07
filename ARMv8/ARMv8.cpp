@@ -6,14 +6,17 @@ namespace ARMv8 {
 ARMv8State arm_state;
 
 void Init() {
+        uint64_t tls_base = (1 << 24) + 0x1000 * 1;
+        size_t tls_size = 0xfff;
 	Interpreter::create ();
 	cpu_engine = Interpreter::get_instance ();
         cpu_engine->Init ();
         PC = 0x0;
         //PC = 0x30f0;
         SP = 0x3100000;
-        SYSR.tpidrro_el[0] = (1 << 24) + 0x1000 * 1;
+        SYSR.tpidrro_el[0] = tls_base;
         SYSR.tczid_el[0] = 0x4; //FIXME: calclulate at runtime
+        Memory::AddMemmap (tls_base, tls_size);
 }
 
 void RunLoop() {
