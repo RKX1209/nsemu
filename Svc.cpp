@@ -105,7 +105,14 @@ void Init() {
 }
 std::tuple<uint64_t, uint64_t> SetHeapSize(uint64_t size) {
 	ns_print("SetHeapSize 0x%lx\n", size);
-	return make_tuple(0, -1);
+        if (Memory::heap_size < size) {
+                Memory::AddMemmap (Memory::heap_base, size - Memory::heap_size);
+        } else if (Memory::heap_size > size) {
+                /* TODO: */
+        }
+
+        Memory::heap_size = size;
+	return make_tuple(0, Memory::heap_base);
 }
 
 uint64_t SetMemoryAttribute(uint64_t addr, uint64_t size, uint64_t state0, uint64_t state1) {

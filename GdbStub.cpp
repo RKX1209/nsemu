@@ -251,7 +251,7 @@ void NotifyMemAccess(unsigned long addr, size_t len, bool read) {
         int type = read ? GDB_WATCHPOINT_READ : GDB_WATCHPOINT_WRITE;
         for (int i = 0; i < wp_list.size(); i++) {
                 Watchpoint wp = wp_list[i];
-                if (wp.addr <= addr && addr + len <= wp.addr + wp.len) {
+                if (addr <= wp.addr && wp.addr + wp.len <= addr + len) {
                         if (wp.type == GDB_WATCHPOINT_ACCESS || wp.type == type) {
                                 ns_print("Hit watchpoint 0x%lx, %d, %s (PC:0x%lx)\n", addr, len, (read ? "read" : "write"), PC);
                                 HitWatchpoint (addr, wp.type);

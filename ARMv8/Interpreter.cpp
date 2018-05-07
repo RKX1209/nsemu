@@ -10,8 +10,8 @@ void Interpreter::Init() {
 
 int Interpreter::SingleStep() {
 	uint32_t inst = ARMv8::ReadInst (PC);
-	// debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
-        ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
+        //ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);
         X(GPR_ZERO) = 0; //Reset Zero register
@@ -21,7 +21,7 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3456400, mx = 100000;
+        uint64_t estimate = 3417800, mx = 1000000;
         //uint64_t estimate = 0, mx = 3420000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
@@ -37,9 +37,9 @@ void Interpreter::Run() {
                         }
 		} else {
 		    if (counter >= estimate){
-				//Cpu::DumpMachine ();
+				Cpu::DumpMachine ();
 		    }
-                    Cpu::DumpMachine ();
+                    //Cpu::DumpMachine ();
 		    if (counter >= estimate + mx) {
 		        break;
                      }
@@ -94,15 +94,25 @@ static bool CondHold(unsigned int cond) {
         return result;
 }
 
+static inline bool IsNegative32(uint32_t num) {
+        return (num & (1UL << 31)) != 0;
+}
+static inline bool IsNegative64(uint64_t num) {
+        return (num & (1UL << 63)) != 0;
+}
+
 static void UpdateFlag32(uint32_t res, uint32_t arg1, uint32_t arg2) {
         /* XXX: In ARMv8, nzcv flag is only updated when ADD/SUB/AND/BIC.
          * So following logic can work correctly(?)
          */
         uint32_t nzcv = 0;
-        if (res & (1UL << 31)) nzcv |= N_MASK; // N
+        if (IsNegative32(res)) nzcv |= N_MASK; // N
         if (res == 0UL) nzcv |= Z_MASK; // Z
         if (((arg1 & arg2) + ((arg1 ^ arg2) >> 1)) >> 31) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
-        if (!(arg1 ^ arg2 && (1UL < 31)) & (arg2 ^ res && (1UL < 31))) nzcv |= V_MASK; //V
+        if ((IsNegative32(arg1) && IsNegative32(arg2) && !IsNegative32(res)) ||
+        (!IsNegative32(arg1) && !IsNegative32(arg2) && IsNegative32(res))) {
+                        nzcv |= V_MASK; //V
+        }
         NZCV = nzcv;
 }
 static void UpdateFlag64(uint64_t res, uint64_t arg1, uint64_t arg2) {
@@ -110,10 +120,13 @@ static void UpdateFlag64(uint64_t res, uint64_t arg1, uint64_t arg2) {
          * So following logic can work correctly(?)
          */
         uint32_t nzcv = 0;
-        if (res & (1ULL << 63)) nzcv |= N_MASK; // N
+        if (IsNegative64(res)) nzcv |= N_MASK; // N
         if (res == 0ULL) nzcv |= Z_MASK; // Z
         if (((arg1 & arg2) + ((arg1 ^ arg2) >> 1)) >> 63) nzcv |= C_MASK; //C (half adder ((x & y) + ((x ^ y) >> 1)))
-        if (!(arg1 ^ arg2 && (1ULL < 63)) & (arg2 ^ res && (1ULL < 63))) nzcv |= V_MASK; //V
+        if ((IsNegative64(arg1) && IsNegative64(arg2) && !IsNegative64(res)) ||
+        (!IsNegative64(arg1) && !IsNegative64(arg2) && IsNegative64(res))) {
+                        nzcv |= V_MASK; //V
+        }
         NZCV = nzcv;
 }
 
@@ -228,7 +241,11 @@ static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, b
         uint64_t result;
         OpType op = _op;
         if (_op == AL_TYPE_SUB) {
-                arg2 = -(int64_t) arg2;
+                if (bit64) {
+                        arg2 = -(int64_t) arg2;
+                } else {
+                        arg2 = -(int32_t) arg2;
+                }
                 op = AL_TYPE_ADD;
         }
         result = ALCalc (arg1, arg2, op);

@@ -27,19 +27,17 @@ RAMBlock::RAMBlock(std::string _name, uint64_t _addr, size_t _length, uint8_t *r
 namespace Memory
 {
 uint64_t heap_base = 0x9000000;
-uint64_t heap_size = 0x1000000;
-//uint64_t heap_size = 0x0;
+uint64_t heap_size = 0x0;
 uint8_t *pRAM;	// XXX: Replace raw pointer to View wrapper.
 size_t ram_size = 0x10000000;
 uint64_t straight_max = heap_base + heap_size;
 std::vector<RAMBlock*> regions;
 static RAMBlock mem_map_straight[] =
 {
-	RAMBlock (".text", 0x0, 0x1000000, PROT_READ | PROT_WRITE | PROT_EXEC),
-	RAMBlock (".rdata", 0x1000000, 0x1000000, PROT_READ | PROT_WRITE),
-	RAMBlock (".data", 0x2000000, 0x1000000, PROT_READ | PROT_WRITE),
-	RAMBlock ("[stack]", 0x3000000, 0x6000000, PROT_READ | PROT_WRITE),
-	RAMBlock ("[heap]", heap_base, heap_size, PROT_READ | PROT_WRITE),
+	RAMBlock (".text", 0x0, 0x0ffffff, PROT_READ | PROT_WRITE | PROT_EXEC),
+	RAMBlock (".rdata", 0x1000000, 0x0ffffff, PROT_READ | PROT_WRITE),
+	RAMBlock (".data", 0x2000000, 0x0ffffff, PROT_READ | PROT_WRITE),
+	RAMBlock ("[stack]", 0x3000000, 0x5ffffff, PROT_READ | PROT_WRITE),
 };
 
 static bool inline IsStraight(uint64_t addr, size_t len) {
