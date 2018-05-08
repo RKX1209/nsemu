@@ -699,10 +699,12 @@ static void DisasAddSubReg(uint32_t insn, DisasCallback *cb) {
                 UnallocatedOp (insn);
                 return;
         }
+        cb->MovReg (GPR_DUMMY, rm, true);
+        cb->ShiftI64 (GPR_DUMMY, GPR_DUMMY, shift_type, imm6, sf);
         if (sub_op) {
-                cb->SubReg (rd, rn, rm, setflags, sf);
+                cb->SubReg (rd, rn, GPR_DUMMY, setflags, sf);
         } else {
-                cb->AddReg (rd, rn, rm, setflags, sf);
+                cb->AddReg (rd, rn, GPR_DUMMY, setflags, sf);
         }
 }
 
