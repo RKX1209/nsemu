@@ -1377,7 +1377,73 @@ static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
 }
 
 static void DisasFp1Src(uint32_t insn, DisasCallback *cb) {
-        //TODO:
+        unsigned int type = extract32(insn, 22, 2);
+        unsigned int opcode = extract32(insn, 15, 6);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rd = extract32(insn, 0, 5);
+        switch (opcode) {
+        case 0x4: case 0x5: case 0x7:
+        {
+                break;
+        }
+        case 0x0 ... 0x3:
+        case 0x8 ... 0xc:
+        case 0xe ... 0xf:
+                switch (opcode) {
+                        case 0x0: /* FMOV */
+                                cb->FMovReg(rd, rn, type);
+                                break;
+                        case 0x1: /* FABS */
+                                UnsupportedOp ("FABS");
+                                break;
+                        case 0x2: /* FNEG */
+                                UnsupportedOp ("FNEG");
+                                break;
+                        case 0x3: /* FSQRT */
+                                UnsupportedOp ("FSQRT");
+                                break;
+                        case 0x8: /* FRINTN */
+                        case 0x9: /* FRINTP */
+                        case 0xa: /* FRINTM */
+                        case 0xb: /* FRINTZ */
+                        case 0xc: /* FRINTA */
+                        {
+                                UnsupportedOp ("FXXXX");
+                        }
+                }
+                break;
+        default:
+                UnallocatedOp (insn);
+                break;
+        }
+}
+
+static void DisasFpIntConv(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int opcode = extract32(insn, 16, 3);
+        unsigned int rmode = extract32(insn, 19, 2);
+        unsigned int type = extract32(insn, 22, 2);
+        bool sbit = extract32(insn, 29, 1);
+        bool sf = extract32(insn, 31, 1);
+
+        if (sbit) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        if (opcode > 5) {
+                /* FMOV */
+                bool itof = opcode & 1;
+                if (rmode >= 2) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                //cb->FMovRegConv(rd, rn, type, itof); TODO
+                cb->FMovReg(rd, rn, type);
+        } else {
+                UnsupportedOp ("FPCVT");
+        }
 }
 
 static void DisasDataProcFp(uint32_t insn, DisasCallback *cb) {
@@ -1393,24 +1459,29 @@ static void DisasDataProcFp(uint32_t insn, DisasCallback *cb) {
                 switch (extract32(insn, 10, 2)) {
                 case 1:
                         /* Floating point conditional compare */
+                        UnsupportedOp ("FP cond cmp");
                         //DisasFpCcomp (insn);
                         break;
                 case 2:
                         /* Floating point data-processing (2 source) */
+                        UnsupportedOp ("FP 2src");
                         //DisasFp2Src (insn);
                         break;
                 case 3:
                         /* Floating point conditional select */
+                        UnsupportedOp ("FP csel");
                         //DisasFpCsel (insn);
                         break;
                 case 0:
                         switch (ctz32(extract32(insn, 12, 4))) {
                         case 0: /* [15:12] == xxx1 */
                                 /* Floating point immediate */
+                                UnsupportedOp ("FP imm");
                                 //DisasFpImm (insn);
                                 break;
                         case 1: /* [15:12] == xx10 */
                                 /* Floating point compare */
+                                UnsupportedOp ("FP cmp");
                                 //DisasFpCompare (insn);
                                 break;
                         case 2: /* [15:12] == x100 */
@@ -1422,7 +1493,7 @@ static void DisasDataProcFp(uint32_t insn, DisasCallback *cb) {
                                 break;
                         default: /* [15:12] == 0000 */
                                 /* Floating point <-> integer conversions */
-                                //disas_fp_int_conv(s, insn);
+                                DisasFpIntConv(insn, cb);
                                 break;
                         }
                         break;
@@ -1451,6 +1522,112 @@ static void DisasSimdDupg(uint32_t insn, int is_q, int rd, int rn,
                 return;
         }
         cb->DupVecRegFromGen(rd, rn, size, is_q ? 128 : 64);
+}
+
+static uint64_t BitfieldReplicate(uint64_t mask, unsigned int e) {
+        while (e < 64) {
+                mask |= mask << e;
+                e *= 2;
+        }
+        return mask;
+}
+
+static void DisasSimdModImm(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int cmode = extract32(insn, 12, 4);
+        unsigned int cmode_3_1 = extract32(cmode, 1, 3);
+        unsigned int cmode_0 = extract32(cmode, 0, 1);
+        unsigned int o2 = extract32(insn, 11, 1);
+        uint64_t abcdefgh = extract32(insn, 5, 5) | (extract32(insn, 16, 3) << 5);
+        bool is_neg = extract32(insn, 29, 1);
+        bool is_q = extract32(insn, 30, 1);
+        uint64_t imm = 0;
+        /* See AdvSIMDExpandImm() in ARM ARM */
+        switch (cmode_3_1) {
+        case 0: /* Replicate(Zeros(24):imm8, 2) */
+        case 1: /* Replicate(Zeros(16):imm8:Zeros(8), 2) */
+        case 2: /* Replicate(Zeros(8):imm8:Zeros(16), 2) */
+        case 3: /* Replicate(imm8:Zeros(24), 2) */
+        {
+                int shift = cmode_3_1 * 8;
+                imm = BitfieldReplicate(abcdefgh << shift, 32);
+                break;
+        }
+        case 4: /* Replicate(Zeros(8):imm8, 4) */
+        case 5: /* Replicate(imm8:Zeros(8), 4) */
+        {
+                int shift = (cmode_3_1 & 0x1) * 8;
+                imm = BitfieldReplicate(abcdefgh << shift, 16);
+                break;
+        }
+        case 6:
+                if (cmode_0) {
+                        /* Replicate(Zeros(8):imm8:Ones(16), 2) */
+                        imm = (abcdefgh << 16) | 0xffff;
+                } else {
+                        /* Replicate(Zeros(16):imm8:Ones(8), 2) */
+                        imm = (abcdefgh << 8) | 0xff;
+                }
+                imm = BitfieldReplicate(imm, 32);
+                break;
+        case 7:
+                if (!cmode_0 && !is_neg) {
+                        imm = BitfieldReplicate(abcdefgh, 8);
+                } else if (!cmode_0 && is_neg) {
+                        int i;
+                        imm = 0;
+                        for (i = 0; i < 8; i++) {
+                                if ((abcdefgh) & (1 << i)) {
+                                        imm |= 0xffULL << (i * 8);
+                                }
+                        }
+                } else if (cmode_0) {
+                        if (is_neg) {
+                                imm = (abcdefgh & 0x3f) << 48;
+                                if (abcdefgh & 0x80) {
+                                        imm |= 0x8000000000000000ULL;
+                                }
+                                if (abcdefgh & 0x40) {
+                                        imm |= 0x3fc0000000000000ULL;
+                                } else {
+                                        imm |= 0x4000000000000000ULL;
+                                }
+                        } else {
+                                if (o2) {
+                                        /* FMOV (vector, immediate) - half-precision */
+                                        UnsupportedOp ("FMOV (vector, immediate)");
+                                        //imm = vfp_expand_imm(MO_16, abcdefgh);
+                                        /* now duplicate across the lanes */
+                                        imm = BitfieldReplicate(imm, 16);
+                                } else {
+                                        imm = (abcdefgh & 0x3f) << 19;
+                                        if (abcdefgh & 0x80) {
+                                                imm |= 0x80000000;
+                                        }
+                                        if (abcdefgh & 0x40) {
+                                                imm |= 0x3e000000;
+                                        } else {
+                                                imm |= 0x40000000;
+                                        }
+                                        imm |= (imm << 32);
+                                }
+                        }
+                }
+                break;
+        default:
+                ns_abort("cmode_3_1: %x\n", cmode_3_1);
+        }
+
+        if (cmode_3_1 != 7 && is_neg) {
+                imm = ~imm;
+        }
+        if (!((cmode & 0x9) == 0x1 || (cmode & 0xd) == 0x9)) {
+                /* MOVI or MVNI, with MVNI negation handled above.  */
+                cb->DupVecImmI64(rd, imm, 3, is_q ? 128 : 64);
+        } else {
+                /* ORR or BIC, with BIC negation to AND handled above.  */
+                UnsupportedOp ("ORR/BIC (vector, immediate)");
+        }
 }
 
 static void DisasSimdCopy(uint32_t insn, DisasCallback *cb) {
@@ -1529,7 +1706,7 @@ static const A64DecodeTable data_proc_simd[] = {
     { 0x0e000400, 0x9fe08400, DisasSimdCopy },
     // { 0x0f000000, 0x9f000400, disas_simd_indexed }, /* vector indexed */
     // /* simd_mod_imm decode is a subset of simd_shift_imm, so must precede it */
-    // { 0x0f000400, 0x9ff80400, disas_simd_mod_imm },
+    { 0x0f000400, 0x9ff80400, DisasSimdModImm },
     // { 0x0f000400, 0x9f800400, disas_simd_shift_imm },
     // { 0x0e000000, 0xbf208c00, disas_simd_tb },
     // { 0x0e000800, 0xbf208c00, disas_simd_zip_trn },
@@ -1567,8 +1744,7 @@ static void DisasDataProcSimd(uint32_t insn, DisasCallback *cb) {
 
 static void DisasDataProcSimdFp(uint32_t insn, DisasCallback *cb) {
         if (extract32(insn, 28, 1) == 1 && extract32(insn, 30, 1) == 0) {
-                UnsupportedOp ("FP ops");
-                //DisasDataProcFp(s, insn);
+                DisasDataProcFp(insn, cb);
         } else {
                 /* SIMD, including crypto */
                 DisasDataProcSimd(insn, cb);

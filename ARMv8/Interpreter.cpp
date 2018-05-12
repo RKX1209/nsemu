@@ -864,6 +864,15 @@ static void DupVecImm(unsigned int vd_idx, T imm, int size, int dstsize) {
                         VREG(vd_idx).d[i / sec_size] = imm;
         }
 }
+
+void IntprCallback::DupVecImmI32(unsigned int vd_idx, uint32_t imm, int size, int dstsize) {
+        DupVecImm(vd_idx, imm, size, dstsize);
+}
+
+void IntprCallback::DupVecImmI64(unsigned int vd_idx, uint64_t imm, int size, int dstsize) {
+        DupVecImm(vd_idx, imm, size, dstsize);
+}
+
 /* Duplicate an element of vector register to new one */
 void IntprCallback::DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize) {
         if (size == 0) {
@@ -908,10 +917,15 @@ void IntprCallback::ReadWriteNZCV(unsigned int rd_idx, bool read) {
                 NZCV = (uint32_t)(X(rd_idx) & 0xffffffff);
         }
 }
-/* Write to FP register */
-void IntprCallback::WriteFpReg(unsigned int fd_idx, unsigned int fn_idx)  {
-        D(fd_idx) = D(fn_idx);
-}
-void IntprCallback::WriteFpRegI64(unsigned int fd_idx, uint64_t imm) {
-        D(fd_idx) = imm;
+
+/* Fp Mov between registers */
+void IntprCallback::FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type) {
+        if (type == 0) {
+                S(fd_idx) = S(fn_idx);
+        } else if (type == 1) {
+                D(fd_idx) = D(fn_idx);
+        } else if (type == 3) {
+                H(fd_idx) = H(fn_idx);
+        }
+
 }

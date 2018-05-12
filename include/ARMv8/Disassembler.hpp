@@ -98,6 +98,9 @@ virtual void BRK(unsigned int memo) = 0;
 
 /* Read Vector register to FP regsiter */
 virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;
+/* Duplicate an immediate value to vector register */
+virtual void DupVecImmI32(unsigned int vd_idx, uint32_t imm, int size, int dstsize) = 0;
+virtual void DupVecImmI64(unsigned int vd_idx, uint64_t imm, int size, int dstsize) = 0;
 /* Duplicate an element of vector register to new one */
 virtual void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize) = 0;
 /* Duplicate an general register into vector register */
@@ -108,9 +111,8 @@ virtual void ReadWriteSysReg(unsigned int rd_idx, int offset, bool read) = 0;
 /* Read/Write NZCV */
 virtual void ReadWriteNZCV(unsigned int rd_idx, bool read) = 0;
 
-/* Write to FP register */
-virtual void WriteFpReg(unsigned int fd_idx, unsigned int fn_idx) = 0;
-virtual void WriteFpRegI64(unsigned int fd_idx, uint64_t imm) = 0;
+/* Fp Mov between registers */
+virtual void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type) = 0;
 
 };
 
