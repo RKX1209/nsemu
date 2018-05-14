@@ -1348,6 +1348,171 @@ static void DisasLdstPair(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void DisasLdStMulti(uint32_t insn, DisasCallback *cb) {
+        unsigned int rt = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int size = extract32(insn, 10, 2);
+        unsigned int opcode = extract32(insn, 12, 4);
+        bool is_store = !extract32(insn, 22, 1);
+        bool is_postidx = extract32(insn, 23, 1);
+        bool is_q = extract32(insn, 30, 1);
+        int ebytes = 1 << size;
+        int elements = (is_q ? 128 : 64) / (8 << size);
+        int rpt;    /* num iterations */
+        int selem;  /* structure elements */
+
+        if (extract32(insn, 31, 1) || extract32(insn, 21, 1)) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        /* From the shared decode logic */
+        switch (opcode) {
+        case 0x0: // LD/ST4 (4 register)
+                rpt = 1;
+                selem = 4;
+                break;
+        case 0x2: // LD/ST1 (4 register)
+                rpt = 4;
+                selem = 1;
+                break;
+        case 0x4: // LD/ST3 (3 register)
+                rpt = 1;
+                selem = 3;
+                break;
+        case 0x6: // LD/ST1 (3 register)
+                rpt = 3;
+                selem = 1;
+                break;
+        case 0x7: // LD/ST1 (1 register)
+                rpt = 1;
+                selem = 1;
+                break;
+        case 0x8: // LD/ST2 (2 register)
+                rpt = 1;
+                selem = 2;
+                break;
+        case 0xa: // LD/ST1 (2 register)
+                rpt = 2;
+                selem = 1;
+                break;
+        default:
+                UnallocatedOp (insn);
+        }
+
+        if (size == 3 && !is_q && selem != 1) {
+                /* reserved */
+                UnallocatedOp (insn);
+                return;
+        }
+        cb->MovReg(GPR_DUMMY, rn, true);
+        for (int r = 0; r < rpt; r++) { // V[r]
+                for (int e = 0; e < elements; e++) { // lane: V[r][e]
+                        int vreg = (rt + r) % 32;
+                        for (int col = 0; col < selem; col++) { // V[r][e], V[r+1][e], V[r+2][e] ...
+                                if (is_store) {
+                                        cb->StoreVecReg (GPR_DUMMY, e, vreg, size);
+                                } else {
+                                        cb->LoadVecReg (vreg, e, GPR_DUMMY, size);
+                                }
+                                cb->AddI64 (GPR_DUMMY, GPR_DUMMY, ebytes, false, true);
+                                vreg = (vreg + 1) % 32;
+                        }
+                }
+        }
+        if (is_postidx) {
+                unsigned int rm = extract32(insn, 16, 5);
+                if (rm == 31) {// post-index with <imm>
+                        cb->MoviI64(rn, GPR_DUMMY, true);
+                } else { // post-index with <Xm>
+                        cb->AddReg (rn, rn, rm, false, true);
+                }
+        }
+}
+
+static void DisasLdStSingle(uint32_t insn, DisasCallback *cb) {
+        unsigned int rt = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int size = extract32(insn, 10, 2);
+        unsigned int S = extract32(insn, 12, 1);
+        unsigned int opc = extract32(insn, 13, 3);
+        unsigned int R = extract32(insn, 21, 1);
+        unsigned int is_load = extract32(insn, 22, 1);
+        unsigned int is_postidx = extract32(insn, 23, 1);
+        unsigned int is_q = extract32(insn, 30, 1);
+
+        unsigned int scale = extract32(opc, 1, 2);
+        int elements = (is_q ? 128 : 64) / (8 << size);
+        unsigned int selem = (extract32(opc, 0, 1) << 1 | R) + 1;
+        bool replicate = false;
+        unsigned int index = is_q << 3 | S << 2 | size;
+        unsigned int ebytes, xs;
+        switch (scale) {
+        case 3:
+                if (!is_load || S) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                scale = size;
+                replicate = true;
+                break;
+        case 0:
+                break;
+        case 1:
+                if (extract32(size, 0, 1)) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                index >>= 1;
+                break;
+        case 2:
+                if (extract32(size, 1, 1)) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                if (!extract32(size, 0, 1)) {
+                        index >>= 2;
+                } else {
+                        if (S) {
+                                UnallocatedOp (insn);
+                                return;
+                        }
+                        index >>= 3;
+                        scale = 3;
+                }
+                break;
+        default:
+                ns_abort("LD/ST Single unknwon scale");
+        }
+        ebytes = 1 << scale;
+        cb->MovReg(GPR_DUMMY, rn, true);
+        for (int xs = 0; xs < selem; xs++) {
+                if (replicate) {
+                        /* Load and replicate to all elements */
+                        for (int e = 0; e < elements; e++) {
+                                cb->LoadVecReg (rt, e, GPR_DUMMY, scale);
+                        }
+                } else {
+                        /* Load/store one element per register */
+                        if (is_load) {
+                                cb->LoadVecReg (rt, index, GPR_DUMMY, scale);
+                        } else {
+                                cb->StoreVecReg (GPR_DUMMY, index, rt, scale);
+                        }
+                }
+                cb->AddI64 (GPR_DUMMY, GPR_DUMMY, ebytes, false, true);
+                rt = (rt + 1) % 32;
+        }
+        if (is_postidx) {
+                unsigned int rm = extract32(insn, 16, 5);
+                if (rm == 31) {// post-index with <imm>
+                        cb->MoviI64(rn, GPR_DUMMY, true);
+                } else { // post-index with <Xm>
+                        cb->AddReg (rn, rn, rm, false, true);
+                }
+        }
+}
+
 static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
         switch (extract32(insn, 24, 6)) {
         case 0x08: /* Load/store exclusive */
@@ -1365,10 +1530,10 @@ static void DisasLdSt(uint32_t insn, DisasCallback *cb) {
                 DisasLdstReg (insn, cb);
                 break;
         case 0x0c: /* AdvSIMD load/store multiple structures */
-                UnsupportedOp("SIMD Load/Store Multi");
+                DisasLdStMulti (insn, cb);
                 break;
         case 0x0d: /* AdvSIMD load/store single structure */
-                UnsupportedOp("SIMD Load/Store Single");
+                DisasLdStSingle (insn, cb);
                 break;
         default:
                 UnallocatedOp (insn);

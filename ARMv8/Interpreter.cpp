@@ -661,6 +661,34 @@ void IntprCallback::StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int si
                 _StoreReg (rd_idx, X(ad_idx), size, is_sign, extend);
 }
 
+/* Load/Store for vector */
+void IntprCallback::LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size) {
+        uint64_t addr = X(ARMv8::HandleAsSP (rn_idx));
+        debug_print("Load V[%u][%u] <= [0x%lx](%d)\n", vd_idx, element, addr, size);
+        if (size == 0) { // 1byte (8B/16B)
+                VREG(vd_idx).b[element] = ARMv8::ReadU8 (addr);
+        } else if (size == 1) { // 2byte (4H/8H)
+                VREG(vd_idx).h[element] = ARMv8::ReadU16 (addr);
+        } else if (size == 2) { // 4byte (2S/4S)
+                VREG(vd_idx).s[element] = ARMv8::ReadU32 (addr);
+        } else if (size == 3) { // 8byte (1D/2D)
+                VREG(vd_idx).d[element] = ARMv8::ReadU64 (addr);
+        }
+}
+void IntprCallback::StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size) {
+        uint64_t addr = X(ARMv8::HandleAsSP (rd_idx));
+        debug_print("Store V[%u][%u] => [0x%lx](%d)\n", vn_idx, element, addr, size);
+        if (size == 0) {
+                ARMv8::WriteU8 (addr, VREG(vn_idx).b[element]);
+        } else if (size == 1) {
+                ARMv8::WriteU16 (addr, VREG(vn_idx).h[element]);
+        } else if (size == 2) {
+                ARMv8::WriteU32 (addr, VREG(vn_idx).s[element]);
+        } else if (size == 3) {
+                ARMv8::WriteU64 (addr, VREG(vn_idx).d[element]);
+        }
+}
+
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 /*  X(d)<> = X(n)<off:64> */
 void IntprCallback::SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) {

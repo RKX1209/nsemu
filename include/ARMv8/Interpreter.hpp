@@ -56,6 +56,10 @@ void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sig
 void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend);
 void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend);
 
+/* Load/Store for vector */
+void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size);
+void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size);
+
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);

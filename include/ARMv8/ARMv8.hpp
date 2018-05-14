@@ -90,5 +90,4 @@ void DumpJson(FILE *fp);
 uint64_t GetTls();
 
 }
-
 #endif
