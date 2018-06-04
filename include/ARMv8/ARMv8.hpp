@@ -21,7 +21,7 @@ struct ARMv8State {
          * x0 - x31 (x30 is usually "link regsiter" and x31 is "stack pointer" or "zero register" )
          * NOTE: In nsemu, 'PC' register is respresented as x32 internally.
          */
-	reg_t gpr[35];
+	reg_t gpr[37];
 
         /* v0 - v31 (128 bit vector register, sometime treated as set of smaller size regs) */
         vreg_t vreg[33];
@@ -48,6 +48,8 @@ extern ARMv8State arm_state;
 #define GPR_SP            32
 #define PC_IDX            33  // XXX: bit tricky
 #define GPR_DUMMY         34
+#define GPR_DUMMY2        35
+#define GPR_DUMMY3        36
 #define VREG_DUMMY        32
 
 #define GPR(r) ARMv8::arm_state.gpr[r]

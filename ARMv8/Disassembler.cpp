@@ -1885,6 +1885,44 @@ static void Handle3Same(uint32_t insn, unsigned int opcode, bool u,
         }
 }
 
+static void Handle3SamePair(uint32_t insn, int is_q, bool u, unsigned int opcode,
+        unsigned int rd, unsigned int rn, unsigned int rm, unsigned int size, DisasCallback *cb) {
+        /* TODO
+        if (opcode >= 0x58) {
+                fpst = get_fpstatus_ptr(false);
+        } else {
+                fpst = NULL;
+        } */
+        int ebytes = 1 << size;
+        int elements = (is_q ? 128 : 64) / (8 << size);
+        for (int e = 0; e < elements; e++) {
+                unsigned int reg_idx = e < (ebytes / 2) ? rn : rm;
+                cb->ReadVecElem(GPR_DUMMY, reg_idx, e, size);
+                cb->ReadVecElem(GPR_DUMMY2, reg_idx, e + 1, size);
+                switch (opcode) {
+                        case 0x17: /* ADDP */
+                                cb->AddReg (GPR_DUMMY, GPR_DUMMY, GPR_DUMMY2, false, true);
+                                break;
+                        case 0x58: /* FMAXNMP */
+                                UnsupportedOp ("FMAXNMP");
+                                break;
+                        case 0x5a: /* FADDP */
+                                UnsupportedOp ("FADDP");
+                                break;
+                        case 0x5e: /* FMAXP */
+                                UnsupportedOp ("FMAXP");
+                                break;
+                        case 0x78: /* FMINNMP */
+                                UnsupportedOp ("FMINNMP");
+                                break;
+                        case 0x7e: /* FMINP */
+                                UnsupportedOp ("FMINP");
+                                break;
+                }
+                cb->WriteVecElem(rd, GPR_DUMMY, e, size);
+        }
+}
+
 static void DisasSimd3SameLogic(uint32_t insn, DisasCallback *cb) {
         unsigned int rd = extract32(insn, 0, 5);
         unsigned int rn = extract32(insn, 5, 5);
@@ -1965,8 +2003,7 @@ static void DisasSimdThreeRegSame(uint32_t insn, DisasCallback *cb) {
                                         UnallocatedOp (insn);
                                 }
                         }
-                        // handle_simd_3same_pair(s, is_q, u, opcode, size, rn, rm, rd);
-                        UnsupportedOp("3 same pair");
+                        Handle3SamePair(insn, is_q, u, opcode, rd, rn, rm, size, cb);
                         break;
                 }
                 case 0x18 ... 0x31:

@@ -119,6 +119,10 @@ virtual void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, 
 
 /* Read Vector register to FP regsiter */
 virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;
+/* Read Vector register to general register */
+virtual void ReadVecElem(unsigned int rd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;
+/* Write general register value tot Vector register */
+virtual void WriteVecElem(unsigned int vd_idx, unsigned int rn_idx, unsigned int index, int size) = 0;
 
 /* Duplicate an immediate value to vector register */
 virtual void DupVecImmI32(unsigned int vd_idx, uint32_t imm, int size, int dstsize) = 0;

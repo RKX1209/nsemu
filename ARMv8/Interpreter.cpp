@@ -962,15 +962,6 @@ void IntprCallback::FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type) 
 
 }
 
-template<typename T>
-static void _CompareTest(T *res, T arg1, T arg2, bool and_test) {
-        if (and_test) {
-                *res = (arg1 & arg2 != 0);
-        } else {
-                *res = (arg1 == arg2);
-        }
-}
-
 /* AND/OR/EOR/BIC/NOT ... between vector registers */
 void IntprCallback::AndVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) {
         debug_print ("AND: V[%u] = V[%u] & V[%u]\n", rd_idx, rn_idx, rm_idx);
@@ -999,6 +990,41 @@ void IntprCallback::NotVecReg(unsigned int rd_idx, unsigned int rm_idx) {
 	debug_print ("NOT: %c[%u] = ~%c[%u]\n", rd_idx, rm_idx);
         VREG(rd_idx).d[0] = ~VREG(rm_idx).d[0];
         VREG(rd_idx).d[1] = ~VREG(rm_idx).d[1];
+}
+
+/* Read Vector register to general register */
+void IntprCallback::ReadVecElem(unsigned int rd_idx, unsigned int vn_idx, unsigned int index, int size) {
+        if (size == 0) {
+                X(rd_idx) = VREG(vn_idx).b[index];
+        } else if (size == 1) {
+                X(rd_idx) = VREG(vn_idx).h[index];
+        } else if (size == 2) {
+                X(rd_idx) = VREG(vn_idx).s[index];
+        } else if (size == 3) {
+                X(rd_idx) = VREG(vn_idx).d[index];
+        }
+}
+
+/* Write general register value tot Vector register */
+void IntprCallback::WriteVecElem(unsigned int vd_idx, unsigned int rn_idx, unsigned int index, int size) {
+        if (size == 0) {
+                VREG(vd_idx).b[index] = (uint8_t) X(rn_idx);
+        } else if (size == 1) {
+                VREG(vd_idx).h[index] = (uint16_t) X(rn_idx);
+        } else if (size == 2) {
+                VREG(vd_idx).s[index] = (uint32_t) X(rn_idx);
+        } else if (size == 3) {
+                VREG(vd_idx).d[index] = X(rn_idx);
+        }
+}
+
+template<typename T>
+static void _CompareTest(T *res, T arg1, T arg2, bool and_test) {
+        if (and_test) {
+                *res = (arg1 & arg2 != 0);
+        } else {
+                *res = (arg1 == arg2);
+        }
 }
 
 /* Compare Bit wise equal */

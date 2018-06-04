@@ -117,6 +117,11 @@ void NotVecReg(unsigned int rd_idx, unsigned int rm_idx);
 
 /* Read Vector register to FP register */
 void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size);
+/* Read Vector register to general register */
+void ReadVecElem(unsigned int rd_idx, unsigned int vn_idx, unsigned int index, int size);
+/* Write general register value tot Vector register */
+void WriteVecElem(unsigned int vd_idx, unsigned int rn_idx, unsigned int index, int size);
+
 /* Duplicate an immediate value to vector register */
 void DupVecImmI32(unsigned int vd_idx, uint32_t imm, int size, int dstsize);
 void DupVecImmI64(unsigned int vd_idx, uint64_t imm, int size, int dstsize);
