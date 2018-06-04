@@ -108,6 +108,13 @@ void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type);
 void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size);
 void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size);
 
+/* AND/OR/EOR/BIC/NOT ... between vector registers */
+void AndVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx);
+void OrrVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx);
+void EorVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx);
+void BicVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx);
+void NotVecReg(unsigned int rd_idx, unsigned int rm_idx);
+
 /* Read Vector register to FP register */
 void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size);
 /* Duplicate an immediate value to vector register */

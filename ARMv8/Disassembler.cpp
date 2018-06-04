@@ -1885,6 +1885,43 @@ static void Handle3Same(uint32_t insn, unsigned int opcode, bool u,
         }
 }
 
+static void DisasSimd3SameLogic(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int size = extract32(insn, 22, 2);
+        bool is_u = extract32(insn, 29, 1);
+        bool is_q = extract32(insn, 30, 1);
+        switch (size + 4 * is_u) {
+        case 0: /* AND */
+                cb->AndVecReg(rd, rn, rm);
+                return;
+        case 1: /* BIC */
+                cb->BicVecReg(rd, rn, rm);
+                return;
+        case 2: /* ORR */
+                cb->OrrVecReg(rd, rn, rm);
+                return;
+        case 3: /* ORN */
+                cb->NotVecReg(VREG_DUMMY, rm);
+                cb->OrrVecReg(rd, rn, VREG_DUMMY);
+                return;
+        case 4: /* EOR */
+                cb->EorVecReg(rd, rn, rm);
+                return;
+        case 5: /* BSL bitwise select */
+                UnsupportedOp ("BSL");
+                return;
+        case 6: /* BIT, bitwise insert if true */
+                UnsupportedOp ("BIT");
+                return;
+        case 7: /* BIF, bitwise insert if false */
+                UnsupportedOp ("BIF");
+                return;
+        default:
+                ns_abort ("Unreachable\n");
+        }
+}
 static void DisasSimd3SameInt(uint32_t insn, DisasCallback *cb) {
         unsigned int is_q = extract32(insn, 30, 1);
         unsigned int u = extract32(insn, 29, 1);
@@ -1906,8 +1943,8 @@ static void DisasSimdThreeRegSame(uint32_t insn, DisasCallback *cb) {
 
         switch (opcode) {
                 case 0x3: /* logic ops */
-                        UnsupportedOp ("Logic 3 same");
-                break;
+                        DisasSimd3SameLogic (insn, cb);
+                        break;
                 case 0x17: /* ADDP */
                 case 0x14: /* SMAXP, UMAXP */
                 case 0x15: /* SMINP, UMINP */

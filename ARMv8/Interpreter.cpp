@@ -236,8 +236,7 @@ static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
         }
         return 0;
 }
-
-static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType _op) {
+static uint64_t _ArithmeticLogic(uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType _op) {
         uint64_t result;
         OpType op = _op;
         if (_op == AL_TYPE_SUB) {
@@ -259,6 +258,11 @@ static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, b
                         UpdateFlag32 (result, arg1, arg2);
                 }
         }
+        return result;
+}
+
+static void ArithmeticLogic(unsigned int rd_idx, uint64_t arg1, uint64_t arg2, bool setflags, bool bit64, OpType _op) {
+        uint64_t result = _ArithmeticLogic (arg1, arg2, setflags, bit64, _op);
         if (bit64) {
                 X(rd_idx) = result;
         } else {
@@ -965,6 +969,36 @@ static void _CompareTest(T *res, T arg1, T arg2, bool and_test) {
         } else {
                 *res = (arg1 == arg2);
         }
+}
+
+/* AND/OR/EOR/BIC/NOT ... between vector registers */
+void IntprCallback::AndVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) {
+        debug_print ("AND: V[%u] = V[%u] & V[%u]\n", rd_idx, rn_idx, rm_idx);
+        VREG(rd_idx).d[0] = _ArithmeticLogic (VREG(rn_idx).d[0], VREG(rm_idx).d[0], false, true, AL_TYPE_AND);
+        VREG(rd_idx).d[1] = _ArithmeticLogic (VREG(rn_idx).d[1], VREG(rm_idx).d[1], false, true, AL_TYPE_AND);
+}
+
+void IntprCallback::OrrVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) {
+        debug_print ("ORR: V[%u] = V[%u] | V[%u]\n", rd_idx, rn_idx, rm_idx);
+        VREG(rd_idx).d[0] = _ArithmeticLogic (VREG(rn_idx).d[0], VREG(rm_idx).d[0], false, true, AL_TYPE_OR);
+        VREG(rd_idx).d[1] = _ArithmeticLogic (VREG(rn_idx).d[1], VREG(rm_idx).d[1], false, true, AL_TYPE_OR);
+}
+
+void IntprCallback::EorVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) {
+        debug_print ("XOR: V[%u] = V[%u] ^ V[%u]\n", rd_idx, rn_idx, rm_idx);
+        VREG(rd_idx).d[0] = _ArithmeticLogic (VREG(rn_idx).d[0], VREG(rm_idx).d[0], false, true, AL_TYPE_EOR);
+        VREG(rd_idx).d[1] = _ArithmeticLogic (VREG(rn_idx).d[1], VREG(rm_idx).d[1], false, true, AL_TYPE_EOR);
+}
+void IntprCallback::BicVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) {
+        debug_print ("BIC: V[%u] = V[%u] & ~V[%u]\n", rd_idx, rn_idx, rm_idx);
+        VREG(rd_idx).d[0] = _ArithmeticLogic (VREG(rn_idx).d[0], ~VREG(rm_idx).d[0], false, true, AL_TYPE_AND);
+        VREG(rd_idx).d[1] = _ArithmeticLogic (VREG(rn_idx).d[1], ~VREG(rm_idx).d[1], false, true, AL_TYPE_AND);
+}
+
+void IntprCallback::NotVecReg(unsigned int rd_idx, unsigned int rm_idx) {
+	debug_print ("NOT: %c[%u] = ~%c[%u]\n", rd_idx, rm_idx);
+        VREG(rd_idx).d[0] = ~VREG(rm_idx).d[0];
+        VREG(rd_idx).d[1] = ~VREG(rm_idx).d[1];
 }
 
 /* Compare Bit wise equal */

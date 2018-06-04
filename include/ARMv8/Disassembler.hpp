@@ -105,6 +105,14 @@ virtual void ReadWriteNZCV(unsigned int rd_idx, bool read) = 0;
 virtual void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type) = 0;
 
 /* #######  Vector ####### */
+
+/* AND/OR/EOR/BIC/NOT ... between vector registers */
+virtual void AndVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) = 0;
+virtual void OrrVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) = 0;
+virtual void EorVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) = 0;
+virtual void BicVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) = 0;
+virtual void NotVecReg(unsigned int rd_idx, unsigned int rm_idx) = 0;
+
 /* Load/Store for vector */
 virtual void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size) = 0;
 virtual void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size) = 0;
