@@ -56,10 +56,6 @@ virtual void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, boo
 virtual void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) = 0;
 virtual void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend) = 0;
 
-/* Load/Store for vector */
-virtual void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size) = 0;
-virtual void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size) = 0;
-
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 virtual void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
 virtual void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64) = 0;
@@ -100,16 +96,6 @@ virtual void SVC(unsigned int svc_num) = 0;
 /* Breakpoint exception */
 virtual void BRK(unsigned int memo) = 0;
 
-/* Read Vector register to FP regsiter */
-virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;
-/* Duplicate an immediate value to vector register */
-virtual void DupVecImmI32(unsigned int vd_idx, uint32_t imm, int size, int dstsize) = 0;
-virtual void DupVecImmI64(unsigned int vd_idx, uint64_t imm, int size, int dstsize) = 0;
-/* Duplicate an element of vector register to new one */
-virtual void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize) = 0;
-/* Duplicate an general register into vector register */
-virtual void DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize) = 0;
-
 /* Read/Write Sysreg */
 virtual void ReadWriteSysReg(unsigned int rd_idx, int offset, bool read) = 0;
 /* Read/Write NZCV */
@@ -117,6 +103,30 @@ virtual void ReadWriteNZCV(unsigned int rd_idx, bool read) = 0;
 
 /* Fp Mov between registers */
 virtual void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type) = 0;
+
+/* #######  Vector ####### */
+/* Load/Store for vector */
+virtual void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size) = 0;
+virtual void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size) = 0;
+
+/* Read Vector register to FP regsiter */
+virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;
+
+/* Duplicate an immediate value to vector register */
+virtual void DupVecImmI32(unsigned int vd_idx, uint32_t imm, int size, int dstsize) = 0;
+virtual void DupVecImmI64(unsigned int vd_idx, uint64_t imm, int size, int dstsize) = 0;
+
+/* Duplicate an element of vector register to new one */
+virtual void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int size, int dstsize) = 0;
+
+/* Duplicate an general register into vector register */
+virtual void DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize) = 0;
+
+/* Compare Bit wise equal */
+virtual void CompareEqualVec(unsigned int vd_idx, unsigned int vn_idx, unsigned int vm_idx, int index, int size) = 0;
+
+/* Compare Bit wise test bits nonzero */
+virtual void CompareTestBitsVec(unsigned int vd_idx, unsigned int vn_idx, unsigned int vm_idx, int index, int size) = 0;
 
 };
 

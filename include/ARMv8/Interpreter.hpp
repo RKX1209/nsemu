@@ -56,10 +56,6 @@ void StoreRegI64(unsigned int rd_idx, unsigned int ad_idx, int size, bool is_sig
 void _LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend);
 void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool extend);
 
-/* Load/Store for vector */
-void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size);
-void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size);
-
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
@@ -99,6 +95,19 @@ void SVC(unsigned int svc_num);
 /* Breakpoint exception */
 void BRK(unsigned int memo);
 
+/* Read/Write Sysreg */
+void ReadWriteSysReg(unsigned int rd_idx, int offset, bool read);
+/* Read/Write NZCV */
+void ReadWriteNZCV(unsigned int rd_idx, bool read);
+
+/* Fp Mov between registers */
+void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type);
+
+/* #######  Vector ####### */
+/* Load/Store for vector */
+void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size);
+void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size);
+
 /* Read Vector register to FP register */
 void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size);
 /* Duplicate an immediate value to vector register */
@@ -109,13 +118,11 @@ void DupVecReg(unsigned int vd_idx, unsigned int vn_idx, unsigned int index, int
 /* Duplicate an general register into vector register */
 void DupVecRegFromGen(unsigned int vd_idx, unsigned int rn_idx, int size, int dstsize);
 
-/* Read/Write Sysreg */
-void ReadWriteSysReg(unsigned int rd_idx, int offset, bool read);
-/* Read/Write NZCV */
-void ReadWriteNZCV(unsigned int rd_idx, bool read);
+/* Compare Bit wise equal */
+void CompareEqualVec(unsigned int vd_idx, unsigned int vn_idx, unsigned int vm_idx, int index, int size);
 
-/* Fp Mov between registers */
-void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type);
+/* Compare Bit wise test bits nonzero */
+void CompareTestBitsVec(unsigned int vd_idx, unsigned int vn_idx, unsigned int vm_idx, int index, int size);
 
 };
 

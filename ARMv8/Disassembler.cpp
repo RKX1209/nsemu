@@ -1840,6 +1840,112 @@ static void DisasSimdCopy(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void Handle3Same(uint32_t insn, unsigned int opcode, bool u,
+        unsigned int rd, unsigned rn, unsigned int rm, unsigned int size, DisasCallback *cb) {
+        switch (opcode) {
+                case 0x1: /* SQADD */
+                        UnsupportedOp ("SQADD");
+                        break;
+                case 0x5: /* SQSUB */
+                        UnsupportedOp ("SQSUB");
+                        break;
+                case 0x6: /* CMGT, CMHI */
+                        UnsupportedOp ("CMGT");
+                        break;
+                case 0x7: /* CMGE, CMHS */
+                        UnsupportedOp ("CMGE");
+                        break;
+                case 0x11: /* CMTST, CMEQ */
+                        if (u) {
+                                // CMEQ
+                                cb->CompareEqualVec (rd, rn, rm, 0, size);
+                        } else {
+                                // CMTST
+                                cb->CompareTestBitsVec (rd, rn, rm, 0, size);
+                        }
+                        break;
+                case 0x8: /* SSHL, USHL */
+                        UnsupportedOp ("SSHL");
+                        break;
+                case 0x9: /* SQSHL, UQSHL */
+                        UnsupportedOp ("SQSHL");
+                        break;
+                case 0xa: /* SRSHL, URSHL */
+                        UnsupportedOp ("SRSHL");
+                        break;
+                case 0xb: /* SQRSHL, UQRSHL */
+                        UnsupportedOp ("SQRSHL");
+                        break;
+                case 0x10: /* ADD, SUB */
+                        UnsupportedOp ("ADD");
+                        break;
+                default:
+                        UnallocatedOp (insn);
+                        break;
+        }
+}
+/* Scalar variant, op <V><d>, <V><n>, <V><m> means, Vd.ns[0] = Vn.ns[0] op Vm.ns[0] */
+static void DisasSimdScalarThreeRegSame(uint32_t insn, DisasCallback *cb) {
+        unsigned int rd = extract32(insn, 0, 5);
+        unsigned int rn = extract32(insn, 5, 5);
+        unsigned int opcode = extract32(insn, 11, 5);
+        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int size = extract32(insn, 22, 2);
+        bool u = extract32(insn, 29, 1);
+        if (opcode >= 0x18) {
+                /* Floating point: U, size[1] and opcode indicate operation */
+                int fpopcode = opcode | (extract32(size, 1, 1) << 5) | (u << 6);
+                switch (fpopcode) {
+                case 0x1b: /* FMULX */
+                case 0x1f: /* FRECPS */
+                case 0x3f: /* FRSQRTS */
+                case 0x5d: /* FACGE */
+                case 0x7d: /* FACGT */
+                case 0x1c: /* FCMEQ */
+                case 0x5c: /* FCMGE */
+                case 0x7c: /* FCMGT */
+                case 0x7a: /* FABD */
+                        break;
+                default:
+                        UnallocatedOp (insn);
+                        return;
+                }
+
+                //handle_3same_float(s, extract32(size, 0, 1), 1, fpopcode, rd, rn, rm);
+                UnsupportedOp("FP 3 same");
+                return;
+        }
+
+        switch (opcode) {
+        case 0x1: /* SQADD, UQADD */
+        case 0x5: /* SQSUB, UQSUB */
+        case 0x9: /* SQSHL, UQSHL */
+        case 0xb: /* SQRSHL, UQRSHL */
+                break;
+        case 0x8: /* SSHL, USHL */
+        case 0xa: /* SRSHL, URSHL */
+        case 0x6: /* CMGT, CMHI */
+        case 0x7: /* CMGE, CMHS */
+        case 0x11: /* CMTST, CMEQ */
+        case 0x10: /* ADD, SUB (vector) */
+                if (size != 3) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                break;
+        case 0x16: /* SQDMULH, SQRDMULH (vector) */
+                if (size != 1 && size != 2) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+                break;
+        default:
+                UnallocatedOp (insn);
+                return;
+        }
+        Handle3Same (insn, opcode, u, rd, rn, rm, size, cb);
+}
+
 static void DisasSimdScalarCopy(uint32_t insn, DisasCallback *cb) {
         unsigned int fd = extract32(insn, 0, 5);
         unsigned int rn = extract32(insn, 5, 5);
@@ -1876,7 +1982,7 @@ static const A64DecodeTable data_proc_simd[] = {
     // { 0x0e000000, 0xbf208c00, disas_simd_tb },
     // { 0x0e000800, 0xbf208c00, disas_simd_zip_trn },
     // { 0x2e000000, 0xbf208400, disas_simd_ext },
-    // { 0x5e200400, 0xdf200400, disas_simd_scalar_three_reg_same },
+    { 0x5e200400, 0xdf200400, DisasSimdScalarThreeRegSame },
     // { 0x5e008400, 0xdf208400, disas_simd_scalar_three_reg_same_extra },
     // { 0x5e200000, 0xdf200c00, disas_simd_scalar_three_reg_diff },
     // { 0x5e200800, 0xdf3e0c00, disas_simd_scalar_two_reg_misc },
