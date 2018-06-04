@@ -21,8 +21,9 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3485900, mx = 100000;
-        //uint64_t estimate = 0, mx = 3420000;
+        //uint64_t estimate = 3500000, mx = 100000;
+        uint64_t estimate = 3490000, mx = 100000;
+        //uint64_t estimate = 0, mx = 100000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
                         if (GdbStub::cont) {
@@ -320,7 +321,7 @@ void IntprCallback::MovReg(unsigned int rd_idx, unsigned int rn_idx, bool bit64)
 /* Conditional mov between registers */
 void IntprCallback::CondMovReg(unsigned int cond, unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("MOV: %c[%u] = 0: %c[%u], 1: %c[%u]\n", regc, rd_idx, regc, rm_idx, regc, rn_idx);
+	debug_print ("MOV: %c[%u] = 0: %c[%u], 1: %c[%u], cond(%u)_hold: %d\n", regc, rd_idx, regc, rm_idx, regc, rn_idx, cond, CondHold(cond));
         if (bit64) {
                 if (CondHold(cond))
                         X(rd_idx) = X(rn_idx);
@@ -386,12 +387,12 @@ void IntprCallback::MulReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
                         X(rd_idx) = X(rn_idx) * X(rm_idx);
                 } else {
                         if (sign)
-                                X(rd_idx) = (int64_t)((int32_t)W(rn_idx) * (int32_t)W(rm_idx));
+                                X(rd_idx) = (int64_t)W(rn_idx) * (int64_t)W(rm_idx);
                         else
-                                X(rd_idx) = W(rn_idx) * W(rm_idx);
+                                X(rd_idx) = (uint64_t)W(rn_idx) * (uint64_t)W(rm_idx);
                 }
         } else {
-                X(rd_idx) = (W(rn_idx) * W(rm_idx)) & 0xffffffff;
+                X(rd_idx) = W(rn_idx) * W(rm_idx);
         }
 }
 //64bit * 64bit
@@ -561,7 +562,7 @@ static void ExtendRegI64(unsigned int rd_idx, uint64_t imm, unsigned int option)
 }
 void IntprCallback::ExtendReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int extend_type, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("Extend: %c[%u] Ext(%c[%u])\n", regc, rd_idx, regc, rn_idx);
+	debug_print ("Extend(type %u): %c[%u] Ext(%c[%u])\n", extend_type, regc, rd_idx, regc, rn_idx);
         if (bit64)
                 ExtendRegI64 (rd_idx, X(rn_idx), extend_type);
         else
@@ -615,7 +616,8 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
                 base_idx = ARMv8::HandleAsSP (base_idx);
-                debug_print ("Load(%d): %c[%u] <= [%c[%u], %c[%u]](extend:%d, sign:%d)\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx, extend, is_sign);
+                debug_print ("Load(%d): %c[%u] <= [X[%u](0x%lx), %c[%u](0x%lx)](extend:%d, sign:%d)\n",
+                size, regdc, rd_idx, base_idx, X(base_idx), regc, rm_idx, X(rm_idx), extend, is_sign);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -625,9 +627,9 @@ void IntprCallback::LoadReg(unsigned int rd_idx, unsigned int base_idx, unsigned
                         _LoadReg (rd_idx, addr, size, is_sign, extend);
                 } else {
                         if (post)
-                                addr = W(base_idx);
+                                addr = X(base_idx);
                         else
-                                addr = W(base_idx) + W(rm_idx);
+                                addr = X(base_idx) + W(rm_idx);
                         _LoadReg (rd_idx, addr, size, is_sign, extend);
                 }
 }
@@ -642,7 +644,7 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
 	        char regc = bit64? 'X': 'W';
                 char regdc = size >= 4 ? 'Q' : (size < 3 ? 'W' : 'X');
                 base_idx = ARMv8::HandleAsSP (base_idx);
-	        debug_print ("Store(%d): %c[%u] => [%c[%u], %c[%u]](extend:%d, sign:%d)\n", size, regdc, rd_idx, regc, base_idx, regc, rm_idx, extend, is_sign);
+	        debug_print ("Store(%d): %c[%u] => [X[%u], %c[%u]](extend:%d, sign:%d)\n", size, regdc, rd_idx, base_idx, regc, rm_idx, extend, is_sign);
                 uint64_t addr;
                 if (bit64) {
                         if (post)
@@ -652,9 +654,9 @@ void IntprCallback::StoreReg(unsigned int rd_idx, unsigned int base_idx, unsigne
                         _StoreReg (rd_idx, addr, size, is_sign, extend);
                 } else {
                         if (post)
-                                addr = W(base_idx);
+                                addr = X(base_idx);
                         else
-                                addr = W(base_idx) + W(rm_idx);
+                                addr = X(base_idx) + W(rm_idx);
                         _StoreReg (rd_idx, addr, size, is_sign, extend);
                 }
 }

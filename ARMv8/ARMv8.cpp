@@ -26,7 +26,7 @@ void RunLoop() {
 void Dump() {
         int cnt = 1;
         ns_print ("CPU Dump:\n");
-        for (int r = 0; r < GPR_DUMMY; r++) {
+        for (int r = 0; r <= PC_IDX; r++) {
                 if (!X(r))
                         continue;
                 if (r == GPR_LR)
@@ -35,8 +35,6 @@ void Dump() {
                         ns_print ("SP:\t");
                 else if (r == PC_IDX)
                         ns_print ("PC:\t");
-                else if (r == GPR_DUMMY)
-                        ns_print ("DUM:\t");
                 else
                         ns_print ("X%d:\t", r);
                 ns_print ("0x%016lx%c", X(r), cnt % 3 == 0 ? '\n' : '\t');

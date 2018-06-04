@@ -45,8 +45,11 @@ static bool inline IsStraight(uint64_t addr, size_t len) {
 }
 
 static RAMBlock* FindRamBlock(uint64_t addr, size_t len) {
+        debug_print("Find 0x%lx, 0x%x\n", addr, len);
         for (int i = 0; i < regions.size(); i++) {
+                debug_print("region[%d] 0x%lx: 0x%x\n", i, regions[i]->addr, regions[i]->length);
                 if (regions[i]->addr <= addr && addr + len <= regions[i]->addr + regions[i]->length) {
+                        debug_print("0x%lx, 0x%x => match %d\n", addr, len, i);
                         return regions[i];
                 }
         }
@@ -65,7 +68,7 @@ static void AddAnonRamBlock(uint64_t addr, size_t len, int perm) {
                 ns_abort("Failed to allocate new RAM Block\n");
         }
         RAMBlock *new_ram = new RAMBlock("[anon]", addr, len, raw, perm);
-        //ns_print("Add anonymous region [0x%lx, %d]\n", new_ram->addr, new_ram->length);
+        debug_print("Add anonymous region [0x%lx, %d]\n", new_ram->addr, new_ram->length);
         regions.push_back(new_ram);
 }
 
@@ -131,12 +134,12 @@ void *GetRawPtr(uint64_t gpa, size_t len) {
         void *emu_mem;
         if (IsStraight(gpa, len)) {
                 emu_mem = (void *)&pRAM[gpa];
-        }
-        else {
+        } else {
                 RAMBlock *ram = FindRamBlock (gpa, len);
                 if (!ram) {
                         return nullptr;
                 }
+                debug_print("Uncontigious block\n");
                 emu_mem = (void *)&ram->block[gpa - ram->addr];
         }
         return emu_mem;

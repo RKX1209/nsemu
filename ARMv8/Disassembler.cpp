@@ -61,19 +61,19 @@ static bool LogicImmDecode(uint64_t *wmask, unsigned int immn, unsigned int imms
 
 static void DisasPCRelAddr(uint32_t insn, DisasCallback *cb) {
 	unsigned int rd, page;
-	uint64_t offset, base;
+	uint64_t offset;
 
 	page = extract32 (insn, 31, 1);
 	offset = sextract64 (insn, 5, 19);
 	offset = offset << 2 | extract32 (insn, 29, 2);
 	rd = extract32 (insn, 0, 5);
-	//base = PC - 4;
-        base = PC;
+        cb->MovReg (GPR_DUMMY, PC_IDX, true);
 	if (page) {
-		base &= ~0xfff;
+                cb->AndI64 (GPR_DUMMY, GPR_DUMMY, ~0xfff, false, true);
 		offset <<= 12;
 	}
-	cb->MoviI64 (rd, base + offset, true);
+        cb->AddI64 (GPR_DUMMY, GPR_DUMMY, offset, false, true);
+	cb->MovReg (rd, GPR_DUMMY, true);
 }
 
 static void DisasAddSubImm(uint32_t insn, DisasCallback *cb) {
@@ -754,11 +754,11 @@ static void DisasDataProc3src(uint32_t insn, DisasCallback *cb) {
                         /* MADD(64bit), MSUB(64bit) */
                         src64 = true;
                 }
-                cb->MulReg (rd, rn, rm, is_signed, sf, src64);
+                cb->MulReg (GPR_DUMMY, rn, rm, is_signed, sf, src64);
                 if (is_sub)
-                        cb->SubReg (rd, ra, rd, false, src64);
+                        cb->SubReg (rd, ra, GPR_DUMMY, false, true);
                 else
-                        cb->AddReg (rd, ra, rd, false, src64);
+                        cb->AddReg (rd, ra, GPR_DUMMY, false, true);
         }
 
 }
@@ -816,11 +816,7 @@ static void DisasCondSel(uint32_t insn, DisasCallback *cb) {
                 return;
         }
         bool cond_inv = false;
-        if (rn == 31 && rm == 31) {
-                /* CSET  (CSINC <Wd>, WZR, WZR, invert(<cond>)) *
-                 * CSETM (CSINV <Wd>, WZR, WZR, invert(<cond>)) */
-                cond = cond ^ 1; // i.e. invert(<cond>)
-        }
+        //debug_print("rn: %u, rm: %u, else_inc: %u, else_inv: %u cond: %u\n", rn, rm, else_inc, else_inv, cond);
         cb->MovReg (GPR_DUMMY, rm, true);
         if (else_inv) {
                 cb->NotReg (GPR_DUMMY, GPR_DUMMY, sf);
@@ -1056,7 +1052,7 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
                                 bool is_vector) {
         unsigned int rn = extract32(insn, 5, 5);
         unsigned int shift = extract32(insn, 12, 1);
-        unsigned int rm = extract32(insn, 16, 5);
+        unsigned int rm = ARMv8::HandleAsSP (extract32(insn, 16, 5));
         unsigned int opt = extract32(insn, 13, 3);
         bool is_signed = false;
         bool is_store = false;
@@ -1086,7 +1082,7 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
                 is_extended = (size < 3); //TODO: treat other case, size = 0, 1(8bit-> or 16bit->)
         }
         bool sf = DisasLdstCompute64bit (size, is_signed, opc);
-        cb->ExtendReg (GPR_DUMMY, rm, opt, sf); //FIXME: When rm == GPR_ZERO, it should be handled as GPR_SP
+        cb->ExtendReg (GPR_DUMMY, rm, opt, sf);
         cb->ShiftI64 (GPR_DUMMY, GPR_DUMMY, ShiftType_LSL, shift ? size : 0, sf);
         if (is_store) {
                 cb->StoreReg (rt, rn, GPR_DUMMY, size, is_signed, is_extended, false, sf);
