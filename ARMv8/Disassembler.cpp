@@ -1081,7 +1081,8 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
                 //is_extended = (size < 3) && extract32(opc, 0, 1);
                 is_extended = (size < 3); //TODO: treat other case, size = 0, 1(8bit-> or 16bit->)
         }
-        bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+        //bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+        bool sf = (opt & 0x1) ? true : false; // XXX: Correct?
         cb->ExtendReg (GPR_DUMMY, rm, opt, sf);
         cb->ShiftI64 (GPR_DUMMY, GPR_DUMMY, ShiftType_LSL, shift ? size : 0, sf);
         if (is_store) {

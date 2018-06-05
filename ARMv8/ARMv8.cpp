@@ -47,7 +47,7 @@ static uint64_t counter;
 void DumpJson(FILE *fp) {
         file_print (fp, "%lu : {\n", counter++);
         int r;
-        for (r = 0; r < GPR_DUMMY; r++) {
+        for (r = 0; r <= PC_IDX; r++) {
                 file_print (fp, "\"X%d\" : \"0x%016lx\",\n", r, X(r));
         }
         file_print (fp, "\"X%d\" : \"0x%016x\"\n", r, NZCV);

@@ -21,8 +21,7 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        //uint64_t estimate = 3500000, mx = 100000;
-        uint64_t estimate = 3490000, mx = 100000;
+        uint64_t estimate = 3500000, mx = 3720;
         //uint64_t estimate = 0, mx = 100000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
@@ -209,7 +208,7 @@ static void Smul64(uint64_t *res_h, uint64_t *res_l, uint64_t arg1, uint64_t arg
         *res_h = rh;
 }
 
-static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
+static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, bool bit64, OpType op) {
         if (op == AL_TYPE_ADD)
                 return arg1 + arg2;
         if (op == AL_TYPE_AND)
@@ -222,8 +221,12 @@ static uint64_t ALCalc(uint64_t arg1, uint64_t arg2, OpType op) {
                 return arg1 << arg2;
         if (op == AL_TYPE_LSR)
                 return arg1 >> arg2;
-        if (op == AL_TYPE_ASR)
-                return (int64_t) arg1 >> arg2;
+        if (op == AL_TYPE_ASR) {
+                if (bit64)
+                        return ((int64_t) arg1) >> arg2;
+                else
+                        return ((int32_t) arg1) >> arg2;
+        }
         if (op == AL_TYPE_ROR)
                 return RotateRight (arg1, arg2);
         if (op == AL_TYPE_UDIV) {
@@ -248,7 +251,7 @@ static uint64_t _ArithmeticLogic(uint64_t arg1, uint64_t arg2, bool setflags, bo
                 }
                 op = AL_TYPE_ADD;
         }
-        result = ALCalc (arg1, arg2, op);
+        result = ALCalc (arg1, arg2, bit64, op);
         if (setflags) {
                 if (bit64) {
                         UpdateFlag64 (result, arg1, arg2);
@@ -509,7 +512,7 @@ void IntprCallback::EorReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
 }
 void IntprCallback::BicReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx, bool setflags, bool bit64) {
 	char regc = bit64? 'X': 'W';
-	debug_print ("BIC: %c[%u] = %c[%u] & ~%c[%u]\n", regc, rd_idx, regc, rn_idx, regc, rm_idx);
+	debug_print ("BIC: %c[%u] = %c[%u](0x%lx) & ~%c[%u](~0x%lx)\n", regc, rd_idx, regc, rn_idx, X(rn_idx), regc, rm_idx, X(rm_idx));
         if (bit64)
                 ArithmeticLogic (rd_idx, X(rn_idx), ~X(rm_idx), false, bit64, AL_TYPE_AND);
         else
