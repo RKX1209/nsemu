@@ -320,14 +320,17 @@ def main():
 	fp = StringIO()
 	print >>fp, '#ifndef __IPCSTUBS_HPP__'
 	print >>fp, '#define __IPCSTUBS_HPP__'
+    	print >>fp
+	impled = (u"nn::fssrv::sf::IFileSystemProxy", u"hoge")
+    	# XXX:
+    	tmp_srvs = {k: services[k] for k in impled if k in services}
+	print tmp_srvs
+	print >>fp, '#define SERVICE_MAPPING() do { \\'
+	for iname, snames in sorted(tmp_srvs.items(), key=lambda x: x[0]):
+	 	for sname in snames:
+	 		print >>fp, '\tSERVICE("%s", %s); \\' % (sname, iname)
+	print >>fp, '} while(0)'
 	print >>fp
-
-	# print >>fp, '#define SERVICE_MAPPING() do { \\'
-	# for iname, snames in sorted(services.items(), key=lambda x: x[0]):
-	# 	for sname in snames:
-	# 		print >>fp, '\tSERVICE("%s", %s); \\' % (sname, iname)
-	# print >>fp, '} while(0)'
-	# print >>fp
 
 	for ns, elems in sorted(namespaces.items(), key=lambda x: x[0]):
 		if ns is not None:
@@ -345,7 +348,7 @@ def main():
 
 	print >>fp
 
-	allcode = '\n'.join(file(fn, 'r').read() for fn in glob.glob('ipcimpl/*.cpp'))
+	allcode = '\n'.join(file(fn, 'r').read() for fn in glob.glob('Service/*.cpp'))
 
 	partials = parsePartials(allcode)
 
