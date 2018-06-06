@@ -1,6 +1,10 @@
 #ifndef __IPCSTUBS_HPP__
 #define __IPCSTUBS_HPP__
 
+#define SERVICE_MAPPING() do { \
+	SERVICE("fsp-srv", nn::fssrv::sf::IFileSystemProxy); \
+} while(0)
+
 using ServiceName = uint8_t *; // uint8_t[8]
 
 class SmService;
@@ -290,6 +294,10 @@ namespace nn::friends::detail::ipc {
 	class IServiceCreator;
 }
 namespace nn::fssrv::sf {
+	using Partition = uint32_t;
+	using SaveCreateStruct = uint8_t *; // uint8_t[0x40]
+	using SaveStruct = uint8_t *; // uint8_t[0x40]
+
 	class IDeviceOperator;
 	class IDirectory;
 	class IEventNotifier;
@@ -829,22 +837,6 @@ namespace nv::gemcoredump {
 	};
 //// }
 #ifdef DEFINE_STUBS
-uint32_t SmService::GetService(ServiceName name, IpcService* _1) {
-	ns_print("Stub implementation for SmService::GetService\n");
-	return 0;
-}
-uint32_t SmService::Initialize() {
-	ns_print("Stub implementation for SmService::Initialize\n");
-	return 0;
-}
-uint32_t SmService::RegisterService(ServiceName name, IpcService* _1) {
-	ns_print("Stub implementation for SmService::RegisterService\n");
-	return 0;
-}
-uint32_t SmService::UnregisterService(ServiceName name) {
-	ns_print("Stub implementation for SmService::UnregisterService\n");
-	return 0;
-}
 #endif // DEFINE_STUBS
 namespace nn::account {
 	class IAccountServiceForAdministrator : public IpcService {
@@ -14686,14 +14678,14 @@ namespace nn::fssrv::sf {
 			switch(req->cmd_id) {
 			case 0: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown0\n");
-				resp->error_code = Unknown0(*resp->GetDataPointer<uint8_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::IsSdCardInserted\n");
+				resp->error_code = IsSdCardInserted(*resp->GetDataPointer<uint8_t *>(8));
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown1\n");
-				resp->error_code = Unknown1(*resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetSdCardSpeedMode\n");
+				resp->error_code = GetSdCardSpeedMode(*resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			case 2: {
@@ -14701,22 +14693,22 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown2: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown2(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetSdCardCid: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetSdCardCid(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown3\n");
-				resp->error_code = Unknown3(*resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetSdCardUserAreaSize\n");
+				resp->error_code = GetSdCardUserAreaSize(*resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown4\n");
-				resp->error_code = Unknown4(*resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetSdCardProtectedAreaSize\n");
+				resp->error_code = GetSdCardProtectedAreaSize(*resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			case 5: {
@@ -14724,8 +14716,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown5: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown5(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetAndClearSdCardErrorInfo: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetAndClearSdCardErrorInfo(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -14735,34 +14727,34 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown100: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown100(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetMmcCid: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetMmcCid(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 101: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown101\n");
-				resp->error_code = Unknown101(*resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetMmcSpeedMode\n");
+				resp->error_code = GetMmcSpeedMode(*resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			case 110: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown110: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown110(req->GetData<uint32_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::EraseMmc: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = EraseMmc(req->GetData<uint32_t>(8));
 				return 0;
 			}
 			case 111: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown111: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown111(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetMmcPartitionSize: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetMmcPartitionSize(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			case 112: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown112\n");
-				resp->error_code = Unknown112(*resp->GetDataPointer<uint32_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetMmcPatrolCount\n");
+				resp->error_code = GetMmcPatrolCount(*resp->GetDataPointer<uint32_t *>(8));
 				return 0;
 			}
 			case 113: {
@@ -14770,8 +14762,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown113: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown113(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetAndClearMmcErrorInfo: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetAndClearMmcErrorInfo(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -14781,46 +14773,46 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown114: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown114(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetMmcExtendedCsd: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetMmcExtendedCsd(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 200: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown200\n");
-				resp->error_code = Unknown200(*resp->GetDataPointer<uint8_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::IsGameCardInserted\n");
+				resp->error_code = IsGameCardInserted(*resp->GetDataPointer<uint8_t *>(8));
 				return 0;
 			}
 			case 201: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown201: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown201(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::EraseGameCard: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = EraseGameCard(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
 				return 0;
 			}
 			case 202: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown202\n");
-				resp->error_code = Unknown202(*resp->GetDataPointer<uint32_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardHandle\n");
+				resp->error_code = GetGameCardHandle(*resp->GetDataPointer<uint32_t *>(8));
 				return 0;
 			}
 			case 203: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown203: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown203(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardUpdatePartitionInfo: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetGameCardUpdatePartitionInfo(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<nn::ApplicationId *>(0x10));
 				return 0;
 			}
 			case 204: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown204\n");
-				resp->error_code = Unknown204();
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::FinalizeGameCardDriver\n");
+				resp->error_code = FinalizeGameCardDriver();
 				return 0;
 			}
 			case 205: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown205: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown205(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint8_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardAttribute: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetGameCardAttribute(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint8_t *>(8));
 				return 0;
 			}
 			case 206: {
@@ -14828,8 +14820,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown206: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown206(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceCertificate: uint64_t = 0x%%lx, uint32_t = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10));
+				resp->error_code = GetGameCardDeviceCertificate(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -14843,8 +14835,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown207: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown207(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardAsicInfo: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
+				resp->error_code = GetGameCardAsicInfo(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
 				delete[] temp6;
@@ -14855,8 +14847,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown208: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown208(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardIdSet: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetGameCardIdSet(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -14866,16 +14858,16 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown209: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown209(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::WriteToGameCard: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = WriteToGameCard(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 210: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown210: uint8_t = 0x%x\n", req->GetData<uint8_t>(8));
-				resp->error_code = Unknown210(req->GetData<uint8_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::SetVerifyWriteEnalbleFlag: uint8_t flag = 0x%x\n", req->GetData<uint8_t>(8));
+				resp->error_code = SetVerifyWriteEnalbleFlag(req->GetData<uint8_t>(8));
 				return 0;
 			}
 			case 211: {
@@ -14883,8 +14875,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown211: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown211(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardImageHash: uint64_t = 0x%%lx, uint32_t = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10));
+				resp->error_code = GetGameCardImageHash(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -14898,8 +14890,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown212: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown212(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceIdForProdCard: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
+				resp->error_code = GetGameCardDeviceIdForProdCard(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
 				delete[] temp6;
@@ -14911,8 +14903,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown213: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown213(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::EraseAndWriteParamDirectly: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
+				resp->error_code = EraseAndWriteParamDirectly(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -14921,29 +14913,29 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown214: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown214(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardCid: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetGameCardCid(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 215: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown215\n");
-				resp->error_code = Unknown215();
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::ForceEraseGameCard\n");
+				resp->error_code = ForceEraseGameCard();
 				return 0;
 			}
 			case 216: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown216\n");
-				resp->error_code = Unknown216(*resp->GetDataPointer<uint128_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardErrorInfo\n");
+				resp->error_code = GetGameCardErrorInfo(*resp->GetDataPointer<uint128_t *>(8));
 				return 0;
 			}
 			case 217: {
 				resp->GenBuf(0, 0, 64);
 				auto temp1 = resp->GetDataPointer<uint8_t *>(8);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown217\n");
-				resp->error_code = Unknown217(temp1);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardErrorReportInfo\n");
+				resp->error_code = GetGameCardErrorReportInfo(temp1);
 				return 0;
 			}
 			case 218: {
@@ -14951,62 +14943,62 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown218: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown218(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceId: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetGameCardDeviceId(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 300: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown300: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown300(req->GetData<uint32_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::SetSpeedEmulationMode: uint32_t mode = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = SetSpeedEmulationMode(req->GetData<uint32_t>(8));
 				return 0;
 			}
 			case 301: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::Unknown301\n");
-				resp->error_code = Unknown301(*resp->GetDataPointer<uint32_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetSpeedEmulationMode\n");
+				resp->error_code = GetSpeedEmulationMode(*resp->GetDataPointer<uint32_t *>(8));
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IDeviceOperator", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t& _0);
-		uint32_t Unknown1(uint64_t& _0);
-		uint32_t Unknown100(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown101(uint64_t& _0);
-		uint32_t Unknown110(uint32_t _0);
-		uint32_t Unknown111(uint32_t _0, uint64_t& _1);
-		uint32_t Unknown112(uint32_t& _0);
-		uint32_t Unknown113(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown114(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown2(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown200(uint8_t& _0);
-		uint32_t Unknown201(uint32_t _0, uint64_t _1);
-		uint32_t Unknown202(uint32_t& _0);
-		uint32_t Unknown203(uint32_t _0, uint32_t& _1, uint64_t& _2);
-		uint32_t Unknown204();
-		uint32_t Unknown205(uint32_t _0, uint8_t& _1);
-		uint32_t Unknown206(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown207(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown208(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown209(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown210(uint8_t _0);
-		uint32_t Unknown211(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown212(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown213(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown214(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown215();
-		uint32_t Unknown216(uint128_t& _0);
-		uint32_t Unknown217(uint8_t * _0);
-		uint32_t Unknown218(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown3(uint64_t& _0);
-		uint32_t Unknown300(uint32_t _0);
-		uint32_t Unknown301(uint32_t& _0);
-		uint32_t Unknown4(uint64_t& _0);
-		uint32_t Unknown5(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t EraseAndWriteParamDirectly(uint64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t EraseGameCard(uint32_t _0, uint64_t _1);
+		uint32_t EraseMmc(uint32_t _0);
+		uint32_t FinalizeGameCardDriver();
+		uint32_t ForceEraseGameCard();
+		uint32_t GetAndClearMmcErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t GetAndClearSdCardErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t GetGameCardAsicInfo(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size);
+		uint32_t GetGameCardAttribute(uint32_t _0, uint8_t& attribute);
+		uint32_t GetGameCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size);
+		uint32_t GetGameCardDeviceCertificate(uint64_t _0, uint32_t _1, uint8_t * certificate, unsigned int certificate_size);
+		uint32_t GetGameCardDeviceId(uint64_t _0, uint8_t * deviceID, unsigned int deviceID_size);
+		uint32_t GetGameCardDeviceIdForProdCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * errorInfo, unsigned int errorInfo_size);
+		uint32_t GetGameCardErrorInfo(uint128_t& errorInfo);
+		uint32_t GetGameCardErrorReportInfo(uint8_t * errorReportInfo);
+		uint32_t GetGameCardHandle(uint32_t& gamecardHandle);
+		uint32_t GetGameCardIdSet(uint64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetGameCardImageHash(uint64_t _0, uint32_t _1, uint8_t * imageHash, unsigned int imageHash_size);
+		uint32_t GetGameCardUpdatePartitionInfo(uint32_t _0, uint32_t& version, nn::ApplicationId& TID);
+		uint32_t GetMmcCid(uint64_t _0, uint8_t * cid, unsigned int cid_size);
+		uint32_t GetMmcExtendedCsd(uint64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetMmcPartitionSize(uint32_t _0, uint64_t& paritionSize);
+		uint32_t GetMmcPatrolCount(uint32_t& patrolCount);
+		uint32_t GetMmcSpeedMode(uint64_t& speedMode);
+		uint32_t GetSdCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size);
+		uint32_t GetSdCardProtectedAreaSize(uint64_t& protectedSize);
+		uint32_t GetSdCardSpeedMode(uint64_t& sdSpeed);
+		uint32_t GetSdCardUserAreaSize(uint64_t& size);
+		uint32_t GetSpeedEmulationMode(uint32_t& emuMode);
+		uint32_t IsGameCardInserted(uint8_t& isGameInserted);
+		uint32_t IsSdCardInserted(uint8_t& isSdInserted);
+		uint32_t SetSpeedEmulationMode(uint32_t mode);
+		uint32_t SetVerifyWriteEnalbleFlag(uint8_t flag);
+		uint32_t WriteToGameCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
 	};
 	class IDirectory : public IpcService {
 	public:
@@ -15018,24 +15010,24 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IDirectory::Unknown0\n");
-				resp->error_code = Unknown0(*resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IDirectory::Read\n");
+				resp->error_code = Read(*resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IDirectory::Unknown1\n");
-				resp->error_code = Unknown1(*resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IDirectory::GetEntryCount\n");
+				resp->error_code = GetEntryCount(*resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IDirectory", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown1(uint64_t& _0);
+		uint32_t GetEntryCount(uint64_t& _0);
+		uint32_t Read(uint64_t& _0, uint8_t * _1, unsigned int _1_size);
 	};
 	class IEventNotifier : public IpcService {
 	public:
@@ -15067,8 +15059,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x46, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IFile::Unknown0: uint32_t = 0x%x, uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18));
-				resp->error_code = Unknown0(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFile::Read: uint64_t = 0x%%lx, uint64_t offset = 0x%%lx, uint32_t size = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18));
+				resp->error_code = Read(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), *resp->GetDataPointer<uint64_t *>(8), (int8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -15079,38 +15071,38 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x45, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFile::Unknown1: uint32_t = 0x%x, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), temp2);
-				resp->error_code = Unknown1(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFile::Write: uint64_t = 0x%%lx, uint64_t offset = 0x%%lx, uint32_t size = 0x%x, int8_t *buf = buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), temp2);
+				resp->error_code = Write(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), (int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFile::Unknown2\n");
-				resp->error_code = Unknown2();
+				ns_print("IPC message to nn::fssrv::sf::IFile::Flush\n");
+				resp->error_code = Flush();
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFile::Unknown3: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown3(req->GetData<uint64_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFile::SetSize: uint64_t size = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = SetSize(req->GetData<uint64_t>(8));
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IFile::Unknown4\n");
-				resp->error_code = Unknown4(*resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFile::GetSize\n");
+				resp->error_code = GetSize(*resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IFile", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, uint64_t _1, uint64_t _2, uint64_t& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t Unknown1(uint32_t _0, uint64_t _1, uint64_t _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown2();
-		uint32_t Unknown3(uint64_t _0);
-		uint32_t Unknown4(uint64_t& _0);
+		uint32_t Flush();
+		uint32_t GetSize(uint64_t& fileSize);
+		uint32_t Read(uint64_t _0, uint64_t offset, uint32_t size, uint64_t& out_size, int8_t * out_buf, unsigned int out_buf_size);
+		uint32_t SetSize(uint64_t size);
+		uint32_t Write(uint64_t _0, uint64_t offset, uint32_t size, int8_t * buf, unsigned int buf_size);
 	};
 	class IFileSystem : public IpcService {
 	public:
@@ -15123,8 +15115,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown0: uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown0(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::CreateFile: uint64_t mode = 0x%%lx, uint32_t size = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp2);
+				resp->error_code = CreateFile(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -15134,8 +15126,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown1: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::DeleteFile: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = DeleteFile((int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -15145,8 +15137,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown2: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::CreateDirectory: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = CreateDirectory((int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -15156,8 +15148,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown3: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown3((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::DeleteDirectory: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = DeleteDirectory((int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -15167,8 +15159,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown4: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown4((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::DeleteDirectoryRecursively: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = DeleteDirectoryRecursively((int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -15182,8 +15174,8 @@ namespace nn::fssrv::sf {
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown5: uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = Unknown5((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::RenameFile: int8_t *oldPath = buffer<0x%lx>, int8_t *newPath = buffer<0x%lx>\n", temp2, temp5);
+				resp->error_code = RenameFile((int8_t *) temp3, temp2, (int8_t *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
 				return 0;
@@ -15198,8 +15190,8 @@ namespace nn::fssrv::sf {
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown6: uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = Unknown6((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::RenameDirectory: int8_t *oldPath = buffer<0x%lx>, int8_t *newPath = buffer<0x%lx>\n", temp2, temp5);
+				resp->error_code = RenameDirectory((int8_t *) temp3, temp2, (int8_t *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
 				return 0;
@@ -15210,8 +15202,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown7: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown7((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetEntryType: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = GetEntryType((int8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
 				delete[] temp3;
 				return 0;
 			}
@@ -15221,9 +15213,9 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				IUnknown* temp4;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown8: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown8(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, temp4);
+				nn::fssrv::sf::IFile* temp4;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::OpenFile: uint32_t mode = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = OpenFile(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
@@ -15235,9 +15227,9 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				IUnknown* temp4;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown9: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown9(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, temp4);
+				nn::fssrv::sf::IDirectory* temp4;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::OpenDirectory: uint32_t = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = OpenDirectory(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
@@ -15245,8 +15237,8 @@ namespace nn::fssrv::sf {
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown10\n");
-				resp->error_code = Unknown10();
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Commit\n");
+				resp->error_code = Commit();
 				return 0;
 			}
 			case 11: {
@@ -15255,8 +15247,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown11: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown11((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetFreeSpaceSize: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = GetFreeSpaceSize((int8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
 				delete[] temp3;
 				return 0;
 			}
@@ -15266,8 +15258,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown12: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown12((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetTotalSpaceSize: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = GetTotalSpaceSize((int8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
 				delete[] temp3;
 				return 0;
 			}
@@ -15277,8 +15269,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown13: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown13((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::CleanDirectoryRecursively: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = CleanDirectoryRecursively((int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -15289,8 +15281,8 @@ namespace nn::fssrv::sf {
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
 				auto temp4 = resp->GetDataPointer<uint8_t *>(8);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystem::Unknown14: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown14((uint8_t *) temp3, temp2, temp4);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetFileTimeStampRaw: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = GetFileTimeStampRaw((int8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				return 0;
 			}
@@ -15298,21 +15290,21 @@ namespace nn::fssrv::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IFileSystem", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown10();
-		uint32_t Unknown11(uint8_t * _0, unsigned int _0_size, uint64_t& _1);
-		uint32_t Unknown12(uint8_t * _0, unsigned int _0_size, uint64_t& _1);
-		uint32_t Unknown13(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown14(uint8_t * _0, unsigned int _0_size, uint8_t * _1);
-		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown3(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown4(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown5(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown6(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown7(uint8_t * _0, unsigned int _0_size, uint32_t& _1);
-		uint32_t Unknown8(uint32_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2);
-		uint32_t Unknown9(uint32_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2);
+		uint32_t CleanDirectoryRecursively(int8_t * path, unsigned int path_size);
+		uint32_t Commit();
+		uint32_t CreateDirectory(int8_t * path, unsigned int path_size);
+		uint32_t CreateFile(uint64_t mode, uint32_t size, int8_t * path, unsigned int path_size);
+		uint32_t DeleteDirectory(int8_t * path, unsigned int path_size);
+		uint32_t DeleteDirectoryRecursively(int8_t * path, unsigned int path_size);
+		uint32_t DeleteFile(int8_t * path, unsigned int path_size);
+		uint32_t GetEntryType(int8_t * path, unsigned int path_size, uint32_t& _1);
+		uint32_t GetFileTimeStampRaw(int8_t * path, unsigned int path_size, uint8_t * timestamp);
+		uint32_t GetFreeSpaceSize(int8_t * path, unsigned int path_size, uint64_t& totalFreeSpace);
+		uint32_t GetTotalSpaceSize(int8_t * path, unsigned int path_size, uint64_t& totalSize);
+		uint32_t OpenDirectory(uint32_t _0, int8_t * path, unsigned int path_size, nn::fssrv::sf::IDirectory* directory);
+		uint32_t OpenFile(uint32_t mode, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFile* file);
+		uint32_t RenameDirectory(int8_t * oldPath, unsigned int oldPath_size, int8_t * newPath, unsigned int newPath_size);
+		uint32_t RenameFile(int8_t * oldPath, unsigned int oldPath_size, int8_t * newPath, unsigned int newPath_size);
 	};
 	class IFileSystemProxy : public IpcService {
 	public:
@@ -15321,24 +15313,24 @@ namespace nn::fssrv::sf {
 			switch(req->cmd_id) {
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->pid);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Initialize: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = Initialize(req->GetData<uint64_t>(8), req->pid);
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown2\n");
-				resp->error_code = Unknown2(temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess\n");
+				resp->error_code = OpenDataFileSystemByCurrentProcess(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown7: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown7(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountContent7: nn::ApplicationId tid = 0x%%lx, uint32_t ncaType = 0x%x\n", req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10));
+				resp->error_code = MountContent7(req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
@@ -15349,9 +15341,9 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				IUnknown* temp4;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown8: uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown8(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, temp4);
+				nn::fssrv::sf::IFileSystem* temp4;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountContent: nn::ApplicationId tid = 0x%%lx, uint32_t flag = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), temp2);
+				resp->error_code = MountContent(req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), (int8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
@@ -15359,9 +15351,9 @@ namespace nn::fssrv::sf {
 			}
 			case 9: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown9: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown9(req->GetData<uint64_t>(8), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
+				resp->error_code = OpenDataFileSystemByApplicationId(req->GetData<nn::ApplicationId>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
@@ -15372,9 +15364,9 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				IUnknown* temp4;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown11: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown11(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, temp4);
+				nn::fssrv::sf::IFileSystem* temp4;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountBis: nn::fssrv::sf::Partition partitionID = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<nn::fssrv::sf::Partition>(8), temp2);
+				resp->error_code = MountBis(req->GetData<nn::fssrv::sf::Partition>(8), (int8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
@@ -15382,17 +15374,17 @@ namespace nn::fssrv::sf {
 			}
 			case 12: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown12: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown12(req->GetData<uint32_t>(8), temp1);
+				nn::fssrv::sf::IStorage* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenBisPartition: nn::fssrv::sf::Partition partitionID = 0x%x\n", req->GetData<nn::fssrv::sf::Partition>(8));
+				resp->error_code = OpenBisPartition(req->GetData<nn::fssrv::sf::Partition>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 13: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown13\n");
-				resp->error_code = Unknown13();
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::InvalidateBisCache\n");
+				resp->error_code = InvalidateBisCache();
 				return 0;
 			}
 			case 17: {
@@ -15401,9 +15393,9 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				IUnknown* temp4;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown17: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown17((uint8_t *) temp3, temp2, temp4);
+				nn::fssrv::sf::IFileSystem* temp4;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = OpenHostFileSystemImpl((int8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
@@ -15411,35 +15403,35 @@ namespace nn::fssrv::sf {
 			}
 			case 18: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown18\n");
-				resp->error_code = Unknown18(temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSdCard\n");
+				resp->error_code = MountSdCard(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 19: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown19\n");
-				resp->error_code = Unknown19();
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::FormatSdCard\n");
+				resp->error_code = FormatSdCard();
 				return 0;
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown21: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown21(req->GetData<uint64_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::DeleteSaveData: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
+				resp->error_code = DeleteSaveData(req->GetData<nn::ApplicationId>(8));
 				return 0;
 			}
 			case 22: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown22: uint8_t[0x40] = %s, uint8_t[0x40] = %s, uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x88)).c_str());
-				resp->error_code = Unknown22(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x48), req->GetData<uint128_t>(0x88));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CreateSaveData: nn::fssrv::sf::SaveStruct saveStruct = %s, nn::fssrv::sf::SaveCreateStruct saveCreate = %s, uint128_t input = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x88)).c_str());
+				resp->error_code = CreateSaveData(req->GetDataPointer<nn::fssrv::sf::SaveStruct>(8), req->GetDataPointer<nn::fssrv::sf::SaveCreateStruct>(0x48), req->GetData<uint128_t>(0x88));
 				return 0;
 			}
 			case 23: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown23: uint8_t[0x40] = %s, uint8_t[0x40] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str());
-				resp->error_code = Unknown23(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x48));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CreateSystemSaveData: nn::fssrv::sf::SaveStruct saveStruct = %s, nn::fssrv::sf::SaveCreateStruct saveCreate = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str());
+				resp->error_code = CreateSystemSaveData(req->GetDataPointer<nn::fssrv::sf::SaveStruct>(8), req->GetDataPointer<nn::fssrv::sf::SaveCreateStruct>(0x48));
 				return 0;
 			}
 			case 24: {
@@ -15448,76 +15440,76 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown24: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown24((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::RegisterSaveDataAtomicDeletion: void *= buffer<0x%lx>\n", temp2);
+				resp->error_code = RegisterSaveDataAtomicDeletion((void *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 25: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown25: uint8_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown25(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::DeleteSaveDataWithSpaceId: uint8_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = DeleteSaveDataWithSpaceId(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
 				return 0;
 			}
 			case 26: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown26\n");
-				resp->error_code = Unknown26();
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::FormatSdCardDryRun\n");
+				resp->error_code = FormatSdCardDryRun();
 				return 0;
 			}
 			case 27: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown27\n");
-				resp->error_code = Unknown27(*resp->GetDataPointer<uint8_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::IsExFatSupported\n");
+				resp->error_code = IsExFatSupported(*resp->GetDataPointer<uint8_t *>(8));
 				return 0;
 			}
 			case 30: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown30: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Unknown30(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp1);
+				nn::fssrv::sf::IStorage* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenGameCardPartition: nn::fssrv::sf::Partition partitionID = 0x%x, uint32_t = 0x%x\n", req->GetData<nn::fssrv::sf::Partition>(8), req->GetData<uint32_t>(0xc));
+				resp->error_code = OpenGameCardPartition(req->GetData<nn::fssrv::sf::Partition>(8), req->GetData<uint32_t>(0xc), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 31: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown31: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Unknown31(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
+				resp->error_code = MountGameCardPartition(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 32: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown32: uint8_t = 0x%x, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20));
-				resp->error_code = Unknown32(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::ExtendSaveData: uint8_t = 0x%x, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20));
+				resp->error_code = ExtendSaveData(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20));
 				return 0;
 			}
 			case 51: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown51: uint8_t = 0x%x, uint8_t[0x40] = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
-				resp->error_code = Unknown51(req->GetData<uint8_t>(8), req->GetDataPointer<uint8_t *>(0x10), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				resp->error_code = MountSaveData(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 52: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown52: uint8_t = 0x%x, uint8_t[0x40] = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
-				resp->error_code = Unknown52(req->GetData<uint8_t>(8), req->GetDataPointer<uint8_t *>(0x10), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				resp->error_code = MountSystemSaveData(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 53: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown53: uint8_t = 0x%x, uint8_t[0x40] = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
-				resp->error_code = Unknown53(req->GetData<uint8_t>(8), req->GetDataPointer<uint8_t *>(0x10), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				resp->error_code = MountSaveDataReadOnly(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
@@ -15527,8 +15519,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown57: uint8_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown57(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraDataWithSpaceId: uint8_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = ReadSaveDataFileSystemExtraDataWithSpaceId(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), (void *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -15538,8 +15530,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown58: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown58(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraData: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = ReadSaveDataFileSystemExtraData(req->GetData<uint64_t>(8), (void *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -15550,16 +15542,16 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown59: uint8_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown59(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::WriteSaveDataFileSystemExtraData: uint64_t = 0x%%lx, uint8_t = 0x%x, void *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), temp2);
+				resp->error_code = WriteSaveDataFileSystemExtraData(req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), (void *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 60: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown60\n");
-				resp->error_code = Unknown60(temp1);
+				nn::fssrv::sf::ISaveDataInfoReader* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader\n");
+				resp->error_code = OpenSaveDataInfoReader(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
@@ -15567,112 +15559,112 @@ namespace nn::fssrv::sf {
 			case 61: {
 				resp->GenBuf(1, 0, 0);
 				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown61: uint8_t = 0x%x\n", req->GetData<uint8_t>(8));
-				resp->error_code = Unknown61(req->GetData<uint8_t>(8), temp1);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataIterator: uint8_t = 0x%x\n", req->GetData<uint8_t>(8));
+				resp->error_code = OpenSaveDataIterator(req->GetData<uint8_t>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 80: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown80: uint8_t = 0x%x, uint32_t = 0x%x, uint8_t[0x40] = %s\n", req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
-				resp->error_code = Unknown80(req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetDataPointer<uint8_t *>(0x10), temp1);
+				nn::fssrv::sf::IFile* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile: uint8_t = 0x%x, uint8_t[0x40] = %s, uint32_t = 0x%x\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<uint32_t>(0x50));
+				resp->error_code = OpenSaveDataThumbnailFile(req->GetData<uint8_t>(8), req->GetDataPointer<uint8_t *>(0x10), req->GetData<uint32_t>(0x50), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 100: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown100: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown100(req->GetData<uint32_t>(8), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountImageDirectory: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = MountImageDirectory(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 110: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown110: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown110(req->GetData<uint32_t>(8), temp1);
+				nn::fssrv::sf::IFileSystem* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountContentStorage: uint32_t contentStorageID = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = MountContentStorage(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 200: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown200\n");
-				resp->error_code = Unknown200(temp1);
+				nn::fssrv::sf::IStorage* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataStorageByCurrentProcess\n");
+				resp->error_code = OpenDataStorageByCurrentProcess(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 201: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown201: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown201(req->GetData<uint64_t>(8), temp1);
+				nn::fssrv::sf::IStorage* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataStorageByApplicationId: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
+				resp->error_code = OpenDataStorageByApplicationId(req->GetData<nn::ApplicationId>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 202: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown202: uint8_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown202(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), temp1);
+				nn::fssrv::sf::IStorage* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataStorageByDataId: nn::ApplicationId tid = 0x%%lx, uint8_t storageId = 0x%x\n", req->GetData<nn::ApplicationId>(8), req->GetData<uint8_t>(0x10));
+				resp->error_code = OpenDataStorageByDataId(req->GetData<nn::ApplicationId>(8), req->GetData<uint8_t>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 203: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown203\n");
-				resp->error_code = Unknown203(temp1);
+				nn::fssrv::sf::IStorage* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenRomStorage\n");
+				resp->error_code = OpenRomStorage(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 400: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown400\n");
-				resp->error_code = Unknown400(temp1);
+				nn::fssrv::sf::IDeviceOperator* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator\n");
+				resp->error_code = OpenDeviceOperator(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 500: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown500\n");
-				resp->error_code = Unknown500(temp1);
+				nn::fssrv::sf::IEventNotifier* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSdCardDetectionEventNotifier\n");
+				resp->error_code = OpenSdCardDetectionEventNotifier(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 501: {
 				resp->GenBuf(1, 0, 0);
-				IUnknown* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown501\n");
-				resp->error_code = Unknown501(temp1);
+				nn::fssrv::sf::IEventNotifier* temp1;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier\n");
+				resp->error_code = OpenGameCardDetectionEventNotifier(temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 600: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown600: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown600(req->GetData<uint64_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetCurrentPosixTime: uint64_t time = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = SetCurrentPosixTime(req->GetData<uint64_t>(8));
 				return 0;
 			}
 			case 601: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown601: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown601(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::QuerySaveDataTotalSize: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = QuerySaveDataTotalSize(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			case 602: {
@@ -15680,46 +15672,46 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown602: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown602(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::VerifySaveData: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
+				resp->error_code = VerifySaveData(req->GetData<nn::ApplicationId>(8), (void *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 603: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown603: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown603(req->GetData<uint64_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CorruptSaveDataForDebug: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
+				resp->error_code = CorruptSaveDataForDebug(req->GetData<nn::ApplicationId>(8));
 				return 0;
 			}
 			case 604: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown604: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown604(req->GetData<uint64_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CreatePaddingFile: uint64_t size = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = CreatePaddingFile(req->GetData<uint64_t>(8));
 				return 0;
 			}
 			case 605: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown605\n");
-				resp->error_code = Unknown605();
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::DeleteAllPaddingFiles\n");
+				resp->error_code = DeleteAllPaddingFiles();
 				return 0;
 			}
 			case 606: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown606: uint8_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown606(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint128_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::GetRightsId: uint64_t = 0x%%lx, uint8_t = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10));
+				resp->error_code = GetRightsId(req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), *resp->GetDataPointer<uint128_t *>(8));
 				return 0;
 			}
 			case 607: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown607: uint128_t = %s, uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str());
-				resp->error_code = Unknown607(req->GetData<uint128_t>(8), req->GetData<uint128_t>(0x18));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::RegisterExternalKey: uint128_t = %s, uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str());
+				resp->error_code = RegisterExternalKey(req->GetData<uint128_t>(8), req->GetData<uint128_t>(0x18));
 				return 0;
 			}
 			case 608: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown608\n");
-				resp->error_code = Unknown608();
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::UnregisterExternalKey\n");
+				resp->error_code = UnregisterExternalKey();
 				return 0;
 			}
 			case 609: {
@@ -15728,33 +15720,33 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown609: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown609((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = GetRightsIdByPath((int8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8));
 				delete[] temp3;
 				return 0;
 			}
 			case 610: {
-				resp->GenBuf(0, 0, 24);
+				resp->GenBuf(0, 0, 17);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown610: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown610((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint128_t *>(0x10));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath2: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = GetRightsIdByPath2((int8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint8_t *>(0x18));
 				delete[] temp3;
 				return 0;
 			}
 			case 620: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown620: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
-				resp->error_code = Unknown620(req->GetData<uint128_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetSdCardEncryptionSeed: uint128_t seedmaybe = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				resp->error_code = SetSdCardEncryptionSeed(req->GetData<uint128_t>(8));
 				return 0;
 			}
 			case 800: {
 				resp->GenBuf(0, 0, 128);
 				auto temp1 = resp->GetDataPointer<uint8_t *>(8);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown800\n");
-				resp->error_code = Unknown800(temp1);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::GetAndClearFileSystemProxyErrorInfo\n");
+				resp->error_code = GetAndClearFileSystemProxyErrorInfo(temp1);
 				return 0;
 			}
 			case 1000: {
@@ -15763,15 +15755,15 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1000: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown1000(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetBisRootForHost: uint32_t = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = SetBisRootForHost(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 1001: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1001: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown1001(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetSaveDataSize: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = SetSaveDataSize(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				return 0;
 			}
 			case 1002: {
@@ -15780,27 +15772,27 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1002: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown1002((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetSaveDataRootPath: int8_t *path = buffer<0x%lx>\n", temp2);
+				resp->error_code = SetSaveDataRootPath((int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 1003: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1003\n");
-				resp->error_code = Unknown1003();
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::DisableAutoSaveDataCreation\n");
+				resp->error_code = DisableAutoSaveDataCreation();
 				return 0;
 			}
 			case 1004: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1004: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown1004(req->GetData<uint32_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetGlobalAccessLogMode: uint32_t mode = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = SetGlobalAccessLogMode(req->GetData<uint32_t>(8));
 				return 0;
 			}
 			case 1005: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1005\n");
-				resp->error_code = Unknown1005(*resp->GetDataPointer<uint32_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::GetGlobalAccessLogMode\n");
+				resp->error_code = GetGlobalAccessLogMode(*resp->GetDataPointer<uint32_t *>(8));
 				return 0;
 			}
 			case 1006: {
@@ -15809,8 +15801,8 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::Unknown1006: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown1006((uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OutputAccessLogToSdCard: void *logText = buffer<0x%lx>\n", temp2);
+				resp->error_code = OutputAccessLogToSdCard((void *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -15818,65 +15810,65 @@ namespace nn::fssrv::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IFileSystemProxy", req->cmd_id);
 			}
 		}
-		uint32_t Unknown1(uint64_t _0, uint64_t _1);
-		uint32_t Unknown100(uint32_t _0, IUnknown* _1);
-		uint32_t Unknown1000(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown1001(uint64_t _0, uint64_t _1);
-		uint32_t Unknown1002(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown1003();
-		uint32_t Unknown1004(uint32_t _0);
-		uint32_t Unknown1005(uint32_t& _0);
-		uint32_t Unknown1006(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown11(uint32_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2);
-		uint32_t Unknown110(uint32_t _0, IUnknown* _1);
-		uint32_t Unknown12(uint32_t _0, IUnknown* _1);
-		uint32_t Unknown13();
-		uint32_t Unknown17(uint8_t * _0, unsigned int _0_size, IUnknown* _1);
-		uint32_t Unknown18(IUnknown* _0);
-		uint32_t Unknown19();
-		uint32_t Unknown2(IUnknown* _0);
-		uint32_t Unknown200(IUnknown* _0);
-		uint32_t Unknown201(uint64_t _0, IUnknown* _1);
-		uint32_t Unknown202(uint8_t _0, uint64_t _1, IUnknown* _2);
-		uint32_t Unknown203(IUnknown* _0);
-		uint32_t Unknown21(uint64_t _0);
-		uint32_t Unknown22(uint8_t * _0, uint8_t * _1, uint128_t _2);
-		uint32_t Unknown23(uint8_t * _0, uint8_t * _1);
-		uint32_t Unknown24(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown25(uint8_t _0, uint64_t _1);
-		uint32_t Unknown26();
-		uint32_t Unknown27(uint8_t& _0);
-		uint32_t Unknown30(uint32_t _0, uint32_t _1, IUnknown* _2);
-		uint32_t Unknown31(uint32_t _0, uint32_t _1, IUnknown* _2);
-		uint32_t Unknown32(uint8_t _0, uint64_t _1, uint64_t _2, uint64_t _3);
-		uint32_t Unknown400(IUnknown* _0);
-		uint32_t Unknown500(IUnknown* _0);
-		uint32_t Unknown501(IUnknown* _0);
-		uint32_t Unknown51(uint8_t _0, uint8_t * _1, IUnknown* _2);
-		uint32_t Unknown52(uint8_t _0, uint8_t * _1, IUnknown* _2);
-		uint32_t Unknown53(uint8_t _0, uint8_t * _1, IUnknown* _2);
-		uint32_t Unknown57(uint8_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown58(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown59(uint8_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown60(IUnknown* _0);
-		uint32_t Unknown600(uint64_t _0);
-		uint32_t Unknown601(uint64_t _0, uint64_t _1, uint64_t& _2);
-		uint32_t Unknown602(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown603(uint64_t _0);
-		uint32_t Unknown604(uint64_t _0);
-		uint32_t Unknown605();
-		uint32_t Unknown606(uint8_t _0, uint64_t _1, uint128_t& _2);
-		uint32_t Unknown607(uint128_t _0, uint128_t _1);
-		uint32_t Unknown608();
-		uint32_t Unknown609(uint8_t * _0, unsigned int _0_size, uint128_t& _1);
-		uint32_t Unknown61(uint8_t _0, IUnknown* _1);
-		uint32_t Unknown610(uint8_t * _0, unsigned int _0_size, uint8_t& _1, uint128_t& _2);
-		uint32_t Unknown620(uint128_t _0);
-		uint32_t Unknown7(uint32_t _0, uint64_t _1, IUnknown* _2);
-		uint32_t Unknown8(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, IUnknown* _3);
-		uint32_t Unknown80(uint8_t _0, uint32_t _1, uint8_t * _2, IUnknown* _3);
-		uint32_t Unknown800(uint8_t * _0);
-		uint32_t Unknown9(uint64_t _0, IUnknown* _1);
+		uint32_t CorruptSaveDataForDebug(nn::ApplicationId tid);
+		uint32_t CreatePaddingFile(uint64_t size);
+		uint32_t CreateSaveData(nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::SaveCreateStruct saveCreate, uint128_t input);
+		uint32_t CreateSystemSaveData(nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::SaveCreateStruct saveCreate);
+		uint32_t DeleteAllPaddingFiles();
+		uint32_t DeleteSaveData(nn::ApplicationId tid);
+		uint32_t DeleteSaveDataWithSpaceId(uint8_t _0, uint64_t _1);
+		uint32_t DisableAutoSaveDataCreation();
+		uint32_t ExtendSaveData(uint8_t _0, uint64_t _1, uint64_t _2, uint64_t _3);
+		uint32_t FormatSdCard();
+		uint32_t FormatSdCardDryRun();
+		uint32_t GetAndClearFileSystemProxyErrorInfo(uint8_t * errorInfo);
+		uint32_t GetGlobalAccessLogMode(uint32_t& logMode);
+		uint32_t GetRightsId(uint64_t _0, uint8_t _1, uint128_t& rights);
+		uint32_t GetRightsIdByPath(int8_t * path, unsigned int path_size, uint128_t& rights);
+		uint32_t GetRightsIdByPath2(int8_t * path, unsigned int path_size, uint128_t& rights, uint8_t& _2);
+		uint32_t Initialize(uint64_t _0, uint64_t _1);
+		uint32_t InvalidateBisCache();
+		uint32_t IsExFatSupported(uint8_t& isSupported);
+		uint32_t MountBis(nn::fssrv::sf::Partition partitionID, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* Bis);
+		uint32_t MountContent(nn::ApplicationId tid, uint32_t flag, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* contentFs);
+		uint32_t MountContent7(nn::ApplicationId tid, uint32_t ncaType, nn::fssrv::sf::IFileSystem* _2);
+		uint32_t MountContentStorage(uint32_t contentStorageID, nn::fssrv::sf::IFileSystem* contentFs);
+		uint32_t MountGameCardPartition(uint32_t _0, uint32_t _1, nn::fssrv::sf::IFileSystem* gameCardPartitionFs);
+		uint32_t MountImageDirectory(uint32_t _0, nn::fssrv::sf::IFileSystem* imageFs);
+		uint32_t MountSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs);
+		uint32_t MountSaveDataReadOnly(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs);
+		uint32_t MountSdCard(nn::fssrv::sf::IFileSystem* sdCard);
+		uint32_t MountSystemSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* systemSaveDataFs);
+		uint32_t OpenBisPartition(nn::fssrv::sf::Partition partitionID, nn::fssrv::sf::IStorage* BisPartition);
+		uint32_t OpenDataFileSystemByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IFileSystem* dataFiles);
+		uint32_t OpenDataFileSystemByCurrentProcess(nn::fssrv::sf::IFileSystem* _0);
+		uint32_t OpenDataStorageByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IStorage* dataStorage);
+		uint32_t OpenDataStorageByCurrentProcess(nn::fssrv::sf::IStorage* dataStorage);
+		uint32_t OpenDataStorageByDataId(nn::ApplicationId tid, uint8_t storageId, nn::fssrv::sf::IStorage* dataStorage);
+		uint32_t OpenDeviceOperator(nn::fssrv::sf::IDeviceOperator* _0);
+		uint32_t OpenGameCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* GameCardEventNotify);
+		uint32_t OpenGameCardPartition(nn::fssrv::sf::Partition partitionID, uint32_t _1, nn::fssrv::sf::IStorage* gameCardFs);
+		uint32_t OpenHostFileSystemImpl(int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* _1);
+		uint32_t OpenRomStorage(nn::fssrv::sf::IStorage* _0);
+		uint32_t OpenSaveDataInfoReader(nn::fssrv::sf::ISaveDataInfoReader* _0);
+		uint32_t OpenSaveDataIterator(uint8_t _0, IUnknown* _1);
+		uint32_t OpenSaveDataThumbnailFile(uint8_t _0, uint8_t * _1, uint32_t _2, nn::fssrv::sf::IFile* thumbnail);
+		uint32_t OpenSdCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* SdEventNotify);
+		uint32_t OutputAccessLogToSdCard(void * logText, unsigned int logText_size);
+		uint32_t QuerySaveDataTotalSize(uint64_t _0, uint64_t _1, uint64_t& saveDataSize);
+		uint32_t ReadSaveDataFileSystemExtraData(uint64_t _0, void * _1, unsigned int _1_size);
+		uint32_t ReadSaveDataFileSystemExtraDataWithSpaceId(uint8_t _0, uint64_t _1, void * _2, unsigned int _2_size);
+		uint32_t RegisterExternalKey(uint128_t _0, uint128_t _1);
+		uint32_t RegisterSaveDataAtomicDeletion(void * _0, unsigned int _0_size);
+		uint32_t SetBisRootForHost(uint32_t _0, int8_t * path, unsigned int path_size);
+		uint32_t SetCurrentPosixTime(uint64_t time);
+		uint32_t SetGlobalAccessLogMode(uint32_t mode);
+		uint32_t SetSaveDataRootPath(int8_t * path, unsigned int path_size);
+		uint32_t SetSaveDataSize(uint64_t _0, uint64_t _1);
+		uint32_t SetSdCardEncryptionSeed(uint128_t seedmaybe);
+		uint32_t UnregisterExternalKey();
+		uint32_t VerifySaveData(nn::ApplicationId tid, void * _1, unsigned int _1_size);
+		uint32_t WriteSaveDataFileSystemExtraData(uint64_t _0, uint8_t _1, void * _2, unsigned int _2_size);
 	};
 	class IFileSystemProxyForLoader : public IpcService {
 	public:
@@ -15889,9 +15881,9 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				IUnknown* temp4;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxyForLoader::Unknown0: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2, temp4);
+				nn::fssrv::sf::IFileSystem* temp4;
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxyForLoader::MountCode: nn::ApplicationId TID = 0x%%lx, int8_t *contentPath = buffer<0x%lx>\n", req->GetData<nn::ApplicationId>(8), temp2);
+				resp->error_code = MountCode(req->GetData<nn::ApplicationId>(8), (int8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
@@ -15899,16 +15891,16 @@ namespace nn::fssrv::sf {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxyForLoader::Unknown1: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown1(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint8_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxyForLoader::IsCodeMounted: nn::ApplicationId TID = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
+				resp->error_code = IsCodeMounted(req->GetData<nn::ApplicationId>(8), *resp->GetDataPointer<uint8_t *>(8));
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IFileSystemProxyForLoader", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2);
-		uint32_t Unknown1(uint64_t _0, uint8_t& _1);
+		uint32_t IsCodeMounted(nn::ApplicationId TID, uint8_t& isMounted);
+		uint32_t MountCode(nn::ApplicationId TID, int8_t * contentPath, unsigned int contentPath_size, nn::fssrv::sf::IFileSystem* contentFs);
 	};
 	class IProgramRegistry : public IpcService {
 	public:
@@ -15925,31 +15917,31 @@ namespace nn::fssrv::sf {
 				auto temp4 = req->GetBuffer(5, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::fssrv::sf::IProgramRegistry::Unknown0: uint8_t = 0x%x, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), temp2, temp5);
-				resp->error_code = Unknown0(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::fssrv::sf::IProgramRegistry::SetFsPermissions: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t = 0x%x, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint8_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), temp2, temp5);
+				resp->error_code = SetFsPermissions(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint8_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IProgramRegistry::Unknown1: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown1(req->GetData<uint64_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IProgramRegistry::ClearFsPermissions: uint64_t pid = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = ClearFsPermissions(req->GetData<uint64_t>(8));
 				return 0;
 			}
 			case 256: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IProgramRegistry::Unknown256: uint8_t = 0x%x\n", req->GetData<uint8_t>(8));
-				resp->error_code = Unknown256(req->GetData<uint8_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IProgramRegistry::SetEnabledProgramVerification: uint8_t enabled = 0x%x\n", req->GetData<uint8_t>(8));
+				resp->error_code = SetEnabledProgramVerification(req->GetData<uint8_t>(8));
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IProgramRegistry", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size);
-		uint32_t Unknown1(uint64_t _0);
-		uint32_t Unknown256(uint8_t _0);
+		uint32_t ClearFsPermissions(uint64_t pid);
+		uint32_t SetEnabledProgramVerification(uint8_t enabled);
+		uint32_t SetFsPermissions(uint64_t _0, uint64_t _1, uint8_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size);
 	};
 	class ISaveDataInfoReader : public IpcService {
 	public:
@@ -15983,8 +15975,8 @@ namespace nn::fssrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x46, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::fssrv::sf::IStorage::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IStorage::Read: uint64_t offset = 0x%%lx, uint64_t length = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = Read(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (int8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -15995,547 +15987,523 @@ namespace nn::fssrv::sf {
 				auto temp1 = req->GetBuffer(0x45, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::fssrv::sf::IStorage::Unknown1: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::fssrv::sf::IStorage::Write: uint64_t offset = 0x%%lx, uint64_t length = 0x%%lx, int8_t *data = buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
+				resp->error_code = Write(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (int8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IStorage::Unknown2\n");
-				resp->error_code = Unknown2();
+				ns_print("IPC message to nn::fssrv::sf::IStorage::Flush\n");
+				resp->error_code = Flush();
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IStorage::Unknown3: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown3(req->GetData<uint64_t>(8));
+				ns_print("IPC message to nn::fssrv::sf::IStorage::SetSize: uint64_t size = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = SetSize(req->GetData<uint64_t>(8));
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::fssrv::sf::IStorage::Unknown4\n");
-				resp->error_code = Unknown4(*resp->GetDataPointer<uint64_t *>(8));
+				ns_print("IPC message to nn::fssrv::sf::IStorage::GetSize\n");
+				resp->error_code = GetSize(*resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IStorage", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown2();
-		uint32_t Unknown3(uint64_t _0);
-		uint32_t Unknown4(uint64_t& _0);
+		uint32_t Flush();
+		uint32_t GetSize(uint64_t& size);
+		uint32_t Read(uint64_t offset, uint64_t length, int8_t * buffer, unsigned int buffer_size);
+		uint32_t SetSize(uint64_t size);
+		uint32_t Write(uint64_t offset, uint64_t length, int8_t * data, unsigned int data_size);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown0(uint8_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown0\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::EraseAndWriteParamDirectly(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::EraseAndWriteParamDirectly\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown1(uint64_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown1\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::EraseGameCard(uint32_t _0, uint64_t _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::EraseGameCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown100(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown100\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::EraseMmc(uint32_t _0) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::EraseMmc\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown101(uint64_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown101\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::FinalizeGameCardDriver() {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::FinalizeGameCardDriver\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown110(uint32_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown110\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::ForceEraseGameCard() {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::ForceEraseGameCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown111(uint32_t _0, uint64_t& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown111\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetAndClearMmcErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetAndClearMmcErrorInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown112(uint32_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown112\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetAndClearSdCardErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetAndClearSdCardErrorInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown113(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown113\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardAsicInfo(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardAsicInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown114(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown114\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardAttribute(uint32_t _0, uint8_t& attribute) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardAttribute\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown2(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown2\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardCid\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown200(uint8_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown200\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceCertificate(uint64_t _0, uint32_t _1, uint8_t * certificate, unsigned int certificate_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceCertificate\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown201(uint32_t _0, uint64_t _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown201\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceId(uint64_t _0, uint8_t * deviceID, unsigned int deviceID_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceId\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown202(uint32_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown202\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceIdForProdCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * errorInfo, unsigned int errorInfo_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceIdForProdCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown203(uint32_t _0, uint32_t& _1, uint64_t& _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown203\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardErrorInfo(uint128_t& errorInfo) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardErrorInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown204() {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown204\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardErrorReportInfo(uint8_t * errorReportInfo) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardErrorReportInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown205(uint32_t _0, uint8_t& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown205\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardHandle(uint32_t& gamecardHandle) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardHandle\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown206(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown206\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardIdSet(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardIdSet\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown207(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown207\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardImageHash(uint64_t _0, uint32_t _1, uint8_t * imageHash, unsigned int imageHash_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardImageHash\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown208(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown208\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardUpdatePartitionInfo(uint32_t _0, uint32_t& version, nn::ApplicationId& TID) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardUpdatePartitionInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown209(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown209\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcCid(uint64_t _0, uint8_t * cid, unsigned int cid_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcCid\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown210(uint8_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown210\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcExtendedCsd(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcExtendedCsd\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown211(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown211\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcPartitionSize(uint32_t _0, uint64_t& paritionSize) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcPartitionSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown212(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown212\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcPatrolCount(uint32_t& patrolCount) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcPatrolCount\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown213(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown213\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcSpeedMode(uint64_t& speedMode) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcSpeedMode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown214(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown214\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetSdCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetSdCardCid\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown215() {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown215\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetSdCardProtectedAreaSize(uint64_t& protectedSize) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetSdCardProtectedAreaSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown216(uint128_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown216\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetSdCardSpeedMode(uint64_t& sdSpeed) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetSdCardSpeedMode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown217(uint8_t * _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown217\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetSdCardUserAreaSize(uint64_t& size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetSdCardUserAreaSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown218(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown218\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::GetSpeedEmulationMode(uint32_t& emuMode) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetSpeedEmulationMode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown3(uint64_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown3\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::IsGameCardInserted(uint8_t& isGameInserted) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::IsGameCardInserted\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown300(uint32_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown300\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::IsSdCardInserted(uint8_t& isSdInserted) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::IsSdCardInserted\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown301(uint32_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown301\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::SetSpeedEmulationMode(uint32_t mode) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::SetSpeedEmulationMode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown4(uint64_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown4\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::SetVerifyWriteEnalbleFlag(uint8_t flag) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::SetVerifyWriteEnalbleFlag\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::Unknown5(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::Unknown5\n");
+uint32_t nn::fssrv::sf::IDeviceOperator::WriteToGameCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::WriteToGameCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDirectory::Unknown0(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDirectory::Unknown0\n");
+uint32_t nn::fssrv::sf::IDirectory::GetEntryCount(uint64_t& _0) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDirectory::GetEntryCount\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDirectory::Unknown1(uint64_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IDirectory::Unknown1\n");
+uint32_t nn::fssrv::sf::IDirectory::Read(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IDirectory::Read\n");
 	return 0;
 }
 uint32_t nn::fssrv::sf::IEventNotifier::Unknown0(IpcService* _0) {
 	ns_print("Stub implementation for nn::fssrv::sf::IEventNotifier::Unknown0\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFile::Unknown0(uint32_t _0, uint64_t _1, uint64_t _2, uint64_t& _3, uint8_t * _4, unsigned int _4_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFile::Unknown0\n");
+uint32_t nn::fssrv::sf::IFile::Flush() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFile::Flush\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFile::Unknown1(uint32_t _0, uint64_t _1, uint64_t _2, uint8_t * _3, unsigned int _3_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFile::Unknown1\n");
+uint32_t nn::fssrv::sf::IFile::GetSize(uint64_t& fileSize) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFile::GetSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFile::Unknown2() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFile::Unknown2\n");
+uint32_t nn::fssrv::sf::IFile::Read(uint64_t _0, uint64_t offset, uint32_t size, uint64_t& out_size, int8_t * out_buf, unsigned int out_buf_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFile::Read\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFile::Unknown3(uint64_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFile::Unknown3\n");
+uint32_t nn::fssrv::sf::IFile::SetSize(uint64_t size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFile::SetSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFile::Unknown4(uint64_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFile::Unknown4\n");
+uint32_t nn::fssrv::sf::IFile::Write(uint64_t _0, uint64_t offset, uint32_t size, int8_t * buf, unsigned int buf_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFile::Write\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown0(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown0\n");
+uint32_t nn::fssrv::sf::IFileSystem::CleanDirectoryRecursively(int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::CleanDirectoryRecursively\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown1(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown1\n");
+uint32_t nn::fssrv::sf::IFileSystem::Commit() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Commit\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown10() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown10\n");
+uint32_t nn::fssrv::sf::IFileSystem::CreateDirectory(int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::CreateDirectory\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown11(uint8_t * _0, unsigned int _0_size, uint64_t& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown11\n");
+uint32_t nn::fssrv::sf::IFileSystem::CreateFile(uint64_t mode, uint32_t size, int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::CreateFile\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown12(uint8_t * _0, unsigned int _0_size, uint64_t& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown12\n");
+uint32_t nn::fssrv::sf::IFileSystem::DeleteDirectory(int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::DeleteDirectory\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown13(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown13\n");
+uint32_t nn::fssrv::sf::IFileSystem::DeleteDirectoryRecursively(int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::DeleteDirectoryRecursively\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown14(uint8_t * _0, unsigned int _0_size, uint8_t * _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown14\n");
+uint32_t nn::fssrv::sf::IFileSystem::DeleteFile(int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::DeleteFile\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown2(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown2\n");
+uint32_t nn::fssrv::sf::IFileSystem::GetEntryType(int8_t * path, unsigned int path_size, uint32_t& _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::GetEntryType\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown3(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown3\n");
+uint32_t nn::fssrv::sf::IFileSystem::GetFileTimeStampRaw(int8_t * path, unsigned int path_size, uint8_t * timestamp) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::GetFileTimeStampRaw\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown4(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown4\n");
+uint32_t nn::fssrv::sf::IFileSystem::GetFreeSpaceSize(int8_t * path, unsigned int path_size, uint64_t& totalFreeSpace) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::GetFreeSpaceSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown5(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown5\n");
+uint32_t nn::fssrv::sf::IFileSystem::GetTotalSpaceSize(int8_t * path, unsigned int path_size, uint64_t& totalSize) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::GetTotalSpaceSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown6(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown6\n");
+uint32_t nn::fssrv::sf::IFileSystem::OpenDirectory(uint32_t _0, int8_t * path, unsigned int path_size, nn::fssrv::sf::IDirectory* directory) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::OpenDirectory\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown7(uint8_t * _0, unsigned int _0_size, uint32_t& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown7\n");
+uint32_t nn::fssrv::sf::IFileSystem::OpenFile(uint32_t mode, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFile* file) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::OpenFile\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown8(uint32_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown8\n");
+uint32_t nn::fssrv::sf::IFileSystem::RenameDirectory(int8_t * oldPath, unsigned int oldPath_size, int8_t * newPath, unsigned int newPath_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::RenameDirectory\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::Unknown9(uint32_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::Unknown9\n");
+uint32_t nn::fssrv::sf::IFileSystem::RenameFile(int8_t * oldPath, unsigned int oldPath_size, int8_t * newPath, unsigned int newPath_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::RenameFile\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1(uint64_t _0, uint64_t _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::CorruptSaveDataForDebug(nn::ApplicationId tid) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::CorruptSaveDataForDebug\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown100(uint32_t _0, IUnknown* _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown100\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::CreatePaddingFile(uint64_t size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::CreatePaddingFile\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1000(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1000\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::CreateSaveData(nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::SaveCreateStruct saveCreate, uint128_t input) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::CreateSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1001(uint64_t _0, uint64_t _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1001\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::CreateSystemSaveData(nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::SaveCreateStruct saveCreate) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::CreateSystemSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1002(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1002\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::DeleteAllPaddingFiles() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::DeleteAllPaddingFiles\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1003() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1003\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::DeleteSaveData(nn::ApplicationId tid) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::DeleteSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1004(uint32_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1004\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::DeleteSaveDataWithSpaceId(uint8_t _0, uint64_t _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::DeleteSaveDataWithSpaceId\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1005(uint32_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1005\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::DisableAutoSaveDataCreation() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::DisableAutoSaveDataCreation\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown1006(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown1006\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::ExtendSaveData(uint8_t _0, uint64_t _1, uint64_t _2, uint64_t _3) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::ExtendSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown11(uint32_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown11\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::FormatSdCard() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::FormatSdCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown110(uint32_t _0, IUnknown* _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown110\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::FormatSdCardDryRun() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::FormatSdCardDryRun\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown12(uint32_t _0, IUnknown* _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown12\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::GetAndClearFileSystemProxyErrorInfo(uint8_t * errorInfo) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::GetAndClearFileSystemProxyErrorInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown13() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown13\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::GetGlobalAccessLogMode(uint32_t& logMode) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::GetGlobalAccessLogMode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown17(uint8_t * _0, unsigned int _0_size, IUnknown* _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown17\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::GetRightsId(uint64_t _0, uint8_t _1, uint128_t& rights) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::GetRightsId\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown18(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown18\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath(int8_t * path, unsigned int path_size, uint128_t& rights) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown19() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown19\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath2(int8_t * path, unsigned int path_size, uint128_t& rights, uint8_t& _2) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath2\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown2(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown2\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::Initialize(uint64_t _0, uint64_t _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Initialize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown200(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown200\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::InvalidateBisCache() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::InvalidateBisCache\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown201(uint64_t _0, IUnknown* _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown201\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::IsExFatSupported(uint8_t& isSupported) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::IsExFatSupported\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown202(uint8_t _0, uint64_t _1, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown202\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountBis(nn::fssrv::sf::Partition partitionID, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* Bis) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountBis\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown203(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown203\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent(nn::ApplicationId tid, uint32_t flag, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* contentFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContent\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown21(uint64_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown21\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent7(nn::ApplicationId tid, uint32_t ncaType, nn::fssrv::sf::IFileSystem* _2) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContent7\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown22(uint8_t * _0, uint8_t * _1, uint128_t _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown22\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountContentStorage(uint32_t contentStorageID, nn::fssrv::sf::IFileSystem* contentFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContentStorage\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown23(uint8_t * _0, uint8_t * _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown23\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition(uint32_t _0, uint32_t _1, nn::fssrv::sf::IFileSystem* gameCardPartitionFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown24(uint8_t * _0, unsigned int _0_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown24\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountImageDirectory(uint32_t _0, nn::fssrv::sf::IFileSystem* imageFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountImageDirectory\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown25(uint8_t _0, uint64_t _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown25\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown26() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown26\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown27(uint8_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown27\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSdCard(nn::fssrv::sf::IFileSystem* sdCard) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSdCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown30(uint32_t _0, uint32_t _1, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown30\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* systemSaveDataFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown31(uint32_t _0, uint32_t _1, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown31\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IFileSystem* dataFiles) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown32(uint8_t _0, uint64_t _1, uint64_t _2, uint64_t _3) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown32\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess(nn::fssrv::sf::IFileSystem* _0) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown400(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown400\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator(nn::fssrv::sf::IDeviceOperator* _0) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown500(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown500\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* GameCardEventNotify) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown501(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown501\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl(int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown51(uint8_t _0, uint8_t * _1, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown51\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader(nn::fssrv::sf::ISaveDataInfoReader* _0) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown52(uint8_t _0, uint8_t * _1, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown52\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataIterator(uint8_t _0, IUnknown* _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSaveDataIterator\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown53(uint8_t _0, uint8_t * _1, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown53\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile(uint8_t _0, uint8_t * _1, uint32_t _2, nn::fssrv::sf::IFile* thumbnail) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown57(uint8_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown57\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSdCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* SdEventNotify) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSdCardDetectionEventNotifier\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown58(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown58\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::OutputAccessLogToSdCard(void * logText, unsigned int logText_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OutputAccessLogToSdCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown59(uint8_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown59\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::QuerySaveDataTotalSize(uint64_t _0, uint64_t _1, uint64_t& saveDataSize) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::QuerySaveDataTotalSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown60(IUnknown* _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown60\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraData(uint64_t _0, void * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown600(uint64_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown600\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraDataWithSpaceId(uint8_t _0, uint64_t _1, void * _2, unsigned int _2_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraDataWithSpaceId\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown601(uint64_t _0, uint64_t _1, uint64_t& _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown601\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::RegisterExternalKey(uint128_t _0, uint128_t _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::RegisterExternalKey\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown602(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown602\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::RegisterSaveDataAtomicDeletion(void * _0, unsigned int _0_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::RegisterSaveDataAtomicDeletion\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown603(uint64_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown603\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::SetBisRootForHost(uint32_t _0, int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::SetBisRootForHost\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown604(uint64_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown604\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::SetCurrentPosixTime(uint64_t time) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::SetCurrentPosixTime\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown605() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown605\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::SetGlobalAccessLogMode(uint32_t mode) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::SetGlobalAccessLogMode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown606(uint8_t _0, uint64_t _1, uint128_t& _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown606\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::SetSaveDataRootPath(int8_t * path, unsigned int path_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::SetSaveDataRootPath\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown607(uint128_t _0, uint128_t _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown607\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::SetSaveDataSize(uint64_t _0, uint64_t _1) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::SetSaveDataSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown608() {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown608\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::SetSdCardEncryptionSeed(uint128_t seedmaybe) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::SetSdCardEncryptionSeed\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown609(uint8_t * _0, unsigned int _0_size, uint128_t& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown609\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::UnregisterExternalKey() {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::UnregisterExternalKey\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown61(uint8_t _0, IUnknown* _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown61\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::VerifySaveData(nn::ApplicationId tid, void * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::VerifySaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown610(uint8_t * _0, unsigned int _0_size, uint8_t& _1, uint128_t& _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown610\n");
+uint32_t nn::fssrv::sf::IFileSystemProxy::WriteSaveDataFileSystemExtraData(uint64_t _0, uint8_t _1, void * _2, unsigned int _2_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::WriteSaveDataFileSystemExtraData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown620(uint128_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown620\n");
+uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::IsCodeMounted(nn::ApplicationId TID, uint8_t& isMounted) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::IsCodeMounted\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown7(uint32_t _0, uint64_t _1, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown7\n");
+uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::MountCode(nn::ApplicationId TID, int8_t * contentPath, unsigned int contentPath_size, nn::fssrv::sf::IFileSystem* contentFs) {
+	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::MountCode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown8(uint32_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, IUnknown* _3) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown8\n");
+uint32_t nn::fssrv::sf::IProgramRegistry::ClearFsPermissions(uint64_t pid) {
+	ns_print("Stub implementation for nn::fssrv::sf::IProgramRegistry::ClearFsPermissions\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown80(uint8_t _0, uint32_t _1, uint8_t * _2, IUnknown* _3) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown80\n");
+uint32_t nn::fssrv::sf::IProgramRegistry::SetEnabledProgramVerification(uint8_t enabled) {
+	ns_print("Stub implementation for nn::fssrv::sf::IProgramRegistry::SetEnabledProgramVerification\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown800(uint8_t * _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown800\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::Unknown9(uint64_t _0, IUnknown* _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::Unknown9\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::Unknown0(uint64_t _0, uint8_t * _1, unsigned int _1_size, IUnknown* _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::Unknown0\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::Unknown1(uint64_t _0, uint8_t& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::Unknown1\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IProgramRegistry::Unknown0(uint8_t _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IProgramRegistry::Unknown0\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IProgramRegistry::Unknown1(uint64_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IProgramRegistry::Unknown1\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IProgramRegistry::Unknown256(uint8_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IProgramRegistry::Unknown256\n");
+uint32_t nn::fssrv::sf::IProgramRegistry::SetFsPermissions(uint64_t _0, uint64_t _1, uint8_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IProgramRegistry::SetFsPermissions\n");
 	return 0;
 }
 uint32_t nn::fssrv::sf::ISaveDataInfoReader::Unknown0(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::ISaveDataInfoReader::Unknown0\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IStorage::Unknown0(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Unknown0\n");
+uint32_t nn::fssrv::sf::IStorage::Flush() {
+	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Flush\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IStorage::Unknown1(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
-	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Unknown1\n");
+uint32_t nn::fssrv::sf::IStorage::GetSize(uint64_t& size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IStorage::GetSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IStorage::Unknown2() {
-	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Unknown2\n");
+uint32_t nn::fssrv::sf::IStorage::Read(uint64_t offset, uint64_t length, int8_t * buffer, unsigned int buffer_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Read\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IStorage::Unknown3(uint64_t _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Unknown3\n");
+uint32_t nn::fssrv::sf::IStorage::SetSize(uint64_t size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IStorage::SetSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IStorage::Unknown4(uint64_t& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Unknown4\n");
+uint32_t nn::fssrv::sf::IStorage::Write(uint64_t offset, uint64_t length, int8_t * data, unsigned int data_size) {
+	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Write\n");
 	return 0;
 }
 #endif // DEFINE_STUBS

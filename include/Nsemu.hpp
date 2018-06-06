@@ -8,7 +8,10 @@
 #include <cstring>
 #include <fstream>
 #include <functional>
+#include <ios>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <list>
 #include <tuple>

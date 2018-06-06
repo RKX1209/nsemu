@@ -1,4 +1,5 @@
 /* nsemu - LGPL - Copyright 2018 rkx1209<rkx1209dev@gmail.com> */
+#define DEFINE_STUBS
 #include "Nsemu.hpp"
 #include "IpcStubs.hpp"
 
@@ -82,11 +83,15 @@ namespace IPC {
 
 static uint32_t handle_id;
 static SmService sm;
-std::unordered_map<std::string, IpcService> services;
+std::unordered_map<std::string, IpcService *> services;
 bool is_domainobj = false;
 std::unordered_map<uint32_t, IpcService *> handles;
 
-void Initialize() {
+#define SERVICE(str, iface) do { services[str] = new iface(); } while(0)
+
+void InitIPC() {
+        sm.Initialize();
+        SERVICE_MAPPING(); // From IpcStubs.hpp
 }
 
 uint32_t NewHandle(IpcService *srv) {

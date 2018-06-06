@@ -22,6 +22,7 @@ bool Nsemu::BootUp(const std::string& path) {
 	ns_print ("Booting... %s\n", path.c_str ());
 	Memory::InitMemmap (this);
 	LoadNso (this, path);
+        IPC::InitIPC();
 	cpu_thread = std::thread (CpuThread);
 	/* Run cpu */
 	cpu_thread.join ();
