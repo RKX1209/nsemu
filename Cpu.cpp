@@ -4,6 +4,7 @@ namespace Cpu {
 
 static State state = State::PowerDown;
 FILE *TraceOut;
+bool DeepTrace;
 
 void Init() {
 	ARMv8::Init ();
@@ -34,7 +35,7 @@ void DumpMachine() {
                 ARMv8::Dump ();
         }
         if (TraceOut)
-                ARMv8::DumpJson (TraceOut);
+                ARMv8::DumpJson (TraceOut, DeepTrace);
 }
 
 }

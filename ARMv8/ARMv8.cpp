@@ -44,13 +44,19 @@ void Dump() {
 }
 
 static uint64_t counter;
-void DumpJson(FILE *fp) {
+void DumpJson(FILE *fp, bool deep) {
         file_print (fp, "%lu : {\n", counter++);
         int r;
         for (r = 0; r <= PC_IDX; r++) {
                 file_print (fp, "\"X%d\" : \"0x%016lx\",\n", r, X(r));
         }
         file_print (fp, "\"X%d\" : \"0x%016x\"\n", r, NZCV);
+        if (deep) {
+                /* Dump Vector regs */
+                for (r = 0; r < VREG_DUMMY; r++) {
+                        file_print (fp, "\"V%d\" : \"0x%016lx%016lx\",\n", r, VREG(r).d[1], VREG(r).d[0]);
+                }
+        }
         file_print (fp, "},\n");
 }
 

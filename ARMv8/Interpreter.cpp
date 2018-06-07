@@ -20,7 +20,7 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3500000, mx = 15000;
+        uint64_t estimate = 3500000, mx = 20000;
         //uint64_t estimate = 0, mx = 100000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {

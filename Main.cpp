@@ -77,14 +77,15 @@ void Banner() {
 }
 
 enum  optionIndex {
-	UNKNOWN, HELP, ENABLE_TRACE, ENABLE_GDB, ENABLE_DEBUG,
+	UNKNOWN, HELP, ENABLE_TRACE, ENABLE_DEEP, ENABLE_GDB, ENABLE_DEBUG,
 };
 const option::Descriptor usage[] =
 {
 	{ UNKNOWN, 0, "", "", Arg::None, "USAGE: nsemu [options] <nso-binary>\n\n"
 	  "Options:" },
-	{ HELP, 0, "", "help", Arg::None, "  --help  \tPrint help message" },
+	{ HELP, 0, "h", "help", Arg::None, "  --help  \tPrint help message" },
     { ENABLE_TRACE, 0, "t","enable-trace", Arg::None, "  --enable-trace, -t  \tEnable Trace" },
+    { ENABLE_DEEP, 0, "","deep-trace", Arg::None, "  --deep-trace, -t  \tEnable Deep Trace" },
     { ENABLE_GDB, 0, "s","enable-gdb", Arg::None, "  --enable-gdb -s  \tEnable GDBServer" },
     { ENABLE_DEBUG, 0, "d","enable-debug", Arg::None, "  --enable-debug -d  \tEnable debug mode" },
 	{ 0, 0, nullptr, nullptr, nullptr, nullptr }
@@ -117,9 +118,11 @@ printUsage:
 			option::printUsage (cout, usage);
 			return 0;
 		}
-        if (options[ENABLE_TRACE].count () > 0) {
+        bool deep = options[ENABLE_DEEP].count () > 0;
+        if (options[ENABLE_TRACE].count () > 0 || deep) {
 			InitTrace ("nsemu_trace.json");
-		}
+                        Cpu::DeepTrace = deep;
+	}
         if (options[ENABLE_GDB].count () > 0) {
 			GdbStub::Init();
 	}

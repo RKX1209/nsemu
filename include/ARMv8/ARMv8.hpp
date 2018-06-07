@@ -87,7 +87,7 @@ void RunLoop();
 
 void Dump();
 
-void DumpJson(FILE *fp);
+void DumpJson(FILE *fp, bool deep);
 
 uint64_t GetTls();
 

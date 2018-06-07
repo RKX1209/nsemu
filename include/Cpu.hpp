@@ -21,6 +21,7 @@ State GetState();
 void DumpMachine();
 
 extern FILE *TraceOut;
+extern bool DeepTrace;
 
 }
 #endif
