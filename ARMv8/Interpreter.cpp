@@ -11,7 +11,6 @@ void Interpreter::Init() {
 int Interpreter::SingleStep() {
 	uint32_t inst = ARMv8::ReadInst (PC);
 	debug_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
-        //ns_print ("Run Code: 0x%lx: 0x%08lx\n", PC, inst);
 	Disassembler::DisasA64 (inst, disas_cb);
 	PC += sizeof(uint32_t);
         X(GPR_ZERO) = 0; //Reset Zero register
@@ -695,6 +694,34 @@ void IntprCallback::StoreVecReg(unsigned int rd_idx, int element, unsigned int v
                 ARMv8::WriteU32 (addr, VREG(vn_idx).s[element]);
         } else if (size == 3) {
                 ARMv8::WriteU64 (addr, VREG(vn_idx).d[element]);
+        }
+}
+
+/* Load/Store for FP */
+void IntprCallback::LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) {
+        uint64_t addr = X(ad_idx);
+        debug_print("Load Fp(%d)[%u] = [X(%u)(0x%lx)]\n", size, fd_idx, ad_idx, addr);
+        if (size == 0) { // 1byte (8B/16B)
+                B(fd_idx) = ARMv8::ReadU8 (addr);
+        } else if (size == 1) { // 2byte (4H/8H)
+                H(fd_idx) = ARMv8::ReadU16 (addr);
+        } else if (size == 2) { // 4byte (2S/4S)
+                S(fd_idx) = ARMv8::ReadU32 (addr);
+        } else if (size == 3) {
+                D(fd_idx) = ARMv8::ReadU64 (addr);
+        }
+}
+void IntprCallback::StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) {
+        uint64_t addr = X(ad_idx);
+        debug_print("Store Fp(%d)[%u] => [X(%u)(0x%lx)]\n", size, fd_idx, ad_idx, addr);
+        if (size == 0) {
+                ARMv8::WriteU8 (addr, B(fd_idx));
+        } else if (size == 1) {
+                ARMv8::WriteU16 (addr, H(fd_idx));
+        } else if (size == 2) {
+                ARMv8::WriteU32 (addr, S(fd_idx));
+        } else if (size == 3) {
+                ARMv8::WriteU64 (addr, D(fd_idx));
         }
 }
 

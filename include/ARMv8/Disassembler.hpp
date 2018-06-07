@@ -117,6 +117,10 @@ virtual void NotVecReg(unsigned int rd_idx, unsigned int rm_idx) = 0;
 virtual void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size) = 0;
 virtual void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size) = 0;
 
+/* Load/Store for FP */
+virtual void LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) = 0;
+virtual void StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) = 0;
+
 /* Read Vector register to FP regsiter */
 virtual void ReadVecReg(unsigned int fd_idx, unsigned int vn_idx, unsigned int index, int size) = 0;
 /* Read Vector register to general register */

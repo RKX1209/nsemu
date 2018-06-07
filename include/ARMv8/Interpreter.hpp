@@ -104,9 +104,14 @@ void ReadWriteNZCV(unsigned int rd_idx, bool read);
 void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type);
 
 /* #######  Vector ####### */
+
 /* Load/Store for vector */
 void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size);
 void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size);
+
+/* Load/Store for FP */
+void LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size);
+void StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size);
 
 /* AND/OR/EOR/BIC/NOT ... between vector registers */
 void AndVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx);

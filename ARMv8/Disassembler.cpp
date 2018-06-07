@@ -1085,10 +1085,18 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
         bool sf = (opt & 0x1) ? true : false; // XXX: Correct?
         cb->ExtendReg (GPR_DUMMY, rm, opt, sf);
         cb->ShiftI64 (GPR_DUMMY, GPR_DUMMY, ShiftType_LSL, shift ? size : 0, sf);
-        if (is_store) {
-                cb->StoreReg (rt, rn, GPR_DUMMY, size, is_signed, is_extended, false, sf);
+        if (is_vector) {
+                if (is_store) {
+                        cb->StoreFpRegI64 (rt, GPR_DUMMY, size);
+                } else {
+                        cb->LoadFpRegI64 (rt, GPR_DUMMY, size);
+                }
         } else {
-                cb->LoadReg (rt, rn, GPR_DUMMY, size, is_signed, is_extended, false, sf);
+                if (is_store) {
+                        cb->StoreReg (rt, rn, GPR_DUMMY, size, is_signed, is_extended, false, sf);
+                } else {
+                        cb->LoadReg (rt, rn, GPR_DUMMY, size, is_signed, is_extended, false, sf);
+                }
         }
 }
 
@@ -1164,10 +1172,18 @@ static void DisasLdstRegImm9(uint32_t insn, DisasCallback *cb,
         if (!post_index) {
                 cb->AddI64 (GPR_DUMMY, rn, imm9, false, true);
         }
-        if (is_store) {
-                cb->StoreRegI64 (rt, GPR_DUMMY, size, is_signed, is_extended);
+        if (is_vector) {
+                if (is_store) {
+                        cb->StoreFpRegI64 (rt, GPR_DUMMY, size);
+                } else {
+                        cb->LoadFpRegI64 (rt, GPR_DUMMY, size);
+                }
         } else {
-                cb->LoadRegI64 (rt, GPR_DUMMY, size, is_signed, is_extended);
+                if (is_store) {
+                        cb->StoreRegI64 (rt, GPR_DUMMY, size, is_signed, is_extended);
+                } else {
+                        cb->LoadRegI64 (rt, GPR_DUMMY, size, is_signed, is_extended);
+                }
         }
         if (writeback) {
                 cb->AddI64 (rn, rn, imm9, false, true);
@@ -1215,11 +1231,10 @@ static void DisasLdstRegUnsignedImm(uint32_t insn, DisasCallback *cb,
         offset = imm12 << size;
         cb->AddI64 (GPR_DUMMY, rn, offset, false, true);
         if (is_vector) {
-                /* size must be 4 (128-bit) */
                 if (is_store) {
-                        cb->StoreRegI64 (rt, GPR_DUMMY, size, is_signed, false);
+                        cb->StoreFpRegI64 (rt, GPR_DUMMY, size);
                 } else {
-                        cb->LoadRegI64 (rt, GPR_DUMMY, size, is_signed, false);
+                        cb->LoadFpRegI64 (rt, GPR_DUMMY, size);
                 }
         } else {
                 bool sf = DisasLdstCompute64bit (size, is_signed, opc);
