@@ -8,6 +8,7 @@ FILE *TraceOut;
 void Init() {
 	ARMv8::Init ();
         SVC::Init ();
+        // TODO: Thread::Init()
 }
 
 void Run() {

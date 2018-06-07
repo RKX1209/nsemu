@@ -91,11 +91,14 @@ std::unordered_map<uint32_t, IpcService *> handles;
 
 void InitIPC() {
         sm.Initialize();
+        //handle_id = 0xde00; // XXX: Magic number?
+        handle_id = 0xde01; // XXX: Initial thread should have 0xde00 handle in TLS (See. ThreadManager::create in Mephisito)
         SERVICE_MAPPING(); // From IpcStubs.hpp
 }
 
 uint32_t NewHandle(IpcService *srv) {
         handles[handle_id] = srv;
+        ns_print("New Handle 0x%x\n",handle_id);
         return handle_id++;
 }
 

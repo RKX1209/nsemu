@@ -21,7 +21,7 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3500000, mx = 3720;
+        uint64_t estimate = 3500000, mx = 10000;
         //uint64_t estimate = 0, mx = 100000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
@@ -283,7 +283,7 @@ void IntprCallback::MoviI64(unsigned int reg_idx, uint64_t imm, bool bit64) {
 void IntprCallback::DepositI64(unsigned int rd_idx, uint64_t imm, unsigned int pos, unsigned int len, bool bit64) {
 	char regc = bit64? 'X': 'W';
 	debug_print ("MOVK: %c[%u] = 0x%lx\n", regc, rd_idx, imm << pos);
-        uint32_t mask = (1 << len) - 1; //XXX: hard coded bit size: 16
+        uint64_t mask = (1ULL << len) - 1;
         X(rd_idx) = (X(rd_idx) & ~(mask << pos)) | (imm << pos);
 }
 
