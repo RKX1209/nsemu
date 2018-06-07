@@ -288,7 +288,7 @@ std::tuple<uint64_t, uint32_t> ConnectToPort(uint64_t name) {
 }
 
 uint64_t SendSyncRequest(uint32_t handle) {
-	ns_print("SendSyncRequest\n");
+	ns_print("SendSyncRequest 0x%x\n", handle);
 	uint8_t msgbuf[0x100];
         ARMv8::ReadBytes (ARMv8::GetTls(), msgbuf, 0x100);
         auto handler = IPC::GetHandle<IpcService*>(handle);

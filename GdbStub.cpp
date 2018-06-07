@@ -138,7 +138,6 @@ static int IsQueryPacket (const char *p, const char *query, char separator)
 }
 
 static int TargetMemoryRW(uint64_t addr, uint8_t *buf, int len, bool is_write) {
-        ns_print("[%s] addr 0x%016lx(%d byte)\n", (is_write?"WRITE":"READ"), addr, len);
         if ((int64_t)addr < 0) {
                 return -1; //FIXME: Correct validation is required
         }
@@ -253,7 +252,6 @@ void NotifyMemAccess(unsigned long addr, size_t len, bool read) {
                 Watchpoint wp = wp_list[i];
                 if (addr <= wp.addr && wp.addr + wp.len <= addr + len) {
                         if (wp.type == GDB_WATCHPOINT_ACCESS || wp.type == type) {
-                                ns_print("Hit watchpoint 0x%lx, %d, %s (PC:0x%lx)\n", addr, len, (read ? "read" : "write"), PC);
                                 HitWatchpoint (addr, wp.type);
                                 return;
                         }
@@ -305,8 +303,6 @@ static RSState HandleCommand(char *line_buf) {
     char buf[GDB_BUFFER_SIZE];
     uint8_t mem_buf[GDB_BUFFER_SIZE];
     unsigned long addr, len;
-
-    ns_print("command='%s'\n", line_buf);
 
     p = line_buf;
     ch = *p++;

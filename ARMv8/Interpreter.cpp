@@ -20,7 +20,7 @@ int Interpreter::SingleStep() {
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
         static uint64_t counter = 0;
-        uint64_t estimate = 3500000, mx = 10000;
+        uint64_t estimate = 3500000, mx = 15000;
         //uint64_t estimate = 0, mx = 100000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
@@ -681,6 +681,8 @@ void IntprCallback::LoadVecReg(unsigned int vd_idx, int element, unsigned int rn
                 VREG(vd_idx).s[element] = ARMv8::ReadU32 (addr);
         } else if (size == 3) { // 8byte (1D/2D)
                 VREG(vd_idx).d[element] = ARMv8::ReadU64 (addr);
+        } else {
+                ns_abort ("Unknown size\n");
         }
 }
 void IntprCallback::StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size) {
@@ -694,6 +696,8 @@ void IntprCallback::StoreVecReg(unsigned int rd_idx, int element, unsigned int v
                 ARMv8::WriteU32 (addr, VREG(vn_idx).s[element]);
         } else if (size == 3) {
                 ARMv8::WriteU64 (addr, VREG(vn_idx).d[element]);
+        } else {
+                ns_abort ("Unknown size\n");
         }
 }
 
@@ -709,6 +713,11 @@ void IntprCallback::LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int s
                 S(fd_idx) = ARMv8::ReadU32 (addr);
         } else if (size == 3) {
                 D(fd_idx) = ARMv8::ReadU64 (addr);
+        } else {
+                /* 128-bit Qt */
+                VREG(fd_idx).d[0] = ARMv8::ReadU64 (addr + 8);
+                VREG(fd_idx).d[1] = ARMv8::ReadU64 (addr);
+                //ns_debug("Read: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
         }
 }
 void IntprCallback::StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) {
@@ -722,6 +731,10 @@ void IntprCallback::StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int 
                 ARMv8::WriteU32 (addr, S(fd_idx));
         } else if (size == 3) {
                 ARMv8::WriteU64 (addr, D(fd_idx));
+        } else if (size == 4) {
+                /* 128-bit Qt */
+                ARMv8::WriteU64 (addr + 8, VREG(fd_idx).d[0]);
+                ARMv8::WriteU64 (addr, VREG(fd_idx).d[1]);
         }
 }
 
