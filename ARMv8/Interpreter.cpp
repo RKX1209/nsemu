@@ -17,11 +17,13 @@ int Interpreter::SingleStep() {
 	return 0;
 }
 
+static uint64_t counter;
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
-        static uint64_t counter = 0;
-        uint64_t estimate = 3500000, mx = 20000;
-        //uint64_t estimate = 0, mx = 100000;
+
+        uint64_t estimate = 3350000, mx = 100000;
+        //uint64_t estimate = 3000000, mx = 10000;
+        //uint64_t estimate = 0, mx = 1000000;
 	while (Cpu::GetState () == Cpu::State::Running) {
 		if (GdbStub::enabled) {
                         if (GdbStub::cont) {
@@ -584,8 +586,8 @@ void IntprCallback::_LoadReg(unsigned int rd_idx, uint64_t addr, int size, bool 
 			X(rd_idx) = ARMv8::ReadU64 (addr);
                 } else {
                         /* 128-bit Qt */
-                        VREG(rd_idx).d[0] = ARMv8::ReadU64 (addr + 8);
-                        VREG(rd_idx).d[1] = ARMv8::ReadU64 (addr);
+                        VREG(rd_idx).d[0] = ARMv8::ReadU64 (addr);
+                        VREG(rd_idx).d[1] = ARMv8::ReadU64 (addr + 8);
                         //ns_debug("Read: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
                 }
 
@@ -607,8 +609,8 @@ void IntprCallback::_StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool
                         ARMv8::WriteU64 (addr, X(rd_idx));
                 } else {
                         /* 128-bit Qt */
-                        ARMv8::WriteU64 (addr + 8, VREG(rd_idx).d[0]);
-                        ARMv8::WriteU64 (addr, VREG(rd_idx).d[1]);
+                        ARMv8::WriteU64 (addr , VREG(rd_idx).d[0]);
+                        ARMv8::WriteU64 (addr + 8, VREG(rd_idx).d[1]);
                         //ns_debug("Write: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
                 }
 }
@@ -715,8 +717,8 @@ void IntprCallback::LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int s
                 D(fd_idx) = ARMv8::ReadU64 (addr);
         } else {
                 /* 128-bit Qt */
-                VREG(fd_idx).d[0] = ARMv8::ReadU64 (addr + 8);
-                VREG(fd_idx).d[1] = ARMv8::ReadU64 (addr);
+                VREG(fd_idx).d[0] = ARMv8::ReadU64 (addr);
+                VREG(fd_idx).d[1] = ARMv8::ReadU64 (addr + 8);
                 //ns_debug("Read: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
         }
 }
@@ -733,8 +735,8 @@ void IntprCallback::StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int 
                 ARMv8::WriteU64 (addr, D(fd_idx));
         } else if (size == 4) {
                 /* 128-bit Qt */
-                ARMv8::WriteU64 (addr + 8, VREG(fd_idx).d[0]);
-                ARMv8::WriteU64 (addr, VREG(fd_idx).d[1]);
+                ARMv8::WriteU64 (addr, VREG(fd_idx).d[0]);
+                ARMv8::WriteU64 (addr + 8, VREG(fd_idx).d[1]);
         }
 }
 
