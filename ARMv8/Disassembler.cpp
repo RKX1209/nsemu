@@ -1065,7 +1065,7 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
 
         if (is_vector) {
                 /* "LDR/STR [base, Xm/Wm] (SIMD&FP)") */
-                size = (opc & 2) << 1;
+                size |= (opc & 2) << 1;
                 is_store = !extract32(opc, 0, 1);
         } else {
                 if (size == 3 && opc == 2) {
@@ -1082,14 +1082,15 @@ static void DisasLdstRegRoffset(uint32_t insn, DisasCallback *cb,
                 is_extended = (size < 3); //TODO: treat other case, size = 0, 1(8bit-> or 16bit->)
         }
         //bool sf = DisasLdstCompute64bit (size, is_signed, opc);
+        /* TODO: Calculate address here (not in callback) */
         bool sf = (opt & 0x1) ? true : false; // XXX: Correct?
         cb->ExtendReg (GPR_DUMMY, rm, opt, sf);
         cb->ShiftI64 (GPR_DUMMY, GPR_DUMMY, ShiftType_LSL, shift ? size : 0, sf);
         if (is_vector) {
                 if (is_store) {
-                        cb->StoreFpRegI64 (rt, GPR_DUMMY, size);
+                        cb->StoreFpReg (rt, rn, GPR_DUMMY, size, false, sf);
                 } else {
-                        cb->LoadFpRegI64 (rt, GPR_DUMMY, size);
+                        cb->LoadFpReg (rt, rn, GPR_DUMMY, size, false, sf);
                 }
         } else {
                 if (is_store) {

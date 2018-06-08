@@ -295,6 +295,7 @@ uint64_t SendSyncRequest(uint32_t handle) {
         if (!handler) {
                 ns_abort ("Cannnot find session handler\n");
         }
+        ns_print("ProcMessage(%p)\n", (void *)handler);
         IPC::ProcMessage(handler, msgbuf);
         return 0;
 }

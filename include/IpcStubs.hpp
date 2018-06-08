@@ -805,7 +805,7 @@ namespace nv::gemcoredump {
 			case 1: {
 				resp->GenBuf(1, 0, 0);
 				IpcService* temp1;
-				ns_print("IPC message to SmService::GetService: ServiceName name = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to SmService::GetService: ServiceName name = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 8).c_str());
 				resp->error_code = GetService(req->GetDataPointer<ServiceName>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -814,7 +814,7 @@ namespace nv::gemcoredump {
 			case 2: {
 				resp->GenBuf(1, 0, 0);
 				IpcService* temp1;
-				ns_print("IPC message to SmService::RegisterService: ServiceName name = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to SmService::RegisterService: ServiceName name = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 8).c_str());
 				resp->error_code = RegisterService(req->GetDataPointer<ServiceName>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -822,7 +822,7 @@ namespace nv::gemcoredump {
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to SmService::UnregisterService: ServiceName name = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to SmService::UnregisterService: ServiceName name = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 8).c_str());
 				resp->error_code = UnregisterService(req->GetDataPointer<ServiceName>(8));
 				return 0;
 			}
@@ -852,7 +852,7 @@ namespace nn::account {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetUserExistence: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetUserExistence: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetUserExistence(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<bool *>(8));
 				return 0;
 			}
@@ -887,7 +887,7 @@ namespace nn::account {
 			case 5: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::profile::IProfile* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfile: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfile: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfile(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -895,7 +895,7 @@ namespace nn::account {
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfileDigest: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfileDigest: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfileDigest(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<nn::account::ProfileDigest *>(8));
 				return 0;
 			}
@@ -932,7 +932,7 @@ namespace nn::account {
 			case 102: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::baas::IManagerForSystemService* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetBaasAccountManagerForSystemService: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetBaasAccountManagerForSystemService: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountManagerForSystemService(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -962,14 +962,14 @@ namespace nn::account {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::StoreSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2);
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::StoreSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2);
 				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 111: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ClearSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::ApplicationId>(0x18));
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ClearSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18));
 				resp->error_code = ClearSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18));
 				return 0;
 			}
@@ -978,7 +978,7 @@ namespace nn::account {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::LoadSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::ApplicationId>(0x18));
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::LoadSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18));
 				resp->error_code = LoadSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -986,7 +986,7 @@ namespace nn::account {
 			}
 			case 190: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetUserLastOpenedApplication: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetUserLastOpenedApplication: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetUserLastOpenedApplication(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<nn::ApplicationId *>(0x10));
 				return 0;
 			}
@@ -998,32 +998,32 @@ namespace nn::account {
 			}
 			case 201: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::CompleteUserRegistration: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::CompleteUserRegistration: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = CompleteUserRegistration(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 202: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::CancelUserRegistration: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::CancelUserRegistration: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = CancelUserRegistration(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 203: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DeleteUser: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DeleteUser: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DeleteUser(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 204: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::SetUserPosition: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::SetUserPosition: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = SetUserPosition(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10));
 				return 0;
 			}
 			case 205: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::profile::IProfileEditor* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfileEditor: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfileEditor: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfileEditor(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1031,7 +1031,7 @@ namespace nn::account {
 			}
 			case 206: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::CompleteUserRegistrationForcibly: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::CompleteUserRegistrationForcibly: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = CompleteUserRegistrationForcibly(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -1056,7 +1056,7 @@ namespace nn::account {
 			case 250: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::baas::IAdministrator* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetBaasAccountAdministrator: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetBaasAccountAdministrator: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountAdministrator(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1065,7 +1065,7 @@ namespace nn::account {
 			case 290: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::nas::IOAuthProcedureForExternalNsa* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ProxyProcedureForGuestLoginWithNintendoAccount: nn::account::detail::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ProxyProcedureForGuestLoginWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ProxyProcedureForGuestLoginWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1074,7 +1074,7 @@ namespace nn::account {
 			case 291: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::nas::IOAuthProcedureForExternalNsa* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ProxyProcedureForFloatingRegistrationWithNintendoAccount: nn::account::detail::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ProxyProcedureForFloatingRegistrationWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ProxyProcedureForFloatingRegistrationWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1091,19 +1091,19 @@ namespace nn::account {
 			}
 			case 997: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DebugInvalidateTokenCacheForUser: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DebugInvalidateTokenCacheForUser: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DebugInvalidateTokenCacheForUser(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 998: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DebugSetUserStateClose: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DebugSetUserStateClose: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DebugSetUserStateClose(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 999: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DebugSetUserStateOpen: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::DebugSetUserStateOpen: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DebugSetUserStateOpen(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -1159,7 +1159,7 @@ namespace nn::account {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetUserExistence: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetUserExistence: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetUserExistence(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<bool *>(8));
 				return 0;
 			}
@@ -1194,7 +1194,7 @@ namespace nn::account {
 			case 5: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::profile::IProfile* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetProfile: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetProfile: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfile(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1202,7 +1202,7 @@ namespace nn::account {
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetProfileDigest: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetProfileDigest: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfileDigest(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<nn::account::ProfileDigest *>(8));
 				return 0;
 			}
@@ -1227,7 +1227,7 @@ namespace nn::account {
 			case 101: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::baas::IManagerForApplication* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetBaasAccountManagerForApplication: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetBaasAccountManagerForApplication: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountManagerForApplication(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1248,14 +1248,14 @@ namespace nn::account {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::account::IAccountServiceForApplication::StoreSaveDataThumbnail: nn::account::Uid = %s, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), temp2);
+				ns_print("IPC message to nn::account::IAccountServiceForApplication::StoreSaveDataThumbnail: nn::account::Uid = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), temp2);
 				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 111: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForApplication::ClearSaveDataThumbnail: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForApplication::ClearSaveDataThumbnail: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ClearSaveDataThumbnail(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -1301,7 +1301,7 @@ namespace nn::account {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 1);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetUserExistence: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetUserExistence: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetUserExistence(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<bool *>(8));
 				return 0;
 			}
@@ -1336,7 +1336,7 @@ namespace nn::account {
 			case 5: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::profile::IProfile* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetProfile: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetProfile: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfile(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1344,7 +1344,7 @@ namespace nn::account {
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetProfileDigest: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetProfileDigest: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfileDigest(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<nn::account::ProfileDigest *>(8));
 				return 0;
 			}
@@ -1381,7 +1381,7 @@ namespace nn::account {
 			case 102: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::baas::IManagerForSystemService* temp1;
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetBaasAccountManagerForSystemService: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetBaasAccountManagerForSystemService: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountManagerForSystemService(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1411,14 +1411,14 @@ namespace nn::account {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::StoreSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2);
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::StoreSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2);
 				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 111: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::ClearSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::ApplicationId>(0x18));
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::ClearSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18));
 				resp->error_code = ClearSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18));
 				return 0;
 			}
@@ -1427,7 +1427,7 @@ namespace nn::account {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::LoadSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::ApplicationId>(0x18));
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::LoadSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18));
 				resp->error_code = LoadSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -1435,25 +1435,25 @@ namespace nn::account {
 			}
 			case 190: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetUserLastOpenedApplication: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetUserLastOpenedApplication: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetUserLastOpenedApplication(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<nn::ApplicationId *>(0x10));
 				return 0;
 			}
 			case 997: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::DebugInvalidateTokenCacheForUser: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::DebugInvalidateTokenCacheForUser: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DebugInvalidateTokenCacheForUser(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 998: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::DebugSetUserStateClose: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::DebugSetUserStateClose: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DebugSetUserStateClose(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 999: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::account::IAccountServiceForSystemService::DebugSetUserStateOpen: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IAccountServiceForSystemService::DebugSetUserStateOpen: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DebugSetUserStateOpen(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -1491,7 +1491,7 @@ namespace nn::account {
 			case 0: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::detail::IAsyncContext* temp1;
-				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::EnsureCacheAsync: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::EnsureCacheAsync: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = EnsureCacheAsync(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1502,7 +1502,7 @@ namespace nn::account {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::LoadCache: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::LoadCache: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = LoadCache(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -1510,14 +1510,14 @@ namespace nn::account {
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::GetDeviceAccountId: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::GetDeviceAccountId: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetDeviceAccountId(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
 			case 50: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::detail::IAsyncContext* temp1;
-				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::RegisterNotificationTokenAsync: nn::npns::NotificationToken = %s, nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x30)).c_str());
+				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::RegisterNotificationTokenAsync: nn::npns::NotificationToken = %s, nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x28).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x30), 0x10).c_str());
 				resp->error_code = RegisterNotificationTokenAsync(req->GetDataPointer<nn::npns::NotificationToken>(8), req->GetData<nn::account::Uid>(0x30), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -1526,7 +1526,7 @@ namespace nn::account {
 			case 51: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::detail::IAsyncContext* temp1;
-				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::UnregisterNotificationTokenAsync: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::UnregisterNotificationTokenAsync: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = UnregisterNotificationTokenAsync(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -2028,7 +2028,7 @@ namespace nn::account::baas {
 			case 252: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::nas::IOAuthProcedureForNintendoAccountLinkage* temp1;
-				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToLinkWithNintendoAccount: nn::account::detail::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToLinkWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ResumeProcedureToLinkWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -2046,7 +2046,7 @@ namespace nn::account::baas {
 			case 256: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::http::IOAuthProcedure* temp1;
-				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToUpdateLinkageStateOfNintendoAccount: nn::account::detail::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToUpdateLinkageStateOfNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ResumeProcedureToUpdateLinkageStateOfNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -2064,7 +2064,7 @@ namespace nn::account::baas {
 			case 261: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::http::IOAuthProcedure* temp1;
-				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToLinkNnidWithNintendoAccount: nn::account::detail::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToLinkNnidWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ResumeProcedureToLinkNnidWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -2073,7 +2073,7 @@ namespace nn::account::baas {
 			case 280: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::http::IOAuthProcedure* temp1;
-				ns_print("IPC message to nn::account::baas::IAdministrator::ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount: nn::account::detail::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::baas::IAdministrator::ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -2194,7 +2194,7 @@ namespace nn::account::baas {
 			case 101: {
 				resp->GenBuf(1, 0, 0);
 				nn::account::detail::IAsyncContext* temp1;
-				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::RegisterWithUidAsync: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::RegisterWithUidAsync: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = RegisterWithUidAsync(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -3422,7 +3422,7 @@ namespace nn::account::profile {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::account::profile::IProfileEditor::Store: nn::account::profile::ProfileBase = %s, nn::account::profile::UserData *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), temp2);
+				ns_print("IPC message to nn::account::profile::IProfileEditor::Store: nn::account::profile::ProfileBase = %s, nn::account::profile::UserData *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x38).c_str(), temp2);
 				resp->error_code = Store(req->GetDataPointer<nn::account::profile::ProfileBase>(8), (nn::account::profile::UserData *) temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -3437,7 +3437,7 @@ namespace nn::account::profile {
 				auto temp4 = req->GetBuffer(5, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::account::profile::IProfileEditor::StoreWithImage: nn::account::profile::ProfileBase = %s, nn::account::profile::UserData *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), temp2, temp5);
+				ns_print("IPC message to nn::account::profile::IProfileEditor::StoreWithImage: nn::account::profile::ProfileBase = %s, nn::account::profile::UserData *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x38).c_str(), temp2, temp5);
 				resp->error_code = StoreWithImage(req->GetDataPointer<nn::account::profile::ProfileBase>(8), (nn::account::profile::UserData *) temp3, temp2, (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
@@ -4131,7 +4131,7 @@ namespace nn::am::service {
 			}
 			case 20: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::am::service::IApplicationFunctions::EnsureSaveData: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::am::service::IApplicationFunctions::EnsureSaveData: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = EnsureSaveData(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<int64_t *>(8));
 				return 0;
 			}
@@ -4161,13 +4161,13 @@ namespace nn::am::service {
 			}
 			case 25: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::am::service::IApplicationFunctions::ExtendSaveData: uint8_t = 0x%x, nn::account::Uid = %s, int64_t = 0x%%lx, int64_t = 0x%%lx\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<int64_t>(0x20), req->GetData<int64_t>(0x28));
+				ns_print("IPC message to nn::am::service::IApplicationFunctions::ExtendSaveData: uint8_t = 0x%x, nn::account::Uid = %s, int64_t = 0x%%lx, int64_t = 0x%%lx\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<int64_t>(0x20), req->GetData<int64_t>(0x28));
 				resp->error_code = ExtendSaveData(req->GetData<uint8_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<int64_t>(0x20), req->GetData<int64_t>(0x28), *resp->GetDataPointer<int64_t *>(8));
 				return 0;
 			}
 			case 26: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::am::service::IApplicationFunctions::GetSaveDataSize: uint8_t = 0x%x, nn::account::Uid = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::am::service::IApplicationFunctions::GetSaveDataSize: uint8_t = 0x%x, nn::account::Uid = %s\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetSaveDataSize(req->GetData<uint8_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10));
 				return 0;
 			}
@@ -5841,7 +5841,7 @@ namespace nn::am::service {
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::am::service::ISelfController::SetScreenShotAppletIdentityInfo: nn::am::service::AppletIdentityInfo = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::am::service::ISelfController::SetScreenShotAppletIdentityInfo: nn::am::service::AppletIdentityInfo = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = SetScreenShotAppletIdentityInfo(req->GetData<nn::am::service::AppletIdentityInfo>(8));
 				return 0;
 			}
@@ -7626,7 +7626,7 @@ namespace nn::arp::detail {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::arp::detail::IRegistrar::Unknown1: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::arp::detail::IRegistrar::Unknown1: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown1(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -8539,7 +8539,7 @@ namespace nn::audio::detail {
 			case 0: {
 				resp->GenBuf(1, 0, 0);
 				IUnknown* temp1;
-				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown0: uint8_t[0x34] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x, KObject = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetCopied(0), req->GetCopied(1));
+				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown0: uint8_t[0x34] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x, KObject = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x34).c_str(), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetCopied(0), req->GetCopied(1));
 				resp->error_code = Unknown0(req->GetDataPointer<uint8_t *>(8), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -8547,7 +8547,7 @@ namespace nn::audio::detail {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown1: uint8_t[0x34] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown1: uint8_t[0x34] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x34).c_str());
 				resp->error_code = Unknown1(req->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
@@ -8563,7 +8563,7 @@ namespace nn::audio::detail {
 			case 3: {
 				resp->GenBuf(1, 0, 0);
 				IUnknown* temp1;
-				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown3: uint8_t[0x34] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetData<uint64_t>(0x50), req->GetCopied(0));
+				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown3: uint8_t[0x34] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x34).c_str(), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetData<uint64_t>(0x50), req->GetCopied(0));
 				resp->error_code = Unknown3(req->GetDataPointer<uint8_t *>(8), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetData<uint64_t>(0x50), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -9618,7 +9618,7 @@ namespace nn::bcat::detail::ipc {
 			switch(req->cmd_id) {
 			case 0: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Open: nn::bcat::DirectoryName = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Open: nn::bcat::DirectoryName = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str());
 				resp->error_code = Open(req->GetDataPointer<nn::bcat::DirectoryName>(8));
 				return 0;
 			}
@@ -9654,7 +9654,7 @@ namespace nn::bcat::detail::ipc {
 			switch(req->cmd_id) {
 			case 0: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheFileService::Open: nn::bcat::DirectoryName = %s, nn::bcat::FileName = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x28)).c_str());
+				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheFileService::Open: nn::bcat::DirectoryName = %s, nn::bcat::FileName = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x20).c_str());
 				resp->error_code = Open(req->GetDataPointer<nn::bcat::DirectoryName>(8), req->GetDataPointer<nn::bcat::FileName>(0x28));
 				return 0;
 			}
@@ -10230,13 +10230,13 @@ namespace nn::bluetooth {
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown11: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown11: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown11(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown12: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown12: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown12(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
@@ -10271,13 +10271,13 @@ namespace nn::bluetooth {
 			}
 			case 17: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown17: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown17: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown17(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
 			case 18: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown18: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown18: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown18(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
@@ -10307,7 +10307,7 @@ namespace nn::bluetooth {
 			}
 			case 23: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown23: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown23: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown23(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
@@ -11173,19 +11173,19 @@ namespace nn::btm {
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::btm::IBtm::Unknown11: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::btm::IBtm::Unknown11: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown11(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::btm::IBtm::Unknown12: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::btm::IBtm::Unknown12: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown12(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
 			case 13: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::btm::IBtm::Unknown13: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::btm::IBtm::Unknown13: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown13(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
@@ -11203,7 +11203,7 @@ namespace nn::btm {
 			}
 			case 16: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::btm::IBtm::Unknown16: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::btm::IBtm::Unknown16: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown16(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
@@ -11872,7 +11872,7 @@ namespace nn::capsrv::sf {
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
 				auto temp4 = resp->GetDataPointer<nn::capsrv::ApplicationAlbumEntry>(8);
-				ns_print("IPC message to nn::capsrv::sf::IScreenShotApplicationService::SaveScreenShotEx0: nn::capsrv::detail::ScreenShotAttributeEx0 = %s, uint32_t = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint32_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), temp2);
+				ns_print("IPC message to nn::capsrv::sf::IScreenShotApplicationService::SaveScreenShotEx0: nn::capsrv::detail::ScreenShotAttributeEx0 = %s, uint32_t = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), req->GetData<uint32_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), temp2);
 				resp->error_code = SaveScreenShotEx0(req->GetDataPointer<nn::capsrv::detail::ScreenShotAttributeEx0>(8), req->GetData<uint32_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), req->pid, (uint8_t *) temp3, temp2, temp4);
 				delete[] temp3;
 				return 0;
@@ -13635,7 +13635,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendListIds: int32_t = 0x%x, nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x20)).c_str(), req->GetData<uint64_t>(0x30));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendListIds: int32_t = 0x%x, nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x20), 0x10).c_str(), req->GetData<uint64_t>(0x30));
 				resp->error_code = GetFriendListIds(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::friends::detail::ipc::SizedFriendFilter>(0x20), req->GetData<uint64_t>(0x30), req->pid, *resp->GetDataPointer<int32_t *>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13646,7 +13646,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendList: int32_t = 0x%x, nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x20)).c_str(), req->GetData<uint64_t>(0x30));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendList: int32_t = 0x%x, nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x20), 0x10).c_str(), req->GetData<uint64_t>(0x30));
 				resp->error_code = GetFriendList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::friends::detail::ipc::SizedFriendFilter>(0x20), req->GetData<uint64_t>(0x30), req->pid, *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::FriendImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13661,7 +13661,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UpdateFriendInfo: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x18), temp2);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UpdateFriendInfo: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2);
 				resp->error_code = UpdateFriendInfo(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (nn::account::NetworkServiceAccountId *) temp3, temp2, (nn::friends::detail::FriendImpl *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
@@ -13673,7 +13673,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendProfileImage: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendProfileImage: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = GetFriendProfileImage(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), *resp->GetDataPointer<int32_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13689,7 +13689,7 @@ namespace nn::friends::detail::ipc {
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestForApplication: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, uint64_t = 0x%%lx, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18), req->GetData<uint64_t>(0x20), temp2, temp5);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestForApplication: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, uint64_t = 0x%%lx, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18), req->GetData<uint64_t>(0x20), temp2, temp5);
 				resp->error_code = SendFriendRequestForApplication(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), req->GetData<uint64_t>(0x20), req->pid, (nn::friends::InAppScreenName *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
@@ -13709,7 +13709,7 @@ namespace nn::friends::detail::ipc {
 				auto temp7 = req->GetBuffer(0x19, 1, temp8);
 				auto temp9 = new uint8_t[temp8];
 				ARMv8::ReadBytes(temp7, temp9, temp8);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddFacedFriendRequestForApplication: nn::friends::FacedFriendRequestRegistrationKey = %s, nn::account::Nickname = %s, nn::account::Uid = %s, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x70)).c_str(), req->GetData<uint64_t>(0x80), temp2, temp5, temp8);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddFacedFriendRequestForApplication: nn::friends::FacedFriendRequestRegistrationKey = %s, nn::account::Nickname = %s, nn::account::Uid = %s, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x48), 0x21).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x70), 0x10).c_str(), req->GetData<uint64_t>(0x80), temp2, temp5, temp8);
 				resp->error_code = AddFacedFriendRequestForApplication(req->GetDataPointer<nn::friends::FacedFriendRequestRegistrationKey>(8), req->GetDataPointer<nn::account::Nickname>(0x48), req->GetData<nn::account::Uid>(0x70), req->GetData<uint64_t>(0x80), req->pid, (uint8_t *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5, (nn::friends::InAppScreenName *) temp9, temp8);
 				delete[] temp3;
 				delete[] temp6;
@@ -13721,7 +13721,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetBlockedUserListIds: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetBlockedUserListIds: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetBlockedUserListIds(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13736,7 +13736,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileList: nn::account::Uid = %s, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), temp2);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileList: nn::account::Uid = %s, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), temp2);
 				resp->error_code = GetProfileList(req->GetData<nn::account::Uid>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2, (nn::friends::detail::ProfileImpl *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
@@ -13745,13 +13745,13 @@ namespace nn::friends::detail::ipc {
 			}
 			case 10600: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeclareOpenOnlinePlaySession: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeclareOpenOnlinePlaySession: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DeclareOpenOnlinePlaySession(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 10601: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeclareCloseOnlinePlaySession: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeclareCloseOnlinePlaySession: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DeclareCloseOnlinePlaySession(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -13761,7 +13761,7 @@ namespace nn::friends::detail::ipc {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UpdateUserPresence: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::friends::detail::UserPresenceImpl *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x18), temp2);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UpdateUserPresence: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::friends::detail::UserPresenceImpl *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2);
 				resp->error_code = UpdateUserPresence(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (nn::friends::detail::UserPresenceImpl *) temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -13771,7 +13771,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKey: bool = 0x%x, nn::account::Uid = %s\n", req->GetData<bool>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKey: bool = 0x%x, nn::account::Uid = %s\n", req->GetData<bool>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetPlayHistoryRegistrationKey(req->GetData<bool>(8), req->GetData<nn::account::Uid>(0x10), (nn::friends::PlayHistoryRegistrationKey *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13802,7 +13802,7 @@ namespace nn::friends::detail::ipc {
 				auto temp7 = req->GetBuffer(0x19, 2, temp8);
 				auto temp9 = new uint8_t[temp8];
 				ARMv8::ReadBytes(temp7, temp9, temp8);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddPlayHistory: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::friends::PlayHistoryRegistrationKey *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x18), temp2, temp5, temp8);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddPlayHistory: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::friends::PlayHistoryRegistrationKey *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2, temp5, temp8);
 				resp->error_code = AddPlayHistory(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (nn::friends::PlayHistoryRegistrationKey *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5, (nn::friends::InAppScreenName *) temp9, temp8);
 				delete[] temp3;
 				delete[] temp6;
@@ -13812,19 +13812,19 @@ namespace nn::friends::detail::ipc {
 			case 11000: {
 				resp->GenBuf(0, 0, 160);
 				auto temp1 = resp->GetDataPointer<nn::friends::Url>(8);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileImageUrl: nn::friends::Url = %s, int32_t = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<int32_t>(0xa8));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileImageUrl: nn::friends::Url = %s, int32_t = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0xa0).c_str(), req->GetData<int32_t>(0xa8));
 				resp->error_code = GetProfileImageUrl(req->GetDataPointer<nn::friends::Url>(8), req->GetData<int32_t>(0xa8), temp1);
 				return 0;
 			}
 			case 20100: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendCount: nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str(), req->GetData<uint64_t>(0x28));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendCount: nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x10).c_str(), req->GetData<uint64_t>(0x28));
 				resp->error_code = GetFriendCount(req->GetData<nn::account::Uid>(8), req->GetData<nn::friends::detail::ipc::SizedFriendFilter>(0x18), req->GetData<uint64_t>(0x28), req->pid, *resp->GetDataPointer<int32_t *>(8));
 				return 0;
 			}
 			case 20101: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetNewlyFriendCount: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetNewlyFriendCount: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetNewlyFriendCount(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<int32_t *>(8));
 				return 0;
 			}
@@ -13833,7 +13833,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendDetailedInfo: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendDetailedInfo: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = GetFriendDetailedInfo(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), (nn::friends::detail::FriendDetailedInfoImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13841,13 +13841,13 @@ namespace nn::friends::detail::ipc {
 			}
 			case 20103: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SyncFriendList: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SyncFriendList: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = SyncFriendList(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 20104: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::RequestSyncFriendList: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::RequestSyncFriendList: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = RequestSyncFriendList(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -13856,7 +13856,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::LoadFriendSetting: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::LoadFriendSetting: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = LoadFriendSetting(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), (nn::friends::detail::FriendSettingImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13864,7 +13864,7 @@ namespace nn::friends::detail::ipc {
 			}
 			case 20200: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetReceivedFriendRequestCount: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetReceivedFriendRequestCount: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetReceivedFriendRequestCount(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<int32_t *>(0xc));
 				return 0;
 			}
@@ -13873,7 +13873,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendRequestList: int32_t = 0x%x, int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendRequestList: int32_t = 0x%x, int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetFriendRequestList(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::FriendRequestImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13884,7 +13884,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendCandidateList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendCandidateList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetFriendCandidateList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::FriendCandidateImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13898,7 +13898,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetNintendoNetworkIdInfo: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetNintendoNetworkIdInfo: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetNintendoNetworkIdInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::NintendoNetworkIdUserInfo *) temp3, temp2, (nn::friends::detail::NintendoNetworkIdFriendImpl *) temp6, temp5);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13911,7 +13911,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetBlockedUserList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetBlockedUserList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetBlockedUserList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::BlockedUserImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13919,7 +13919,7 @@ namespace nn::friends::detail::ipc {
 			}
 			case 20401: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SyncBlockedUserList: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SyncBlockedUserList: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = SyncBlockedUserList(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -13932,7 +13932,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileExtraList: nn::account::Uid = %s, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), temp2);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileExtraList: nn::account::Uid = %s, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), temp2);
 				resp->error_code = GetProfileExtraList(req->GetData<nn::account::Uid>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2, (nn::friends::detail::ProfileExtraImpl *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
@@ -13941,7 +13941,7 @@ namespace nn::friends::detail::ipc {
 			}
 			case 20501: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetRelationship: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetRelationship: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = GetRelationship(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), *resp->GetDataPointer<nn::friends::Relationship *>(8));
 				return 0;
 			}
@@ -13950,7 +13950,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetUserPresenceView: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetUserPresenceView: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetUserPresenceView(req->GetData<nn::account::Uid>(8), (nn::friends::detail::UserPresenceViewImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13961,7 +13961,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetPlayHistoryList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::PlayHistoryImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13969,7 +13969,7 @@ namespace nn::friends::detail::ipc {
 			}
 			case 20701: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryStatistics: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryStatistics: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetPlayHistoryStatistics(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<nn::friends::PlayHistoryStatistics *>(8));
 				return 0;
 			}
@@ -13978,7 +13978,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::LoadUserSetting: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::LoadUserSetting: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = LoadUserSetting(req->GetData<nn::account::Uid>(8), (nn::friends::detail::UserSettingImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -13986,7 +13986,7 @@ namespace nn::friends::detail::ipc {
 			}
 			case 20801: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SyncUserSetting: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SyncUserSetting: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = SyncUserSetting(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -14001,7 +14001,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetExternalApplicationCatalog: nn::settings::LanguageCode = 0x%%lx, nn::friends::ExternalApplicationCatalogId = %s\n", req->GetData<nn::settings::LanguageCode>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetExternalApplicationCatalog: nn::settings::LanguageCode = 0x%%lx, nn::friends::ExternalApplicationCatalogId = %s\n", req->GetData<nn::settings::LanguageCode>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = GetExternalApplicationCatalog(req->GetData<nn::settings::LanguageCode>(8), req->GetData<nn::friends::ExternalApplicationCatalogId>(0x10), (nn::friends::ExternalApplicationCatalog *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -14009,37 +14009,37 @@ namespace nn::friends::detail::ipc {
 			}
 			case 30100: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DropFriendNewlyFlags: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DropFriendNewlyFlags: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DropFriendNewlyFlags(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 30101: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeleteFriend: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeleteFriend: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = DeleteFriend(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				return 0;
 			}
 			case 30110: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DropFriendNewlyFlag: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DropFriendNewlyFlag: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = DropFriendNewlyFlag(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				return 0;
 			}
 			case 30120: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangeFriendFavoriteFlag: bool = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<bool>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangeFriendFavoriteFlag: bool = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<bool>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				resp->error_code = ChangeFriendFavoriteFlag(req->GetData<bool>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				return 0;
 			}
 			case 30121: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangeFriendOnlineNotificationFlag: bool = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<bool>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangeFriendOnlineNotificationFlag: bool = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<bool>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				resp->error_code = ChangeFriendOnlineNotificationFlag(req->GetData<bool>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				return 0;
 			}
 			case 30200: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequest: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequest: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				resp->error_code = SendFriendRequest(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				return 0;
 			}
@@ -14053,7 +14053,7 @@ namespace nn::friends::detail::ipc {
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithApplicationInfo: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ApplicationInfo = %s, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x28)).c_str(), temp2, temp5);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithApplicationInfo: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ApplicationInfo = %s, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str(), temp2, temp5);
 				resp->error_code = SendFriendRequestWithApplicationInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ApplicationInfo>(0x28), (nn::friends::InAppScreenName *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
@@ -14061,32 +14061,32 @@ namespace nn::friends::detail::ipc {
 			}
 			case 30202: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::CancelFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::friends::RequestId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::CancelFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::friends::RequestId>(0x18));
 				resp->error_code = CancelFriendRequest(req->GetData<nn::account::Uid>(8), req->GetData<nn::friends::RequestId>(0x18));
 				return 0;
 			}
 			case 30203: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AcceptFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::friends::RequestId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AcceptFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::friends::RequestId>(0x18));
 				resp->error_code = AcceptFriendRequest(req->GetData<nn::account::Uid>(8), req->GetData<nn::friends::RequestId>(0x18));
 				return 0;
 			}
 			case 30204: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::RejectFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::friends::RequestId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::RejectFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::friends::RequestId>(0x18));
 				resp->error_code = RejectFriendRequest(req->GetData<nn::account::Uid>(8), req->GetData<nn::friends::RequestId>(0x18));
 				return 0;
 			}
 			case 30205: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ReadFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::friends::RequestId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ReadFriendRequest: nn::account::Uid = %s, nn::friends::RequestId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::friends::RequestId>(0x18));
 				resp->error_code = ReadFriendRequest(req->GetData<nn::account::Uid>(8), req->GetData<nn::friends::RequestId>(0x18));
 				return 0;
 			}
 			case 30210: {
 				resp->GenBuf(0, 0, 64);
 				auto temp1 = resp->GetDataPointer<nn::friends::FacedFriendRequestRegistrationKey>(8);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestRegistrationKey: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestRegistrationKey: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetFacedFriendRequestRegistrationKey(req->GetData<nn::account::Uid>(8), temp1);
 				return 0;
 			}
@@ -14096,14 +14096,14 @@ namespace nn::friends::detail::ipc {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddFacedFriendRequest: nn::friends::FacedFriendRequestRegistrationKey = %s, nn::account::Nickname = %s, nn::account::Uid = %s, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x70)).c_str(), temp2);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddFacedFriendRequest: nn::friends::FacedFriendRequestRegistrationKey = %s, nn::account::Nickname = %s, nn::account::Uid = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x48), 0x21).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x70), 0x10).c_str(), temp2);
 				resp->error_code = AddFacedFriendRequest(req->GetDataPointer<nn::friends::FacedFriendRequestRegistrationKey>(8), req->GetDataPointer<nn::account::Nickname>(0x48), req->GetData<nn::account::Uid>(0x70), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 30212: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::CancelFacedFriendRequest: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::CancelFacedFriendRequest: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = CancelFacedFriendRequest(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				return 0;
 			}
@@ -14112,7 +14112,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImage: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImage: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = GetFacedFriendRequestProfileImage(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), *resp->GetDataPointer<int32_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -14144,7 +14144,7 @@ namespace nn::friends::detail::ipc {
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithExternalApplicationCatalogId: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ExternalApplicationCatalogId = %s, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x28)).c_str(), temp2, temp5);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithExternalApplicationCatalogId: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ExternalApplicationCatalogId = %s, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str(), temp2, temp5);
 				resp->error_code = SendFriendRequestWithExternalApplicationCatalogId(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ExternalApplicationCatalogId>(0x28), (nn::friends::InAppScreenName *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
@@ -14152,19 +14152,19 @@ namespace nn::friends::detail::ipc {
 			}
 			case 30216: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ResendFacedFriendRequest: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ResendFacedFriendRequest: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = ResendFacedFriendRequest(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				return 0;
 			}
 			case 30217: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithNintendoNetworkIdInfo: nn::friends::MiiName = %s, nn::friends::MiiImageUrlParam = %s, nn::friends::MiiName = %s, nn::friends::MiiImageUrlParam = %s, int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x28)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x38)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x58)).c_str(), req->GetData<int32_t>(0x68), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x70)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x80));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithNintendoNetworkIdInfo: nn::friends::MiiName = %s, nn::friends::MiiImageUrlParam = %s, nn::friends::MiiName = %s, nn::friends::MiiImageUrlParam = %s, int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x38), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x58), 0x10).c_str(), req->GetData<int32_t>(0x68), read_string(req->GetDataPointer<uint8_t *>(0x70), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x80));
 				resp->error_code = SendFriendRequestWithNintendoNetworkIdInfo(req->GetDataPointer<nn::friends::MiiName>(8), req->GetData<nn::friends::MiiImageUrlParam>(0x28), req->GetDataPointer<nn::friends::MiiName>(0x38), req->GetData<nn::friends::MiiImageUrlParam>(0x58), req->GetData<int32_t>(0x68), req->GetData<nn::account::Uid>(0x70), req->GetData<nn::account::NetworkServiceAccountId>(0x80));
 				return 0;
 			}
 			case 30400: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::BlockUser: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::BlockUser: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				resp->error_code = BlockUser(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20));
 				return 0;
 			}
@@ -14174,14 +14174,14 @@ namespace nn::friends::detail::ipc {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::BlockUserWithApplicationInfo: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ApplicationInfo = %s, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x28)).c_str(), temp2);
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::BlockUserWithApplicationInfo: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ApplicationInfo = %s, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str(), temp2);
 				resp->error_code = BlockUserWithApplicationInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ApplicationInfo>(0x28), (nn::friends::InAppScreenName *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 30402: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UnblockUser: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UnblockUser: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				resp->error_code = UnblockUser(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
 				return 0;
 			}
@@ -14190,7 +14190,7 @@ namespace nn::friends::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileExtraFromFriendCode: nn::friends::FriendCode = %s, nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x28)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileExtraFromFriendCode: nn::friends::FriendCode = %s, nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str());
 				resp->error_code = GetProfileExtraFromFriendCode(req->GetDataPointer<nn::friends::FriendCode>(8), req->GetData<nn::account::Uid>(0x28), (nn::friends::detail::ProfileExtraImpl *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -14198,43 +14198,43 @@ namespace nn::friends::detail::ipc {
 			}
 			case 30700: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeletePlayHistory: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeletePlayHistory: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DeletePlayHistory(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 30810: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangePresencePermission: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangePresencePermission: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = ChangePresencePermission(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10));
 				return 0;
 			}
 			case 30811: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangeFriendRequestReception: bool = 0x%x, nn::account::Uid = %s\n", req->GetData<bool>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangeFriendRequestReception: bool = 0x%x, nn::account::Uid = %s\n", req->GetData<bool>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = ChangeFriendRequestReception(req->GetData<bool>(8), req->GetData<nn::account::Uid>(0x10));
 				return 0;
 			}
 			case 30812: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangePlayLogPermission: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ChangePlayLogPermission: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = ChangePlayLogPermission(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10));
 				return 0;
 			}
 			case 30820: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::IssueFriendCode: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::IssueFriendCode: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = IssueFriendCode(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 30830: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ClearPlayLog: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::ClearPlayLog: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ClearPlayLog(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
 			case 49900: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeleteNetworkServiceAccountCache: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::DeleteNetworkServiceAccountCache: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = DeleteNetworkServiceAccountCache(req->GetData<nn::account::Uid>(8));
 				return 0;
 			}
@@ -14362,7 +14362,7 @@ namespace nn::friends::detail::ipc {
 			case 1: {
 				resp->GenBuf(1, 0, 0);
 				nn::friends::detail::ipc::INotificationService* temp1;
-				ns_print("IPC message to nn::friends::detail::ipc::IServiceCreator::CreateNotificationService: nn::account::Uid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::friends::detail::ipc::IServiceCreator::CreateNotificationService: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = CreateNotificationService(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -15424,13 +15424,13 @@ namespace nn::fssrv::sf {
 			}
 			case 22: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CreateSaveData: nn::fssrv::sf::SaveStruct saveStruct = %s, nn::fssrv::sf::SaveCreateStruct saveCreate = %s, uint128_t input = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x88)).c_str());
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CreateSaveData: nn::fssrv::sf::SaveStruct saveStruct = %s, nn::fssrv::sf::SaveCreateStruct saveCreate = %s, uint128_t input = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x48), 0x40).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x88), 0x10).c_str());
 				resp->error_code = CreateSaveData(req->GetDataPointer<nn::fssrv::sf::SaveStruct>(8), req->GetDataPointer<nn::fssrv::sf::SaveCreateStruct>(0x48), req->GetData<uint128_t>(0x88));
 				return 0;
 			}
 			case 23: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CreateSystemSaveData: nn::fssrv::sf::SaveStruct saveStruct = %s, nn::fssrv::sf::SaveCreateStruct saveCreate = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x48)).c_str());
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::CreateSystemSaveData: nn::fssrv::sf::SaveStruct saveStruct = %s, nn::fssrv::sf::SaveCreateStruct saveCreate = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x48), 0x40).c_str());
 				resp->error_code = CreateSystemSaveData(req->GetDataPointer<nn::fssrv::sf::SaveStruct>(8), req->GetDataPointer<nn::fssrv::sf::SaveCreateStruct>(0x48));
 				return 0;
 			}
@@ -15490,7 +15490,7 @@ namespace nn::fssrv::sf {
 			case 51: {
 				resp->GenBuf(1, 0, 0);
 				nn::fssrv::sf::IFileSystem* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str());
 				resp->error_code = MountSaveData(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -15499,7 +15499,7 @@ namespace nn::fssrv::sf {
 			case 52: {
 				resp->GenBuf(1, 0, 0);
 				nn::fssrv::sf::IFileSystem* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str());
 				resp->error_code = MountSystemSaveData(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -15508,7 +15508,7 @@ namespace nn::fssrv::sf {
 			case 53: {
 				resp->GenBuf(1, 0, 0);
 				nn::fssrv::sf::IFileSystem* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str());
 				resp->error_code = MountSaveDataReadOnly(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -15568,7 +15568,7 @@ namespace nn::fssrv::sf {
 			case 80: {
 				resp->GenBuf(1, 0, 0);
 				nn::fssrv::sf::IFile* temp1;
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile: uint8_t = 0x%x, uint8_t[0x40] = %s, uint32_t = 0x%x\n", req->GetData<uint8_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), req->GetData<uint32_t>(0x50));
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile: uint8_t = 0x%x, uint8_t[0x40] = %s, uint32_t = 0x%x\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str(), req->GetData<uint32_t>(0x50));
 				resp->error_code = OpenSaveDataThumbnailFile(req->GetData<uint8_t>(8), req->GetDataPointer<uint8_t *>(0x10), req->GetData<uint32_t>(0x50), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
@@ -15704,7 +15704,7 @@ namespace nn::fssrv::sf {
 			}
 			case 607: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::RegisterExternalKey: uint128_t = %s, uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str());
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::RegisterExternalKey: uint128_t = %s, uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x10).c_str());
 				resp->error_code = RegisterExternalKey(req->GetData<uint128_t>(8), req->GetData<uint128_t>(0x18));
 				return 0;
 			}
@@ -15738,7 +15738,7 @@ namespace nn::fssrv::sf {
 			}
 			case 620: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetSdCardEncryptionSeed: uint128_t seedmaybe = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetSdCardEncryptionSeed: uint128_t seedmaybe = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = SetSdCardEncryptionSeed(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -16847,7 +16847,7 @@ namespace nn::hid {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::hid::IHidDebugServer::SetDebugPadAutoPilotState: nn::hid::debug::DebugPadAutoPilotState = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::hid::IHidDebugServer::SetDebugPadAutoPilotState: nn::hid::debug::DebugPadAutoPilotState = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x18).c_str());
 				resp->error_code = SetDebugPadAutoPilotState(req->GetDataPointer<nn::hid::debug::DebugPadAutoPilotState>(8));
 				return 0;
 			}
@@ -16888,7 +16888,7 @@ namespace nn::hid {
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::hid::IHidDebugServer::SetMouseAutoPilotState: nn::hid::debug::MouseAutoPilotState = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::hid::IHidDebugServer::SetMouseAutoPilotState: nn::hid::debug::MouseAutoPilotState = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x1c).c_str());
 				resp->error_code = SetMouseAutoPilotState(req->GetDataPointer<nn::hid::debug::MouseAutoPilotState>(8));
 				return 0;
 			}
@@ -16906,7 +16906,7 @@ namespace nn::hid {
 			}
 			case 31: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::hid::IHidDebugServer::SetKeyboardAutoPilotState: nn::hid::debug::KeyboardAutoPilotState = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::hid::IHidDebugServer::SetKeyboardAutoPilotState: nn::hid::debug::KeyboardAutoPilotState = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x28).c_str());
 				resp->error_code = SetKeyboardAutoPilotState(req->GetDataPointer<nn::hid::debug::KeyboardAutoPilotState>(8));
 				return 0;
 			}
@@ -16924,7 +16924,7 @@ namespace nn::hid {
 			}
 			case 51: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::hid::IHidDebugServer::SetXpadAutoPilotState: nn::hid::BasicXpadId = 0x%x, nn::hid::debug::BasicXpadAutoPilotState = %s\n", req->GetData<nn::hid::BasicXpadId>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::hid::IHidDebugServer::SetXpadAutoPilotState: nn::hid::BasicXpadId = 0x%x, nn::hid::debug::BasicXpadAutoPilotState = %s\n", req->GetData<nn::hid::BasicXpadId>(8), read_string(req->GetDataPointer<uint8_t *>(0xc), 0x1c).c_str());
 				resp->error_code = SetXpadAutoPilotState(req->GetData<nn::hid::BasicXpadId>(8), req->GetDataPointer<nn::hid::debug::BasicXpadAutoPilotState>(0xc));
 				return 0;
 			}
@@ -17531,7 +17531,7 @@ namespace nn::hid {
 			}
 			case 201: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::hid::IHidServer::SendVibrationValue: nn::hid::VibrationDeviceHandle = 0x%x, nn::hid::VibrationValue = %s, nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::hid::VibrationDeviceHandle>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str(), req->GetData<nn::applet::AppletResourceUserId>(0x20));
+				ns_print("IPC message to nn::hid::IHidServer::SendVibrationValue: nn::hid::VibrationDeviceHandle = 0x%x, nn::hid::VibrationValue = %s, nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::hid::VibrationDeviceHandle>(8), read_string(req->GetDataPointer<uint8_t *>(0xc), 0x10).c_str(), req->GetData<nn::applet::AppletResourceUserId>(0x20));
 				resp->error_code = SendVibrationValue(req->GetData<nn::hid::VibrationDeviceHandle>(8), req->GetData<nn::hid::VibrationValue>(0xc), req->GetData<nn::applet::AppletResourceUserId>(0x20), req->pid);
 				return 0;
 			}
@@ -17997,7 +17997,7 @@ namespace nn::hid {
 			}
 			case 545: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::hid::IHidSystemServer::SendConnectionTrigger: nn::bluetooth::Address = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::hid::IHidSystemServer::SendConnectionTrigger: nn::bluetooth::Address = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = SendConnectionTrigger(req->GetDataPointer<nn::bluetooth::Address>(0xc));
 				return 0;
 			}
@@ -19061,7 +19061,7 @@ namespace nn::htc::tenv {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::htc::tenv::IService::Unknown0: uint8_t[0x40] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::htc::tenv::IService::Unknown0: uint8_t[0x40] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str());
 				resp->error_code = Unknown0(req->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -19069,7 +19069,7 @@ namespace nn::htc::tenv {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::htc::tenv::IService::Unknown1: uint8_t[0x40] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::htc::tenv::IService::Unknown1: uint8_t[0x40] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str());
 				resp->error_code = Unknown1(req->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
@@ -19424,19 +19424,19 @@ namespace nn::irsensor {
 			}
 			case 306: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunMomentProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, nn::irsensor::PackedMomentProcessorConfig = %s\n", req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str());
+				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunMomentProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, nn::irsensor::PackedMomentProcessorConfig = %s\n", req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x20).c_str());
 				resp->error_code = RunMomentProcessor(req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->GetDataPointer<nn::irsensor::PackedMomentProcessorConfig>(0x18), req->pid);
 				return 0;
 			}
 			case 307: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunClusteringProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, nn::irsensor::PackedClusteringProcessorConfig = %s\n", req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str());
+				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunClusteringProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, nn::irsensor::PackedClusteringProcessorConfig = %s\n", req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x28).c_str());
 				resp->error_code = RunClusteringProcessor(req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->GetDataPointer<nn::irsensor::PackedClusteringProcessorConfig>(0x18), req->pid);
 				return 0;
 			}
 			case 308: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunImageTransferProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, nn::irsensor::PackedImageTransferProcessorConfig = %s, uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str(), req->GetData<uint64_t>(0x30), req->GetCopied(0));
+				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunImageTransferProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, nn::irsensor::PackedImageTransferProcessorConfig = %s, uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x18).c_str(), req->GetData<uint64_t>(0x30), req->GetCopied(0));
 				resp->error_code = RunImageTransferProcessor(req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->GetDataPointer<nn::irsensor::PackedImageTransferProcessorConfig>(0x18), req->GetData<uint64_t>(0x30), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)));
 				return 0;
 			}
@@ -19465,7 +19465,7 @@ namespace nn::irsensor {
 			}
 			case 312: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunDpdProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::irsensor::PackedDpdProcessorConfig = %s, nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::irsensor::IrCameraHandle>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str(), req->GetData<nn::applet::AppletResourceUserId>(0x18));
+				ns_print("IPC message to nn::irsensor::IIrSensorServer::RunDpdProcessor: nn::irsensor::IrCameraHandle = 0x%x, nn::irsensor::PackedDpdProcessorConfig = %s, nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::irsensor::IrCameraHandle>(8), read_string(req->GetDataPointer<uint8_t *>(0xc), 0xc).c_str(), req->GetData<nn::applet::AppletResourceUserId>(0x18));
 				resp->error_code = RunDpdProcessor(req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetDataPointer<nn::irsensor::PackedDpdProcessorConfig>(0xc), req->GetData<nn::applet::AppletResourceUserId>(0x18), req->pid);
 				return 0;
 			}
@@ -19730,7 +19730,7 @@ namespace nn::lbl::detail {
 			}
 			case 19: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::lbl::detail::ILblController::Unknown19: uint8_t[0xc] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::lbl::detail::ILblController::Unknown19: uint8_t[0xc] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0xc).c_str());
 				resp->error_code = Unknown19(req->GetDataPointer<uint8_t *>(8));
 				return 0;
 			}
@@ -19743,7 +19743,7 @@ namespace nn::lbl::detail {
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::lbl::detail::ILblController::Unknown21: uint8_t[0xc] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::lbl::detail::ILblController::Unknown21: uint8_t[0xc] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0xc).c_str());
 				resp->error_code = Unknown21(req->GetDataPointer<uint8_t *>(8));
 				return 0;
 			}
@@ -20115,7 +20115,7 @@ namespace nn::ldn::detail {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown102: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown102: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
 				resp->error_code = Unknown102(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -20126,7 +20126,7 @@ namespace nn::ldn::detail {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown103: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown103: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
 				resp->error_code = Unknown103(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -20146,7 +20146,7 @@ namespace nn::ldn::detail {
 			}
 			case 202: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown202: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x80)).c_str());
+				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown202: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x30).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x80), 0x20).c_str());
 				resp->error_code = Unknown202(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x80));
 				return 0;
 			}
@@ -20156,7 +20156,7 @@ namespace nn::ldn::detail {
 				auto temp1 = req->GetBuffer(9, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown203: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x6c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xa0)).c_str(), temp2);
+				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown203: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x6c), 0x30).c_str(), read_string(req->GetDataPointer<uint8_t *>(0xa0), 0x20).c_str(), temp2);
 				resp->error_code = Unknown203(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetDataPointer<uint8_t *>(0xa0), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -20192,7 +20192,7 @@ namespace nn::ldn::detail {
 			}
 			case 208: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown208: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown208: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown208(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
@@ -20220,14 +20220,14 @@ namespace nn::ldn::detail {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown302: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp2);
+				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown302: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x30).c_str(), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp2);
 				resp->error_code = Unknown302(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 303: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown303: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t[0x20] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x6c)).c_str(), req->GetData<uint32_t>(0x9c), req->GetData<uint32_t>(0xa0), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xa8)).c_str());
+				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown303: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t[0x20] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x6c), 0x30).c_str(), req->GetData<uint32_t>(0x9c), req->GetData<uint32_t>(0xa0), read_string(req->GetDataPointer<uint8_t *>(0xa8), 0x20).c_str());
 				resp->error_code = Unknown303(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetData<uint32_t>(0x9c), req->GetData<uint32_t>(0xa0), req->GetDataPointer<uint8_t *>(0xa8));
 				return 0;
 			}
@@ -20379,7 +20379,7 @@ namespace nn::ldn::detail {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown102: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown102: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
 				resp->error_code = Unknown102(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -20390,7 +20390,7 @@ namespace nn::ldn::detail {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown103: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown103: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
 				resp->error_code = Unknown103(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -20410,7 +20410,7 @@ namespace nn::ldn::detail {
 			}
 			case 202: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown202: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x80)).c_str());
+				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown202: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x30).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x80), 0x20).c_str());
 				resp->error_code = Unknown202(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x80));
 				return 0;
 			}
@@ -20420,7 +20420,7 @@ namespace nn::ldn::detail {
 				auto temp1 = req->GetBuffer(9, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown203: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x6c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xa0)).c_str(), temp2);
+				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown203: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x6c), 0x30).c_str(), read_string(req->GetDataPointer<uint8_t *>(0xa0), 0x20).c_str(), temp2);
 				resp->error_code = Unknown203(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetDataPointer<uint8_t *>(0xa0), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -20456,7 +20456,7 @@ namespace nn::ldn::detail {
 			}
 			case 208: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown208: uint8_t[6] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xc)).c_str());
+				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown208: uint8_t[6] = %s\n", read_string(req->GetDataPointer<uint8_t *>(0xc), 6).c_str());
 				resp->error_code = Unknown208(req->GetDataPointer<uint8_t *>(0xc));
 				return 0;
 			}
@@ -20484,14 +20484,14 @@ namespace nn::ldn::detail {
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown302: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp2);
+				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown302: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x30).c_str(), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp2);
 				resp->error_code = Unknown302(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 303: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown303: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t[0x20] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x4c)).c_str(), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x6c)).c_str(), req->GetData<uint32_t>(0x9c), req->GetData<uint32_t>(0xa0), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0xa8)).c_str());
+				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown303: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t[0x20] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x6c), 0x30).c_str(), req->GetData<uint32_t>(0x9c), req->GetData<uint32_t>(0xa0), read_string(req->GetDataPointer<uint8_t *>(0xa8), 0x20).c_str());
 				resp->error_code = Unknown303(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetData<uint32_t>(0x9c), req->GetData<uint32_t>(0xa0), req->GetDataPointer<uint8_t *>(0xa8));
 				return 0;
 			}
@@ -21303,7 +21303,7 @@ namespace nn::mii::detail {
 			case 5: {
 				resp->GenBuf(0, 0, 88);
 				auto temp1 = resp->GetDataPointer<nn::mii::CharInfo>(8);
-				ns_print("IPC message to nn::mii::detail::IDatabaseService::UpdateLatest: nn::mii::CharInfo = %s, int32_t = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<int32_t>(0x60));
+				ns_print("IPC message to nn::mii::detail::IDatabaseService::UpdateLatest: nn::mii::CharInfo = %s, int32_t = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x58).c_str(), req->GetData<int32_t>(0x60));
 				resp->error_code = UpdateLatest(req->GetDataPointer<nn::mii::CharInfo>(8), req->GetData<int32_t>(0x60), temp1);
 				return 0;
 			}
@@ -21346,31 +21346,31 @@ namespace nn::mii::detail {
 			case 10: {
 				resp->GenBuf(0, 0, 68);
 				auto temp1 = resp->GetDataPointer<nn::mii::StoreData>(8);
-				ns_print("IPC message to nn::mii::detail::IDatabaseService::UpdateLatest1: nn::mii::StoreData = %s, int32_t = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<int32_t>(0x4c));
+				ns_print("IPC message to nn::mii::detail::IDatabaseService::UpdateLatest1: nn::mii::StoreData = %s, int32_t = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), req->GetData<int32_t>(0x4c));
 				resp->error_code = UpdateLatest1(req->GetDataPointer<nn::mii::StoreData>(8), req->GetData<int32_t>(0x4c), temp1);
 				return 0;
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::mii::detail::IDatabaseService::FindIndex: nn::mii::CreateId = %s, bool = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<bool>(0x18));
+				ns_print("IPC message to nn::mii::detail::IDatabaseService::FindIndex: nn::mii::CreateId = %s, bool = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<bool>(0x18));
 				resp->error_code = FindIndex(req->GetData<nn::mii::CreateId>(8), req->GetData<bool>(0x18), *resp->GetDataPointer<int32_t *>(8));
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::mii::detail::IDatabaseService::Move: nn::mii::CreateId = %s, int32_t = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<int32_t>(0x18));
+				ns_print("IPC message to nn::mii::detail::IDatabaseService::Move: nn::mii::CreateId = %s, int32_t = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<int32_t>(0x18));
 				resp->error_code = Move(req->GetData<nn::mii::CreateId>(8), req->GetData<int32_t>(0x18));
 				return 0;
 			}
 			case 13: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::mii::detail::IDatabaseService::AddOrReplace: nn::mii::StoreData = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::mii::detail::IDatabaseService::AddOrReplace: nn::mii::StoreData = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str());
 				resp->error_code = AddOrReplace(req->GetDataPointer<nn::mii::StoreData>(8));
 				return 0;
 			}
 			case 14: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::mii::detail::IDatabaseService::Delete: nn::mii::CreateId = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::mii::detail::IDatabaseService::Delete: nn::mii::CreateId = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Delete(req->GetData<nn::mii::CreateId>(8));
 				return 0;
 			}
@@ -21422,7 +21422,7 @@ namespace nn::mii::detail {
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::mii::detail::IDatabaseService::GetIndex: nn::mii::CharInfo = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::mii::detail::IDatabaseService::GetIndex: nn::mii::CharInfo = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x58).c_str());
 				resp->error_code = GetIndex(req->GetDataPointer<nn::mii::CharInfo>(8), *resp->GetDataPointer<int32_t *>(8));
 				return 0;
 			}
@@ -21927,7 +21927,7 @@ namespace nn::ncm {
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ncm::IContentStorage::Unknown2: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::ncm::IContentStorage::Unknown2: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown2(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -21951,7 +21951,7 @@ namespace nn::ncm {
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ncm::IContentStorage::Unknown6: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::ncm::IContentStorage::Unknown6: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown6(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -24827,7 +24827,7 @@ namespace nn::nifm::detail {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetNetworkProfile: nn::util::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetNetworkProfile: nn::util::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetNetworkProfile(req->GetData<nn::util::Uuid>(8), (nn::nifm::detail::sf::NetworkProfileData *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -24846,7 +24846,7 @@ namespace nn::nifm::detail {
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nifm::detail::IGeneralService::RemoveNetworkProfile: nn::util::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nifm::detail::IGeneralService::RemoveNetworkProfile: nn::util::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = RemoveNetworkProfile(req->GetData<nn::util::Uuid>(8));
 				return 0;
 			}
@@ -25092,7 +25092,7 @@ namespace nn::nifm::detail {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::nifm::detail::INetworkProfile::PersistOld: nn::util::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nifm::detail::INetworkProfile::PersistOld: nn::util::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = PersistOld(req->GetData<nn::util::Uuid>(8), *resp->GetDataPointer<nn::util::Uuid *>(8));
 				return 0;
 			}
@@ -25153,7 +25153,7 @@ namespace nn::nifm::detail {
 			}
 			case 5: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nifm::detail::IRequest::SetRequirement: nn::nifm::Requirement = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nifm::detail::IRequest::SetRequirement: nn::nifm::Requirement = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x24).c_str());
 				resp->error_code = SetRequirement(req->GetDataPointer<nn::nifm::Requirement>(8));
 				return 0;
 			}
@@ -25171,7 +25171,7 @@ namespace nn::nifm::detail {
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nifm::detail::IRequest::SetNetworkProfileId: nn::util::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nifm::detail::IRequest::SetNetworkProfileId: nn::util::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = SetNetworkProfileId(req->GetData<nn::util::Uuid>(8));
 				return 0;
 			}
@@ -25800,7 +25800,7 @@ namespace nn::nim::detail {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown1: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown1: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown1(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -25829,7 +25829,7 @@ namespace nn::nim::detail {
 			}
 			case 5: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown5: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown5: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown5(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -25841,7 +25841,7 @@ namespace nn::nim::detail {
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown7: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown7: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown7(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -25870,7 +25870,7 @@ namespace nn::nim::detail {
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown11: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown11: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown11(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -25990,7 +25990,7 @@ namespace nn::nim::detail {
 			}
 			case 32: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown32: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown32: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown32(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -26020,7 +26020,7 @@ namespace nn::nim::detail {
 			}
 			case 37: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown37: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown37: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown37(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -26049,7 +26049,7 @@ namespace nn::nim::detail {
 			}
 			case 41: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown41: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown41: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown41(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -30374,13 +30374,13 @@ namespace nn::ovln {
 			switch(req->cmd_id) {
 			case 0: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ovln::IReceiver::Unknown0: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::ovln::IReceiver::Unknown0: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown0(req->GetData<uint128_t>(8));
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::ovln::IReceiver::Unknown1: uint128_t = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::ovln::IReceiver::Unknown1: uint128_t = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = Unknown1(req->GetData<uint128_t>(8));
 				return 0;
 			}
@@ -30925,7 +30925,7 @@ namespace nn::pctl::detail::ipc {
 			}
 			case 1036: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::SetCustomSafetyLevelSettings: nn::pctl::SafetyLevelSettings = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(9)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::SetCustomSafetyLevelSettings: nn::pctl::SafetyLevelSettings = %s\n", read_string(req->GetDataPointer<uint8_t *>(9), 3).c_str());
 				resp->error_code = SetCustomSafetyLevelSettings(req->GetDataPointer<nn::pctl::SafetyLevelSettings>(9));
 				return 0;
 			}
@@ -31039,7 +31039,7 @@ namespace nn::pctl::detail::ipc {
 				auto temp1 = req->GetBuffer(9, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::CheckMasterKey: nn::pctl::InquiryCode = %s, int8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), temp2);
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::CheckMasterKey: nn::pctl::InquiryCode = %s, int8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), temp2);
 				resp->error_code = CheckMasterKey(req->GetDataPointer<nn::pctl::InquiryCode>(8), (int8_t *) temp3, temp2, *resp->GetDataPointer<bool *>(8));
 				delete[] temp3;
 				return 0;
@@ -31073,7 +31073,7 @@ namespace nn::pctl::detail::ipc {
 			}
 			case 1411: {
 				resp->GenBuf(0, 0, 16);
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetPairingAccountInfo: nn::pctl::detail::PairingInfoBase = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetPairingAccountInfo: nn::pctl::detail::PairingInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetPairingAccountInfo(req->GetData<nn::pctl::detail::PairingInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::PairingAccountInfoBase *>(8));
 				return 0;
 			}
@@ -31082,7 +31082,7 @@ namespace nn::pctl::detail::ipc {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountNickname: nn::pctl::detail::PairingAccountInfoBase = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountNickname: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetAccountNickname(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<uint32_t *>(8), (int8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -31090,7 +31090,7 @@ namespace nn::pctl::detail::ipc {
 			}
 			case 1424: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountState: nn::pctl::detail::PairingAccountInfoBase = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountState: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetAccountState(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<int32_t *>(8));
 				return 0;
 			}
@@ -31214,7 +31214,7 @@ namespace nn::pctl::detail::ipc {
 			}
 			case 1951: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::SetPlayTimerSettingsForDebug: nn::pctl::PlayTimerSettings = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::SetPlayTimerSettingsForDebug: nn::pctl::PlayTimerSettings = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x34).c_str());
 				resp->error_code = SetPlayTimerSettingsForDebug(req->GetDataPointer<nn::pctl::PlayTimerSettings>(8));
 				return 0;
 			}
@@ -31247,7 +31247,7 @@ namespace nn::pctl::detail::ipc {
 			case 2003: {
 				resp->GenBuf(0, 1, 8);
 				IpcService *temp1;
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::AuthorizePairingAsync: nn::pctl::detail::PairingInfoBase = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::AuthorizePairingAsync: nn::pctl::detail::PairingInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = AuthorizePairingAsync(req->GetData<nn::pctl::detail::PairingInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp1));
@@ -31295,7 +31295,7 @@ namespace nn::pctl::detail::ipc {
 				unsigned int temp3;
 				auto temp2 = req->GetBuffer(6, 0, temp3);
 				auto temp4 = new uint8_t[temp3];
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetAccountMiiImageAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, (uint8_t *) temp4, temp3);
 				if(temp1 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp1));
@@ -31320,7 +31320,7 @@ namespace nn::pctl::detail::ipc {
 				unsigned int temp3;
 				auto temp2 = req->GetBuffer(0xa, 0, temp3);
 				auto temp4 = new uint8_t[temp3];
-				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageContentTypeAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageContentTypeAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetAccountMiiImageContentTypeAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, (int8_t *) temp4, temp3);
 				if(temp1 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp1));
@@ -32738,7 +32738,7 @@ namespace nn::prepo::detail::ipc {
 				auto temp4 = req->GetBuffer(5, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveReportWithUser: nn::account::Uid = %s, uint64_t = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x18), temp2, temp5);
+				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveReportWithUser: nn::account::Uid = %s, uint64_t = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2, temp5);
 				resp->error_code = SaveReportWithUser(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (int8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
@@ -32782,7 +32782,7 @@ namespace nn::prepo::detail::ipc {
 				auto temp4 = req->GetBuffer(5, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveSystemReportWithUser: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2, temp5);
+				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveSystemReportWithUser: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2, temp5);
 				resp->error_code = SaveSystemReportWithUser(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), (int8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				delete[] temp6;
@@ -34067,7 +34067,7 @@ namespace nn::settings {
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetBacklightSettings: nn::settings::system::BacklightSettings = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetBacklightSettings: nn::settings::system::BacklightSettings = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x28).c_str());
 				resp->error_code = SetBacklightSettings(req->GetDataPointer<nn::settings::system::BacklightSettings>(8));
 				return 0;
 			}
@@ -34101,7 +34101,7 @@ namespace nn::settings {
 			}
 			case 14: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetExternalSteadyClockSourceId: nn::util::Uuid = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetExternalSteadyClockSourceId: nn::util::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = SetExternalSteadyClockSourceId(req->GetData<nn::util::Uuid>(8));
 				return 0;
 			}
@@ -34114,7 +34114,7 @@ namespace nn::settings {
 			}
 			case 16: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetUserSystemClockContext: nn::time::SystemClockContext = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetUserSystemClockContext: nn::time::SystemClockContext = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str());
 				resp->error_code = SetUserSystemClockContext(req->GetDataPointer<nn::time::SystemClockContext>(8));
 				return 0;
 			}
@@ -34209,7 +34209,7 @@ namespace nn::settings {
 			}
 			case 30: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetNotificationSettings: nn::settings::system::NotificationSettings = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetNotificationSettings: nn::settings::system::NotificationSettings = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x18).c_str());
 				resp->error_code = SetNotificationSettings(req->GetDataPointer<nn::settings::system::NotificationSettings>(8));
 				return 0;
 			}
@@ -34293,7 +34293,7 @@ namespace nn::settings {
 			}
 			case 40: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetTvSettings: nn::settings::system::TvSettings = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetTvSettings: nn::settings::system::TvSettings = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str());
 				resp->error_code = SetTvSettings(req->GetDataPointer<nn::settings::system::TvSettings>(8));
 				return 0;
 			}
@@ -34388,7 +34388,7 @@ namespace nn::settings {
 			}
 			case 54: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetDeviceTimeZoneLocationName: nn::time::LocationName = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetDeviceTimeZoneLocationName: nn::time::LocationName = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x24).c_str());
 				resp->error_code = SetDeviceTimeZoneLocationName(req->GetDataPointer<nn::time::LocationName>(8));
 				return 0;
 			}
@@ -34424,7 +34424,7 @@ namespace nn::settings {
 			}
 			case 59: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetNetworkSystemClockContext: nn::time::SystemClockContext = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetNetworkSystemClockContext: nn::time::SystemClockContext = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str());
 				resp->error_code = SetNetworkSystemClockContext(req->GetDataPointer<nn::time::SystemClockContext>(8));
 				return 0;
 			}
@@ -34505,7 +34505,7 @@ namespace nn::settings {
 			}
 			case 72: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetSleepSettings: nn::settings::system::SleepSettings = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetSleepSettings: nn::settings::system::SleepSettings = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0xc).c_str());
 				resp->error_code = SetSleepSettings(req->GetDataPointer<nn::settings::system::SleepSettings>(8));
 				return 0;
 			}
@@ -34530,7 +34530,7 @@ namespace nn::settings {
 			}
 			case 76: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetInitialLaunchSettings: nn::settings::system::InitialLaunchSettings = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetInitialLaunchSettings: nn::settings::system::InitialLaunchSettings = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str());
 				resp->error_code = SetInitialLaunchSettings(req->GetDataPointer<nn::settings::system::InitialLaunchSettings>(8));
 				return 0;
 			}
@@ -34598,7 +34598,7 @@ namespace nn::settings {
 			}
 			case 85: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetPtmBatteryLot: nn::settings::factory::BatteryLot = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetPtmBatteryLot: nn::settings::factory::BatteryLot = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x18).c_str());
 				resp->error_code = SetPtmBatteryLot(req->GetDataPointer<nn::settings::factory::BatteryLot>(8));
 				return 0;
 			}
@@ -34611,7 +34611,7 @@ namespace nn::settings {
 			}
 			case 87: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetPtmFuelGaugeParameter: nn::settings::system::PtmFuelGaugeParameter = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetPtmFuelGaugeParameter: nn::settings::system::PtmFuelGaugeParameter = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x18).c_str());
 				resp->error_code = SetPtmFuelGaugeParameter(req->GetDataPointer<nn::settings::system::PtmFuelGaugeParameter>(8));
 				return 0;
 			}
@@ -34751,7 +34751,7 @@ namespace nn::settings {
 			}
 			case 108: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetBacklightSettingsEx: nn::settings::system::BacklightSettingsEx = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetBacklightSettingsEx: nn::settings::system::BacklightSettingsEx = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x2c).c_str());
 				resp->error_code = SetBacklightSettingsEx(req->GetDataPointer<nn::settings::system::BacklightSettingsEx>(8));
 				return 0;
 			}
@@ -35872,7 +35872,7 @@ namespace nn::socket::sf {
 			switch(req->cmd_id) {
 			case 0: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown0: uint8_t[0x20] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x28), req->GetData<uint64_t>(0x30), req->GetCopied(0));
+				ns_print("IPC message to nn::socket::sf::IClient::Unknown0: uint8_t[0x20] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), req->GetData<uint64_t>(0x28), req->GetData<uint64_t>(0x30), req->GetCopied(0));
 				resp->error_code = Unknown0(req->GetDataPointer<uint8_t *>(8), req->GetData<uint64_t>(0x28), req->GetData<uint64_t>(0x30), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), *resp->GetDataPointer<uint32_t *>(8));
 				return 0;
 			}
@@ -35928,7 +35928,7 @@ namespace nn::socket::sf {
 				unsigned int temp17;
 				auto temp16 = req->GetBuffer(0x22, 2, temp17);
 				auto temp18 = new uint8_t[temp17];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown5: uint32_t = 0x%x, uint8_t[0x18] = %s, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str(), temp2, temp5, temp8);
+				ns_print("IPC message to nn::socket::sf::IClient::Unknown5: uint32_t = 0x%x, uint8_t[0x18] = %s, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x18).c_str(), temp2, temp5, temp8);
 				resp->error_code = Unknown5(req->GetData<uint32_t>(8), req->GetDataPointer<uint8_t *>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp12, temp11, (uint8_t *) temp15, temp14, (uint8_t *) temp18, temp17);
 				delete[] temp3;
 				delete[] temp6;
@@ -36229,7 +36229,7 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown29: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint128_t = %s\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x18)).c_str());
+				ns_print("IPC message to nn::socket::sf::IClient::Unknown29: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint128_t = %s\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x10).c_str());
 				resp->error_code = Unknown29(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint128_t>(0x18), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -37767,7 +37767,7 @@ namespace nn::timesrv::detail::service {
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::timesrv::detail::service::ISystemClock::SetSystemClockContext: nn::time::SystemClockContext = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::timesrv::detail::service::ISystemClock::SetSystemClockContext: nn::time::SystemClockContext = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str());
 				resp->error_code = SetSystemClockContext(req->GetDataPointer<nn::time::SystemClockContext>(8));
 				return 0;
 			}
@@ -37794,7 +37794,7 @@ namespace nn::timesrv::detail::service {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::SetDeviceLocationName: nn::time::LocationName = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::SetDeviceLocationName: nn::time::LocationName = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x24).c_str());
 				resp->error_code = SetDeviceLocationName(req->GetDataPointer<nn::time::LocationName>(8));
 				return 0;
 			}
@@ -37820,7 +37820,7 @@ namespace nn::timesrv::detail::service {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::LoadTimeZoneRule: nn::time::LocationName = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::LoadTimeZoneRule: nn::time::LocationName = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x24).c_str());
 				resp->error_code = LoadTimeZoneRule(req->GetDataPointer<nn::time::LocationName>(8), (nn::time::TimeZoneRule *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -38146,13 +38146,13 @@ namespace nn::tma {
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::tma::IHtcsManager::Unknown2: uint8_t[0x42] = %s, uint32_t = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint32_t>(0x4c));
+				ns_print("IPC message to nn::tma::IHtcsManager::Unknown2: uint8_t[0x42] = %s, uint32_t = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x42).c_str(), req->GetData<uint32_t>(0x4c));
 				resp->error_code = Unknown2(req->GetDataPointer<uint8_t *>(8), req->GetData<uint32_t>(0x4c), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::tma::IHtcsManager::Unknown3: uint8_t[0x42] = %s, uint32_t = 0x%x\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint32_t>(0x4c));
+				ns_print("IPC message to nn::tma::IHtcsManager::Unknown3: uint8_t[0x42] = %s, uint32_t = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x42).c_str(), req->GetData<uint32_t>(0x4c));
 				resp->error_code = Unknown3(req->GetDataPointer<uint8_t *>(8), req->GetData<uint32_t>(0x4c), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
@@ -38281,13 +38281,13 @@ namespace nn::tma {
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::tma::ISocket::Unknown1: uint8_t[0x42] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::tma::ISocket::Unknown1: uint8_t[0x42] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x42).c_str());
 				resp->error_code = Unknown1(req->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::tma::ISocket::Unknown2: uint8_t[0x42] = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::tma::ISocket::Unknown2: uint8_t[0x42] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x42).c_str());
 				resp->error_code = Unknown2(req->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
@@ -39904,7 +39904,7 @@ namespace nn::visrv::sf {
 			}
 			case 1010: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::OpenDisplay: nn::vi::DisplayName = %s\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str());
+				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::OpenDisplay: nn::vi::DisplayName = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str());
 				resp->error_code = OpenDisplay(req->GetDataPointer<nn::vi::DisplayName>(8), *resp->GetDataPointer<uint64_t *>(8));
 				return 0;
 			}
@@ -39937,7 +39937,7 @@ namespace nn::visrv::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::OpenLayer: nn::vi::DisplayName = %s, uint64_t = 0x%%lx, nn::applet::AppletResourceUserId = 0x%%lx\n", ARMv8::ReadString(req->GetDataPointer<uint64_t>(8)).c_str(), req->GetData<uint64_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50));
+				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::OpenLayer: nn::vi::DisplayName = %s, uint64_t = 0x%%lx, nn::applet::AppletResourceUserId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), req->GetData<uint64_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50));
 				resp->error_code = OpenLayer(req->GetDataPointer<nn::vi::DisplayName>(8), req->GetData<uint64_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), req->pid, *resp->GetDataPointer<int64_t *>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
@@ -40403,7 +40403,7 @@ namespace nn::visrv::sf {
 			}
 			case 3201: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::visrv::sf::ISystemDisplayService::SetDisplayMode: uint64_t = 0x%%lx, nn::vi::DisplayModeInfo = %s\n", req->GetData<uint64_t>(8), ARMv8::ReadString(req->GetDataPointer<uint64_t>(0x10)).c_str());
+				ns_print("IPC message to nn::visrv::sf::ISystemDisplayService::SetDisplayMode: uint64_t = 0x%%lx, nn::vi::DisplayModeInfo = %s\n", req->GetData<uint64_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
 				resp->error_code = SetDisplayMode(req->GetData<uint64_t>(8), req->GetData<nn::vi::DisplayModeInfo>(0x10));
 				return 0;
 			}

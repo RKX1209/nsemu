@@ -116,7 +116,6 @@ uint32_t ProcMessage(IpcService *handler, uint8_t buf[]) {
         req.ParseMessage();
         IpcMessage resp(obuf, is_domainobj);
         uint32_t ret = 0xf601;
-
         switch(req.type) {
         case 2: //Close
                 resp.GenBuf(0, 0, 0);

@@ -172,12 +172,12 @@ def generateCaller(qname, fname, func):
 			if isPointerType(elem):
 				params.append('req->GetDataPointer<%s>(%s)' % (retype(elem, noIndex=True), emitInt(inpOffset)))
 				logFmt.append('%s %s= %%s' % (retype(elem), '%s ' % name if name else ''))
-				logElems.append('ARMv8::ReadString(req->GetDataPointer<uint64_t>(%s)).c_str()' % (emitInt(inpOffset)))
+				logElems.append('read_string(req->GetDataPointer<uint8_t *>(%s), %s).c_str()' % (emitInt(inpOffset), emitInt(typeSize(elem))))
 			else:
 				params.append('req->GetData<%s>(%s)' % (retype(elem), emitInt(inpOffset)))
 				if typeSize(elem) == 16:
 					logFmt.append('%s %s= %%s' % (retype(elem), '%s ' % name if name else ''))
-					logElems.append('ARMv8::ReadString(req->GetDataPointer<uint64_t>(%s)).c_str()' % (emitInt(inpOffset)))
+					logElems.append('read_string(req->GetDataPointer<uint8_t *>(%s), %s).c_str()' % (emitInt(inpOffset), emitInt(typeSize(elem))))
 				else:
 					type = retype(elem)
 					ct = '0x%x'

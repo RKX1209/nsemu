@@ -129,4 +129,7 @@ static uint64_t replicate64(uint64_t mask, unsigned int e) {
         }
         return mask;
 }
+
+string read_string(uint8_t *buf, int size);
+
 #endif

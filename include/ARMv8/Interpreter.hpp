@@ -110,6 +110,10 @@ void LoadVecReg(unsigned int vd_idx, int element, unsigned int rn_idx, int size)
 void StoreVecReg(unsigned int rd_idx, int element, unsigned int vn_idx, int size);
 
 /* Load/Store for FP */
+void LoadFpReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool post, bool bit64);
+void StoreFpReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool post, bool bit64);
+
+/* Load/Store for FP */
 void LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size);
 void StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size);
 

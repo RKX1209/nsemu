@@ -21,7 +21,7 @@ static uint64_t counter;
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
 
-        uint64_t estimate = 3350000, mx = 100000;
+        uint64_t estimate = 3500000, mx = 100000;
         //uint64_t estimate = 3000000, mx = 10000;
         //uint64_t estimate = 0, mx = 1000000;
 	while (Cpu::GetState () == Cpu::State::Running) {
@@ -703,10 +703,8 @@ void IntprCallback::StoreVecReg(unsigned int rd_idx, int element, unsigned int v
         }
 }
 
-/* Load/Store for FP */
-void IntprCallback::LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) {
-        uint64_t addr = X(ad_idx);
-        debug_print("Load Fp(%d)[%u] = [X(%u)(0x%lx)]\n", size, fd_idx, ad_idx, addr);
+static void _LoadFpReg(unsigned int fd_idx, uint64_t addr, int size) {
+        VREG(fd_idx).d[0] = VREG(fd_idx).d[1] = 0; // 0 clear
         if (size == 0) { // 1byte (8B/16B)
                 B(fd_idx) = ARMv8::ReadU8 (addr);
         } else if (size == 1) { // 2byte (4H/8H)
@@ -722,11 +720,9 @@ void IntprCallback::LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int s
                 //ns_debug("Read: Q = 0x%lx, 0x%lx\n", VREG(rd_idx).d[0], VREG(rd_idx).d[1]);
         }
 }
-void IntprCallback::StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) {
-        uint64_t addr = X(ad_idx);
-        debug_print("Store Fp(%d)[%u] => [X(%u)(0x%lx)]\n", size, fd_idx, ad_idx, addr);
+static void _StoreFpReg(unsigned int fd_idx, uint64_t addr, int size) {
         if (size == 0) {
-                ARMv8::WriteU8 (addr, B(fd_idx));
+        ARMv8::WriteU8 (addr, B(fd_idx));
         } else if (size == 1) {
                 ARMv8::WriteU16 (addr, H(fd_idx));
         } else if (size == 2) {
@@ -738,6 +734,60 @@ void IntprCallback::StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int 
                 ARMv8::WriteU64 (addr, VREG(fd_idx).d[0]);
                 ARMv8::WriteU64 (addr + 8, VREG(fd_idx).d[1]);
         }
+}
+
+/* Load/Store for FP */
+void IntprCallback::LoadFpReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool post, bool bit64) {
+        char regc = bit64? 'X': 'W';
+        base_idx = ARMv8::HandleAsSP (base_idx);
+        debug_print ("Load(%d): Fp[%u] <= [X[%u](0x%lx), %c[%u](0x%lx)]\n",
+        size, rd_idx, base_idx, X(base_idx), regc, rm_idx, X(rm_idx));
+        uint64_t addr;
+        if (bit64) {
+                if (post)
+                        addr = X(base_idx);
+                else
+                        addr = X(base_idx) + X(rm_idx);
+                _LoadFpReg (rd_idx, addr, size);
+        } else {
+                if (post)
+                        addr = X(base_idx);
+                else
+                        addr = X(base_idx) + W(rm_idx);
+                _LoadFpReg (rd_idx, addr, size);
+        }
+}
+void IntprCallback::StoreFpReg(unsigned int rd_idx, unsigned int base_idx, unsigned int rm_idx, int size, bool post, bool bit64) {
+        char regc = bit64? 'X': 'W';
+        base_idx = ARMv8::HandleAsSP (base_idx);
+        debug_print ("Store(%d): Fp[%u] => [X[%u](0x%lx), %c[%u](0x%lx)]\n",
+        size, rd_idx, base_idx, X(base_idx), regc, rm_idx, X(rm_idx));
+        uint64_t addr;
+        if (bit64) {
+                if (post)
+                        addr = X(base_idx);
+                else
+                        addr = X(base_idx) + X(rm_idx);
+                _StoreFpReg (rd_idx, addr, size);
+        } else {
+                if (post)
+                        addr = X(base_idx);
+                else
+                        addr = X(base_idx) + W(rm_idx);
+                _StoreFpReg (rd_idx, addr, size);
+        }
+}
+
+/* Load/Store for FP */
+void IntprCallback::LoadFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) {
+        uint64_t addr = X(ad_idx);
+        debug_print("Load Fp(%d)[%u] = [X(%u)(0x%lx)]\n", size, fd_idx, ad_idx, addr);
+        _LoadFpReg(fd_idx, addr, size);
+}
+void IntprCallback::StoreFpRegI64(unsigned int fd_idx, unsigned int ad_idx, int size) {
+        uint64_t addr = X(ad_idx);
+        debug_print("Store Fp(%d)[%u] => [X(%u)(0x%lx)]\n", size, fd_idx, ad_idx, addr);
+        _StoreFpReg(fd_idx, addr, size);
 }
 
 /* Bitfield Signed/Unsigned Extract... with Immediate value */
@@ -917,6 +967,7 @@ void IntprCallback::BRK(unsigned int memo) {
 
 /* Read Vector register to FP register */
 void IntprCallback::ReadVecReg(unsigned int rd_idx, unsigned int vn_idx, unsigned int index, int size) {
+        VREG(rd_idx).d[0] = VREG(rd_idx).d[1] = 0; // 0 clear
         if (size == 0) {
                 D(rd_idx) = VREG(vn_idx).b[index];
         } else if (size == 1) {

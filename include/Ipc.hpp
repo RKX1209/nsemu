@@ -28,6 +28,7 @@ public:
         }
         template<typename T>
         T GetDataPointer(uint offset) {
+                ns_print("req.type=%u, raw_ptr:0x%x, payload_off:0x%x\n", type, raw_ptr, payload_off);
                 return (T) (raw_ptr + payload_off + 8 + offset);
         }
         uint64_t GetBuffer(int btype, int num, unsigned int& size) {
