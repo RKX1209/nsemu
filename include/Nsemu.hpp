@@ -1,6 +1,10 @@
 #ifndef _NSEMU_HPP
 #define _NSEMU_HPP
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
 #include <stdint.h>
 #include <cassert>
 #include <climits>

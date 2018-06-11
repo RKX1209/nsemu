@@ -3,9 +3,12 @@
 
 #define SERVICE_MAPPING() do { \
 	SERVICE("fsp-srv", nn::fssrv::sf::IFileSystemProxy); \
+	SERVICE("bsd:u", nn::socket::sf::IClient); \
+	SERVICE("bsd:s", nn::socket::sf::IClient); \
 } while(0)
 
 using ServiceName = uint8_t *; // uint8_t[8]
+using packed_addrinfo = uint8_t;
 
 class SmService;
 namespace nn {
@@ -35677,8 +35680,8 @@ namespace nn::socket::resolver {
 				auto temp1 = req->GetBuffer(5, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown0: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown0(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::resolver::IResolver::SetDnsAddressesPrivate: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = SetDnsAddressesPrivate(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
@@ -35687,8 +35690,8 @@ namespace nn::socket::resolver {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown1: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown1(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::resolver::IResolver::GetDnsAddressPrivate: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetDnsAddressPrivate(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -35702,8 +35705,8 @@ namespace nn::socket::resolver {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown2: uint8_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown2(req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::socket::resolver::IResolver::GetHostByName: uint8_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2);
+				resp->error_code = GetHostByName(req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
 				delete[] temp6;
@@ -35718,8 +35721,8 @@ namespace nn::socket::resolver {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown3: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), temp2);
-				resp->error_code = Unknown3(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::socket::resolver::IResolver::GetHostByAddr: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), temp2);
+				resp->error_code = GetHostByAddr(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
 				delete[] temp6;
@@ -35730,8 +35733,8 @@ namespace nn::socket::resolver {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown4: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown4(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::resolver::IResolver::GetHostStringError: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetHostStringError(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -35741,8 +35744,8 @@ namespace nn::socket::resolver {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown5: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown5(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::resolver::IResolver::GetGaiStringError: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetGaiStringError(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -35764,8 +35767,8 @@ namespace nn::socket::resolver {
 				unsigned int temp11;
 				auto temp10 = req->GetBuffer(6, 0, temp11);
 				auto temp12 = new uint8_t[temp11];
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown6: uint8_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2, temp5, temp8);
-				resp->error_code = Unknown6(req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp12, temp11);
+				ns_print("IPC message to nn::socket::resolver::IResolver::GetAddrInfo: bool enable_nsd_resolve = 0x%x, uint32_t = 0x%x, uint64_t pid_placeholder = 0x%%lx, int8_t *host = buffer<0x%lx>, int8_t *service = buffer<0x%lx>, packed_addrinfo *hints = buffer<0x%lx>\n", req->GetData<bool>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2, temp5, temp8);
+				resp->error_code = GetAddrInfo(req->GetData<bool>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (int8_t *) temp3, temp2, (int8_t *) temp6, temp5, (packed_addrinfo *) temp9, temp8, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (packed_addrinfo *) temp12, temp11);
 				delete[] temp3;
 				delete[] temp6;
 				delete[] temp9;
@@ -35785,8 +35788,8 @@ namespace nn::socket::resolver {
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(6, 1, temp8);
 				auto temp9 = new uint8_t[temp8];
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown7: uint32_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown7(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8);
+				ns_print("IPC message to nn::socket::resolver::IResolver::GetNameInfo: uint32_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2);
+				resp->error_code = GetNameInfo(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
 				delete[] temp6;
@@ -35796,71 +35799,71 @@ namespace nn::socket::resolver {
 			}
 			case 8: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown8: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown8(req->GetData<uint64_t>(8), req->pid, *resp->GetDataPointer<uint32_t *>(8));
+				ns_print("IPC message to nn::socket::resolver::IResolver::RequestCancelHandle: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = RequestCancelHandle(req->GetData<uint64_t>(8), req->pid, *resp->GetDataPointer<uint32_t *>(8));
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::socket::resolver::IResolver::Unknown9: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown9(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), req->pid);
+				ns_print("IPC message to nn::socket::resolver::IResolver::CancelSocketCall: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = CancelSocketCall(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), req->pid);
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::socket::resolver::IResolver", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown1(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown2(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t * _8, unsigned int _8_size);
-		uint32_t Unknown3(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size);
-		uint32_t Unknown4(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown5(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown6(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, uint32_t& _7, uint32_t& _8, uint32_t& _9, uint8_t * _10, unsigned int _10_size);
-		uint32_t Unknown7(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size);
-		uint32_t Unknown8(uint64_t _0, uint64_t _1, uint32_t& _2);
-		uint32_t Unknown9(uint32_t _0, uint64_t _1, uint64_t _2);
+		uint32_t CancelSocketCall(uint32_t _0, uint64_t _1, uint64_t _2);
+		uint32_t GetAddrInfo(bool enable_nsd_resolve, uint32_t _1, uint64_t pid_placeholder, uint64_t _3, int8_t * host, unsigned int host_size, int8_t * service, unsigned int service_size, packed_addrinfo * hints, unsigned int hints_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& packed_addrinfo_size, packed_addrinfo * response, unsigned int response_size);
+		uint32_t GetDnsAddressPrivate(uint32_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetGaiStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetHostByAddr(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size);
+		uint32_t GetHostByName(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t * _8, unsigned int _8_size);
+		uint32_t GetHostStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetNameInfo(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size);
+		uint32_t RequestCancelHandle(uint64_t _0, uint64_t _1, uint32_t& _2);
+		uint32_t SetDnsAddressesPrivate(uint32_t _0, uint8_t * _1, unsigned int _1_size);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::socket::resolver::IResolver::Unknown0(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown0\n");
+uint32_t nn::socket::resolver::IResolver::CancelSocketCall(uint32_t _0, uint64_t _1, uint64_t _2) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::CancelSocketCall\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown1(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown1\n");
+uint32_t nn::socket::resolver::IResolver::GetAddrInfo(bool enable_nsd_resolve, uint32_t _1, uint64_t pid_placeholder, uint64_t _3, int8_t * host, unsigned int host_size, int8_t * service, unsigned int service_size, packed_addrinfo * hints, unsigned int hints_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& packed_addrinfo_size, packed_addrinfo * response, unsigned int response_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetAddrInfo\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown2(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t * _8, unsigned int _8_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown2\n");
+uint32_t nn::socket::resolver::IResolver::GetDnsAddressPrivate(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetDnsAddressPrivate\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown3(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown3\n");
+uint32_t nn::socket::resolver::IResolver::GetGaiStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetGaiStringError\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown4(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown4\n");
+uint32_t nn::socket::resolver::IResolver::GetHostByAddr(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetHostByAddr\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown5(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown5\n");
+uint32_t nn::socket::resolver::IResolver::GetHostByName(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t * _8, unsigned int _8_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetHostByName\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown6(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, uint32_t& _7, uint32_t& _8, uint32_t& _9, uint8_t * _10, unsigned int _10_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown6\n");
+uint32_t nn::socket::resolver::IResolver::GetHostStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetHostStringError\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown7(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown7\n");
+uint32_t nn::socket::resolver::IResolver::GetNameInfo(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetNameInfo\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown8(uint64_t _0, uint64_t _1, uint32_t& _2) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown8\n");
+uint32_t nn::socket::resolver::IResolver::RequestCancelHandle(uint64_t _0, uint64_t _1, uint32_t& _2) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::RequestCancelHandle\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::Unknown9(uint32_t _0, uint64_t _1, uint64_t _2) {
-	ns_print("Stub implementation for nn::socket::resolver::IResolver::Unknown9\n");
+uint32_t nn::socket::resolver::IResolver::SetDnsAddressesPrivate(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+	ns_print("Stub implementation for nn::socket::resolver::IResolver::SetDnsAddressesPrivate\n");
 	return 0;
 }
 #endif // DEFINE_STUBS
@@ -35872,26 +35875,26 @@ namespace nn::socket::sf {
 			switch(req->cmd_id) {
 			case 0: {
 				resp->GenBuf(0, 0, 4);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown0: uint8_t[0x20] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), req->GetData<uint64_t>(0x28), req->GetData<uint64_t>(0x30), req->GetCopied(0));
-				resp->error_code = Unknown0(req->GetDataPointer<uint8_t *>(8), req->GetData<uint64_t>(0x28), req->GetData<uint64_t>(0x30), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), *resp->GetDataPointer<uint32_t *>(8));
+				ns_print("IPC message to nn::socket::sf::IClient::RegisterClient: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t pid = 0x%%lx, uint64_t transferMemorySize = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), req->GetData<uint64_t>(0x30), req->GetCopied(0));
+				resp->error_code = RegisterClient(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), req->GetData<uint64_t>(0x30), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), *resp->GetDataPointer<uint32_t *>(8));
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown1: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->pid);
+				ns_print("IPC message to nn::socket::sf::IClient::StartMonitoring: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = StartMonitoring(req->GetData<uint64_t>(8), req->pid);
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown2: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
-				resp->error_code = Unknown2(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Socket: uint32_t domain = 0x%x, uint32_t type = 0x%x, uint32_t protocol = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
+				resp->error_code = Socket(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown3: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
-				resp->error_code = Unknown3(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::SocketExempt: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
+				resp->error_code = SocketExempt(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 4: {
@@ -35900,8 +35903,8 @@ namespace nn::socket::sf {
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown4: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown4(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Open: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = Open(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				return 0;
 			}
@@ -35928,8 +35931,8 @@ namespace nn::socket::sf {
 				unsigned int temp17;
 				auto temp16 = req->GetBuffer(0x22, 2, temp17);
 				auto temp18 = new uint8_t[temp17];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown5: uint32_t = 0x%x, uint8_t[0x18] = %s, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x18).c_str(), temp2, temp5, temp8);
-				resp->error_code = Unknown5(req->GetData<uint32_t>(8), req->GetDataPointer<uint8_t *>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp12, temp11, (uint8_t *) temp15, temp14, (uint8_t *) temp18, temp17);
+				ns_print("IPC message to nn::socket::sf::IClient::Select: uint32_t nfds = 0x%x, uint8_t[0x18] timeout = %s, fd_set *readfds_in = buffer<0x%lx>, fd_set *writefds_in = buffer<0x%lx>, fd_set *errorfds_in = buffer<0x%lx>\n", req->GetData<uint32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x18).c_str(), temp2, temp5, temp8);
+				resp->error_code = Select(req->GetData<uint32_t>(8), req->GetDataPointer<uint8_t *>(0x10), (fd_set *) temp3, temp2, (fd_set *) temp6, temp5, (fd_set *) temp9, temp8, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (fd_set *) temp12, temp11, (fd_set *) temp15, temp14, (fd_set *) temp18, temp17);
 				delete[] temp3;
 				delete[] temp6;
 				delete[] temp9;
@@ -35950,8 +35953,8 @@ namespace nn::socket::sf {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x22, 0, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown6: uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2);
-				resp->error_code = Unknown6(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::socket::sf::IClient::Poll: uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2);
+				resp->error_code = Poll(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (uint8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
 				delete[] temp6;
@@ -35970,8 +35973,8 @@ namespace nn::socket::sf {
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(0x22, 0, temp8);
 				auto temp9 = new uint8_t[temp8];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown7: uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = Unknown7((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp9, temp8);
+				ns_print("IPC message to nn::socket::sf::IClient::Sysctl: uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", temp2, temp5);
+				resp->error_code = Sysctl((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp9, temp8);
 				delete[] temp3;
 				delete[] temp6;
 				ARMv8::WriteBytes(temp7, temp9, temp8);
@@ -35983,8 +35986,8 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown8: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Unknown8(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::Recv: uint32_t socket = 0x%x, uint32_t flags = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
+				resp->error_code = Recv(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (int8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -35997,8 +36000,8 @@ namespace nn::socket::sf {
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x22, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown9: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Unknown9(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
+				ns_print("IPC message to nn::socket::sf::IClient::RecvFrom: uint32_t sock = 0x%x, uint32_t flags = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
+				resp->error_code = RecvFrom(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (int8_t *) temp3, temp2, (sockaddr *) temp6, temp5);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				ARMv8::WriteBytes(temp4, temp6, temp5);
@@ -36011,8 +36014,8 @@ namespace nn::socket::sf {
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown10: uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2);
-				resp->error_code = Unknown10(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Send: uint32_t socket = 0x%x, uint32_t flags = 0x%x, int8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2);
+				resp->error_code = Send(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (int8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				return 0;
 			}
@@ -36026,8 +36029,8 @@ namespace nn::socket::sf {
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown11: uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2, temp5);
-				resp->error_code = Unknown11(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::SendTo: uint32_t socket = 0x%x, uint32_t flags = 0x%x, int8_t *= buffer<0x%lx>, sockaddr *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2, temp5);
+				resp->error_code = SendTo(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (int8_t *) temp3, temp2, (sockaddr *) temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				delete[] temp6;
 				return 0;
@@ -36037,8 +36040,8 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown12: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown12(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::Accept: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = Accept(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (sockaddr *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -36049,8 +36052,8 @@ namespace nn::socket::sf {
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown13: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown13(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Bind: uint32_t socket = 0x%x, sockaddr *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = Bind(req->GetData<uint32_t>(8), (sockaddr *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				return 0;
 			}
@@ -36060,8 +36063,8 @@ namespace nn::socket::sf {
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown14: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown14(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Connect: uint32_t socket = 0x%x, sockaddr *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = Connect(req->GetData<uint32_t>(8), (sockaddr *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				return 0;
 			}
@@ -36070,8 +36073,8 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown15: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown15(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::GetPeerName: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetPeerName(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (sockaddr *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -36081,8 +36084,8 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown16: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown16(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::GetSockName: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = GetSockName(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (sockaddr *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -36092,16 +36095,16 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown17: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
-				resp->error_code = Unknown17(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::GetSockOpt: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
+				resp->error_code = GetSockOpt(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 18: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown18: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Unknown18(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Listen: uint32_t socket = 0x%x, uint32_t backlog = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
+				resp->error_code = Listen(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 19: {
@@ -36134,8 +36137,8 @@ namespace nn::socket::sf {
 				unsigned int temp23;
 				auto temp22 = req->GetBuffer(0x22, 3, temp23);
 				auto temp24 = new uint8_t[temp23];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown19: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2, temp5, temp8, temp11);
-				resp->error_code = Unknown19(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8, (uint8_t *) temp12, temp11, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp15, temp14, (uint8_t *) temp18, temp17, (uint8_t *) temp21, temp20, (uint8_t *) temp24, temp23);
+				ns_print("IPC message to nn::socket::sf::IClient::Ioctl: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2, temp5, temp8, temp11);
+				resp->error_code = Ioctl(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8, (uint8_t *) temp12, temp11, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp15, temp14, (uint8_t *) temp18, temp17, (uint8_t *) temp21, temp20, (uint8_t *) temp24, temp23);
 				delete[] temp3;
 				delete[] temp6;
 				delete[] temp9;
@@ -36152,8 +36155,8 @@ namespace nn::socket::sf {
 			}
 			case 20: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown20: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
-				resp->error_code = Unknown20(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Fcntl: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
+				resp->error_code = Fcntl(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 21: {
@@ -36162,21 +36165,21 @@ namespace nn::socket::sf {
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown21: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = Unknown21(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::SetSockOpt: uint32_t socket = 0x%x, uint32_t level = 0x%x, uint32_t option_name = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2);
+				resp->error_code = SetSockOpt(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				return 0;
 			}
 			case 22: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown22: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Unknown22(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Shutdown: uint32_t socket = 0x%x, uint32_t how = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
+				resp->error_code = Shutdown(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 23: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown23: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown23(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::ShutdownAllSockets: uint32_t how = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = ShutdownAllSockets(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 24: {
@@ -36185,8 +36188,8 @@ namespace nn::socket::sf {
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
 				ARMv8::ReadBytes(temp1, temp3, temp2);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown24: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown24(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Write: uint32_t socket = 0x%x, int8_t *message = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
+				resp->error_code = Write(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				return 0;
 			}
@@ -36195,22 +36198,22 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown25: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown25(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::Read: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = Read(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (int8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
 			}
 			case 26: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown26: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown26(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::Close: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
+				resp->error_code = Close(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 27: {
 				resp->GenBuf(0, 0, 8);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown27: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Unknown27(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::DuplicateSocket: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
+				resp->error_code = DuplicateSocket(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				return 0;
 			}
 			case 28: {
@@ -36218,8 +36221,8 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown28: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown28(req->GetData<uint64_t>(8), req->pid, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::GetResourceStatistics: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
+				resp->error_code = GetResourceStatistics(req->GetData<uint64_t>(8), req->pid, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -36229,8 +36232,8 @@ namespace nn::socket::sf {
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
 				auto temp3 = new uint8_t[temp2];
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown29: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint128_t = %s\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x10).c_str());
-				resp->error_code = Unknown29(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint128_t>(0x18), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
+				ns_print("IPC message to nn::socket::sf::IClient::RecvMMsg: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint128_t = %s\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x10).c_str());
+				resp->error_code = RecvMMsg(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint128_t>(0x18), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
 				ARMv8::WriteBytes(temp1, temp3, temp2);
 				delete[] temp3;
 				return 0;
@@ -36245,8 +36248,8 @@ namespace nn::socket::sf {
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
 				auto temp6 = new uint8_t[temp5];
 				ARMv8::ReadBytes(temp4, temp6, temp5);
-				ns_print("IPC message to nn::socket::sf::IClient::Unknown30: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2, temp5);
-				resp->error_code = Unknown30(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				ns_print("IPC message to nn::socket::sf::IClient::SendMMsg: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2, temp5);
+				resp->error_code = SendMMsg(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
 				delete[] temp3;
 				delete[] temp6;
 				return 0;
@@ -36255,162 +36258,114 @@ namespace nn::socket::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::socket::sf::IClient", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, IpcService* _4, uint32_t& _5);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1);
-		uint32_t Unknown10(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint32_t& _4);
-		uint32_t Unknown11(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size, uint32_t& _4, uint32_t& _5);
-		uint32_t Unknown12(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t Unknown13(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown15(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t Unknown16(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t Unknown17(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4, uint32_t& _5, uint8_t * _6, unsigned int _6_size);
-		uint32_t Unknown18(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown19(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size, uint8_t * _10, unsigned int _10_size, uint8_t * _11, unsigned int _11_size, uint8_t * _12, unsigned int _12_size);
-		uint32_t Unknown2(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4);
-		uint32_t Unknown20(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4);
-		uint32_t Unknown21(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint32_t& _4, uint32_t& _5);
-		uint32_t Unknown22(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown23(uint32_t _0, uint32_t& _1, uint32_t& _2);
-		uint32_t Unknown24(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown25(uint32_t _0, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown26(uint32_t _0, uint32_t& _1, uint32_t& _2);
-		uint32_t Unknown27(uint32_t _0, uint64_t _1, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown28(uint64_t _0, uint64_t _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t Unknown29(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, uint32_t& _4, uint32_t& _5, uint8_t * _6, unsigned int _6_size);
-		uint32_t Unknown3(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4);
-		uint32_t Unknown30(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6);
-		uint32_t Unknown4(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown5(uint32_t _0, uint8_t * _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size, uint8_t * _9, unsigned int _9_size);
-		uint32_t Unknown6(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint32_t& _4, uint8_t * _5, unsigned int _5_size);
-		uint32_t Unknown7(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3, uint32_t& _4, uint8_t * _5, unsigned int _5_size);
-		uint32_t Unknown8(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t Unknown9(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3, uint32_t& _4, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size);
+		uint32_t Accept(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size);
+		uint32_t Bind(uint32_t socket, sockaddr * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t Close(uint32_t socket, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t Connect(uint32_t socket, sockaddr * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t DuplicateSocket(uint32_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t Fcntl(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t GetPeerName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size);
+		uint32_t GetResourceStatistics(uint64_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno, uint8_t * _4, unsigned int _4_size);
+		uint32_t GetSockName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size);
+		uint32_t GetSockOpt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno, uint32_t& _5, uint8_t * _6, unsigned int _6_size);
+		uint32_t Ioctl(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _9, unsigned int _9_size, uint8_t * _10, unsigned int _10_size, uint8_t * _11, unsigned int _11_size, uint8_t * _12, unsigned int _12_size);
+		uint32_t Listen(uint32_t socket, uint32_t backlog, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t Open(uint32_t _0, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t Poll(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _5, unsigned int _5_size);
+		uint32_t Read(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, int8_t * message, unsigned int message_size);
+		uint32_t Recv(uint32_t socket, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, int8_t * message, unsigned int message_size);
+		uint32_t RecvFrom(uint32_t sock, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, int8_t * message, unsigned int message_size, sockaddr * _6, unsigned int _6_size);
+		uint32_t RecvMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, int32_t& ret, uint32_t& bsd_errno, uint8_t * _6, unsigned int _6_size);
+		uint32_t RegisterClient(uint64_t _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t pid, uint64_t transferMemorySize, uint64_t _6, IpcService* _7, uint32_t& bsd_errno);
+		uint32_t Select(uint32_t nfds, uint8_t * timeout, fd_set * readfds_in, unsigned int readfds_in_size, fd_set * writefds_in, unsigned int writefds_in_size, fd_set * errorfds_in, unsigned int errorfds_in_size, int32_t& ret, uint32_t& bsd_errno, fd_set * readfds_out, unsigned int readfds_out_size, fd_set * writefds_out, unsigned int writefds_out_size, fd_set * errorfds_out, unsigned int errorfds_out_size);
+		uint32_t Send(uint32_t socket, uint32_t flags, int8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t SendMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t SendTo(uint32_t socket, uint32_t flags, int8_t * _2, unsigned int _2_size, sockaddr * _3, unsigned int _3_size, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t SetSockOpt(uint32_t socket, uint32_t level, uint32_t option_name, uint8_t * _3, unsigned int _3_size, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t Shutdown(uint32_t socket, uint32_t how, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t ShutdownAllSockets(uint32_t how, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t Socket(uint32_t domain, uint32_t type, uint32_t protocol, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t SocketExempt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno);
+		uint32_t StartMonitoring(uint64_t _0, uint64_t _1);
+		uint32_t Sysctl(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& _4, uint8_t * _5, unsigned int _5_size);
+		uint32_t Write(uint32_t socket, int8_t * message, unsigned int message_size, int32_t& ret, uint32_t& bsd_errno);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::socket::sf::IClient::Unknown0(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, IpcService* _4, uint32_t& _5) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown0\n");
+uint32_t nn::socket::sf::IClient::DuplicateSocket(uint32_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::DuplicateSocket\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown1(uint64_t _0, uint64_t _1) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown1\n");
+uint32_t nn::socket::sf::IClient::Fcntl(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Fcntl\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown10(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint32_t& _4) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown10\n");
+uint32_t nn::socket::sf::IClient::GetPeerName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::GetPeerName\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown11(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size, uint32_t& _4, uint32_t& _5) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown11\n");
+uint32_t nn::socket::sf::IClient::GetResourceStatistics(uint64_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno, uint8_t * _4, unsigned int _4_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::GetResourceStatistics\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown12(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown12\n");
+uint32_t nn::socket::sf::IClient::GetSockOpt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno, uint32_t& _5, uint8_t * _6, unsigned int _6_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::GetSockOpt\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown13(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown13\n");
+uint32_t nn::socket::sf::IClient::Ioctl(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _9, unsigned int _9_size, uint8_t * _10, unsigned int _10_size, uint8_t * _11, unsigned int _11_size, uint8_t * _12, unsigned int _12_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Ioctl\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown14\n");
+uint32_t nn::socket::sf::IClient::Open(uint32_t _0, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Open\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown15(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown15\n");
+uint32_t nn::socket::sf::IClient::Poll(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _5, unsigned int _5_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Poll\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown16(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown16\n");
+uint32_t nn::socket::sf::IClient::Read(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, int8_t * message, unsigned int message_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Read\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown17(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4, uint32_t& _5, uint8_t * _6, unsigned int _6_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown17\n");
+uint32_t nn::socket::sf::IClient::RecvFrom(uint32_t sock, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, int8_t * message, unsigned int message_size, sockaddr * _6, unsigned int _6_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::RecvFrom\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown18(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown18\n");
+uint32_t nn::socket::sf::IClient::RecvMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, int32_t& ret, uint32_t& bsd_errno, uint8_t * _6, unsigned int _6_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::RecvMMsg\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown19(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size, uint8_t * _10, unsigned int _10_size, uint8_t * _11, unsigned int _11_size, uint8_t * _12, unsigned int _12_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown19\n");
+uint32_t nn::socket::sf::IClient::RegisterClient(uint64_t _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t pid, uint64_t transferMemorySize, uint64_t _6, IpcService* _7, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::RegisterClient\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown2(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown2\n");
+uint32_t nn::socket::sf::IClient::Select(uint32_t nfds, uint8_t * timeout, fd_set * readfds_in, unsigned int readfds_in_size, fd_set * writefds_in, unsigned int writefds_in_size, fd_set * errorfds_in, unsigned int errorfds_in_size, int32_t& ret, uint32_t& bsd_errno, fd_set * readfds_out, unsigned int readfds_out_size, fd_set * writefds_out, unsigned int writefds_out_size, fd_set * errorfds_out, unsigned int errorfds_out_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Select\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown20(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown20\n");
+uint32_t nn::socket::sf::IClient::SendMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, int32_t& ret, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::SendMMsg\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown21(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint32_t& _4, uint32_t& _5) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown21\n");
+uint32_t nn::socket::sf::IClient::ShutdownAllSockets(uint32_t how, int32_t& ret, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::ShutdownAllSockets\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown22(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown22\n");
+uint32_t nn::socket::sf::IClient::SocketExempt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::SocketExempt\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown23(uint32_t _0, uint32_t& _1, uint32_t& _2) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown23\n");
+uint32_t nn::socket::sf::IClient::StartMonitoring(uint64_t _0, uint64_t _1) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::StartMonitoring\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown24(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown24\n");
+uint32_t nn::socket::sf::IClient::Sysctl(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& _4, uint8_t * _5, unsigned int _5_size) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Sysctl\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Unknown25(uint32_t _0, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown25\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown26(uint32_t _0, uint32_t& _1, uint32_t& _2) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown26\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown27(uint32_t _0, uint64_t _1, uint32_t& _2, uint32_t& _3) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown27\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown28(uint64_t _0, uint64_t _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown28\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown29(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, uint32_t& _4, uint32_t& _5, uint8_t * _6, unsigned int _6_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown29\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown3(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown3\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown30(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown30\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown4(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown4\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown5(uint32_t _0, uint8_t * _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size, uint8_t * _9, unsigned int _9_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown5\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown6(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint32_t& _4, uint8_t * _5, unsigned int _5_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown6\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown7(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint32_t& _3, uint32_t& _4, uint8_t * _5, unsigned int _5_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown7\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown8(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown8\n");
-	return 0;
-}
-uint32_t nn::socket::sf::IClient::Unknown9(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3, uint32_t& _4, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size) {
-	ns_print("Stub implementation for nn::socket::sf::IClient::Unknown9\n");
+uint32_t nn::socket::sf::IClient::Write(uint32_t socket, int8_t * message, unsigned int message_size, int32_t& ret, uint32_t& bsd_errno) {
+	ns_print("Stub implementation for nn::socket::sf::IClient::Write\n");
 	return 0;
 }
 #endif // DEFINE_STUBS

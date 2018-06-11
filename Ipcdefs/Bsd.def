@@ -1,0 +1,48 @@
+interface nn::socket::sf::IClient is bsd:u, bsd:s {
+	[0] RegisterClient(u64, u64, u64, u64, u64 pid, u64 transferMemorySize, pid, IpcService) -> u32 bsd_errno; // tested
+	[1] StartMonitoring(u64, pid);
+	[2] Socket(u32 domain, u32 type, u32 protocol) -> (i32 ret, u32 bsd_errno); // tested
+	[3] SocketExempt(u32, u32, u32) -> (i32 ret, u32 bsd_errno);
+	[4] Open(u32, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno);
+	[5] Select(u32 nfds, bytes<0x18> timeout, buffer<fd_set, 0x21, 0> readfds_in, buffer<fd_set, 0x21, 0> writefds_in, buffer<fd_set, 0x21, 0> errorfds_in) -> (i32 ret, u32 bsd_errno, buffer<fd_set, 0x22, 0> readfds_out, buffer<fd_set, 0x22, 0> writefds_out, buffer<fd_set, 0x22, 0> errorfds_out);
+	[6] Poll(u32, u32, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno, buffer<unknown, 0x22, 0>);
+	[7] Sysctl(buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno, u32, buffer<unknown, 0x22, 0>);
+	[8] Recv(u32 socket, u32 flags) -> (i32 ret, u32 bsd_errno, buffer<i8, 0x22, 0> message); // tested
+	[9] RecvFrom(u32 sock, u32 flags) -> (i32 ret, u32 bsd_errno, u32 addrlen, buffer<i8, 0x22, 0> message, buffer<sockaddr, 0x22, 0>);
+	[10] Send(u32 socket, u32 flags, buffer<i8, 0x21, 0>) -> (i32 ret, u32 bsd_errno); // tested
+	[11] SendTo(u32 socket, u32 flags, buffer<i8, 0x21, 0>, buffer<sockaddr, 0x21, 0>) -> (i32 ret, u32 bsd_errno); // tested
+	[12] Accept(u32 socket) -> (i32 ret, u32 bsd_errno, u32 addrlen, buffer<sockaddr, 0x22, 0> addr); // tested
+	[13] Bind(u32 socket, buffer<sockaddr, 0x21, 0>) -> (i32 ret, u32 bsd_errno); // tested
+	[14] Connect(u32 socket, buffer<sockaddr, 0x21, 0>) -> (i32 ret, u32 bsd_errno); // tested
+	[15] GetPeerName(u32 socket) -> (i32 ret, u32 bsd_errno, u32 addrlen, buffer<sockaddr, 0x22, 0> addr);
+	[16] GetSockName(u32 socket) -> (i32 ret, u32 bsd_errno, u32 addrlen, buffer<sockaddr, 0x22, 0> addr);
+	[17] GetSockOpt(u32, u32, u32) -> (i32 ret, u32 bsd_errno, u32, buffer<unknown, 0x22, 0>);
+	[18] Listen(u32 socket, u32 backlog) -> (i32 ret, u32 bsd_errno); // tested
+	[19] Ioctl(u32, u32, u32, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>, buffer<unknown, 0x22, 0>);
+	[20] Fcntl(u32, u32, u32) -> (i32 ret, u32 bsd_errno);
+	[21] SetSockOpt(u32 socket, u32 level, u32 option_name, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno);
+	[22] Shutdown(u32 socket, u32 how) -> (i32 ret, u32 bsd_errno);
+	[23] ShutdownAllSockets(u32 how) -> (i32 ret, u32 bsd_errno);
+	[24] Write(u32 socket, buffer<i8, 0x21, 0> message) -> (i32 ret, u32 bsd_errno);
+	[25] Read(u32 socket) -> (i32 ret, u32 bsd_errno, buffer<i8, 0x22, 0> message);
+	[26] Close(u32 socket) -> (i32 ret, u32 bsd_errno); // tested
+	[27] DuplicateSocket(u32, u64) -> (i32 ret, u32 bsd_errno);
+	[28] GetResourceStatistics(u64, pid) -> (i32 ret, u32 bsd_errno, buffer<unknown, 0x22, 0>);
+	[29] RecvMMsg(u32, u32, u32, u128) -> (i32 ret, u32 bsd_errno, buffer<unknown, 0x22, 0>); // [3.0.0+]
+	[30] SendMMsg(u32, u32, u32, buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno); // [3.0.0+]
+}
+
+type packed_addrinfo = unknown;
+
+interface nn::socket::resolver::IResolver is sfdnsres {
+	[0] SetDnsAddressesPrivate(u32, buffer<unknown, 5, 0>);
+	[1] GetDnsAddressPrivate(u32) -> buffer<unknown, 6, 0>;
+	[2] GetHostByName(u8, u32, u64, pid, buffer<unknown, 5, 0>) -> (u32, u32, u32, buffer<unknown, 6, 0>);
+	[3] GetHostByAddr(u32, u32, u32, u64, pid, buffer<unknown, 5, 0>) -> (u32, u32, u32, buffer<unknown, 6, 0>);
+	[4] GetHostStringError(u32) -> buffer<unknown, 6, 0>;
+	[5] GetGaiStringError(u32) -> buffer<unknown, 6, 0>;
+	[6] GetAddrInfo(bool enable_nsd_resolve, u32, u64 pid_placeholder, pid, buffer<i8, 5, 0> host, buffer<i8, 5, 0> service, buffer<packed_addrinfo, 5, 0> hints) -> (i32 ret, u32 bsd_errno, u32 packed_addrinfo_size, buffer<packed_addrinfo, 6, 0> response);
+	[7] GetNameInfo(u32, u32, u64, pid, buffer<unknown, 5, 0>) -> (u32, u32, buffer<unknown, 6, 0>, buffer<unknown, 6, 0>);
+	[8] RequestCancelHandle(u64, pid) -> u32;
+	[9] CancelSocketCall(u32, u64, pid);
+}

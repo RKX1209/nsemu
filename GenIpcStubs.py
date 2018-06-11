@@ -321,7 +321,7 @@ def main():
 	print >>fp, '#ifndef __IPCSTUBS_HPP__'
 	print >>fp, '#define __IPCSTUBS_HPP__'
     	print >>fp
-	impled = (u"nn::fssrv::sf::IFileSystemProxy", u"hoge")
+	impled = (u"nn::fssrv::sf::IFileSystemProxy", u"nn::socket::sf::IClient")
     	# XXX:
     	tmp_srvs = {k: services[k] for k in impled if k in services}
 	print tmp_srvs
