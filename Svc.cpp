@@ -297,6 +297,7 @@ uint64_t SendSyncRequest(uint32_t handle) {
         }
         ns_print("ProcMessage(%p)\n", (void *)handler);
         IPC::ProcMessage(handler, msgbuf);
+        ARMv8::WriteBytes (ARMv8::GetTls(), msgbuf, 0x100);
         return 0;
 }
 

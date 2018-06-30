@@ -48,7 +48,7 @@ void IpcMessage::ParseMessage() {
 void IpcMessage::GenBuf(unsigned int _move_cnt, unsigned int _copy_cnt, unsigned int data_bytes) {
         move_cnt = _move_cnt;
         copy_cnt = _copy_cnt;
-        uint8_t *obuf = raw_ptr;
+        uint32_t *obuf = (uint32_t *) raw_ptr;
         obuf[0] = 0;
         if(move_cnt != 0 || copy_cnt != 0) {
                 obuf[1] = ((move_cnt != 0 && !is_domainobj) || copy_cnt != 0) ? (1U << 31) : 0;
@@ -72,8 +72,8 @@ void IpcMessage::GenBuf(unsigned int _move_cnt, unsigned int _copy_cnt, unsigned
         obuf[pos] = byte_swap32_str("SFCO");
 }
 
-void IpcMessage::SetErrorCode(uint32_t error_code) {
-        error_code = error_code;
+void IpcMessage::SetErrorCode(uint32_t ecode) {
+        error_code = ecode;
         if (raw_ptr) {
                 raw_ptr[(payload_off >> 2) + 2] = error_code;
         }
@@ -161,7 +161,10 @@ uint32_t ProcMessage(IpcService *handler, uint8_t buf[]) {
                         ns_abort("Unknown cmdId to control %u\n", req.cmd_id);
                 }
         }
-        return 0;
+        if (ret == 0) {
+                memcpy (buf, obuf, 0x100);
+        }
+        return ret;
 }
 
 };

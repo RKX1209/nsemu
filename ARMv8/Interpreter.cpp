@@ -41,9 +41,9 @@ void Interpreter::Run() {
 				Cpu::DumpMachine ();
 		    }
                     //Cpu::DumpMachine ();
-		    if (counter >= estimate + mx) {
-		        break;
-                     }
+		    // if (counter >= estimate + mx) {
+		    //     break;
+                    //  }
                      SingleStep ();
 		    counter++;
 		}

@@ -12,6 +12,7 @@ uint32_t SmService::GetService(ServiceName _name, IpcService *service) {
                 return 0xC15; //error code
         }
         service = IPC::services[name];
+        ns_print("Found: %s\n", name.c_str());        
         return 0;
 }
 
