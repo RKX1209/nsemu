@@ -41,9 +41,9 @@ void Interpreter::Run() {
 				Cpu::DumpMachine ();
 		    }
                     //Cpu::DumpMachine ();
-		    // if (counter >= estimate + mx) {
-		    //     break;
-                    //  }
+		    if (counter >= estimate + mx) {
+		        break;
+                     }
                      SingleStep ();
 		    counter++;
 		}
@@ -515,9 +515,9 @@ void IntprCallback::BicReg(unsigned int rd_idx, unsigned int rn_idx, unsigned in
 	char regc = bit64? 'X': 'W';
 	debug_print ("BIC: %c[%u] = %c[%u](0x%lx) & ~%c[%u](~0x%lx)\n", regc, rd_idx, regc, rn_idx, X(rn_idx), regc, rm_idx, X(rm_idx));
         if (bit64)
-                ArithmeticLogic (rd_idx, X(rn_idx), ~X(rm_idx), false, bit64, AL_TYPE_AND);
+                ArithmeticLogic (rd_idx, X(rn_idx), ~X(rm_idx), setflags, bit64, AL_TYPE_AND);
         else
-                ArithmeticLogic (rd_idx, W(rn_idx), ~W(rm_idx), false, bit64, AL_TYPE_AND);
+                ArithmeticLogic (rd_idx, W(rn_idx), ~W(rm_idx), setflags, bit64, AL_TYPE_AND);
 }
 void IntprCallback::NotReg(unsigned int rd_idx, unsigned int rm_idx, bool bit64) {
 	char regc = bit64? 'X': 'W';

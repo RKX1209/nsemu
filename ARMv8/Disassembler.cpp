@@ -1436,7 +1436,7 @@ static void DisasLdStMulti(uint32_t insn, DisasCallback *cb) {
         if (is_postidx) {
                 unsigned int rm = extract32(insn, 16, 5);
                 if (rm == 31) {// post-index with <imm>
-                        cb->MoviI64(rn, GPR_DUMMY, true);
+                        cb->MovReg(rn, GPR_DUMMY, true);
                 } else { // post-index with <Xm>
                         cb->AddReg (rn, rn, rm, false, true);
                 }
