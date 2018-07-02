@@ -1617,8 +1617,8 @@ static void DisasFpIntConv(uint32_t insn, DisasCallback *cb) {
                         UnallocatedOp (insn);
                         return;
                 }
-                //cb->FMovRegConv(rd, rn, type, itof); TODO
-                cb->FMovReg(rd, rn, type);
+                // Float <-> Int
+                cb->FMovConv(rd, rn, type, itof);
         } else {
                 UnsupportedOp ("FPCVT");
         }

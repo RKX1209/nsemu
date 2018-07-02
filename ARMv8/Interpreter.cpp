@@ -1059,6 +1059,43 @@ void IntprCallback::FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type) 
         }
 
 }
+/* Fp Mov between registers (float <-> int)*/
+void IntprCallback::FMovConv(unsigned int rd_idx, unsigned int rn_idx, int type, bool itof) {
+        if (itof) {
+                // Float <= Int
+                VREG(rd_idx).d[0] = VREG(rd_idx).d[1] = 0; // 0 clear
+                switch (type) {
+                case 0:
+                        H(rd_idx) = W(rn_idx);
+                        break;
+                case 1:
+                        D(rd_idx) = X(rn_idx);
+                        break;
+                case 2:
+                        VREG(rd_idx).d[1] = X(rn_idx);
+                        break;
+                case 3:
+                        H(rd_idx) = X(rn_idx);
+                        break;
+                }
+        } else {
+                // Int <= Float
+                switch (type) {
+                case 0:
+                        X(rd_idx) = S(rn_idx);
+                        break;
+                case 1:
+                        X(rd_idx) = D(rn_idx);
+                        break;
+                case 2:
+                        X(rd_idx) = VREG(rn_idx).d[1];
+                        break;
+                case 3:
+                        X(rd_idx) = H(rn_idx);
+                        break;
+                }
+        }
+}
 
 /* AND/OR/EOR/BIC/NOT ... between vector registers */
 void IntprCallback::AndVecReg(unsigned int rd_idx, unsigned int rn_idx, unsigned int rm_idx) {

@@ -103,6 +103,8 @@ virtual void ReadWriteNZCV(unsigned int rd_idx, bool read) = 0;
 
 /* Fp Mov between registers */
 virtual void FMovReg(unsigned int fd_idx, unsigned int fn_idx, int type) = 0;
+/* Fp Mov between registers (float <-> int)*/
+virtual void FMovConv(unsigned int rd_idx, unsigned int rn_idx, int type, bool itof) = 0;
 
 /* #######  Vector ####### */
 
