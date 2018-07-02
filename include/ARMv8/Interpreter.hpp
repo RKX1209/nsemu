@@ -60,6 +60,9 @@ void _StoreReg(unsigned int rd_idx, uint64_t addr, int size, bool is_sign, bool 
 void SExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 void UExtractI64(unsigned int rd_idx, unsigned int rn_idx, unsigned int pos, unsigned int len, bool bit64);
 
+/* Signed Extend from 32bit */
+void SExt32(unsigned int rd_idx, unsigned int rn_idx);
+
 /* Reverse bit order */
 void RevBit(unsigned int rd_idx, unsigned int rn_idx, bool bit64);
 /* Reverse byte order per 16bit */

@@ -1679,6 +1679,34 @@ static void DisasDataProcFp(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void DisasSimdInse(uint32_t insn, int rd, int rn, int imm4, int imm5, DisasCallback *cb) {
+        int size = ctz32(imm5);
+        int src_index, dst_index;
+
+        if (size > 3) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        dst_index = extract32(imm5, 1 + size, 5);
+        src_index = extract32(imm4, size, 4);
+        cb->ReadVecElem(GPR_DUMMY, rn, src_index, size);
+        cb->WriteVecElem(rd, GPR_DUMMY, dst_index, size);
+}
+
+static void DisasSimdInsg(uint32_t insn, int rd, int rn, int imm5, DisasCallback *cb) {
+        int size = ctz32(imm5);
+        int idx;
+
+        if (size > 3) {
+                UnallocatedOp (insn);
+                return;
+        }
+
+        idx = extract32(imm5, 1 + size, 4 - size);
+        cb->WriteVecElem(rd, rn, idx, size);
+}
+
 static void DisasSimdDupe(uint32_t insn, int is_q, int rd, int rn,
                           int imm5, DisasCallback *cb) {
         int size = ctz32(imm5);
@@ -1808,6 +1836,31 @@ static void DisasSimdModImm(uint32_t insn, DisasCallback *cb) {
         }
 }
 
+static void DisasSimdUmovSmov(uint32_t insn, int is_q, int is_signed, int rn, int rd, int imm5, DisasCallback *cb) {
+        int size = ctz32(imm5);
+        int element;
+
+        /* Check for UnallocatedEncodings */
+        if (is_signed) {
+                if (size > 2 || (size == 2 && !is_q)) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+        } else {
+                if (size > 3 || (size < 3 && is_q) || (size == 3 && !is_q)) {
+                        UnallocatedOp (insn);
+                        return;
+                }
+        }
+
+        element = extract32(imm5, 1 + size, 4);
+
+        cb->ReadVecElem(rd, rn, element, size);
+        if (is_signed && !is_q) {
+                cb->SExt32 (rd, rd);
+        }
+}
+
 static void DisasSimdCopy(uint32_t insn, DisasCallback *cb) {
         unsigned int rd = extract32(insn, 0, 5);
         unsigned int rn = extract32(insn, 5, 5);
@@ -1819,7 +1872,7 @@ static void DisasSimdCopy(uint32_t insn, DisasCallback *cb) {
         if (op) {
                 if (is_q) {
                         /* INS (element) */
-                        //handle_simd_inse(s, rd, rn, imm4, imm5);
+                        DisasSimdInse (insn, rd, rn, imm4, imm5, cb);
                 } else {
                         UnallocatedOp (insn);
                 }
@@ -1836,7 +1889,7 @@ static void DisasSimdCopy(uint32_t insn, DisasCallback *cb) {
                 case 3:
                         if (is_q) {
                                 /* INS (general) */
-                                //handle_simd_insg(s, rd, rn, imm5);
+                                DisasSimdInsg (insn, rd, rn, imm5, cb);
                         } else {
                                 UnallocatedOp (insn);
                         }
@@ -1844,7 +1897,7 @@ static void DisasSimdCopy(uint32_t insn, DisasCallback *cb) {
                 case 5:
                 case 7:
                         /* UMOV/SMOV (is_q indicates 32/64; imm4 indicates signedness) */
-                        //handle_simd_umov_smov(s, is_q, (imm4 == 5), rn, rd, imm5);
+                        DisasSimdUmovSmov(insn, is_q, (imm4 == 5), rn, rd, imm5, cb);
                         break;
                 default:
                         UnallocatedOp (insn);

@@ -821,6 +821,11 @@ fin:
         }
 }
 
+/* Signed/Unsigned Extend */
+void IntprCallback::SExt32(unsigned int rd_idx, unsigned int rn_idx) {
+        X(rd_idx) = (int64_t) ((int32_t) W(rn_idx));
+}
+
 /* Reverse bit order */
 void IntprCallback::RevBit(unsigned int rd_idx, unsigned int rn_idx, bool bit64) {
         if (bit64)
