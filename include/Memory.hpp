@@ -9,13 +9,13 @@
 class RAMBlock {
 public:
 std::string name;
-size_t length;
+unsigned int length;
 int perm;
 uint64_t addr; //gpa (guest physical address)
 uint8_t *block;
 RAMBlock() { block = nullptr; }
-RAMBlock(std::string _name, uint64_t _addr, size_t _length, int _perm); //straight mapping
-RAMBlock(std::string _name, uint64_t _addr, size_t _length, uint8_t *raw, int _perm);
+RAMBlock(std::string _name, uint64_t _addr, unsigned int _length, int _perm); //straight mapping
+RAMBlock(std::string _name, uint64_t _addr, unsigned int _length, uint8_t *raw, int _perm);
 ~RAMBlock() {
         if (block) {
                 delete[] block;
@@ -34,14 +34,14 @@ extern uint64_t heap_base;
 extern uint64_t heap_size;
 
 void InitMemmap(Nsemu *nsemu);
-void AddMemmap(uint64_t addr, size_t len);
-void DelMemmap(uint64_t addr, size_t len);
+void AddMemmap(uint64_t addr, unsigned int len);
+void DelMemmap(uint64_t addr, unsigned int len);
 std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions();
 
-void *GetRawPtr(uint64_t gpa, size_t len);
-bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len);
-bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, size_t len);
-bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t addr, size_t len);
+void *GetRawPtr(uint64_t gpa, unsigned int len);
+bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t addr, unsigned int len);
+bool CopytoEmuByName(Nsemu *nsemu, void *data, std::string name, unsigned int len);
+bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t addr, unsigned int len);
 
 }
 #endif

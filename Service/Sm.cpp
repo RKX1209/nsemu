@@ -19,7 +19,7 @@ uint32_t SmService::GetService(ServiceName _name, IpcService*& service) {
 uint32_t SmService::RegisterService(ServiceName _name, IpcService*& service) {
         std::string name = (char *) _name;
         IpcService *new_srv = new IpcService();
-        debug_print("Registering service %s\n", _name);
+        ns_print("Registering service %s\n", _name);
         IPC::services[name] = new_srv;
         service = new_srv;
         return 0;
@@ -33,7 +33,7 @@ uint32_t SmService::UnregisterService(ServiceName _name) {
                 return 0xC15; //error code
         }
         IpcService *srv = it->second;
-        debug_print("Unregistering service %s\n", _name);
+        ns_print("Unregistering service %s\n", _name);
         delete srv;
         IPC::services.erase(it);
         return 0;

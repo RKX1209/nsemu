@@ -2,7 +2,7 @@
 #include <sys/mman.h>
 #include "Nsemu.hpp"
 
-RAMBlock::RAMBlock (std::string _name, uint64_t _addr, size_t _length, int _perm) : block(nullptr){
+RAMBlock::RAMBlock (std::string _name, uint64_t _addr, unsigned int _length, int _perm) : block(nullptr){
 	int page = getpagesize ();
 	name = _name;
 	length = _length;
@@ -12,7 +12,7 @@ RAMBlock::RAMBlock (std::string _name, uint64_t _addr, size_t _length, int _perm
 	}
 	addr = _addr;
 }
-RAMBlock::RAMBlock(std::string _name, uint64_t _addr, size_t _length, uint8_t *raw, int _perm) {
+RAMBlock::RAMBlock(std::string _name, uint64_t _addr, unsigned int _length, uint8_t *raw, int _perm) {
 	int page = getpagesize ();
 	name = _name;
 	length = _length;
@@ -29,7 +29,7 @@ namespace Memory
 uint64_t heap_base = 0x9000000;
 uint64_t heap_size = 0x0;
 uint8_t *pRAM;	// XXX: Replace raw pointer to View wrapper.
-size_t ram_size = 0x10000000;
+unsigned int ram_size = 0x10000000;
 uint64_t straight_max = heap_base + heap_size;
 std::vector<RAMBlock*> regions;
 static RAMBlock mem_map_straight[] =
@@ -40,29 +40,31 @@ static RAMBlock mem_map_straight[] =
 	RAMBlock ("[stack]", 0x3000000, 0x0ffffff, PROT_READ | PROT_WRITE),
 };
 
-static bool inline IsStraight(uint64_t addr, size_t len) {
+static bool inline IsStraight(uint64_t addr, unsigned int len) {
         return addr + len <= straight_max;
 }
 
-static RAMBlock* FindRamBlock(uint64_t addr, size_t len) {
-        debug_print("Find 0x%lx, 0x%x\n", addr, len);
+static RAMBlock* FindRamBlock(uint64_t addr, unsigned int len) {
+        //ns_print("Find 0x%lx, 0x%x\n", addr, len);
         for (int i = 0; i < regions.size(); i++) {
-                debug_print("region[%d] 0x%lx: 0x%x\n", i, regions[i]->addr, regions[i]->length);
-                if (regions[i]->addr <= addr && addr + len <= regions[i]->addr + regions[i]->length) {
-                        debug_print("0x%lx, 0x%x => match %d\n", addr, len, i);
+                //ns_print("region[%d] 0x%lx: 0x%x\n", i, regions[i]->addr, regions[i]->length);
+                //if (regions[i]->addr <= addr && addr + len <= regions[i]->addr + regions[i]->length) {
+                //FIXME: [addr, addr+length] can be laid over contigious ramblocks
+                if (regions[i]->addr <= addr && addr <= regions[i]->addr + regions[i]->length) {
+                        //ns_print("0x%lx, 0x%x => match %d\n", addr, len, i);
                         return regions[i];
                 }
         }
         return nullptr;
 }
 
-static void AddAnonStraight(uint64_t addr, size_t len, int perm) {
+static void AddAnonStraight(uint64_t addr, unsigned int len, int perm) {
         ns_print("Add anonymous fixed region [0x%lx, %d]\n", addr, len);
         RAMBlock *new_ram = new RAMBlock("[anon]", addr, len, perm)        ;
         regions.push_back(new_ram);
 }
 
-static void AddAnonRamBlock(uint64_t addr, size_t len, int perm) {
+static void AddAnonRamBlock(uint64_t addr, unsigned int len, int perm) {
         uint8_t *raw = new uint8_t[len];
         if (!raw) {
                 ns_abort("Failed to allocate new RAM Block\n");
@@ -72,7 +74,7 @@ static void AddAnonRamBlock(uint64_t addr, size_t len, int perm) {
         regions.push_back(new_ram);
 }
 
-void AddMemmap(uint64_t addr, size_t len) {
+void AddMemmap(uint64_t addr, unsigned int len) {
         if (IsStraight(addr, len)) {
                 /* Within straight regions */
                 AddAnonStraight(addr, len, PROT_READ | PROT_WRITE);
@@ -85,7 +87,7 @@ void AddMemmap(uint64_t addr, size_t len) {
         AddAnonRamBlock(addr, len, PROT_READ | PROT_WRITE);
 }
 
-void DelMemmap(uint64_t addr, size_t len) {
+void DelMemmap(uint64_t addr, unsigned int len) {
         auto it = regions.begin();
         while (it != regions.end()) {
                 RAMBlock *ram = *it;
@@ -114,7 +116,7 @@ std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions() {
         list<tuple<uint64_t, uint64_t>> temp;
         for (int i = 0; i < regions.size(); i++) {
                 uint64_t addr = regions[i]->addr;
-                size_t length = regions[i]->length;
+                unsigned int length = regions[i]->length;
                 temp.push_back(make_tuple(addr, addr + length));
         }
         temp.sort([](auto a, auto b) { auto [ab, _] = a; auto [bb, __] = b; return ab < bb; });
@@ -130,13 +132,14 @@ std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions() {
         return ret;
 }
 
-void *GetRawPtr(uint64_t gpa, size_t len) {
-        void *emu_mem;
+void *GetRawPtr(uint64_t gpa, unsigned int len) {
+        void *emu_mem = 0;
         if (IsStraight(gpa, len)) {
                 emu_mem = (void *)&pRAM[gpa];
         } else {
                 RAMBlock *ram = FindRamBlock (gpa, len);
                 if (!ram) {
+                        ns_abort("Cannnot find addr: 0x%lx size: %d\n", gpa, len);
                         return nullptr;
                 }
                 debug_print("Uncontigious block\n");
@@ -145,7 +148,7 @@ void *GetRawPtr(uint64_t gpa, size_t len) {
         return emu_mem;
 }
 
-static bool _CopyMemEmu(void *data, uint64_t gpa, size_t len, bool load) {
+static bool _CopyMemEmu(void *data, uint64_t gpa, unsigned int len, bool load) {
         void *emu_mem = GetRawPtr (gpa, len);
         if (!emu_mem) {
                 return false;
@@ -158,11 +161,11 @@ static bool _CopyMemEmu(void *data, uint64_t gpa, size_t len, bool load) {
 	return true;
 }
 
-bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t gpa, size_t len) {
+bool CopytoEmu(Nsemu *nsemu, void *data, uint64_t gpa, unsigned int len) {
 	return _CopyMemEmu (data, gpa, len, true);
 }
 
-bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t gpa, size_t len) {
+bool CopyfromEmu(Nsemu *nsemu, void *data, uint64_t gpa, unsigned int len) {
 	return _CopyMemEmu (data, gpa, len, false);
 }
 

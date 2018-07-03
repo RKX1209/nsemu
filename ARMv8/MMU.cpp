@@ -31,7 +31,7 @@ static T ReadFromRAM(const uint64_t gpa) {
 template<typename T>
 static void WriteToRAM(const uint64_t gpa, T value) {
         uint8_t *emu_mem = static_cast<uint8_t *>(Memory::GetRawPtr(gpa, sizeof(T)));
-        debug_print("WriteToRAM: 0x%lx, (%d)\n", gpa, sizeof(T));
+        debug_print("WriteToRAM: 0x%lx, (%d) RawPtr(%p)\n", gpa, sizeof(T), (void *)emu_mem);        
 	for (uint64_t addr = gpa; addr < gpa + sizeof(T); addr++) {
                 uint8_t byte = value & 0xff;
 		std::memcpy (&emu_mem[addr - gpa], &byte, sizeof(uint8_t));

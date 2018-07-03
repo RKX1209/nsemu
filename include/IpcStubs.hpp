@@ -16329,64 +16329,12 @@ uint32_t nn::fssrv::sf::IFileSystemProxy::IsExFatSupported(uint8_t& isSupported)
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::IsExFatSupported\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountBis(nn::fssrv::sf::Partition partitionID, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& Bis) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountBis\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent(nn::ApplicationId tid, uint32_t flag, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& contentFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContent\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent7(nn::ApplicationId tid, uint32_t ncaType, nn::fssrv::sf::IFileSystem*& _2) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContent7\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountContentStorage(uint32_t contentStorageID, nn::fssrv::sf::IFileSystem*& contentFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContentStorage\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition(uint32_t _0, uint32_t _1, nn::fssrv::sf::IFileSystem*& gameCardPartitionFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountImageDirectory(uint32_t _0, nn::fssrv::sf::IFileSystem*& imageFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountImageDirectory\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& saveDataFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSaveData\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& saveDataFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSdCard(nn::fssrv::sf::IFileSystem*& sdCard) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSdCard\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& systemSaveDataFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IFileSystem*& dataFiles) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess(nn::fssrv::sf::IFileSystem*& _0) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess\n");
-	return 0;
-}
 uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator(nn::fssrv::sf::IDeviceOperator*& _0) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator\n");
 	return 0;
 }
 uint32_t nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier*& GameCardEventNotify) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl(int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& _1) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl\n");
 	return 0;
 }
 uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader(nn::fssrv::sf::ISaveDataInfoReader*& _0) {
@@ -16467,10 +16415,6 @@ uint32_t nn::fssrv::sf::IFileSystemProxy::WriteSaveDataFileSystemExtraData(uint6
 }
 uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::IsCodeMounted(nn::ApplicationId TID, uint8_t& isMounted) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::IsCodeMounted\n");
-	return 0;
-}
-uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::MountCode(nn::ApplicationId TID, int8_t * contentPath, unsigned int contentPath_size, nn::fssrv::sf::IFileSystem*& contentFs) {
-	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::MountCode\n");
 	return 0;
 }
 uint32_t nn::fssrv::sf::IProgramRegistry::ClearFsPermissions(uint64_t pid) {

@@ -21,7 +21,7 @@ static uint64_t counter;
 void Interpreter::Run() {
 	debug_print ("Running with Interpreter\n");
 
-        uint64_t estimate = 3500000, mx = 100000;
+        uint64_t estimate = 3728000, mx = 200000;
         //uint64_t estimate = 3000000, mx = 10000;
         //uint64_t estimate = 0, mx = 1000000;
 	while (Cpu::GetState () == Cpu::State::Running) {
@@ -41,9 +41,9 @@ void Interpreter::Run() {
 				Cpu::DumpMachine ();
 		    }
                     //Cpu::DumpMachine ();
-		    if (counter >= estimate + mx) {
-		        break;
-                     }
+		    // if (counter >= estimate + mx) {
+		    //     break;
+                    //  }
                      SingleStep ();
 		    counter++;
 		}
