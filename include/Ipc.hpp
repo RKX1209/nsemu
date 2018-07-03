@@ -79,13 +79,15 @@ public:
         void SetErrorCode(uint32_t error_code);
         void ParseMessage();
         void SetMove(int offset, uint32_t handler) {
-            if (!raw_ptr) {
-                return;
-            }
-            if(is_domainobj)
-                raw_ptr[(payload_off >> 2) + 4 + offset] = handler;
-            else
-            	raw_ptr[3 + copy_cnt + offset] = handler;
+                uint32_t *buf = (uint32_t *) raw_ptr;
+                if (!raw_ptr) {
+                        return;
+                }
+                ns_print("SetMove (0x%x)\n", handler);
+                if(is_domainobj)
+                        buf[(payload_off >> 2) + 4 + offset] = handler;
+                else
+            	        buf[3 + copy_cnt + offset] = handler;
         }
         void SetCopy(int offset, uint32_t handler) {
             if (!raw_ptr) {

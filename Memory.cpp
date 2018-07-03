@@ -57,7 +57,7 @@ static RAMBlock* FindRamBlock(uint64_t addr, size_t len) {
 }
 
 static void AddAnonStraight(uint64_t addr, size_t len, int perm) {
-        //ns_print("Add anonymous fixed region [0x%lx, %d]\n", addr, len);
+        ns_print("Add anonymous fixed region [0x%lx, %d]\n", addr, len);
         RAMBlock *new_ram = new RAMBlock("[anon]", addr, len, perm)        ;
         regions.push_back(new_ram);
 }
@@ -68,7 +68,7 @@ static void AddAnonRamBlock(uint64_t addr, size_t len, int perm) {
                 ns_abort("Failed to allocate new RAM Block\n");
         }
         RAMBlock *new_ram = new RAMBlock("[anon]", addr, len, raw, perm);
-        debug_print("Add anonymous region [0x%lx, %d]\n", new_ram->addr, new_ram->length);
+        ns_print("Add anonymous region [0x%lx, %d]\n", new_ram->addr, new_ram->length);
         regions.push_back(new_ram);
 }
 
@@ -118,7 +118,7 @@ std::list<std::tuple<uint64_t,uint64_t, int>> GetRegions() {
                 temp.push_back(make_tuple(addr, addr + length));
         }
         temp.sort([](auto a, auto b) { auto [ab, _] = a; auto [bb, __] = b; return ab < bb; });
-        uint64_t last;
+        uint64_t last = 0;
         for(auto [begin, end] : temp) {
                 if(last != begin)
                         ret.push_back(make_tuple(last, begin - 1, -1));

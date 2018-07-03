@@ -833,9 +833,9 @@ namespace nv::gemcoredump {
 				ns_abort("Unknown message cmdId %u to interface SmService", req->cmd_id);
 			}
 		}
-		uint32_t GetService(ServiceName name, IpcService* _1);
+		uint32_t GetService(ServiceName name, IpcService*& _1);
 		uint32_t Initialize();
-		uint32_t RegisterService(ServiceName name, IpcService* _1);
+		uint32_t RegisterService(ServiceName name, IpcService*& _1);
 		uint32_t UnregisterService(ServiceName name);
 	};
 //// }
@@ -863,22 +863,22 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::Uid* temp3 = (nn::account::Uid *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ListAllUsers\n");
-				resp->error_code = ListAllUsers((nn::account::Uid *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListAllUsers(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::Uid* temp3 = (nn::account::Uid *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ListOpenUsers\n");
-				resp->error_code = ListOpenUsers((nn::account::Uid *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListOpenUsers(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
@@ -963,11 +963,11 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::StoreSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2);
-				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 111: {
@@ -980,11 +980,11 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::LoadSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18));
-				resp->error_code = LoadSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 190: {
@@ -1114,39 +1114,39 @@ namespace nn::account {
 				ns_abort("Unknown message cmdId %u to interface nn::account::IAccountServiceForAdministrator", req->cmd_id);
 			}
 		}
-		uint32_t AuthenticateServiceAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t AuthenticateServiceAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t BeginUserRegistration(nn::account::Uid& _0);
 		uint32_t CancelUserRegistration(nn::account::Uid _0);
 		uint32_t ClearSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1);
 		uint32_t CompleteUserRegistration(nn::account::Uid _0);
 		uint32_t CompleteUserRegistrationForcibly(nn::account::Uid _0);
-		uint32_t CreateFloatingRegistrationRequest(uint32_t _0, IpcService* _1, nn::account::baas::IFloatingRegistrationRequest* _2);
+		uint32_t CreateFloatingRegistrationRequest(uint32_t _0, IpcService* _1, nn::account::baas::IFloatingRegistrationRequest*& _2);
 		uint32_t DebugInvalidateTokenCacheForUser(nn::account::Uid _0);
 		uint32_t DebugSetUserStateClose(nn::account::Uid _0);
 		uint32_t DebugSetUserStateOpen(nn::account::Uid _0);
 		uint32_t DeleteUser(nn::account::Uid _0);
-		uint32_t GetBaasAccountAdministrator(nn::account::Uid _0, nn::account::baas::IAdministrator* _1);
-		uint32_t GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService* _1);
-		uint32_t GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier* _0);
+		uint32_t GetBaasAccountAdministrator(nn::account::Uid _0, nn::account::baas::IAdministrator*& _1);
+		uint32_t GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService*& _1);
+		uint32_t GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier*& _0);
 		uint32_t GetLastOpenedUser(nn::account::Uid& _0);
-		uint32_t GetProfile(nn::account::Uid _0, nn::account::profile::IProfile* _1);
+		uint32_t GetProfile(nn::account::Uid _0, nn::account::profile::IProfile*& _1);
 		uint32_t GetProfileDigest(nn::account::Uid _0, nn::account::ProfileDigest& _1);
-		uint32_t GetProfileEditor(nn::account::Uid _0, nn::account::profile::IProfileEditor* _1);
-		uint32_t GetProfileUpdateNotifier(nn::account::detail::INotifier* _0);
+		uint32_t GetProfileEditor(nn::account::Uid _0, nn::account::profile::IProfileEditor*& _1);
+		uint32_t GetProfileUpdateNotifier(nn::account::detail::INotifier*& _0);
 		uint32_t GetUserCount(int32_t& _0);
 		uint32_t GetUserExistence(nn::account::Uid _0, bool& _1);
 		uint32_t GetUserLastOpenedApplication(nn::account::Uid _0, uint32_t& _1, nn::ApplicationId& _2);
-		uint32_t GetUserRegistrationNotifier(nn::account::detail::INotifier* _0);
-		uint32_t GetUserStateChangeNotifier(nn::account::detail::INotifier* _0);
+		uint32_t GetUserRegistrationNotifier(nn::account::detail::INotifier*& _0);
+		uint32_t GetUserStateChangeNotifier(nn::account::detail::INotifier*& _0);
 		uint32_t IsUserRegistrationRequestPermitted(uint64_t _0, uint64_t _1, bool& _2);
-		uint32_t ListAllUsers(nn::account::Uid * _0, unsigned int _0_size);
-		uint32_t ListOpenUsers(nn::account::Uid * _0, unsigned int _0_size);
-		uint32_t LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t ProxyProcedureForFloatingRegistrationWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa* _1);
-		uint32_t ProxyProcedureForGuestLoginWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa* _1);
+		uint32_t ListAllUsers(nn::account::Uid *& _0, unsigned int _0_size);
+		uint32_t ListOpenUsers(nn::account::Uid *& _0, unsigned int _0_size);
+		uint32_t LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t ProxyProcedureForFloatingRegistrationWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa*& _1);
+		uint32_t ProxyProcedureForGuestLoginWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa*& _1);
 		uint32_t SetUserPosition(int32_t _0, nn::account::Uid _1);
 		uint32_t StoreSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t SuspendBackgroundDaemon(nn::account::detail::ISessionObject* _0);
+		uint32_t SuspendBackgroundDaemon(nn::account::detail::ISessionObject*& _0);
 		uint32_t TrySelectUserWithoutInteraction(bool _0, nn::account::Uid& _1);
 	};
 	class IAccountServiceForApplication : public IpcService {
@@ -1170,22 +1170,22 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::Uid* temp3 = (nn::account::Uid *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForApplication::ListAllUsers\n");
-				resp->error_code = ListAllUsers((nn::account::Uid *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListAllUsers(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::Uid* temp3 = (nn::account::Uid *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForApplication::ListOpenUsers\n");
-				resp->error_code = ListOpenUsers((nn::account::Uid *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListOpenUsers(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
@@ -1249,11 +1249,11 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::IAccountServiceForApplication::StoreSaveDataThumbnail: nn::account::Uid = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), temp2);
-				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 111: {
@@ -1275,19 +1275,19 @@ namespace nn::account {
 				ns_abort("Unknown message cmdId %u to interface nn::account::IAccountServiceForApplication", req->cmd_id);
 			}
 		}
-		uint32_t AuthenticateApplicationAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t AuthenticateApplicationAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t ClearSaveDataThumbnail(nn::account::Uid _0);
-		uint32_t CreateGuestLoginRequest(uint32_t _0, IpcService* _1, nn::account::baas::IGuestLoginRequest* _2);
-		uint32_t GetBaasAccountManagerForApplication(nn::account::Uid _0, nn::account::baas::IManagerForApplication* _1);
+		uint32_t CreateGuestLoginRequest(uint32_t _0, IpcService* _1, nn::account::baas::IGuestLoginRequest*& _2);
+		uint32_t GetBaasAccountManagerForApplication(nn::account::Uid _0, nn::account::baas::IManagerForApplication*& _1);
 		uint32_t GetLastOpenedUser(nn::account::Uid& _0);
-		uint32_t GetProfile(nn::account::Uid _0, nn::account::profile::IProfile* _1);
+		uint32_t GetProfile(nn::account::Uid _0, nn::account::profile::IProfile*& _1);
 		uint32_t GetProfileDigest(nn::account::Uid _0, nn::account::ProfileDigest& _1);
 		uint32_t GetUserCount(int32_t& _0);
 		uint32_t GetUserExistence(nn::account::Uid _0, bool& _1);
 		uint32_t InitializeApplicationInfo(uint64_t _0, uint64_t _1);
 		uint32_t IsUserRegistrationRequestPermitted(uint64_t _0, uint64_t _1, bool& _2);
-		uint32_t ListAllUsers(nn::account::Uid * _0, unsigned int _0_size);
-		uint32_t ListOpenUsers(nn::account::Uid * _0, unsigned int _0_size);
+		uint32_t ListAllUsers(nn::account::Uid *& _0, unsigned int _0_size);
+		uint32_t ListOpenUsers(nn::account::Uid *& _0, unsigned int _0_size);
 		uint32_t StoreSaveDataThumbnail(nn::account::Uid _0, uint8_t * _1, unsigned int _1_size);
 		uint32_t TrySelectUserWithoutInteraction(bool _0, nn::account::Uid& _1);
 	};
@@ -1312,22 +1312,22 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::Uid* temp3 = (nn::account::Uid *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::ListAllUsers\n");
-				resp->error_code = ListAllUsers((nn::account::Uid *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListAllUsers(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::Uid* temp3 = (nn::account::Uid *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::ListOpenUsers\n");
-				resp->error_code = ListOpenUsers((nn::account::Uid *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListOpenUsers(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
@@ -1412,11 +1412,11 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::StoreSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2);
-				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = StoreSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 111: {
@@ -1429,11 +1429,11 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::LoadSaveDataThumbnail: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18));
-				resp->error_code = LoadSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadSaveDataThumbnail(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 190: {
@@ -1468,21 +1468,21 @@ namespace nn::account {
 		uint32_t DebugInvalidateTokenCacheForUser(nn::account::Uid _0);
 		uint32_t DebugSetUserStateClose(nn::account::Uid _0);
 		uint32_t DebugSetUserStateOpen(nn::account::Uid _0);
-		uint32_t GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService* _1);
-		uint32_t GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier* _0);
+		uint32_t GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService*& _1);
+		uint32_t GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier*& _0);
 		uint32_t GetLastOpenedUser(nn::account::Uid& _0);
-		uint32_t GetProfile(nn::account::Uid _0, nn::account::profile::IProfile* _1);
+		uint32_t GetProfile(nn::account::Uid _0, nn::account::profile::IProfile*& _1);
 		uint32_t GetProfileDigest(nn::account::Uid _0, nn::account::ProfileDigest& _1);
-		uint32_t GetProfileUpdateNotifier(nn::account::detail::INotifier* _0);
+		uint32_t GetProfileUpdateNotifier(nn::account::detail::INotifier*& _0);
 		uint32_t GetUserCount(int32_t& _0);
 		uint32_t GetUserExistence(nn::account::Uid _0, bool& _1);
 		uint32_t GetUserLastOpenedApplication(nn::account::Uid _0, uint32_t& _1, nn::ApplicationId& _2);
-		uint32_t GetUserRegistrationNotifier(nn::account::detail::INotifier* _0);
-		uint32_t GetUserStateChangeNotifier(nn::account::detail::INotifier* _0);
+		uint32_t GetUserRegistrationNotifier(nn::account::detail::INotifier*& _0);
+		uint32_t GetUserStateChangeNotifier(nn::account::detail::INotifier*& _0);
 		uint32_t IsUserRegistrationRequestPermitted(uint64_t _0, uint64_t _1, bool& _2);
-		uint32_t ListAllUsers(nn::account::Uid * _0, unsigned int _0_size);
-		uint32_t ListOpenUsers(nn::account::Uid * _0, unsigned int _0_size);
-		uint32_t LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t ListAllUsers(nn::account::Uid *& _0, unsigned int _0_size);
+		uint32_t ListOpenUsers(nn::account::Uid *& _0, unsigned int _0_size);
+		uint32_t LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size);
 		uint32_t StoreSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint8_t * _2, unsigned int _2_size);
 		uint32_t TrySelectUserWithoutInteraction(bool _0, nn::account::Uid& _1);
 	};
@@ -1504,11 +1504,11 @@ namespace nn::account {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::LoadCache: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
-				resp->error_code = LoadCache(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadCache(req->GetData<nn::account::Uid>(8), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -1539,15 +1539,15 @@ namespace nn::account {
 				ns_abort("Unknown message cmdId %u to interface nn::account::IBaasAccessTokenAccessor", req->cmd_id);
 			}
 		}
-		uint32_t EnsureCacheAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext* _1);
+		uint32_t EnsureCacheAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext*& _1);
 		uint32_t GetDeviceAccountId(nn::account::Uid _0, uint64_t& _1);
-		uint32_t LoadCache(nn::account::Uid _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t RegisterNotificationTokenAsync(nn::npns::NotificationToken _0, nn::account::Uid _1, nn::account::detail::IAsyncContext* _2);
-		uint32_t UnregisterNotificationTokenAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext* _1);
+		uint32_t LoadCache(nn::account::Uid _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
+		uint32_t RegisterNotificationTokenAsync(nn::npns::NotificationToken _0, nn::account::Uid _1, nn::account::detail::IAsyncContext*& _2);
+		uint32_t UnregisterNotificationTokenAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext*& _1);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::account::IAccountServiceForAdministrator::AuthenticateServiceAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::IAccountServiceForAdministrator::AuthenticateServiceAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::AuthenticateServiceAsync\n");
 	return 0;
 }
@@ -1571,7 +1571,7 @@ uint32_t nn::account::IAccountServiceForAdministrator::CompleteUserRegistrationF
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::CompleteUserRegistrationForcibly\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::CreateFloatingRegistrationRequest(uint32_t _0, IpcService* _1, nn::account::baas::IFloatingRegistrationRequest* _2) {
+uint32_t nn::account::IAccountServiceForAdministrator::CreateFloatingRegistrationRequest(uint32_t _0, IpcService* _1, nn::account::baas::IFloatingRegistrationRequest*& _2) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::CreateFloatingRegistrationRequest\n");
 	return 0;
 }
@@ -1591,15 +1591,15 @@ uint32_t nn::account::IAccountServiceForAdministrator::DeleteUser(nn::account::U
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::DeleteUser\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetBaasAccountAdministrator(nn::account::Uid _0, nn::account::baas::IAdministrator* _1) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetBaasAccountAdministrator(nn::account::Uid _0, nn::account::baas::IAdministrator*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetBaasAccountAdministrator\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService* _1) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetBaasAccountManagerForSystemService\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetBaasUserAvailabilityChangeNotifier\n");
 	return 0;
 }
@@ -1607,7 +1607,7 @@ uint32_t nn::account::IAccountServiceForAdministrator::GetLastOpenedUser(nn::acc
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetLastOpenedUser\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetProfile(nn::account::Uid _0, nn::account::profile::IProfile* _1) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetProfile(nn::account::Uid _0, nn::account::profile::IProfile*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetProfile\n");
 	return 0;
 }
@@ -1615,11 +1615,11 @@ uint32_t nn::account::IAccountServiceForAdministrator::GetProfileDigest(nn::acco
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetProfileDigest\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetProfileEditor(nn::account::Uid _0, nn::account::profile::IProfileEditor* _1) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetProfileEditor(nn::account::Uid _0, nn::account::profile::IProfileEditor*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetProfileEditor\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetProfileUpdateNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetProfileUpdateNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetProfileUpdateNotifier\n");
 	return 0;
 }
@@ -1635,11 +1635,11 @@ uint32_t nn::account::IAccountServiceForAdministrator::GetUserLastOpenedApplicat
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetUserLastOpenedApplication\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetUserRegistrationNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetUserRegistrationNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetUserRegistrationNotifier\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::GetUserStateChangeNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForAdministrator::GetUserStateChangeNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::GetUserStateChangeNotifier\n");
 	return 0;
 }
@@ -1647,23 +1647,23 @@ uint32_t nn::account::IAccountServiceForAdministrator::IsUserRegistrationRequest
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::IsUserRegistrationRequestPermitted\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::ListAllUsers(nn::account::Uid * _0, unsigned int _0_size) {
+uint32_t nn::account::IAccountServiceForAdministrator::ListAllUsers(nn::account::Uid *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::ListAllUsers\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::ListOpenUsers(nn::account::Uid * _0, unsigned int _0_size) {
+uint32_t nn::account::IAccountServiceForAdministrator::ListOpenUsers(nn::account::Uid *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::ListOpenUsers\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::account::IAccountServiceForAdministrator::LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::LoadSaveDataThumbnail\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::ProxyProcedureForFloatingRegistrationWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa* _1) {
+uint32_t nn::account::IAccountServiceForAdministrator::ProxyProcedureForFloatingRegistrationWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::ProxyProcedureForFloatingRegistrationWithNintendoAccount\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::ProxyProcedureForGuestLoginWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa* _1) {
+uint32_t nn::account::IAccountServiceForAdministrator::ProxyProcedureForGuestLoginWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForExternalNsa*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::ProxyProcedureForGuestLoginWithNintendoAccount\n");
 	return 0;
 }
@@ -1675,7 +1675,7 @@ uint32_t nn::account::IAccountServiceForAdministrator::StoreSaveDataThumbnail(nn
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::StoreSaveDataThumbnail\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForAdministrator::SuspendBackgroundDaemon(nn::account::detail::ISessionObject* _0) {
+uint32_t nn::account::IAccountServiceForAdministrator::SuspendBackgroundDaemon(nn::account::detail::ISessionObject*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::SuspendBackgroundDaemon\n");
 	return 0;
 }
@@ -1683,7 +1683,7 @@ uint32_t nn::account::IAccountServiceForAdministrator::TrySelectUserWithoutInter
 	ns_print("Stub implementation for nn::account::IAccountServiceForAdministrator::TrySelectUserWithoutInteraction\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForApplication::AuthenticateApplicationAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::IAccountServiceForApplication::AuthenticateApplicationAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::AuthenticateApplicationAsync\n");
 	return 0;
 }
@@ -1691,11 +1691,11 @@ uint32_t nn::account::IAccountServiceForApplication::ClearSaveDataThumbnail(nn::
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::ClearSaveDataThumbnail\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForApplication::CreateGuestLoginRequest(uint32_t _0, IpcService* _1, nn::account::baas::IGuestLoginRequest* _2) {
+uint32_t nn::account::IAccountServiceForApplication::CreateGuestLoginRequest(uint32_t _0, IpcService* _1, nn::account::baas::IGuestLoginRequest*& _2) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::CreateGuestLoginRequest\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForApplication::GetBaasAccountManagerForApplication(nn::account::Uid _0, nn::account::baas::IManagerForApplication* _1) {
+uint32_t nn::account::IAccountServiceForApplication::GetBaasAccountManagerForApplication(nn::account::Uid _0, nn::account::baas::IManagerForApplication*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::GetBaasAccountManagerForApplication\n");
 	return 0;
 }
@@ -1703,7 +1703,7 @@ uint32_t nn::account::IAccountServiceForApplication::GetLastOpenedUser(nn::accou
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::GetLastOpenedUser\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForApplication::GetProfile(nn::account::Uid _0, nn::account::profile::IProfile* _1) {
+uint32_t nn::account::IAccountServiceForApplication::GetProfile(nn::account::Uid _0, nn::account::profile::IProfile*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::GetProfile\n");
 	return 0;
 }
@@ -1727,11 +1727,11 @@ uint32_t nn::account::IAccountServiceForApplication::IsUserRegistrationRequestPe
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::IsUserRegistrationRequestPermitted\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForApplication::ListAllUsers(nn::account::Uid * _0, unsigned int _0_size) {
+uint32_t nn::account::IAccountServiceForApplication::ListAllUsers(nn::account::Uid *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::ListAllUsers\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForApplication::ListOpenUsers(nn::account::Uid * _0, unsigned int _0_size) {
+uint32_t nn::account::IAccountServiceForApplication::ListOpenUsers(nn::account::Uid *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForApplication::ListOpenUsers\n");
 	return 0;
 }
@@ -1759,11 +1759,11 @@ uint32_t nn::account::IAccountServiceForSystemService::DebugSetUserStateOpen(nn:
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::DebugSetUserStateOpen\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService* _1) {
+uint32_t nn::account::IAccountServiceForSystemService::GetBaasAccountManagerForSystemService(nn::account::Uid _0, nn::account::baas::IManagerForSystemService*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetBaasAccountManagerForSystemService\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForSystemService::GetBaasUserAvailabilityChangeNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetBaasUserAvailabilityChangeNotifier\n");
 	return 0;
 }
@@ -1771,7 +1771,7 @@ uint32_t nn::account::IAccountServiceForSystemService::GetLastOpenedUser(nn::acc
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetLastOpenedUser\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::GetProfile(nn::account::Uid _0, nn::account::profile::IProfile* _1) {
+uint32_t nn::account::IAccountServiceForSystemService::GetProfile(nn::account::Uid _0, nn::account::profile::IProfile*& _1) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetProfile\n");
 	return 0;
 }
@@ -1779,7 +1779,7 @@ uint32_t nn::account::IAccountServiceForSystemService::GetProfileDigest(nn::acco
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetProfileDigest\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::GetProfileUpdateNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForSystemService::GetProfileUpdateNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetProfileUpdateNotifier\n");
 	return 0;
 }
@@ -1795,11 +1795,11 @@ uint32_t nn::account::IAccountServiceForSystemService::GetUserLastOpenedApplicat
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetUserLastOpenedApplication\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::GetUserRegistrationNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForSystemService::GetUserRegistrationNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetUserRegistrationNotifier\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::GetUserStateChangeNotifier(nn::account::detail::INotifier* _0) {
+uint32_t nn::account::IAccountServiceForSystemService::GetUserStateChangeNotifier(nn::account::detail::INotifier*& _0) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::GetUserStateChangeNotifier\n");
 	return 0;
 }
@@ -1807,15 +1807,15 @@ uint32_t nn::account::IAccountServiceForSystemService::IsUserRegistrationRequest
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::IsUserRegistrationRequestPermitted\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::ListAllUsers(nn::account::Uid * _0, unsigned int _0_size) {
+uint32_t nn::account::IAccountServiceForSystemService::ListAllUsers(nn::account::Uid *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::ListAllUsers\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::ListOpenUsers(nn::account::Uid * _0, unsigned int _0_size) {
+uint32_t nn::account::IAccountServiceForSystemService::ListOpenUsers(nn::account::Uid *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::ListOpenUsers\n");
 	return 0;
 }
-uint32_t nn::account::IAccountServiceForSystemService::LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::account::IAccountServiceForSystemService::LoadSaveDataThumbnail(nn::account::Uid _0, nn::ApplicationId _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::LoadSaveDataThumbnail\n");
 	return 0;
 }
@@ -1827,7 +1827,7 @@ uint32_t nn::account::IAccountServiceForSystemService::TrySelectUserWithoutInter
 	ns_print("Stub implementation for nn::account::IAccountServiceForSystemService::TrySelectUserWithoutInteraction\n");
 	return 0;
 }
-uint32_t nn::account::IBaasAccessTokenAccessor::EnsureCacheAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext* _1) {
+uint32_t nn::account::IBaasAccessTokenAccessor::EnsureCacheAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext*& _1) {
 	ns_print("Stub implementation for nn::account::IBaasAccessTokenAccessor::EnsureCacheAsync\n");
 	return 0;
 }
@@ -1835,15 +1835,15 @@ uint32_t nn::account::IBaasAccessTokenAccessor::GetDeviceAccountId(nn::account::
 	ns_print("Stub implementation for nn::account::IBaasAccessTokenAccessor::GetDeviceAccountId\n");
 	return 0;
 }
-uint32_t nn::account::IBaasAccessTokenAccessor::LoadCache(nn::account::Uid _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::account::IBaasAccessTokenAccessor::LoadCache(nn::account::Uid _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::account::IBaasAccessTokenAccessor::LoadCache\n");
 	return 0;
 }
-uint32_t nn::account::IBaasAccessTokenAccessor::RegisterNotificationTokenAsync(nn::npns::NotificationToken _0, nn::account::Uid _1, nn::account::detail::IAsyncContext* _2) {
+uint32_t nn::account::IBaasAccessTokenAccessor::RegisterNotificationTokenAsync(nn::npns::NotificationToken _0, nn::account::Uid _1, nn::account::detail::IAsyncContext*& _2) {
 	ns_print("Stub implementation for nn::account::IBaasAccessTokenAccessor::RegisterNotificationTokenAsync\n");
 	return 0;
 }
-uint32_t nn::account::IBaasAccessTokenAccessor::UnregisterNotificationTokenAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext* _1) {
+uint32_t nn::account::IBaasAccessTokenAccessor::UnregisterNotificationTokenAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext*& _1) {
 	ns_print("Stub implementation for nn::account::IBaasAccessTokenAccessor::UnregisterNotificationTokenAsync\n");
 	return 0;
 }
@@ -1879,22 +1879,22 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IAdministrator::LoadIdTokenCache\n");
-				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 100: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::SystemProgramIdentification* temp3 = (nn::account::SystemProgramIdentification *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::baas::IAdministrator::SetSystemProgramIdentification: uint64_t = 0x%%lx, nn::account::SystemProgramIdentification *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = SetSystemProgramIdentification(req->GetData<uint64_t>(8), req->pid, (nn::account::SystemProgramIdentification *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetSystemProgramIdentification(req->GetData<uint64_t>(8), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 120: {
@@ -1907,16 +1907,16 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::nas::NasUserBase* temp3 = (nn::account::nas::NasUserBase *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::account::baas::IAdministrator::GetNintendoAccountUserResourceCache\n");
-				resp->error_code = GetNintendoAccountUserResourceCache(*resp->GetDataPointer<nn::account::NintendoAccountId *>(8), (nn::account::nas::NasUserBase *) temp3, temp2, (uint8_t *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetNintendoAccountUserResourceCache(*resp->GetDataPointer<nn::account::NintendoAccountId *>(8), temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 131: {
@@ -1941,17 +1941,17 @@ namespace nn::account::baas {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::nas::NasClientInfo* temp3 = (nn::account::nas::NasClientInfo *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::account::NintendoAccountAuthorizationRequestParameters* temp6 = (nn::account::NintendoAccountAuthorizationRequestParameters *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				nn::account::nas::IAuthorizationRequest* temp7;
 				ns_print("IPC message to nn::account::baas::IAdministrator::CreateAuthorizationRequest: uint32_t = 0x%x, KObject = 0x%x, nn::account::nas::NasClientInfo *= buffer<0x%lx>, nn::account::NintendoAccountAuthorizationRequestParameters *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetCopied(0), temp2, temp5);
-				resp->error_code = CreateAuthorizationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), (nn::account::nas::NasClientInfo *) temp3, temp2, (nn::account::NintendoAccountAuthorizationRequestParameters *) temp6, temp5, temp7);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = CreateAuthorizationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp6, temp5, temp7);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				if(temp7 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp7));
 				return 0;
@@ -2102,32 +2102,32 @@ namespace nn::account::baas {
 			}
 		}
 		uint32_t CheckAvailability();
-		uint32_t CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest* _4);
-		uint32_t CreateProcedureToLinkNnidWithNintendoAccount(nn::account::http::IOAuthProcedure* _0);
-		uint32_t CreateProcedureToLinkWithNintendoAccount(nn::account::nas::IOAuthProcedureForNintendoAccountLinkage* _0);
-		uint32_t CreateProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::http::IOAuthProcedure* _0);
+		uint32_t CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest*& _4);
+		uint32_t CreateProcedureToLinkNnidWithNintendoAccount(nn::account::http::IOAuthProcedure*& _0);
+		uint32_t CreateProcedureToLinkWithNintendoAccount(nn::account::nas::IOAuthProcedureForNintendoAccountLinkage*& _0);
+		uint32_t CreateProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::http::IOAuthProcedure*& _0);
 		uint32_t DebugSetAvailabilityErrorDetail(uint32_t _0);
-		uint32_t DebugUnlinkNintendoAccountAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t DebugUnlinkNintendoAccountAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t DeleteRegistrationInfoLocally();
-		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t GetAccountId(nn::account::NetworkServiceAccountId& _0);
 		uint32_t GetNintendoAccountId(nn::account::NintendoAccountId& _0);
-		uint32_t GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
+		uint32_t GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
 		uint32_t IsLinkedWithNintendoAccount(bool& _0);
 		uint32_t IsRegistered(bool& _0);
-		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure* _1);
-		uint32_t RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext* _0);
-		uint32_t RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext* _2);
-		uint32_t RegisterAsync(nn::account::detail::IAsyncContext* _0);
-		uint32_t ResumeProcedureToLinkNnidWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure* _1);
-		uint32_t ResumeProcedureToLinkWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForNintendoAccountLinkage* _1);
-		uint32_t ResumeProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure* _1);
+		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure*& _1);
+		uint32_t RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext*& _0);
+		uint32_t RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext*& _2);
+		uint32_t RegisterAsync(nn::account::detail::IAsyncContext*& _0);
+		uint32_t ResumeProcedureToLinkNnidWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure*& _1);
+		uint32_t ResumeProcedureToLinkWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForNintendoAccountLinkage*& _1);
+		uint32_t ResumeProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure*& _1);
 		uint32_t SetSystemProgramIdentification(uint64_t _0, uint64_t _1, nn::account::SystemProgramIdentification * _2, unsigned int _2_size);
-		uint32_t SynchronizeProfileAsync(nn::account::detail::IAsyncContext* _0);
-		uint32_t SynchronizeProfileAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext* _2);
-		uint32_t UnregisterAsync(nn::account::detail::IAsyncContext* _0);
-		uint32_t UploadProfileAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t SynchronizeProfileAsync(nn::account::detail::IAsyncContext*& _0);
+		uint32_t SynchronizeProfileAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext*& _2);
+		uint32_t UnregisterAsync(nn::account::detail::IAsyncContext*& _0);
+		uint32_t UploadProfileAsync(nn::account::detail::IAsyncContext*& _0);
 	};
 	class IFloatingRegistrationRequest : public IpcService {
 	public:
@@ -2156,33 +2156,33 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::GetNickname\n");
-				resp->error_code = GetNickname((int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetNickname(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::GetProfileImage\n");
-				resp->error_code = GetProfileImage(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetProfileImage(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::LoadIdTokenCache\n");
-				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 100: {
@@ -2207,11 +2207,11 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::SystemProgramIdentification* temp3 = (nn::account::SystemProgramIdentification *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::SetSystemProgramIdentification: uint64_t = 0x%%lx, nn::account::SystemProgramIdentification *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = SetSystemProgramIdentification(req->GetData<uint64_t>(8), req->pid, (nn::account::SystemProgramIdentification *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetSystemProgramIdentification(req->GetData<uint64_t>(8), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 111: {
@@ -2227,15 +2227,15 @@ namespace nn::account::baas {
 				ns_abort("Unknown message cmdId %u to interface nn::account::baas::IFloatingRegistrationRequest", req->cmd_id);
 			}
 		}
-		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t GetAccountId(nn::account::NetworkServiceAccountId& _0);
 		uint32_t GetLinkedNintendoAccountId(nn::account::NintendoAccountId& _0);
-		uint32_t GetNickname(int8_t * _0, unsigned int _0_size);
-		uint32_t GetProfileImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetNickname(int8_t *& _0, unsigned int _0_size);
+		uint32_t GetProfileImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t GetSessionId(nn::account::detail::Uuid& _0);
-		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t RegisterAsync(nn::account::Uid& _0, nn::account::detail::IAsyncContext* _1);
-		uint32_t RegisterWithUidAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext* _1);
+		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t RegisterAsync(nn::account::Uid& _0, nn::account::detail::IAsyncContext*& _1);
+		uint32_t RegisterWithUidAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext*& _1);
 		uint32_t SetSystemProgramIdentification(uint64_t _0, uint64_t _1, nn::account::SystemProgramIdentification * _2, unsigned int _2_size);
 	};
 	class IGuestLoginRequest : public IpcService {
@@ -2265,33 +2265,33 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IGuestLoginRequest::GetNickname\n");
-				resp->error_code = GetNickname((int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetNickname(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IGuestLoginRequest::GetProfileImage\n");
-				resp->error_code = GetProfileImage(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetProfileImage(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IGuestLoginRequest::LoadIdTokenCache\n");
-				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -2300,10 +2300,10 @@ namespace nn::account::baas {
 		}
 		uint32_t GetAccountId(nn::account::NetworkServiceAccountId& _0);
 		uint32_t GetLinkedNintendoAccountId(nn::account::NintendoAccountId& _0);
-		uint32_t GetNickname(int8_t * _0, unsigned int _0_size);
-		uint32_t GetProfileImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetNickname(int8_t *& _0, unsigned int _0_size);
+		uint32_t GetProfileImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t GetSessionId(nn::account::detail::Uuid& _0);
-		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IManagerForApplication : public IpcService {
 	public:
@@ -2335,39 +2335,39 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IManagerForApplication::LoadIdTokenCache\n");
-				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 130: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::nas::NasUserBaseForApplication* temp3 = (nn::account::nas::NasUserBaseForApplication *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::account::baas::IManagerForApplication::GetNintendoAccountUserResourceCacheForApplication\n");
-				resp->error_code = GetNintendoAccountUserResourceCacheForApplication(*resp->GetDataPointer<nn::account::NintendoAccountId *>(8), (nn::account::nas::NasUserBaseForApplication *) temp3, temp2, (uint8_t *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetNintendoAccountUserResourceCacheForApplication(*resp->GetDataPointer<nn::account::NintendoAccountId *>(8), temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 150: {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::NintendoAccountAuthorizationRequestParameters* temp3 = (nn::account::NintendoAccountAuthorizationRequestParameters *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::account::nas::IAuthorizationRequest* temp4;
 				ns_print("IPC message to nn::account::baas::IManagerForApplication::CreateAuthorizationRequest: uint32_t = 0x%x, KObject = 0x%x, nn::account::NintendoAccountAuthorizationRequestParameters *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetCopied(0), temp2);
-				resp->error_code = CreateAuthorizationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), (nn::account::NintendoAccountAuthorizationRequestParameters *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = CreateAuthorizationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -2377,11 +2377,11 @@ namespace nn::account::baas {
 			}
 		}
 		uint32_t CheckAvailability();
-		uint32_t CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::NintendoAccountAuthorizationRequestParameters * _2, unsigned int _2_size, nn::account::nas::IAuthorizationRequest* _3);
-		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::NintendoAccountAuthorizationRequestParameters * _2, unsigned int _2_size, nn::account::nas::IAuthorizationRequest*& _3);
+		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t GetAccountId(nn::account::NetworkServiceAccountId& _0);
-		uint32_t GetNintendoAccountUserResourceCacheForApplication(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBaseForApplication * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
-		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetNintendoAccountUserResourceCacheForApplication(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBaseForApplication *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
+		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IManagerForSystemService : public IpcService {
 	public:
@@ -2413,22 +2413,22 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::baas::IManagerForSystemService::LoadIdTokenCache\n");
-				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadIdTokenCache(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 100: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::SystemProgramIdentification* temp3 = (nn::account::SystemProgramIdentification *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::baas::IManagerForSystemService::SetSystemProgramIdentification: uint64_t = 0x%%lx, nn::account::SystemProgramIdentification *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = SetSystemProgramIdentification(req->GetData<uint64_t>(8), req->pid, (nn::account::SystemProgramIdentification *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetSystemProgramIdentification(req->GetData<uint64_t>(8), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 120: {
@@ -2441,16 +2441,16 @@ namespace nn::account::baas {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::nas::NasUserBase* temp3 = (nn::account::nas::NasUserBase *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::account::baas::IManagerForSystemService::GetNintendoAccountUserResourceCache\n");
-				resp->error_code = GetNintendoAccountUserResourceCache(*resp->GetDataPointer<nn::account::NintendoAccountId *>(8), (nn::account::nas::NasUserBase *) temp3, temp2, (uint8_t *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetNintendoAccountUserResourceCache(*resp->GetDataPointer<nn::account::NintendoAccountId *>(8), temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 131: {
@@ -2475,17 +2475,17 @@ namespace nn::account::baas {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::nas::NasClientInfo* temp3 = (nn::account::nas::NasClientInfo *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::account::NintendoAccountAuthorizationRequestParameters* temp6 = (nn::account::NintendoAccountAuthorizationRequestParameters *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				nn::account::nas::IAuthorizationRequest* temp7;
 				ns_print("IPC message to nn::account::baas::IManagerForSystemService::CreateAuthorizationRequest: uint32_t = 0x%x, KObject = 0x%x, nn::account::nas::NasClientInfo *= buffer<0x%lx>, nn::account::NintendoAccountAuthorizationRequestParameters *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetCopied(0), temp2, temp5);
-				resp->error_code = CreateAuthorizationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), (nn::account::nas::NasClientInfo *) temp3, temp2, (nn::account::NintendoAccountAuthorizationRequestParameters *) temp6, temp5, temp7);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = CreateAuthorizationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp6, temp5, temp7);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				if(temp7 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp7));
 				return 0;
@@ -2495,14 +2495,14 @@ namespace nn::account::baas {
 			}
 		}
 		uint32_t CheckAvailability();
-		uint32_t CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest* _4);
-		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest*& _4);
+		uint32_t EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t GetAccountId(nn::account::NetworkServiceAccountId& _0);
 		uint32_t GetNintendoAccountId(nn::account::NintendoAccountId& _0);
-		uint32_t GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
-		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext* _0);
-		uint32_t RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext* _2);
+		uint32_t GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
+		uint32_t LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext*& _0);
+		uint32_t RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext*& _2);
 		uint32_t SetSystemProgramIdentification(uint64_t _0, uint64_t _1, nn::account::SystemProgramIdentification * _2, unsigned int _2_size);
 	};
 }
@@ -2511,19 +2511,19 @@ uint32_t nn::account::baas::IAdministrator::CheckAvailability() {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::CheckAvailability\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest* _4) {
+uint32_t nn::account::baas::IAdministrator::CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest*& _4) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::CreateAuthorizationRequest\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::CreateProcedureToLinkNnidWithNintendoAccount(nn::account::http::IOAuthProcedure* _0) {
+uint32_t nn::account::baas::IAdministrator::CreateProcedureToLinkNnidWithNintendoAccount(nn::account::http::IOAuthProcedure*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::CreateProcedureToLinkNnidWithNintendoAccount\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::CreateProcedureToLinkWithNintendoAccount(nn::account::nas::IOAuthProcedureForNintendoAccountLinkage* _0) {
+uint32_t nn::account::baas::IAdministrator::CreateProcedureToLinkWithNintendoAccount(nn::account::nas::IOAuthProcedureForNintendoAccountLinkage*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::CreateProcedureToLinkWithNintendoAccount\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::CreateProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::http::IOAuthProcedure* _0) {
+uint32_t nn::account::baas::IAdministrator::CreateProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::http::IOAuthProcedure*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::CreateProcedureToUpdateLinkageStateOfNintendoAccount\n");
 	return 0;
 }
@@ -2531,7 +2531,7 @@ uint32_t nn::account::baas::IAdministrator::DebugSetAvailabilityErrorDetail(uint
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::DebugSetAvailabilityErrorDetail\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::DebugUnlinkNintendoAccountAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IAdministrator::DebugUnlinkNintendoAccountAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::DebugUnlinkNintendoAccountAsync\n");
 	return 0;
 }
@@ -2539,7 +2539,7 @@ uint32_t nn::account::baas::IAdministrator::DeleteRegistrationInfoLocally() {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::DeleteRegistrationInfoLocally\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IAdministrator::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::EnsureIdTokenCacheAsync\n");
 	return 0;
 }
@@ -2551,7 +2551,7 @@ uint32_t nn::account::baas::IAdministrator::GetNintendoAccountId(nn::account::Ni
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::GetNintendoAccountId\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::account::baas::IAdministrator::GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::GetNintendoAccountUserResourceCache\n");
 	return 0;
 }
@@ -2563,35 +2563,35 @@ uint32_t nn::account::baas::IAdministrator::IsRegistered(bool& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::IsRegistered\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::baas::IAdministrator::LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::LoadIdTokenCache\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure* _1) {
+uint32_t nn::account::baas::IAdministrator::ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure*& _1) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsync\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext* _2) {
+uint32_t nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext*& _2) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::RegisterAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IAdministrator::RegisterAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::RegisterAsync\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::ResumeProcedureToLinkNnidWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure* _1) {
+uint32_t nn::account::baas::IAdministrator::ResumeProcedureToLinkNnidWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure*& _1) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::ResumeProcedureToLinkNnidWithNintendoAccount\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::ResumeProcedureToLinkWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForNintendoAccountLinkage* _1) {
+uint32_t nn::account::baas::IAdministrator::ResumeProcedureToLinkWithNintendoAccount(nn::account::detail::Uuid _0, nn::account::nas::IOAuthProcedureForNintendoAccountLinkage*& _1) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::ResumeProcedureToLinkWithNintendoAccount\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::ResumeProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure* _1) {
+uint32_t nn::account::baas::IAdministrator::ResumeProcedureToUpdateLinkageStateOfNintendoAccount(nn::account::detail::Uuid _0, nn::account::http::IOAuthProcedure*& _1) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::ResumeProcedureToUpdateLinkageStateOfNintendoAccount\n");
 	return 0;
 }
@@ -2599,23 +2599,23 @@ uint32_t nn::account::baas::IAdministrator::SetSystemProgramIdentification(uint6
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::SetSystemProgramIdentification\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::SynchronizeProfileAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IAdministrator::SynchronizeProfileAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::SynchronizeProfileAsync\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::SynchronizeProfileAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext* _2) {
+uint32_t nn::account::baas::IAdministrator::SynchronizeProfileAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext*& _2) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::SynchronizeProfileAsyncIfSecondsElapsed\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::UnregisterAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IAdministrator::UnregisterAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::UnregisterAsync\n");
 	return 0;
 }
-uint32_t nn::account::baas::IAdministrator::UploadProfileAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IAdministrator::UploadProfileAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IAdministrator::UploadProfileAsync\n");
 	return 0;
 }
-uint32_t nn::account::baas::IFloatingRegistrationRequest::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IFloatingRegistrationRequest::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::EnsureIdTokenCacheAsync\n");
 	return 0;
 }
@@ -2627,11 +2627,11 @@ uint32_t nn::account::baas::IFloatingRegistrationRequest::GetLinkedNintendoAccou
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::GetLinkedNintendoAccountId\n");
 	return 0;
 }
-uint32_t nn::account::baas::IFloatingRegistrationRequest::GetNickname(int8_t * _0, unsigned int _0_size) {
+uint32_t nn::account::baas::IFloatingRegistrationRequest::GetNickname(int8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::GetNickname\n");
 	return 0;
 }
-uint32_t nn::account::baas::IFloatingRegistrationRequest::GetProfileImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::baas::IFloatingRegistrationRequest::GetProfileImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::GetProfileImage\n");
 	return 0;
 }
@@ -2639,15 +2639,15 @@ uint32_t nn::account::baas::IFloatingRegistrationRequest::GetSessionId(nn::accou
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::GetSessionId\n");
 	return 0;
 }
-uint32_t nn::account::baas::IFloatingRegistrationRequest::LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::baas::IFloatingRegistrationRequest::LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::LoadIdTokenCache\n");
 	return 0;
 }
-uint32_t nn::account::baas::IFloatingRegistrationRequest::RegisterAsync(nn::account::Uid& _0, nn::account::detail::IAsyncContext* _1) {
+uint32_t nn::account::baas::IFloatingRegistrationRequest::RegisterAsync(nn::account::Uid& _0, nn::account::detail::IAsyncContext*& _1) {
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::RegisterAsync\n");
 	return 0;
 }
-uint32_t nn::account::baas::IFloatingRegistrationRequest::RegisterWithUidAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext* _1) {
+uint32_t nn::account::baas::IFloatingRegistrationRequest::RegisterWithUidAsync(nn::account::Uid _0, nn::account::detail::IAsyncContext*& _1) {
 	ns_print("Stub implementation for nn::account::baas::IFloatingRegistrationRequest::RegisterWithUidAsync\n");
 	return 0;
 }
@@ -2663,11 +2663,11 @@ uint32_t nn::account::baas::IGuestLoginRequest::GetLinkedNintendoAccountId(nn::a
 	ns_print("Stub implementation for nn::account::baas::IGuestLoginRequest::GetLinkedNintendoAccountId\n");
 	return 0;
 }
-uint32_t nn::account::baas::IGuestLoginRequest::GetNickname(int8_t * _0, unsigned int _0_size) {
+uint32_t nn::account::baas::IGuestLoginRequest::GetNickname(int8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::baas::IGuestLoginRequest::GetNickname\n");
 	return 0;
 }
-uint32_t nn::account::baas::IGuestLoginRequest::GetProfileImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::baas::IGuestLoginRequest::GetProfileImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::baas::IGuestLoginRequest::GetProfileImage\n");
 	return 0;
 }
@@ -2675,7 +2675,7 @@ uint32_t nn::account::baas::IGuestLoginRequest::GetSessionId(nn::account::detail
 	ns_print("Stub implementation for nn::account::baas::IGuestLoginRequest::GetSessionId\n");
 	return 0;
 }
-uint32_t nn::account::baas::IGuestLoginRequest::LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::baas::IGuestLoginRequest::LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::baas::IGuestLoginRequest::LoadIdTokenCache\n");
 	return 0;
 }
@@ -2683,11 +2683,11 @@ uint32_t nn::account::baas::IManagerForApplication::CheckAvailability() {
 	ns_print("Stub implementation for nn::account::baas::IManagerForApplication::CheckAvailability\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForApplication::CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::NintendoAccountAuthorizationRequestParameters * _2, unsigned int _2_size, nn::account::nas::IAuthorizationRequest* _3) {
+uint32_t nn::account::baas::IManagerForApplication::CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::NintendoAccountAuthorizationRequestParameters * _2, unsigned int _2_size, nn::account::nas::IAuthorizationRequest*& _3) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForApplication::CreateAuthorizationRequest\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForApplication::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IManagerForApplication::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForApplication::EnsureIdTokenCacheAsync\n");
 	return 0;
 }
@@ -2695,11 +2695,11 @@ uint32_t nn::account::baas::IManagerForApplication::GetAccountId(nn::account::Ne
 	ns_print("Stub implementation for nn::account::baas::IManagerForApplication::GetAccountId\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForApplication::GetNintendoAccountUserResourceCacheForApplication(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBaseForApplication * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::account::baas::IManagerForApplication::GetNintendoAccountUserResourceCacheForApplication(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBaseForApplication *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForApplication::GetNintendoAccountUserResourceCacheForApplication\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForApplication::LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::baas::IManagerForApplication::LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForApplication::LoadIdTokenCache\n");
 	return 0;
 }
@@ -2707,11 +2707,11 @@ uint32_t nn::account::baas::IManagerForSystemService::CheckAvailability() {
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::CheckAvailability\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForSystemService::CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest* _4) {
+uint32_t nn::account::baas::IManagerForSystemService::CreateAuthorizationRequest(uint32_t _0, IpcService* _1, nn::account::nas::NasClientInfo * _2, unsigned int _2_size, nn::account::NintendoAccountAuthorizationRequestParameters * _3, unsigned int _3_size, nn::account::nas::IAuthorizationRequest*& _4) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::CreateAuthorizationRequest\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForSystemService::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IManagerForSystemService::EnsureIdTokenCacheAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::EnsureIdTokenCacheAsync\n");
 	return 0;
 }
@@ -2723,19 +2723,19 @@ uint32_t nn::account::baas::IManagerForSystemService::GetNintendoAccountId(nn::a
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::GetNintendoAccountId\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForSystemService::GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::account::baas::IManagerForSystemService::GetNintendoAccountUserResourceCache(nn::account::NintendoAccountId& _0, nn::account::nas::NasUserBase *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::GetNintendoAccountUserResourceCache\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForSystemService::LoadIdTokenCache(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::baas::IManagerForSystemService::LoadIdTokenCache(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::LoadIdTokenCache\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsync\n");
 	return 0;
 }
-uint32_t nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext* _2) {
+uint32_t nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(uint32_t _0, bool& _1, nn::account::detail::IAsyncContext*& _2) {
 	ns_print("Stub implementation for nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed\n");
 	return 0;
 }
@@ -2783,7 +2783,7 @@ namespace nn::account::detail {
 		}
 		uint32_t Cancel();
 		uint32_t GetResult();
-		uint32_t GetSystemEvent(IpcService* _0);
+		uint32_t GetSystemEvent(IpcService*& _0);
 		uint32_t HasDone(bool& _0);
 	};
 	class INotifier : public IpcService {
@@ -2804,7 +2804,7 @@ namespace nn::account::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::account::detail::INotifier", req->cmd_id);
 			}
 		}
-		uint32_t GetSystemEvent(IpcService* _0);
+		uint32_t GetSystemEvent(IpcService*& _0);
 	};
 	class ISessionObject : public IpcService {
 	public:
@@ -2833,7 +2833,7 @@ uint32_t nn::account::detail::IAsyncContext::GetResult() {
 	ns_print("Stub implementation for nn::account::detail::IAsyncContext::GetResult\n");
 	return 0;
 }
-uint32_t nn::account::detail::IAsyncContext::GetSystemEvent(IpcService* _0) {
+uint32_t nn::account::detail::IAsyncContext::GetSystemEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::account::detail::IAsyncContext::GetSystemEvent\n");
 	return 0;
 }
@@ -2841,7 +2841,7 @@ uint32_t nn::account::detail::IAsyncContext::HasDone(bool& _0) {
 	ns_print("Stub implementation for nn::account::detail::IAsyncContext::HasDone\n");
 	return 0;
 }
-uint32_t nn::account::detail::INotifier::GetSystemEvent(IpcService* _0) {
+uint32_t nn::account::detail::INotifier::GetSystemEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::account::detail::INotifier::GetSystemEvent\n");
 	return 0;
 }
@@ -2869,39 +2869,39 @@ namespace nn::account::http {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::RequestUrl* temp3 = (nn::account::RequestUrl *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x1a, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::account::CallbackUri* temp6 = (nn::account::CallbackUri *) new uint8_t[temp5];
 				ns_print("IPC message to nn::account::http::IOAuthProcedure::GetRequest\n");
-				resp->error_code = GetRequest((nn::account::RequestUrl *) temp3, temp2, (nn::account::CallbackUri *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetRequest(temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::http::IOAuthProcedure::ApplyResponse: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = ApplyResponse((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ApplyResponse(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::account::detail::IAsyncContext* temp4;
 				ns_print("IPC message to nn::account::http::IOAuthProcedure::ApplyResponseAsync: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = ApplyResponseAsync((int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = ApplyResponseAsync(temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -2917,9 +2917,9 @@ namespace nn::account::http {
 			}
 		}
 		uint32_t ApplyResponse(int8_t * _0, unsigned int _0_size);
-		uint32_t ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext* _1);
-		uint32_t GetRequest(nn::account::RequestUrl * _0, unsigned int _0_size, nn::account::CallbackUri * _1, unsigned int _1_size);
-		uint32_t PrepareAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext*& _1);
+		uint32_t GetRequest(nn::account::RequestUrl *& _0, unsigned int _0_size, nn::account::CallbackUri *& _1, unsigned int _1_size);
+		uint32_t PrepareAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t Suspend(nn::account::detail::Uuid& _0);
 	};
 }
@@ -2928,15 +2928,15 @@ uint32_t nn::account::http::IOAuthProcedure::ApplyResponse(int8_t * _0, unsigned
 	ns_print("Stub implementation for nn::account::http::IOAuthProcedure::ApplyResponse\n");
 	return 0;
 }
-uint32_t nn::account::http::IOAuthProcedure::ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext* _1) {
+uint32_t nn::account::http::IOAuthProcedure::ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext*& _1) {
 	ns_print("Stub implementation for nn::account::http::IOAuthProcedure::ApplyResponseAsync\n");
 	return 0;
 }
-uint32_t nn::account::http::IOAuthProcedure::GetRequest(nn::account::RequestUrl * _0, unsigned int _0_size, nn::account::CallbackUri * _1, unsigned int _1_size) {
+uint32_t nn::account::http::IOAuthProcedure::GetRequest(nn::account::RequestUrl *& _0, unsigned int _0_size, nn::account::CallbackUri *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::http::IOAuthProcedure::GetRequest\n");
 	return 0;
 }
-uint32_t nn::account::http::IOAuthProcedure::PrepareAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::http::IOAuthProcedure::PrepareAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::http::IOAuthProcedure::PrepareAsync\n");
 	return 0;
 }
@@ -2976,44 +2976,44 @@ namespace nn::account::nas {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::nas::IAuthorizationRequest::GetAuthorizationCode\n");
-				resp->error_code = GetAuthorizationCode(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAuthorizationCode(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::nas::IAuthorizationRequest::GetIdToken\n");
-				resp->error_code = GetIdToken(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetIdToken(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 22: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::nas::State* temp3 = (nn::account::nas::State *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::nas::IAuthorizationRequest::GetState\n");
-				resp->error_code = GetState((nn::account::nas::State *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetState(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::account::nas::IAuthorizationRequest", req->cmd_id);
 			}
 		}
-		uint32_t GetAuthorizationCode(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetIdToken(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetAuthorizationCode(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetIdToken(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t GetSessionId(nn::account::detail::Uuid& _0);
-		uint32_t GetState(nn::account::nas::State * _0, unsigned int _0_size);
-		uint32_t InvokeWithoutInteractionAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t GetState(nn::account::nas::State *& _0, unsigned int _0_size);
+		uint32_t InvokeWithoutInteractionAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t IsAuthorized(bool& _0);
 	};
 	class IOAuthProcedureForExternalNsa : public IpcService {
@@ -3034,39 +3034,39 @@ namespace nn::account::nas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::RequestUrl* temp3 = (nn::account::RequestUrl *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x1a, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::account::CallbackUri* temp6 = (nn::account::CallbackUri *) new uint8_t[temp5];
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForExternalNsa::GetRequest\n");
-				resp->error_code = GetRequest((nn::account::RequestUrl *) temp3, temp2, (nn::account::CallbackUri *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetRequest(temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForExternalNsa::ApplyResponse: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = ApplyResponse((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ApplyResponse(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::account::detail::IAsyncContext* temp4;
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForExternalNsa::ApplyResponseAsync: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = ApplyResponseAsync((int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = ApplyResponseAsync(temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -3093,22 +3093,22 @@ namespace nn::account::nas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForExternalNsa::GetNickname\n");
-				resp->error_code = GetNickname((int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetNickname(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 103: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForExternalNsa::GetProfileImage\n");
-				resp->error_code = GetProfileImage(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetProfileImage(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -3116,13 +3116,13 @@ namespace nn::account::nas {
 			}
 		}
 		uint32_t ApplyResponse(int8_t * _0, unsigned int _0_size);
-		uint32_t ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext* _1);
+		uint32_t ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext*& _1);
 		uint32_t GetAccountId(nn::account::NetworkServiceAccountId& _0);
 		uint32_t GetLinkedNintendoAccountId(nn::account::NintendoAccountId& _0);
-		uint32_t GetNickname(int8_t * _0, unsigned int _0_size);
-		uint32_t GetProfileImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetRequest(nn::account::RequestUrl * _0, unsigned int _0_size, nn::account::CallbackUri * _1, unsigned int _1_size);
-		uint32_t PrepareAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t GetNickname(int8_t *& _0, unsigned int _0_size);
+		uint32_t GetProfileImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetRequest(nn::account::RequestUrl *& _0, unsigned int _0_size, nn::account::CallbackUri *& _1, unsigned int _1_size);
+		uint32_t PrepareAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t Suspend(nn::account::detail::Uuid& _0);
 	};
 	class IOAuthProcedureForNintendoAccountLinkage : public IpcService {
@@ -3143,39 +3143,39 @@ namespace nn::account::nas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::RequestUrl* temp3 = (nn::account::RequestUrl *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x1a, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::account::CallbackUri* temp6 = (nn::account::CallbackUri *) new uint8_t[temp5];
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequest\n");
-				resp->error_code = GetRequest((nn::account::RequestUrl *) temp3, temp2, (nn::account::CallbackUri *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetRequest(temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::ApplyResponse: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = ApplyResponse((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ApplyResponse(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::account::detail::IAsyncContext* temp4;
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::ApplyResponseAsync: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = ApplyResponseAsync((int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = ApplyResponseAsync(temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -3190,16 +3190,16 @@ namespace nn::account::nas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::RequestUrl* temp3 = (nn::account::RequestUrl *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x1a, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::account::CallbackUri* temp6 = (nn::account::CallbackUri *) new uint8_t[temp5];
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequestWithTheme: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = GetRequestWithTheme(req->GetData<int32_t>(8), (nn::account::RequestUrl *) temp3, temp2, (nn::account::CallbackUri *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetRequestWithTheme(req->GetData<int32_t>(8), temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 101: {
@@ -3212,11 +3212,11 @@ namespace nn::account::nas {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::RequestUrl* temp3 = (nn::account::RequestUrl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetUrlForIntroductionOfExtraMembership\n");
-				resp->error_code = GetUrlForIntroductionOfExtraMembership((nn::account::RequestUrl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetUrlForIntroductionOfExtraMembership(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -3224,21 +3224,21 @@ namespace nn::account::nas {
 			}
 		}
 		uint32_t ApplyResponse(int8_t * _0, unsigned int _0_size);
-		uint32_t ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext* _1);
-		uint32_t GetRequest(nn::account::RequestUrl * _0, unsigned int _0_size, nn::account::CallbackUri * _1, unsigned int _1_size);
-		uint32_t GetRequestWithTheme(int32_t _0, nn::account::RequestUrl * _1, unsigned int _1_size, nn::account::CallbackUri * _2, unsigned int _2_size);
-		uint32_t GetUrlForIntroductionOfExtraMembership(nn::account::RequestUrl * _0, unsigned int _0_size);
+		uint32_t ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext*& _1);
+		uint32_t GetRequest(nn::account::RequestUrl *& _0, unsigned int _0_size, nn::account::CallbackUri *& _1, unsigned int _1_size);
+		uint32_t GetRequestWithTheme(int32_t _0, nn::account::RequestUrl *& _1, unsigned int _1_size, nn::account::CallbackUri *& _2, unsigned int _2_size);
+		uint32_t GetUrlForIntroductionOfExtraMembership(nn::account::RequestUrl *& _0, unsigned int _0_size);
 		uint32_t IsNetworkServiceAccountReplaced(bool& _0);
-		uint32_t PrepareAsync(nn::account::detail::IAsyncContext* _0);
+		uint32_t PrepareAsync(nn::account::detail::IAsyncContext*& _0);
 		uint32_t Suspend(nn::account::detail::Uuid& _0);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::account::nas::IAuthorizationRequest::GetAuthorizationCode(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::nas::IAuthorizationRequest::GetAuthorizationCode(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::nas::IAuthorizationRequest::GetAuthorizationCode\n");
 	return 0;
 }
-uint32_t nn::account::nas::IAuthorizationRequest::GetIdToken(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::nas::IAuthorizationRequest::GetIdToken(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::nas::IAuthorizationRequest::GetIdToken\n");
 	return 0;
 }
@@ -3246,11 +3246,11 @@ uint32_t nn::account::nas::IAuthorizationRequest::GetSessionId(nn::account::deta
 	ns_print("Stub implementation for nn::account::nas::IAuthorizationRequest::GetSessionId\n");
 	return 0;
 }
-uint32_t nn::account::nas::IAuthorizationRequest::GetState(nn::account::nas::State * _0, unsigned int _0_size) {
+uint32_t nn::account::nas::IAuthorizationRequest::GetState(nn::account::nas::State *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::nas::IAuthorizationRequest::GetState\n");
 	return 0;
 }
-uint32_t nn::account::nas::IAuthorizationRequest::InvokeWithoutInteractionAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::nas::IAuthorizationRequest::InvokeWithoutInteractionAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::nas::IAuthorizationRequest::InvokeWithoutInteractionAsync\n");
 	return 0;
 }
@@ -3262,7 +3262,7 @@ uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::ApplyResponse(int8_t *
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForExternalNsa::ApplyResponse\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext* _1) {
+uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext*& _1) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForExternalNsa::ApplyResponseAsync\n");
 	return 0;
 }
@@ -3274,19 +3274,19 @@ uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::GetLinkedNintendoAccou
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForExternalNsa::GetLinkedNintendoAccountId\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::GetNickname(int8_t * _0, unsigned int _0_size) {
+uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::GetNickname(int8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForExternalNsa::GetNickname\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::GetProfileImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::GetProfileImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForExternalNsa::GetProfileImage\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::GetRequest(nn::account::RequestUrl * _0, unsigned int _0_size, nn::account::CallbackUri * _1, unsigned int _1_size) {
+uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::GetRequest(nn::account::RequestUrl *& _0, unsigned int _0_size, nn::account::CallbackUri *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForExternalNsa::GetRequest\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::PrepareAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::nas::IOAuthProcedureForExternalNsa::PrepareAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForExternalNsa::PrepareAsync\n");
 	return 0;
 }
@@ -3298,19 +3298,19 @@ uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::ApplyRespon
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::ApplyResponse\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext* _1) {
+uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::ApplyResponseAsync(int8_t * _0, unsigned int _0_size, nn::account::detail::IAsyncContext*& _1) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::ApplyResponseAsync\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequest(nn::account::RequestUrl * _0, unsigned int _0_size, nn::account::CallbackUri * _1, unsigned int _1_size) {
+uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequest(nn::account::RequestUrl *& _0, unsigned int _0_size, nn::account::CallbackUri *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequest\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequestWithTheme(int32_t _0, nn::account::RequestUrl * _1, unsigned int _1_size, nn::account::CallbackUri * _2, unsigned int _2_size) {
+uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequestWithTheme(int32_t _0, nn::account::RequestUrl *& _1, unsigned int _1_size, nn::account::CallbackUri *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetRequestWithTheme\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetUrlForIntroductionOfExtraMembership(nn::account::RequestUrl * _0, unsigned int _0_size) {
+uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetUrlForIntroductionOfExtraMembership(nn::account::RequestUrl *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::GetUrlForIntroductionOfExtraMembership\n");
 	return 0;
 }
@@ -3318,7 +3318,7 @@ uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::IsNetworkSe
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::IsNetworkServiceAccountReplaced\n");
 	return 0;
 }
-uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::PrepareAsync(nn::account::detail::IAsyncContext* _0) {
+uint32_t nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::PrepareAsync(nn::account::detail::IAsyncContext*& _0) {
 	ns_print("Stub implementation for nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::PrepareAsync\n");
 	return 0;
 }
@@ -3338,11 +3338,11 @@ namespace nn::account::profile {
 				auto temp1 = resp->GetDataPointer<nn::account::profile::ProfileBase>(8);
 				unsigned int temp3;
 				auto temp2 = req->GetBuffer(0x1a, 0, temp3);
-				auto temp4 = new uint8_t[temp3];
+				nn::account::profile::UserData* temp4 = (nn::account::profile::UserData *) new uint8_t[temp3];
 				ns_print("IPC message to nn::account::profile::IProfile::Get\n");
-				resp->error_code = Get(temp1, (nn::account::profile::UserData *) temp4, temp3);
-				ARMv8::WriteBytes(temp2, temp4, temp3);
-				delete[] temp4;
+				resp->error_code = Get(temp1, temp4, temp3);
+				ARMv8::WriteBytes(temp2, (uint8_t *) temp4, temp3);
+				delete[] (uint8_t *)temp4;
 				return 0;
 			}
 			case 1: {
@@ -3362,21 +3362,21 @@ namespace nn::account::profile {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::profile::IProfile::LoadImage\n");
-				resp->error_code = LoadImage(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadImage(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::account::profile::IProfile", req->cmd_id);
 			}
 		}
-		uint32_t Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData * _1, unsigned int _1_size);
+		uint32_t Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData *& _1, unsigned int _1_size);
 		uint32_t GetBase(nn::account::profile::ProfileBase& _0);
 		uint32_t GetImageSize(uint32_t& _0);
-		uint32_t LoadImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t LoadImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IProfileEditor : public IpcService {
 	public:
@@ -3388,11 +3388,11 @@ namespace nn::account::profile {
 				auto temp1 = resp->GetDataPointer<nn::account::profile::ProfileBase>(8);
 				unsigned int temp3;
 				auto temp2 = req->GetBuffer(0x1a, 0, temp3);
-				auto temp4 = new uint8_t[temp3];
+				nn::account::profile::UserData* temp4 = (nn::account::profile::UserData *) new uint8_t[temp3];
 				ns_print("IPC message to nn::account::profile::IProfileEditor::Get\n");
-				resp->error_code = Get(temp1, (nn::account::profile::UserData *) temp4, temp3);
-				ARMv8::WriteBytes(temp2, temp4, temp3);
-				delete[] temp4;
+				resp->error_code = Get(temp1, temp4, temp3);
+				ARMv8::WriteBytes(temp2, (uint8_t *) temp4, temp3);
+				delete[] (uint8_t *)temp4;
 				return 0;
 			}
 			case 1: {
@@ -3412,54 +3412,54 @@ namespace nn::account::profile {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::account::profile::IProfileEditor::LoadImage\n");
-				resp->error_code = LoadImage(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadImage(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 100: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::profile::UserData* temp3 = (nn::account::profile::UserData *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::account::profile::IProfileEditor::Store: nn::account::profile::ProfileBase = %s, nn::account::profile::UserData *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x38).c_str(), temp2);
-				resp->error_code = Store(req->GetDataPointer<nn::account::profile::ProfileBase>(8), (nn::account::profile::UserData *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Store(req->GetDataPointer<nn::account::profile::ProfileBase>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 101: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::profile::UserData* temp3 = (nn::account::profile::UserData *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::account::profile::IProfileEditor::StoreWithImage: nn::account::profile::ProfileBase = %s, nn::account::profile::UserData *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x38).c_str(), temp2, temp5);
-				resp->error_code = StoreWithImage(req->GetDataPointer<nn::account::profile::ProfileBase>(8), (nn::account::profile::UserData *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = StoreWithImage(req->GetDataPointer<nn::account::profile::ProfileBase>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::account::profile::IProfileEditor", req->cmd_id);
 			}
 		}
-		uint32_t Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData * _1, unsigned int _1_size);
+		uint32_t Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData *& _1, unsigned int _1_size);
 		uint32_t GetBase(nn::account::profile::ProfileBase& _0);
 		uint32_t GetImageSize(uint32_t& _0);
-		uint32_t LoadImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t LoadImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Store(nn::account::profile::ProfileBase _0, nn::account::profile::UserData * _1, unsigned int _1_size);
 		uint32_t StoreWithImage(nn::account::profile::ProfileBase _0, nn::account::profile::UserData * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::account::profile::IProfile::Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData * _1, unsigned int _1_size) {
+uint32_t nn::account::profile::IProfile::Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::profile::IProfile::Get\n");
 	return 0;
 }
@@ -3471,11 +3471,11 @@ uint32_t nn::account::profile::IProfile::GetImageSize(uint32_t& _0) {
 	ns_print("Stub implementation for nn::account::profile::IProfile::GetImageSize\n");
 	return 0;
 }
-uint32_t nn::account::profile::IProfile::LoadImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::profile::IProfile::LoadImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::profile::IProfile::LoadImage\n");
 	return 0;
 }
-uint32_t nn::account::profile::IProfileEditor::Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData * _1, unsigned int _1_size) {
+uint32_t nn::account::profile::IProfileEditor::Get(nn::account::profile::ProfileBase& _0, nn::account::profile::UserData *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::profile::IProfileEditor::Get\n");
 	return 0;
 }
@@ -3487,7 +3487,7 @@ uint32_t nn::account::profile::IProfileEditor::GetImageSize(uint32_t& _0) {
 	ns_print("Stub implementation for nn::account::profile::IProfileEditor::GetImageSize\n");
 	return 0;
 }
-uint32_t nn::account::profile::IProfileEditor::LoadImage(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::account::profile::IProfileEditor::LoadImage(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::account::profile::IProfileEditor::LoadImage\n");
 	return 0;
 }
@@ -3829,12 +3829,12 @@ namespace nn::am::service {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::am::AppletAttribute* temp3 = (nn::am::AppletAttribute *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::am::service::ILibraryAppletProxy* temp4;
 				ns_print("IPC message to nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxy: uint64_t = 0x%%lx, KObject = 0x%x, nn::am::AppletAttribute *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetCopied(0), temp2);
-				resp->error_code = OpenLibraryAppletProxy(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), (nn::am::AppletAttribute *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = OpenLibraryAppletProxy(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -3870,12 +3870,12 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IAllSystemAppletProxiesService", req->cmd_id);
 			}
 		}
-		uint32_t CreateSelfLibraryAppletCreatorForDevelop(uint64_t _0, uint64_t _1, nn::am::service::ILibraryAppletCreator* _2);
-		uint32_t OpenLibraryAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::AppletAttribute * _3, unsigned int _3_size, nn::am::service::ILibraryAppletProxy* _4);
-		uint32_t OpenLibraryAppletProxyOld(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ILibraryAppletProxy* _3);
-		uint32_t OpenOverlayAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IOverlayAppletProxy* _3);
-		uint32_t OpenSystemAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ISystemAppletProxy* _3);
-		uint32_t OpenSystemApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy* _3);
+		uint32_t CreateSelfLibraryAppletCreatorForDevelop(uint64_t _0, uint64_t _1, nn::am::service::ILibraryAppletCreator*& _2);
+		uint32_t OpenLibraryAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::AppletAttribute * _3, unsigned int _3_size, nn::am::service::ILibraryAppletProxy*& _4);
+		uint32_t OpenLibraryAppletProxyOld(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ILibraryAppletProxy*& _3);
+		uint32_t OpenOverlayAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IOverlayAppletProxy*& _3);
+		uint32_t OpenSystemAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ISystemAppletProxy*& _3);
+		uint32_t OpenSystemApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy*& _3);
 	};
 	class IAppletAccessor : public IpcService {
 	public:
@@ -3925,7 +3925,7 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IAppletAccessor", req->cmd_id);
 			}
 		}
-		uint32_t GetAppletStateChangedEvent(IpcService* _0);
+		uint32_t GetAppletStateChangedEvent(IpcService*& _0);
 		uint32_t GetResult();
 		uint32_t IsCompleted(bool& _0);
 		uint32_t RequestExit();
@@ -4019,22 +4019,22 @@ namespace nn::am::service {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IApplicationAccessor::GetApplicationControlProperty\n");
-				resp->error_code = GetApplicationControlProperty((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetApplicationControlProperty(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 123: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IApplicationAccessor::GetApplicationLaunchProperty\n");
-				resp->error_code = GetApplicationLaunchProperty((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetApplicationLaunchProperty(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -4042,11 +4042,11 @@ namespace nn::am::service {
 			}
 		}
 		uint32_t AreAnyLibraryAppletsLeft(bool& _0);
-		uint32_t GetAppletStateChangedEvent(IpcService* _0);
-		uint32_t GetApplicationControlProperty(uint8_t * _0, unsigned int _0_size);
+		uint32_t GetAppletStateChangedEvent(IpcService*& _0);
+		uint32_t GetApplicationControlProperty(uint8_t *& _0, unsigned int _0_size);
 		uint32_t GetApplicationId(nn::ncm::ApplicationId& _0);
-		uint32_t GetApplicationLaunchProperty(uint8_t * _0, unsigned int _0_size);
-		uint32_t GetCurrentLibraryApplet(nn::am::service::IAppletAccessor* _0);
+		uint32_t GetApplicationLaunchProperty(uint8_t *& _0, unsigned int _0_size);
+		uint32_t GetCurrentLibraryApplet(nn::am::service::IAppletAccessor*& _0);
 		uint32_t GetResult();
 		uint32_t IsCompleted(bool& _0);
 		uint32_t PushLaunchParameter(uint32_t _0, nn::am::service::IStorage* _1);
@@ -4101,10 +4101,10 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IApplicationCreator", req->cmd_id);
 			}
 		}
-		uint32_t CreateApplication(nn::ncm::ApplicationId _0, nn::am::service::IApplicationAccessor* _1);
-		uint32_t CreateSystemApplication(nn::ncm::SystemApplicationId _0, nn::am::service::IApplicationAccessor* _1);
-		uint32_t PopFloatingApplicationForDevelopment(nn::am::service::IApplicationAccessor* _0);
-		uint32_t PopLaunchRequestedApplication(nn::am::service::IApplicationAccessor* _0);
+		uint32_t CreateApplication(nn::ncm::ApplicationId _0, nn::am::service::IApplicationAccessor*& _1);
+		uint32_t CreateSystemApplication(nn::ncm::SystemApplicationId _0, nn::am::service::IApplicationAccessor*& _1);
+		uint32_t PopFloatingApplicationForDevelopment(nn::am::service::IApplicationAccessor*& _0);
+		uint32_t PopLaunchRequestedApplication(nn::am::service::IApplicationAccessor*& _0);
 	};
 	class IApplicationFunctions : public IpcService {
 	public:
@@ -4266,7 +4266,7 @@ namespace nn::am::service {
 		uint32_t InitializeGamePlayRecording(uint64_t _0, IpcService* _1);
 		uint32_t IsGamePlayRecordingSupported(bool& _0);
 		uint32_t NotifyRunning(bool& _0);
-		uint32_t PopLaunchParameter(uint32_t _0, nn::am::service::IStorage* _1);
+		uint32_t PopLaunchParameter(uint32_t _0, nn::am::service::IStorage*& _1);
 		uint32_t RequestToReboot();
 		uint32_t RequestToShutdown();
 		uint32_t SetGamePlayRecordingState(int32_t _0);
@@ -4363,15 +4363,15 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IApplicationProxy", req->cmd_id);
 			}
 		}
-		uint32_t GetApplicationFunctions(nn::am::service::IApplicationFunctions* _0);
-		uint32_t GetAudioController(nn::am::service::IAudioController* _0);
-		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0);
-		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions* _0);
-		uint32_t GetDisplayController(nn::am::service::IDisplayController* _0);
-		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0);
-		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController* _0);
-		uint32_t GetSelfController(nn::am::service::ISelfController* _0);
-		uint32_t GetWindowController(nn::am::service::IWindowController* _0);
+		uint32_t GetApplicationFunctions(nn::am::service::IApplicationFunctions*& _0);
+		uint32_t GetAudioController(nn::am::service::IAudioController*& _0);
+		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0);
+		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions*& _0);
+		uint32_t GetDisplayController(nn::am::service::IDisplayController*& _0);
+		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0);
+		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController*& _0);
+		uint32_t GetSelfController(nn::am::service::ISelfController*& _0);
+		uint32_t GetWindowController(nn::am::service::IWindowController*& _0);
 	};
 	class IApplicationProxyService : public IpcService {
 	public:
@@ -4391,7 +4391,7 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IApplicationProxyService", req->cmd_id);
 			}
 		}
-		uint32_t OpenApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy* _3);
+		uint32_t OpenApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy*& _3);
 	};
 	class IAudioController : public IpcService {
 	public:
@@ -4602,18 +4602,18 @@ namespace nn::am::service {
 		}
 		uint32_t AllowToEnterSleep();
 		uint32_t DisallowToEnterSleep();
-		uint32_t GetAcquiredSleepLockEvent(IpcService* _0);
+		uint32_t GetAcquiredSleepLockEvent(IpcService*& _0);
 		uint32_t GetBootMode(uint8_t& _0);
 		uint32_t GetCradleFwVersion(uint32_t& _0, uint32_t& _1, uint32_t& _2, uint32_t& _3);
 		uint32_t GetCradleStatus(uint8_t& _0);
 		uint32_t GetCurrentFocusState(uint8_t& _0);
 		uint32_t GetDefaultDisplayResolution(int32_t& _0, int32_t& _1);
-		uint32_t GetDefaultDisplayResolutionChangeEvent(IpcService* _0);
-		uint32_t GetEventHandle(IpcService* _0);
-		uint32_t GetHomeButtonReaderLockAccessor(nn::am::service::ILockAccessor* _0);
+		uint32_t GetDefaultDisplayResolutionChangeEvent(IpcService*& _0);
+		uint32_t GetEventHandle(IpcService*& _0);
+		uint32_t GetHomeButtonReaderLockAccessor(nn::am::service::ILockAccessor*& _0);
 		uint32_t GetOperationMode(uint8_t& _0);
 		uint32_t GetPerformanceMode(uint32_t& _0);
-		uint32_t GetReaderLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor* _1);
+		uint32_t GetReaderLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor*& _1);
 		uint32_t GetThisAppletKind(nn::am::service::AppletKind& _0);
 		uint32_t IsInControllerFirmwareUpdateSection(bool& _0);
 		uint32_t IsVrModeEnabled(bool& _0);
@@ -4663,7 +4663,7 @@ namespace nn::am::service {
 		uint32_t EmulateButtonEvent(nn::am::service::EmulatedButtonEvent _0);
 		uint32_t InvalidateTransitionLayer();
 		uint32_t NotifyMessageToHomeMenuForDebug(nn::am::AppletMessage _0);
-		uint32_t OpenMainApplication(nn::am::service::IApplicationAccessor* _0);
+		uint32_t OpenMainApplication(nn::am::service::IApplicationAccessor*& _0);
 	};
 	class IDisplayController : public IpcService {
 	public:
@@ -4674,11 +4674,11 @@ namespace nn::am::service {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IDisplayController::GetLastForegroundCaptureImage\n");
-				resp->error_code = GetLastForegroundCaptureImage((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetLastForegroundCaptureImage(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
@@ -4691,22 +4691,22 @@ namespace nn::am::service {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IDisplayController::GetLastApplicationCaptureImage\n");
-				resp->error_code = GetLastApplicationCaptureImage((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetLastApplicationCaptureImage(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IDisplayController::GetCallerAppletCaptureImage\n");
-				resp->error_code = GetCallerAppletCaptureImage((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetCallerAppletCaptureImage(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
@@ -4719,33 +4719,33 @@ namespace nn::am::service {
 				resp->GenBuf(0, 0, 1);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IDisplayController::GetLastForegroundCaptureImageEx\n");
-				resp->error_code = GetLastForegroundCaptureImageEx(*resp->GetDataPointer<bool *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetLastForegroundCaptureImageEx(*resp->GetDataPointer<bool *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 1);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IDisplayController::GetLastApplicationCaptureImageEx\n");
-				resp->error_code = GetLastApplicationCaptureImageEx(*resp->GetDataPointer<bool *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetLastApplicationCaptureImageEx(*resp->GetDataPointer<bool *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 1);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IDisplayController::GetCallerAppletCaptureImageEx\n");
-				resp->error_code = GetCallerAppletCaptureImageEx(*resp->GetDataPointer<bool *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetCallerAppletCaptureImageEx(*resp->GetDataPointer<bool *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 8: {
@@ -4842,20 +4842,20 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IDisplayController", req->cmd_id);
 			}
 		}
-		uint32_t AcquireCallerAppletCaptureBuffer(IpcService* _0);
-		uint32_t AcquireCallerAppletCaptureBufferEx(bool& _0, IpcService* _1);
-		uint32_t AcquireLastApplicationCaptureBuffer(IpcService* _0);
-		uint32_t AcquireLastApplicationCaptureBufferEx(bool& _0, IpcService* _1);
-		uint32_t AcquireLastForegroundCaptureBuffer(IpcService* _0);
-		uint32_t AcquireLastForegroundCaptureBufferEx(bool& _0, IpcService* _1);
+		uint32_t AcquireCallerAppletCaptureBuffer(IpcService*& _0);
+		uint32_t AcquireCallerAppletCaptureBufferEx(bool& _0, IpcService*& _1);
+		uint32_t AcquireLastApplicationCaptureBuffer(IpcService*& _0);
+		uint32_t AcquireLastApplicationCaptureBufferEx(bool& _0, IpcService*& _1);
+		uint32_t AcquireLastForegroundCaptureBuffer(IpcService*& _0);
+		uint32_t AcquireLastForegroundCaptureBufferEx(bool& _0, IpcService*& _1);
 		uint32_t ClearAppletTransitionBuffer(uint32_t _0);
 		uint32_t ClearCaptureBuffer(bool _0, int32_t _1, uint32_t _2);
-		uint32_t GetCallerAppletCaptureImage(uint8_t * _0, unsigned int _0_size);
-		uint32_t GetCallerAppletCaptureImageEx(bool& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetLastApplicationCaptureImage(uint8_t * _0, unsigned int _0_size);
-		uint32_t GetLastApplicationCaptureImageEx(bool& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetLastForegroundCaptureImage(uint8_t * _0, unsigned int _0_size);
-		uint32_t GetLastForegroundCaptureImageEx(bool& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetCallerAppletCaptureImage(uint8_t *& _0, unsigned int _0_size);
+		uint32_t GetCallerAppletCaptureImageEx(bool& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetLastApplicationCaptureImage(uint8_t *& _0, unsigned int _0_size);
+		uint32_t GetLastApplicationCaptureImageEx(bool& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetLastForegroundCaptureImage(uint8_t *& _0, unsigned int _0_size);
+		uint32_t GetLastForegroundCaptureImageEx(bool& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t ReleaseCallerAppletCaptureBuffer();
 		uint32_t ReleaseLastApplicationCaptureBuffer();
 		uint32_t ReleaseLastForegroundCaptureBuffer();
@@ -5006,11 +5006,11 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IHomeMenuFunctions", req->cmd_id);
 			}
 		}
-		uint32_t GetHomeButtonWriterLockAccessor(nn::am::service::ILockAccessor* _0);
-		uint32_t GetPopFromGeneralChannelEvent(IpcService* _0);
-		uint32_t GetWriterLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor* _1);
+		uint32_t GetHomeButtonWriterLockAccessor(nn::am::service::ILockAccessor*& _0);
+		uint32_t GetPopFromGeneralChannelEvent(IpcService*& _0);
+		uint32_t GetWriterLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor*& _1);
 		uint32_t LockForeground();
-		uint32_t PopFromGeneralChannel(nn::am::service::IStorage* _0);
+		uint32_t PopFromGeneralChannel(nn::am::service::IStorage*& _0);
 		uint32_t RequestToGetForeground();
 		uint32_t UnlockForeground();
 	};
@@ -5146,16 +5146,16 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::ILibraryAppletAccessor", req->cmd_id);
 			}
 		}
-		uint32_t GetAppletStateChangedEvent(IpcService* _0);
+		uint32_t GetAppletStateChangedEvent(IpcService*& _0);
 		uint32_t GetIndirectLayerConsumerHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, uint64_t& _2);
 		uint32_t GetLibraryAppletInfo(nn::am::service::LibraryAppletInfo& _0);
-		uint32_t GetPopInteractiveOutDataEvent(IpcService* _0);
-		uint32_t GetPopOutDataEvent(IpcService* _0);
+		uint32_t GetPopInteractiveOutDataEvent(IpcService*& _0);
+		uint32_t GetPopOutDataEvent(IpcService*& _0);
 		uint32_t GetResult();
 		uint32_t IsCompleted(bool& _0);
 		uint32_t NeedsToExitProcess(bool& _0);
-		uint32_t PopInteractiveOutData(nn::am::service::IStorage* _0);
-		uint32_t PopOutData(nn::am::service::IStorage* _0);
+		uint32_t PopInteractiveOutData(nn::am::service::IStorage*& _0);
+		uint32_t PopOutData(nn::am::service::IStorage*& _0);
 		uint32_t PushExtraStorage(nn::am::service::IStorage* _0);
 		uint32_t PushInData(nn::am::service::IStorage* _0);
 		uint32_t PushInteractiveInData(nn::am::service::IStorage* _0);
@@ -5223,10 +5223,10 @@ namespace nn::am::service {
 			}
 		}
 		uint32_t AreAnyLibraryAppletsLeft(bool& _0);
-		uint32_t CreateHandleStorage(int64_t _0, IpcService* _1, nn::am::service::IStorage* _2);
-		uint32_t CreateLibraryApplet(uint32_t _0, uint32_t _1, nn::am::service::ILibraryAppletAccessor* _2);
-		uint32_t CreateStorage(int64_t _0, nn::am::service::IStorage* _1);
-		uint32_t CreateTransferMemoryStorage(bool _0, int64_t _1, IpcService* _2, nn::am::service::IStorage* _3);
+		uint32_t CreateHandleStorage(int64_t _0, IpcService* _1, nn::am::service::IStorage*& _2);
+		uint32_t CreateLibraryApplet(uint32_t _0, uint32_t _1, nn::am::service::ILibraryAppletAccessor*& _2);
+		uint32_t CreateStorage(int64_t _0, nn::am::service::IStorage*& _1);
+		uint32_t CreateTransferMemoryStorage(bool _0, int64_t _1, IpcService* _2, nn::am::service::IStorage*& _3);
 		uint32_t TerminateAllLibraryApplets();
 	};
 	class ILibraryAppletProxy : public IpcService {
@@ -5319,15 +5319,15 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::ILibraryAppletProxy", req->cmd_id);
 			}
 		}
-		uint32_t GetAudioController(nn::am::service::IAudioController* _0);
-		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0);
-		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions* _0);
-		uint32_t GetDisplayController(nn::am::service::IDisplayController* _0);
-		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0);
-		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController* _0);
-		uint32_t GetSelfController(nn::am::service::ISelfController* _0);
-		uint32_t GetWindowController(nn::am::service::IWindowController* _0);
-		uint32_t OpenLibraryAppletSelfAccessor(nn::am::service::ILibraryAppletSelfAccessor* _0);
+		uint32_t GetAudioController(nn::am::service::IAudioController*& _0);
+		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0);
+		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions*& _0);
+		uint32_t GetDisplayController(nn::am::service::IDisplayController*& _0);
+		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0);
+		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController*& _0);
+		uint32_t GetSelfController(nn::am::service::ISelfController*& _0);
+		uint32_t GetWindowController(nn::am::service::IWindowController*& _0);
+		uint32_t OpenLibraryAppletSelfAccessor(nn::am::service::ILibraryAppletSelfAccessor*& _0);
 	};
 	class ILibraryAppletSelfAccessor : public IpcService {
 	public:
@@ -5416,11 +5416,11 @@ namespace nn::am::service {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::ns::ApplicationControlProperty* temp3 = (nn::ns::ApplicationControlProperty *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::GetMainAppletApplicationControlProperty\n");
-				resp->error_code = GetMainAppletApplicationControlProperty((nn::ns::ApplicationControlProperty *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetMainAppletApplicationControlProperty(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 16: {
@@ -5433,11 +5433,11 @@ namespace nn::am::service {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::am::service::AppletIdentityInfo* temp3 = (nn::am::service::AppletIdentityInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::GetCallerAppletIdentityInfoStack\n");
-				resp->error_code = GetCallerAppletIdentityInfoStack(*resp->GetDataPointer<int32_t *>(8), (nn::am::service::AppletIdentityInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetCallerAppletIdentityInfoStack(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20: {
@@ -5489,18 +5489,18 @@ namespace nn::am::service {
 		uint32_t CanUseApplicationCore(bool& _0);
 		uint32_t ExitProcessAndReturn();
 		uint32_t GetCallerAppletIdentityInfo(nn::am::service::AppletIdentityInfo& _0);
-		uint32_t GetCallerAppletIdentityInfoStack(int32_t& _0, nn::am::service::AppletIdentityInfo * _1, unsigned int _1_size);
+		uint32_t GetCallerAppletIdentityInfoStack(int32_t& _0, nn::am::service::AppletIdentityInfo *& _1, unsigned int _1_size);
 		uint32_t GetIndirectLayerProducerHandle(uint64_t& _0);
 		uint32_t GetLibraryAppletInfo(nn::am::service::LibraryAppletInfo& _0);
-		uint32_t GetMainAppletApplicationControlProperty(nn::ns::ApplicationControlProperty * _0, unsigned int _0_size);
+		uint32_t GetMainAppletApplicationControlProperty(nn::ns::ApplicationControlProperty *& _0, unsigned int _0_size);
 		uint32_t GetMainAppletIdentityInfo(nn::am::service::AppletIdentityInfo& _0);
 		uint32_t GetMainAppletStorageId(nn::ncm::StorageId& _0);
-		uint32_t GetPopExtraStorageEvent(IpcService* _0);
-		uint32_t GetPopInDataEvent(IpcService* _0);
-		uint32_t GetPopInteractiveInDataEvent(IpcService* _0);
-		uint32_t PopExtraStorage(nn::am::service::IStorage* _0);
-		uint32_t PopInData(nn::am::service::IStorage* _0);
-		uint32_t PopInteractiveInData(nn::am::service::IStorage* _0);
+		uint32_t GetPopExtraStorageEvent(IpcService*& _0);
+		uint32_t GetPopInDataEvent(IpcService*& _0);
+		uint32_t GetPopInteractiveInDataEvent(IpcService*& _0);
+		uint32_t PopExtraStorage(nn::am::service::IStorage*& _0);
+		uint32_t PopInData(nn::am::service::IStorage*& _0);
+		uint32_t PopInteractiveInData(nn::am::service::IStorage*& _0);
 		uint32_t PushInteractiveOutData(nn::am::service::IStorage* _0);
 		uint32_t PushOutData(nn::am::service::IStorage* _0);
 		uint32_t ReportVisibleError(nn::err::ErrorCode _0);
@@ -5540,8 +5540,8 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::ILockAccessor", req->cmd_id);
 			}
 		}
-		uint32_t GetEvent(IpcService* _0);
-		uint32_t TryLock(bool _0, bool& _1, IpcService* _2);
+		uint32_t GetEvent(IpcService*& _0);
+		uint32_t TryLock(bool _0, bool& _1, IpcService*& _2);
 		uint32_t Unlock();
 	};
 	class IOverlayAppletProxy : public IpcService {
@@ -5634,15 +5634,15 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IOverlayAppletProxy", req->cmd_id);
 			}
 		}
-		uint32_t GetAudioController(nn::am::service::IAudioController* _0);
-		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0);
-		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions* _0);
-		uint32_t GetDisplayController(nn::am::service::IDisplayController* _0);
-		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0);
-		uint32_t GetOverlayFunctions(nn::am::service::IOverlayFunctions* _0);
-		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController* _0);
-		uint32_t GetSelfController(nn::am::service::ISelfController* _0);
-		uint32_t GetWindowController(nn::am::service::IWindowController* _0);
+		uint32_t GetAudioController(nn::am::service::IAudioController*& _0);
+		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0);
+		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions*& _0);
+		uint32_t GetDisplayController(nn::am::service::IDisplayController*& _0);
+		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0);
+		uint32_t GetOverlayFunctions(nn::am::service::IOverlayFunctions*& _0);
+		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController*& _0);
+		uint32_t GetSelfController(nn::am::service::ISelfController*& _0);
+		uint32_t GetWindowController(nn::am::service::IWindowController*& _0);
 	};
 	class IOverlayFunctions : public IpcService {
 	public:
@@ -5762,8 +5762,8 @@ namespace nn::am::service {
 		}
 		uint32_t CancelWindingReservation();
 		uint32_t GetLaunchReason(nn::am::service::AppletProcessLaunchReason& _0);
-		uint32_t OpenCallingLibraryApplet(nn::am::service::ILibraryAppletAccessor* _0);
-		uint32_t PopContext(nn::am::service::IStorage* _0);
+		uint32_t OpenCallingLibraryApplet(nn::am::service::ILibraryAppletAccessor*& _0);
+		uint32_t PopContext(nn::am::service::IStorage*& _0);
 		uint32_t PushContext(nn::am::service::IStorage* _0);
 		uint32_t ReserveToStartAndWaitAndUnwindThis(nn::am::service::ILibraryAppletAccessor* _0);
 		uint32_t WindAndDoReserved();
@@ -5948,7 +5948,7 @@ namespace nn::am::service {
 		uint32_t Exit();
 		uint32_t GetCurrentIlluminance(float& _0);
 		uint32_t GetIdleTimeDetectionExtension(uint32_t& _0);
-		uint32_t GetLibraryAppletLaunchableEvent(IpcService* _0);
+		uint32_t GetLibraryAppletLaunchableEvent(IpcService*& _0);
 		uint32_t IsIlluminanceAvailable(bool& _0);
 		uint32_t LeaveFatalSection();
 		uint32_t LockExit();
@@ -5997,8 +5997,8 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::IStorage", req->cmd_id);
 			}
 		}
-		uint32_t Open(nn::am::service::IStorageAccessor* _0);
-		uint32_t OpenTransferStorage(nn::am::service::ITransferStorageAccessor* _0);
+		uint32_t Open(nn::am::service::IStorageAccessor*& _0);
+		uint32_t OpenTransferStorage(nn::am::service::ITransferStorageAccessor*& _0);
 	};
 	class IStorageAccessor : public IpcService {
 	public:
@@ -6015,22 +6015,22 @@ namespace nn::am::service {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::am::service::IStorageAccessor::Write: int64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<int64_t>(8), temp2);
-				resp->error_code = Write(req->GetData<int64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Write(req->GetData<int64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::am::service::IStorageAccessor::Read: int64_t = 0x%%lx\n", req->GetData<int64_t>(8));
-				resp->error_code = Read(req->GetData<int64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(req->GetData<int64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -6038,7 +6038,7 @@ namespace nn::am::service {
 			}
 		}
 		uint32_t GetSize(int64_t& _0);
-		uint32_t Read(int64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Read(int64_t _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Write(int64_t _0, uint8_t * _1, unsigned int _1_size);
 	};
 	class ISystemAppletProxy : public IpcService {
@@ -6149,17 +6149,17 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::ISystemAppletProxy", req->cmd_id);
 			}
 		}
-		uint32_t GetApplicationCreator(nn::am::service::IApplicationCreator* _0);
-		uint32_t GetAudioController(nn::am::service::IAudioController* _0);
-		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0);
-		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions* _0);
-		uint32_t GetDisplayController(nn::am::service::IDisplayController* _0);
-		uint32_t GetGlobalStateController(nn::am::service::IGlobalStateController* _0);
-		uint32_t GetHomeMenuFunctions(nn::am::service::IHomeMenuFunctions* _0);
-		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0);
-		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController* _0);
-		uint32_t GetSelfController(nn::am::service::ISelfController* _0);
-		uint32_t GetWindowController(nn::am::service::IWindowController* _0);
+		uint32_t GetApplicationCreator(nn::am::service::IApplicationCreator*& _0);
+		uint32_t GetAudioController(nn::am::service::IAudioController*& _0);
+		uint32_t GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0);
+		uint32_t GetDebugFunctions(nn::am::service::IDebugFunctions*& _0);
+		uint32_t GetDisplayController(nn::am::service::IDisplayController*& _0);
+		uint32_t GetGlobalStateController(nn::am::service::IGlobalStateController*& _0);
+		uint32_t GetHomeMenuFunctions(nn::am::service::IHomeMenuFunctions*& _0);
+		uint32_t GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0);
+		uint32_t GetProcessWindingController(nn::am::service::IProcessWindingController*& _0);
+		uint32_t GetSelfController(nn::am::service::ISelfController*& _0);
+		uint32_t GetWindowController(nn::am::service::IWindowController*& _0);
 	};
 	class ITransferStorageAccessor : public IpcService {
 	public:
@@ -6185,7 +6185,7 @@ namespace nn::am::service {
 				ns_abort("Unknown message cmdId %u to interface nn::am::service::ITransferStorageAccessor", req->cmd_id);
 			}
 		}
-		uint32_t GetHandle(uint64_t& _0, IpcService* _1);
+		uint32_t GetHandle(uint64_t& _0, IpcService*& _1);
 		uint32_t GetSize(int64_t& _0);
 	};
 	class IWindow : public IpcService {
@@ -6248,38 +6248,38 @@ namespace nn::am::service {
 			}
 		}
 		uint32_t AcquireForegroundRights();
-		uint32_t CreateWindow(nn::am::service::WindowCreationOption _0, nn::am::service::IWindow* _1);
+		uint32_t CreateWindow(nn::am::service::WindowCreationOption _0, nn::am::service::IWindow*& _1);
 		uint32_t GetAppletResourceUserId(nn::applet::AppletResourceUserId& _0);
 		uint32_t RejectToChangeIntoBackground();
 		uint32_t ReleaseForegroundRights();
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::am::service::IAllSystemAppletProxiesService::CreateSelfLibraryAppletCreatorForDevelop(uint64_t _0, uint64_t _1, nn::am::service::ILibraryAppletCreator* _2) {
+uint32_t nn::am::service::IAllSystemAppletProxiesService::CreateSelfLibraryAppletCreatorForDevelop(uint64_t _0, uint64_t _1, nn::am::service::ILibraryAppletCreator*& _2) {
 	ns_print("Stub implementation for nn::am::service::IAllSystemAppletProxiesService::CreateSelfLibraryAppletCreatorForDevelop\n");
 	return 0;
 }
-uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::AppletAttribute * _3, unsigned int _3_size, nn::am::service::ILibraryAppletProxy* _4) {
+uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::AppletAttribute * _3, unsigned int _3_size, nn::am::service::ILibraryAppletProxy*& _4) {
 	ns_print("Stub implementation for nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxy\n");
 	return 0;
 }
-uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxyOld(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ILibraryAppletProxy* _3) {
+uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxyOld(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ILibraryAppletProxy*& _3) {
 	ns_print("Stub implementation for nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxyOld\n");
 	return 0;
 }
-uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenOverlayAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IOverlayAppletProxy* _3) {
+uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenOverlayAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IOverlayAppletProxy*& _3) {
 	ns_print("Stub implementation for nn::am::service::IAllSystemAppletProxiesService::OpenOverlayAppletProxy\n");
 	return 0;
 }
-uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenSystemAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ISystemAppletProxy* _3) {
+uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenSystemAppletProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::ISystemAppletProxy*& _3) {
 	ns_print("Stub implementation for nn::am::service::IAllSystemAppletProxiesService::OpenSystemAppletProxy\n");
 	return 0;
 }
-uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenSystemApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy* _3) {
+uint32_t nn::am::service::IAllSystemAppletProxiesService::OpenSystemApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy*& _3) {
 	ns_print("Stub implementation for nn::am::service::IAllSystemAppletProxiesService::OpenSystemApplicationProxy\n");
 	return 0;
 }
-uint32_t nn::am::service::IAppletAccessor::GetAppletStateChangedEvent(IpcService* _0) {
+uint32_t nn::am::service::IAppletAccessor::GetAppletStateChangedEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::IAppletAccessor::GetAppletStateChangedEvent\n");
 	return 0;
 }
@@ -6307,11 +6307,11 @@ uint32_t nn::am::service::IApplicationAccessor::AreAnyLibraryAppletsLeft(bool& _
 	ns_print("Stub implementation for nn::am::service::IApplicationAccessor::AreAnyLibraryAppletsLeft\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationAccessor::GetAppletStateChangedEvent(IpcService* _0) {
+uint32_t nn::am::service::IApplicationAccessor::GetAppletStateChangedEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationAccessor::GetAppletStateChangedEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationAccessor::GetApplicationControlProperty(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::am::service::IApplicationAccessor::GetApplicationControlProperty(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::am::service::IApplicationAccessor::GetApplicationControlProperty\n");
 	return 0;
 }
@@ -6319,11 +6319,11 @@ uint32_t nn::am::service::IApplicationAccessor::GetApplicationId(nn::ncm::Applic
 	ns_print("Stub implementation for nn::am::service::IApplicationAccessor::GetApplicationId\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationAccessor::GetApplicationLaunchProperty(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::am::service::IApplicationAccessor::GetApplicationLaunchProperty(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::am::service::IApplicationAccessor::GetApplicationLaunchProperty\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationAccessor::GetCurrentLibraryApplet(nn::am::service::IAppletAccessor* _0) {
+uint32_t nn::am::service::IApplicationAccessor::GetCurrentLibraryApplet(nn::am::service::IAppletAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationAccessor::GetCurrentLibraryApplet\n");
 	return 0;
 }
@@ -6359,19 +6359,19 @@ uint32_t nn::am::service::IApplicationAccessor::TerminateAllLibraryApplets() {
 	ns_print("Stub implementation for nn::am::service::IApplicationAccessor::TerminateAllLibraryApplets\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationCreator::CreateApplication(nn::ncm::ApplicationId _0, nn::am::service::IApplicationAccessor* _1) {
+uint32_t nn::am::service::IApplicationCreator::CreateApplication(nn::ncm::ApplicationId _0, nn::am::service::IApplicationAccessor*& _1) {
 	ns_print("Stub implementation for nn::am::service::IApplicationCreator::CreateApplication\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationCreator::CreateSystemApplication(nn::ncm::SystemApplicationId _0, nn::am::service::IApplicationAccessor* _1) {
+uint32_t nn::am::service::IApplicationCreator::CreateSystemApplication(nn::ncm::SystemApplicationId _0, nn::am::service::IApplicationAccessor*& _1) {
 	ns_print("Stub implementation for nn::am::service::IApplicationCreator::CreateSystemApplication\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationCreator::PopFloatingApplicationForDevelopment(nn::am::service::IApplicationAccessor* _0) {
+uint32_t nn::am::service::IApplicationCreator::PopFloatingApplicationForDevelopment(nn::am::service::IApplicationAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationCreator::PopFloatingApplicationForDevelopment\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationCreator::PopLaunchRequestedApplication(nn::am::service::IApplicationAccessor* _0) {
+uint32_t nn::am::service::IApplicationCreator::PopLaunchRequestedApplication(nn::am::service::IApplicationAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationCreator::PopLaunchRequestedApplication\n");
 	return 0;
 }
@@ -6439,7 +6439,7 @@ uint32_t nn::am::service::IApplicationFunctions::NotifyRunning(bool& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationFunctions::NotifyRunning\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationFunctions::PopLaunchParameter(uint32_t _0, nn::am::service::IStorage* _1) {
+uint32_t nn::am::service::IApplicationFunctions::PopLaunchParameter(uint32_t _0, nn::am::service::IStorage*& _1) {
 	ns_print("Stub implementation for nn::am::service::IApplicationFunctions::PopLaunchParameter\n");
 	return 0;
 }
@@ -6463,43 +6463,43 @@ uint32_t nn::am::service::IApplicationFunctions::SetTerminateResult(uint32_t _0)
 	ns_print("Stub implementation for nn::am::service::IApplicationFunctions::SetTerminateResult\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetApplicationFunctions(nn::am::service::IApplicationFunctions* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetApplicationFunctions(nn::am::service::IApplicationFunctions*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetApplicationFunctions\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetAudioController(nn::am::service::IAudioController* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetAudioController(nn::am::service::IAudioController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetAudioController\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetCommonStateGetter\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetDebugFunctions(nn::am::service::IDebugFunctions* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetDebugFunctions(nn::am::service::IDebugFunctions*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetDebugFunctions\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetDisplayController(nn::am::service::IDisplayController* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetDisplayController(nn::am::service::IDisplayController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetDisplayController\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetLibraryAppletCreator\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetProcessWindingController(nn::am::service::IProcessWindingController* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetProcessWindingController(nn::am::service::IProcessWindingController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetProcessWindingController\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetSelfController(nn::am::service::ISelfController* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetSelfController(nn::am::service::ISelfController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetSelfController\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxy::GetWindowController(nn::am::service::IWindowController* _0) {
+uint32_t nn::am::service::IApplicationProxy::GetWindowController(nn::am::service::IWindowController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetWindowController\n");
 	return 0;
 }
-uint32_t nn::am::service::IApplicationProxyService::OpenApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy* _3) {
+uint32_t nn::am::service::IApplicationProxyService::OpenApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy*& _3) {
 	ns_print("Stub implementation for nn::am::service::IApplicationProxyService::OpenApplicationProxy\n");
 	return 0;
 }
@@ -6531,7 +6531,7 @@ uint32_t nn::am::service::ICommonStateGetter::DisallowToEnterSleep() {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::DisallowToEnterSleep\n");
 	return 0;
 }
-uint32_t nn::am::service::ICommonStateGetter::GetAcquiredSleepLockEvent(IpcService* _0) {
+uint32_t nn::am::service::ICommonStateGetter::GetAcquiredSleepLockEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetAcquiredSleepLockEvent\n");
 	return 0;
 }
@@ -6555,15 +6555,15 @@ uint32_t nn::am::service::ICommonStateGetter::GetDefaultDisplayResolution(int32_
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetDefaultDisplayResolution\n");
 	return 0;
 }
-uint32_t nn::am::service::ICommonStateGetter::GetDefaultDisplayResolutionChangeEvent(IpcService* _0) {
+uint32_t nn::am::service::ICommonStateGetter::GetDefaultDisplayResolutionChangeEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetDefaultDisplayResolutionChangeEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::ICommonStateGetter::GetEventHandle(IpcService* _0) {
+uint32_t nn::am::service::ICommonStateGetter::GetEventHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetEventHandle\n");
 	return 0;
 }
-uint32_t nn::am::service::ICommonStateGetter::GetHomeButtonReaderLockAccessor(nn::am::service::ILockAccessor* _0) {
+uint32_t nn::am::service::ICommonStateGetter::GetHomeButtonReaderLockAccessor(nn::am::service::ILockAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetHomeButtonReaderLockAccessor\n");
 	return 0;
 }
@@ -6575,7 +6575,7 @@ uint32_t nn::am::service::ICommonStateGetter::GetPerformanceMode(uint32_t& _0) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetPerformanceMode\n");
 	return 0;
 }
-uint32_t nn::am::service::ICommonStateGetter::GetReaderLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor* _1) {
+uint32_t nn::am::service::ICommonStateGetter::GetReaderLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor*& _1) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetReaderLockAccessorEx\n");
 	return 0;
 }
@@ -6627,31 +6627,31 @@ uint32_t nn::am::service::IDebugFunctions::NotifyMessageToHomeMenuForDebug(nn::a
 	ns_print("Stub implementation for nn::am::service::IDebugFunctions::NotifyMessageToHomeMenuForDebug\n");
 	return 0;
 }
-uint32_t nn::am::service::IDebugFunctions::OpenMainApplication(nn::am::service::IApplicationAccessor* _0) {
+uint32_t nn::am::service::IDebugFunctions::OpenMainApplication(nn::am::service::IApplicationAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IDebugFunctions::OpenMainApplication\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::AcquireCallerAppletCaptureBuffer(IpcService* _0) {
+uint32_t nn::am::service::IDisplayController::AcquireCallerAppletCaptureBuffer(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::AcquireCallerAppletCaptureBuffer\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::AcquireCallerAppletCaptureBufferEx(bool& _0, IpcService* _1) {
+uint32_t nn::am::service::IDisplayController::AcquireCallerAppletCaptureBufferEx(bool& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::AcquireCallerAppletCaptureBufferEx\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::AcquireLastApplicationCaptureBuffer(IpcService* _0) {
+uint32_t nn::am::service::IDisplayController::AcquireLastApplicationCaptureBuffer(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::AcquireLastApplicationCaptureBuffer\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::AcquireLastApplicationCaptureBufferEx(bool& _0, IpcService* _1) {
+uint32_t nn::am::service::IDisplayController::AcquireLastApplicationCaptureBufferEx(bool& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::AcquireLastApplicationCaptureBufferEx\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::AcquireLastForegroundCaptureBuffer(IpcService* _0) {
+uint32_t nn::am::service::IDisplayController::AcquireLastForegroundCaptureBuffer(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::AcquireLastForegroundCaptureBuffer\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::AcquireLastForegroundCaptureBufferEx(bool& _0, IpcService* _1) {
+uint32_t nn::am::service::IDisplayController::AcquireLastForegroundCaptureBufferEx(bool& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::AcquireLastForegroundCaptureBufferEx\n");
 	return 0;
 }
@@ -6663,27 +6663,27 @@ uint32_t nn::am::service::IDisplayController::ClearCaptureBuffer(bool _0, int32_
 	ns_print("Stub implementation for nn::am::service::IDisplayController::ClearCaptureBuffer\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::GetCallerAppletCaptureImage(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::am::service::IDisplayController::GetCallerAppletCaptureImage(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::GetCallerAppletCaptureImage\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::GetCallerAppletCaptureImageEx(bool& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::am::service::IDisplayController::GetCallerAppletCaptureImageEx(bool& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::GetCallerAppletCaptureImageEx\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::GetLastApplicationCaptureImage(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::am::service::IDisplayController::GetLastApplicationCaptureImage(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::GetLastApplicationCaptureImage\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::GetLastApplicationCaptureImageEx(bool& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::am::service::IDisplayController::GetLastApplicationCaptureImageEx(bool& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::GetLastApplicationCaptureImageEx\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::GetLastForegroundCaptureImage(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::am::service::IDisplayController::GetLastForegroundCaptureImage(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::GetLastForegroundCaptureImage\n");
 	return 0;
 }
-uint32_t nn::am::service::IDisplayController::GetLastForegroundCaptureImageEx(bool& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::am::service::IDisplayController::GetLastForegroundCaptureImageEx(bool& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::am::service::IDisplayController::GetLastForegroundCaptureImageEx\n");
 	return 0;
 }
@@ -6751,15 +6751,15 @@ uint32_t nn::am::service::IGlobalStateController::UpdateDefaultDisplayResolution
 	ns_print("Stub implementation for nn::am::service::IGlobalStateController::UpdateDefaultDisplayResolution\n");
 	return 0;
 }
-uint32_t nn::am::service::IHomeMenuFunctions::GetHomeButtonWriterLockAccessor(nn::am::service::ILockAccessor* _0) {
+uint32_t nn::am::service::IHomeMenuFunctions::GetHomeButtonWriterLockAccessor(nn::am::service::ILockAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IHomeMenuFunctions::GetHomeButtonWriterLockAccessor\n");
 	return 0;
 }
-uint32_t nn::am::service::IHomeMenuFunctions::GetPopFromGeneralChannelEvent(IpcService* _0) {
+uint32_t nn::am::service::IHomeMenuFunctions::GetPopFromGeneralChannelEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::IHomeMenuFunctions::GetPopFromGeneralChannelEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::IHomeMenuFunctions::GetWriterLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor* _1) {
+uint32_t nn::am::service::IHomeMenuFunctions::GetWriterLockAccessorEx(int32_t _0, nn::am::service::ILockAccessor*& _1) {
 	ns_print("Stub implementation for nn::am::service::IHomeMenuFunctions::GetWriterLockAccessorEx\n");
 	return 0;
 }
@@ -6767,7 +6767,7 @@ uint32_t nn::am::service::IHomeMenuFunctions::LockForeground() {
 	ns_print("Stub implementation for nn::am::service::IHomeMenuFunctions::LockForeground\n");
 	return 0;
 }
-uint32_t nn::am::service::IHomeMenuFunctions::PopFromGeneralChannel(nn::am::service::IStorage* _0) {
+uint32_t nn::am::service::IHomeMenuFunctions::PopFromGeneralChannel(nn::am::service::IStorage*& _0) {
 	ns_print("Stub implementation for nn::am::service::IHomeMenuFunctions::PopFromGeneralChannel\n");
 	return 0;
 }
@@ -6779,7 +6779,7 @@ uint32_t nn::am::service::IHomeMenuFunctions::UnlockForeground() {
 	ns_print("Stub implementation for nn::am::service::IHomeMenuFunctions::UnlockForeground\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletAccessor::GetAppletStateChangedEvent(IpcService* _0) {
+uint32_t nn::am::service::ILibraryAppletAccessor::GetAppletStateChangedEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletAccessor::GetAppletStateChangedEvent\n");
 	return 0;
 }
@@ -6791,11 +6791,11 @@ uint32_t nn::am::service::ILibraryAppletAccessor::GetLibraryAppletInfo(nn::am::s
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletAccessor::GetLibraryAppletInfo\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletAccessor::GetPopInteractiveOutDataEvent(IpcService* _0) {
+uint32_t nn::am::service::ILibraryAppletAccessor::GetPopInteractiveOutDataEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletAccessor::GetPopInteractiveOutDataEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletAccessor::GetPopOutDataEvent(IpcService* _0) {
+uint32_t nn::am::service::ILibraryAppletAccessor::GetPopOutDataEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletAccessor::GetPopOutDataEvent\n");
 	return 0;
 }
@@ -6811,11 +6811,11 @@ uint32_t nn::am::service::ILibraryAppletAccessor::NeedsToExitProcess(bool& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletAccessor::NeedsToExitProcess\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletAccessor::PopInteractiveOutData(nn::am::service::IStorage* _0) {
+uint32_t nn::am::service::ILibraryAppletAccessor::PopInteractiveOutData(nn::am::service::IStorage*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletAccessor::PopInteractiveOutData\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletAccessor::PopOutData(nn::am::service::IStorage* _0) {
+uint32_t nn::am::service::ILibraryAppletAccessor::PopOutData(nn::am::service::IStorage*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletAccessor::PopOutData\n");
 	return 0;
 }
@@ -6855,19 +6855,19 @@ uint32_t nn::am::service::ILibraryAppletCreator::AreAnyLibraryAppletsLeft(bool& 
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletCreator::AreAnyLibraryAppletsLeft\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletCreator::CreateHandleStorage(int64_t _0, IpcService* _1, nn::am::service::IStorage* _2) {
+uint32_t nn::am::service::ILibraryAppletCreator::CreateHandleStorage(int64_t _0, IpcService* _1, nn::am::service::IStorage*& _2) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletCreator::CreateHandleStorage\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletCreator::CreateLibraryApplet(uint32_t _0, uint32_t _1, nn::am::service::ILibraryAppletAccessor* _2) {
+uint32_t nn::am::service::ILibraryAppletCreator::CreateLibraryApplet(uint32_t _0, uint32_t _1, nn::am::service::ILibraryAppletAccessor*& _2) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletCreator::CreateLibraryApplet\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletCreator::CreateStorage(int64_t _0, nn::am::service::IStorage* _1) {
+uint32_t nn::am::service::ILibraryAppletCreator::CreateStorage(int64_t _0, nn::am::service::IStorage*& _1) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletCreator::CreateStorage\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletCreator::CreateTransferMemoryStorage(bool _0, int64_t _1, IpcService* _2, nn::am::service::IStorage* _3) {
+uint32_t nn::am::service::ILibraryAppletCreator::CreateTransferMemoryStorage(bool _0, int64_t _1, IpcService* _2, nn::am::service::IStorage*& _3) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletCreator::CreateTransferMemoryStorage\n");
 	return 0;
 }
@@ -6875,39 +6875,39 @@ uint32_t nn::am::service::ILibraryAppletCreator::TerminateAllLibraryApplets() {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletCreator::TerminateAllLibraryApplets\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetAudioController(nn::am::service::IAudioController* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetAudioController(nn::am::service::IAudioController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetAudioController\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetCommonStateGetter\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetDebugFunctions(nn::am::service::IDebugFunctions* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetDebugFunctions(nn::am::service::IDebugFunctions*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetDebugFunctions\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetDisplayController(nn::am::service::IDisplayController* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetDisplayController(nn::am::service::IDisplayController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetDisplayController\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetLibraryAppletCreator\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetProcessWindingController(nn::am::service::IProcessWindingController* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetProcessWindingController(nn::am::service::IProcessWindingController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetProcessWindingController\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetSelfController(nn::am::service::ISelfController* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetSelfController(nn::am::service::ISelfController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetSelfController\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::GetWindowController(nn::am::service::IWindowController* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::GetWindowController(nn::am::service::IWindowController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::GetWindowController\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletProxy::OpenLibraryAppletSelfAccessor(nn::am::service::ILibraryAppletSelfAccessor* _0) {
+uint32_t nn::am::service::ILibraryAppletProxy::OpenLibraryAppletSelfAccessor(nn::am::service::ILibraryAppletSelfAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletProxy::OpenLibraryAppletSelfAccessor\n");
 	return 0;
 }
@@ -6923,7 +6923,7 @@ uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetCallerAppletIdentityInf
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetCallerAppletIdentityInfo\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetCallerAppletIdentityInfoStack(int32_t& _0, nn::am::service::AppletIdentityInfo * _1, unsigned int _1_size) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetCallerAppletIdentityInfoStack(int32_t& _0, nn::am::service::AppletIdentityInfo *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetCallerAppletIdentityInfoStack\n");
 	return 0;
 }
@@ -6935,7 +6935,7 @@ uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetLibraryAppletInfo(nn::a
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetLibraryAppletInfo\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetMainAppletApplicationControlProperty(nn::ns::ApplicationControlProperty * _0, unsigned int _0_size) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetMainAppletApplicationControlProperty(nn::ns::ApplicationControlProperty *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetMainAppletApplicationControlProperty\n");
 	return 0;
 }
@@ -6947,27 +6947,27 @@ uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetMainAppletStorageId(nn:
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetMainAppletStorageId\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetPopExtraStorageEvent(IpcService* _0) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetPopExtraStorageEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetPopExtraStorageEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetPopInDataEvent(IpcService* _0) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetPopInDataEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetPopInDataEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetPopInteractiveInDataEvent(IpcService* _0) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::GetPopInteractiveInDataEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::GetPopInteractiveInDataEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::PopExtraStorage(nn::am::service::IStorage* _0) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::PopExtraStorage(nn::am::service::IStorage*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::PopExtraStorage\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::PopInData(nn::am::service::IStorage* _0) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::PopInData(nn::am::service::IStorage*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::PopInData\n");
 	return 0;
 }
-uint32_t nn::am::service::ILibraryAppletSelfAccessor::PopInteractiveInData(nn::am::service::IStorage* _0) {
+uint32_t nn::am::service::ILibraryAppletSelfAccessor::PopInteractiveInData(nn::am::service::IStorage*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::PopInteractiveInData\n");
 	return 0;
 }
@@ -6991,11 +6991,11 @@ uint32_t nn::am::service::ILibraryAppletSelfAccessor::UnpopInData(nn::am::servic
 	ns_print("Stub implementation for nn::am::service::ILibraryAppletSelfAccessor::UnpopInData\n");
 	return 0;
 }
-uint32_t nn::am::service::ILockAccessor::GetEvent(IpcService* _0) {
+uint32_t nn::am::service::ILockAccessor::GetEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ILockAccessor::GetEvent\n");
 	return 0;
 }
-uint32_t nn::am::service::ILockAccessor::TryLock(bool _0, bool& _1, IpcService* _2) {
+uint32_t nn::am::service::ILockAccessor::TryLock(bool _0, bool& _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::am::service::ILockAccessor::TryLock\n");
 	return 0;
 }
@@ -7003,39 +7003,39 @@ uint32_t nn::am::service::ILockAccessor::Unlock() {
 	ns_print("Stub implementation for nn::am::service::ILockAccessor::Unlock\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetAudioController(nn::am::service::IAudioController* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetAudioController(nn::am::service::IAudioController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetAudioController\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetCommonStateGetter\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetDebugFunctions(nn::am::service::IDebugFunctions* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetDebugFunctions(nn::am::service::IDebugFunctions*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetDebugFunctions\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetDisplayController(nn::am::service::IDisplayController* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetDisplayController(nn::am::service::IDisplayController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetDisplayController\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetLibraryAppletCreator\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetOverlayFunctions(nn::am::service::IOverlayFunctions* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetOverlayFunctions(nn::am::service::IOverlayFunctions*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetOverlayFunctions\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetProcessWindingController(nn::am::service::IProcessWindingController* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetProcessWindingController(nn::am::service::IProcessWindingController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetProcessWindingController\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetSelfController(nn::am::service::ISelfController* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetSelfController(nn::am::service::ISelfController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetSelfController\n");
 	return 0;
 }
-uint32_t nn::am::service::IOverlayAppletProxy::GetWindowController(nn::am::service::IWindowController* _0) {
+uint32_t nn::am::service::IOverlayAppletProxy::GetWindowController(nn::am::service::IWindowController*& _0) {
 	ns_print("Stub implementation for nn::am::service::IOverlayAppletProxy::GetWindowController\n");
 	return 0;
 }
@@ -7075,11 +7075,11 @@ uint32_t nn::am::service::IProcessWindingController::GetLaunchReason(nn::am::ser
 	ns_print("Stub implementation for nn::am::service::IProcessWindingController::GetLaunchReason\n");
 	return 0;
 }
-uint32_t nn::am::service::IProcessWindingController::OpenCallingLibraryApplet(nn::am::service::ILibraryAppletAccessor* _0) {
+uint32_t nn::am::service::IProcessWindingController::OpenCallingLibraryApplet(nn::am::service::ILibraryAppletAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IProcessWindingController::OpenCallingLibraryApplet\n");
 	return 0;
 }
-uint32_t nn::am::service::IProcessWindingController::PopContext(nn::am::service::IStorage* _0) {
+uint32_t nn::am::service::IProcessWindingController::PopContext(nn::am::service::IStorage*& _0) {
 	ns_print("Stub implementation for nn::am::service::IProcessWindingController::PopContext\n");
 	return 0;
 }
@@ -7119,7 +7119,7 @@ uint32_t nn::am::service::ISelfController::GetIdleTimeDetectionExtension(uint32_
 	ns_print("Stub implementation for nn::am::service::ISelfController::GetIdleTimeDetectionExtension\n");
 	return 0;
 }
-uint32_t nn::am::service::ISelfController::GetLibraryAppletLaunchableEvent(IpcService* _0) {
+uint32_t nn::am::service::ISelfController::GetLibraryAppletLaunchableEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISelfController::GetLibraryAppletLaunchableEvent\n");
 	return 0;
 }
@@ -7203,11 +7203,11 @@ uint32_t nn::am::service::ISelfController::UnlockExit() {
 	ns_print("Stub implementation for nn::am::service::ISelfController::UnlockExit\n");
 	return 0;
 }
-uint32_t nn::am::service::IStorage::Open(nn::am::service::IStorageAccessor* _0) {
+uint32_t nn::am::service::IStorage::Open(nn::am::service::IStorageAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IStorage::Open\n");
 	return 0;
 }
-uint32_t nn::am::service::IStorage::OpenTransferStorage(nn::am::service::ITransferStorageAccessor* _0) {
+uint32_t nn::am::service::IStorage::OpenTransferStorage(nn::am::service::ITransferStorageAccessor*& _0) {
 	ns_print("Stub implementation for nn::am::service::IStorage::OpenTransferStorage\n");
 	return 0;
 }
@@ -7215,7 +7215,7 @@ uint32_t nn::am::service::IStorageAccessor::GetSize(int64_t& _0) {
 	ns_print("Stub implementation for nn::am::service::IStorageAccessor::GetSize\n");
 	return 0;
 }
-uint32_t nn::am::service::IStorageAccessor::Read(int64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::am::service::IStorageAccessor::Read(int64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::am::service::IStorageAccessor::Read\n");
 	return 0;
 }
@@ -7223,51 +7223,51 @@ uint32_t nn::am::service::IStorageAccessor::Write(int64_t _0, uint8_t * _1, unsi
 	ns_print("Stub implementation for nn::am::service::IStorageAccessor::Write\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetApplicationCreator(nn::am::service::IApplicationCreator* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetApplicationCreator(nn::am::service::IApplicationCreator*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetApplicationCreator\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetAudioController(nn::am::service::IAudioController* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetAudioController(nn::am::service::IAudioController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetAudioController\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetCommonStateGetter\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetDebugFunctions(nn::am::service::IDebugFunctions* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetDebugFunctions(nn::am::service::IDebugFunctions*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetDebugFunctions\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetDisplayController(nn::am::service::IDisplayController* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetDisplayController(nn::am::service::IDisplayController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetDisplayController\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetGlobalStateController(nn::am::service::IGlobalStateController* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetGlobalStateController(nn::am::service::IGlobalStateController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetGlobalStateController\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetHomeMenuFunctions(nn::am::service::IHomeMenuFunctions* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetHomeMenuFunctions(nn::am::service::IHomeMenuFunctions*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetHomeMenuFunctions\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetLibraryAppletCreator\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetProcessWindingController(nn::am::service::IProcessWindingController* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetProcessWindingController(nn::am::service::IProcessWindingController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetProcessWindingController\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetSelfController(nn::am::service::ISelfController* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetSelfController(nn::am::service::ISelfController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetSelfController\n");
 	return 0;
 }
-uint32_t nn::am::service::ISystemAppletProxy::GetWindowController(nn::am::service::IWindowController* _0) {
+uint32_t nn::am::service::ISystemAppletProxy::GetWindowController(nn::am::service::IWindowController*& _0) {
 	ns_print("Stub implementation for nn::am::service::ISystemAppletProxy::GetWindowController\n");
 	return 0;
 }
-uint32_t nn::am::service::ITransferStorageAccessor::GetHandle(uint64_t& _0, IpcService* _1) {
+uint32_t nn::am::service::ITransferStorageAccessor::GetHandle(uint64_t& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::am::service::ITransferStorageAccessor::GetHandle\n");
 	return 0;
 }
@@ -7283,7 +7283,7 @@ uint32_t nn::am::service::IWindowController::AcquireForegroundRights() {
 	ns_print("Stub implementation for nn::am::service::IWindowController::AcquireForegroundRights\n");
 	return 0;
 }
-uint32_t nn::am::service::IWindowController::CreateWindow(nn::am::service::WindowCreationOption _0, nn::am::service::IWindow* _1) {
+uint32_t nn::am::service::IWindowController::CreateWindow(nn::am::service::WindowCreationOption _0, nn::am::service::IWindow*& _1) {
 	ns_print("Stub implementation for nn::am::service::IWindowController::CreateWindow\n");
 	return 0;
 }
@@ -7316,11 +7316,11 @@ namespace nn::aocsrv::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int32_t* temp3 = (int32_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::aocsrv::detail::IAddOnContentManager::ListAddOnContentByApplicationId: int32_t = 0x%x, int32_t = 0x%x, nn::ncm::ApplicationId = 0x%%lx\n", req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<nn::ncm::ApplicationId>(0x10));
-				resp->error_code = ListAddOnContentByApplicationId(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<nn::ncm::ApplicationId>(0x10), *resp->GetDataPointer<int32_t *>(8), (int32_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListAddOnContentByApplicationId(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<nn::ncm::ApplicationId>(0x10), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -7333,11 +7333,11 @@ namespace nn::aocsrv::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int32_t* temp3 = (int32_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::aocsrv::detail::IAddOnContentManager::ListAddOnContent: int32_t = 0x%x, int32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<uint64_t>(0x10));
-				resp->error_code = ListAddOnContent(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, *resp->GetDataPointer<int32_t *>(8), (int32_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListAddOnContent(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
@@ -7372,8 +7372,8 @@ namespace nn::aocsrv::detail {
 		uint32_t CountAddOnContentByApplicationId(nn::ncm::ApplicationId _0, int32_t& _1);
 		uint32_t GetAddOnContentBaseId(uint64_t _0, uint64_t _1, uint64_t& _2);
 		uint32_t GetAddOnContentBaseIdByApplicationId(nn::ncm::ApplicationId _0, uint64_t& _1);
-		uint32_t ListAddOnContent(int32_t _0, int32_t _1, uint64_t _2, uint64_t _3, int32_t& _4, int32_t * _5, unsigned int _5_size);
-		uint32_t ListAddOnContentByApplicationId(int32_t _0, int32_t _1, nn::ncm::ApplicationId _2, int32_t& _3, int32_t * _4, unsigned int _4_size);
+		uint32_t ListAddOnContent(int32_t _0, int32_t _1, uint64_t _2, uint64_t _3, int32_t& _4, int32_t *& _5, unsigned int _5_size);
+		uint32_t ListAddOnContentByApplicationId(int32_t _0, int32_t _1, nn::ncm::ApplicationId _2, int32_t& _3, int32_t *& _4, unsigned int _4_size);
 		uint32_t PrepareAddOnContent(int32_t _0, uint64_t _1, uint64_t _2);
 		uint32_t PrepareAddOnContentByApplicationId(int32_t _0, nn::ncm::ApplicationId _1);
 	};
@@ -7395,11 +7395,11 @@ uint32_t nn::aocsrv::detail::IAddOnContentManager::GetAddOnContentBaseIdByApplic
 	ns_print("Stub implementation for nn::aocsrv::detail::IAddOnContentManager::GetAddOnContentBaseIdByApplicationId\n");
 	return 0;
 }
-uint32_t nn::aocsrv::detail::IAddOnContentManager::ListAddOnContent(int32_t _0, int32_t _1, uint64_t _2, uint64_t _3, int32_t& _4, int32_t * _5, unsigned int _5_size) {
+uint32_t nn::aocsrv::detail::IAddOnContentManager::ListAddOnContent(int32_t _0, int32_t _1, uint64_t _2, uint64_t _3, int32_t& _4, int32_t *& _5, unsigned int _5_size) {
 	ns_print("Stub implementation for nn::aocsrv::detail::IAddOnContentManager::ListAddOnContent\n");
 	return 0;
 }
-uint32_t nn::aocsrv::detail::IAddOnContentManager::ListAddOnContentByApplicationId(int32_t _0, int32_t _1, nn::ncm::ApplicationId _2, int32_t& _3, int32_t * _4, unsigned int _4_size) {
+uint32_t nn::aocsrv::detail::IAddOnContentManager::ListAddOnContentByApplicationId(int32_t _0, int32_t _1, nn::ncm::ApplicationId _2, int32_t& _3, int32_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::aocsrv::detail::IAddOnContentManager::ListAddOnContentByApplicationId\n");
 	return 0;
 }
@@ -7438,7 +7438,7 @@ namespace nn::apm {
 			}
 		}
 		uint32_t GetPerformanceMode(nn::apm::PerformanceMode& _0);
-		uint32_t OpenSession(nn::apm::ISession* _0);
+		uint32_t OpenSession(nn::apm::ISession*& _0);
 	};
 	class IManagerPrivileged : public IpcService {
 	public:
@@ -7458,7 +7458,7 @@ namespace nn::apm {
 				ns_abort("Unknown message cmdId %u to interface nn::apm::IManagerPrivileged", req->cmd_id);
 			}
 		}
-		uint32_t OpenSession(nn::apm::ISession* _0);
+		uint32_t OpenSession(nn::apm::ISession*& _0);
 	};
 	class ISession : public IpcService {
 	public:
@@ -7530,7 +7530,7 @@ namespace nn::apm {
 		}
 		uint32_t ClearLastThrottlingState();
 		uint32_t GetLastThrottlingState(nn::apm::ThrottlingState& _0);
-		uint32_t GetPerformanceEvent(nn::apm::EventTarget _0, IpcService* _1);
+		uint32_t GetPerformanceEvent(nn::apm::EventTarget _0, IpcService*& _1);
 		uint32_t GetThrottlingState(nn::apm::ThrottlingState& _0);
 		uint32_t RequestPerformanceMode(nn::apm::PerformanceMode _0);
 	};
@@ -7540,11 +7540,11 @@ uint32_t nn::apm::IManager::GetPerformanceMode(nn::apm::PerformanceMode& _0) {
 	ns_print("Stub implementation for nn::apm::IManager::GetPerformanceMode\n");
 	return 0;
 }
-uint32_t nn::apm::IManager::OpenSession(nn::apm::ISession* _0) {
+uint32_t nn::apm::IManager::OpenSession(nn::apm::ISession*& _0) {
 	ns_print("Stub implementation for nn::apm::IManager::OpenSession\n");
 	return 0;
 }
-uint32_t nn::apm::IManagerPrivileged::OpenSession(nn::apm::ISession* _0) {
+uint32_t nn::apm::IManagerPrivileged::OpenSession(nn::apm::ISession*& _0) {
 	ns_print("Stub implementation for nn::apm::IManagerPrivileged::OpenSession\n");
 	return 0;
 }
@@ -7564,7 +7564,7 @@ uint32_t nn::apm::ISystemManager::GetLastThrottlingState(nn::apm::ThrottlingStat
 	ns_print("Stub implementation for nn::apm::ISystemManager::GetLastThrottlingState\n");
 	return 0;
 }
-uint32_t nn::apm::ISystemManager::GetPerformanceEvent(nn::apm::EventTarget _0, IpcService* _1) {
+uint32_t nn::apm::ISystemManager::GetPerformanceEvent(nn::apm::EventTarget _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::apm::ISystemManager::GetPerformanceEvent\n");
 	return 0;
 }
@@ -7671,7 +7671,7 @@ namespace nn::arp::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::arp::detail::IWriter", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 		uint32_t Unknown1(uint64_t _0);
 	};
 }
@@ -7704,7 +7704,7 @@ uint32_t nn::arp::detail::IRegistrar::Unknown2() {
 	ns_print("Stub implementation for nn::arp::detail::IRegistrar::Unknown2\n");
 	return 0;
 }
-uint32_t nn::arp::detail::IWriter::Unknown0(IUnknown* _0) {
+uint32_t nn::arp::detail::IWriter::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::arp::detail::IWriter::Unknown0\n");
 	return 0;
 }
@@ -7761,44 +7761,44 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown0\n");
-				resp->error_code = Unknown0(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown1: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown1(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(req->GetData<uint32_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown2: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
-				delete[] temp3;
+				resp->error_code = Unknown2(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown3\n");
-				resp->error_code = Unknown3((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
@@ -7820,44 +7820,44 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown6\n");
-				resp->error_code = Unknown6(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown6(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown7: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown7(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown7(req->GetData<uint32_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 8: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown8: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown8((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
-				delete[] temp3;
+				resp->error_code = Unknown8(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown10\n");
-				resp->error_code = Unknown10((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown10(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 11: {
@@ -7882,16 +7882,16 @@ namespace nn::audio::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IAudioDevice", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown0(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown1(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown10(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown11(IpcService* _0);
-		uint32_t Unknown12(IpcService* _0);
+		uint32_t Unknown10(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown11(IpcService*& _0);
+		uint32_t Unknown12(IpcService*& _0);
 		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size, uint32_t& _1);
-		uint32_t Unknown3(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown4(IpcService* _0);
+		uint32_t Unknown3(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown4(IpcService*& _0);
 		uint32_t Unknown5(uint32_t& _0);
-		uint32_t Unknown6(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown6(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown7(uint32_t _0, uint8_t * _1, unsigned int _1_size);
 		uint32_t Unknown8(uint8_t * _0, unsigned int _0_size, uint32_t& _1);
 	};
@@ -7922,11 +7922,11 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioIn::Unknown3: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown3(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 4: {
@@ -7942,11 +7942,11 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioIn::Unknown5\n");
-				resp->error_code = Unknown5(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown5(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
@@ -7959,44 +7959,44 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioIn::Unknown7: uint64_t = 0x%%lx, KObject = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetCopied(0), temp2);
-				resp->error_code = Unknown7(req->GetData<uint64_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown7(req->GetData<uint64_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 8: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioIn::Unknown8: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown8(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown8(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioIn::Unknown9\n");
-				resp->error_code = Unknown9(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown9(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioIn::Unknown10: uint64_t = 0x%%lx, KObject = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetCopied(0), temp2);
-				resp->error_code = Unknown10(req->GetData<uint64_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown10(req->GetData<uint64_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
@@ -8008,12 +8008,12 @@ namespace nn::audio::detail {
 		uint32_t Unknown10(uint64_t _0, IpcService* _1, uint8_t * _2, unsigned int _2_size);
 		uint32_t Unknown2();
 		uint32_t Unknown3(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown4(IpcService* _0);
-		uint32_t Unknown5(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown4(IpcService*& _0);
+		uint32_t Unknown5(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown6(uint64_t _0, uint8_t& _1);
 		uint32_t Unknown7(uint64_t _0, IpcService* _1, uint8_t * _2, unsigned int _2_size);
 		uint32_t Unknown8(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown9(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown9(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IAudioInManager : public IpcService {
 	public:
@@ -8024,82 +8024,82 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioInManager::Unknown0\n");
-				resp->error_code = Unknown0(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(1, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				IUnknown* temp4;
 				unsigned int temp6;
 				auto temp5 = req->GetBuffer(6, 0, temp6);
-				auto temp7 = new uint8_t[temp6];
+				uint8_t* temp7 = (uint8_t *) new uint8_t[temp6];
 				ns_print("IPC message to nn::audio::detail::IAudioInManager::Unknown1: uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetCopied(0), temp2);
-				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, (uint8_t *) temp7, temp6);
-				delete[] temp3;
+				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
-				ARMv8::WriteBytes(temp5, temp7, temp6);
-				delete[] temp7;
+				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
+				delete[] (uint8_t *)temp7;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioInManager::Unknown2\n");
-				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(1, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				IUnknown* temp4;
 				unsigned int temp6;
 				auto temp5 = req->GetBuffer(0x22, 0, temp6);
-				auto temp7 = new uint8_t[temp6];
+				uint8_t* temp7 = (uint8_t *) new uint8_t[temp6];
 				ns_print("IPC message to nn::audio::detail::IAudioInManager::Unknown3: uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetCopied(0), temp2);
-				resp->error_code = Unknown3(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, (uint8_t *) temp7, temp6);
-				delete[] temp3;
+				resp->error_code = Unknown3(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
-				ARMv8::WriteBytes(temp5, temp7, temp6);
-				delete[] temp7;
+				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
+				delete[] (uint8_t *)temp7;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioInManager::Unknown4\n");
-				resp->error_code = Unknown4(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown4(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IAudioInManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size);
-		uint32_t Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size);
-		uint32_t Unknown4(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown0(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size);
+		uint32_t Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size);
+		uint32_t Unknown4(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IAudioInManagerForApplet : public IpcService {
 	public:
@@ -8140,8 +8140,8 @@ namespace nn::audio::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IAudioInManagerForApplet", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService* _2);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService* _2);
+		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2);
+		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2);
 		uint32_t Unknown2(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown3(uint32_t _0, uint64_t _1, uint64_t _2);
 	};
@@ -8196,11 +8196,11 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioOut::Unknown3: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown3(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 4: {
@@ -8216,11 +8216,11 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioOut::Unknown5\n");
-				resp->error_code = Unknown5(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown5(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
@@ -8233,22 +8233,22 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IAudioOut::Unknown7: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown7(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown7(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 8: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioOut::Unknown8\n");
-				resp->error_code = Unknown8(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown8(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -8259,11 +8259,11 @@ namespace nn::audio::detail {
 		uint32_t Unknown1();
 		uint32_t Unknown2();
 		uint32_t Unknown3(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown4(IpcService* _0);
-		uint32_t Unknown5(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown4(IpcService*& _0);
+		uint32_t Unknown5(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown6(uint64_t _0, uint8_t& _1);
 		uint32_t Unknown7(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown8(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown8(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IAudioOutManager : public IpcService {
 	public:
@@ -8274,70 +8274,70 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioOutManager::Unknown0\n");
-				resp->error_code = Unknown0(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(1, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				IUnknown* temp4;
 				unsigned int temp6;
 				auto temp5 = req->GetBuffer(6, 0, temp6);
-				auto temp7 = new uint8_t[temp6];
+				uint8_t* temp7 = (uint8_t *) new uint8_t[temp6];
 				ns_print("IPC message to nn::audio::detail::IAudioOutManager::Unknown1: uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetCopied(0), temp2);
-				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, (uint8_t *) temp7, temp6);
-				delete[] temp3;
+				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
-				ARMv8::WriteBytes(temp5, temp7, temp6);
-				delete[] temp7;
+				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
+				delete[] (uint8_t *)temp7;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IAudioOutManager::Unknown2\n");
-				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(1, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				IUnknown* temp4;
 				unsigned int temp6;
 				auto temp5 = req->GetBuffer(0x22, 0, temp6);
-				auto temp7 = new uint8_t[temp6];
+				uint8_t* temp7 = (uint8_t *) new uint8_t[temp6];
 				ns_print("IPC message to nn::audio::detail::IAudioOutManager::Unknown3: uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetCopied(0), temp2);
-				resp->error_code = Unknown3(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, (uint8_t *) temp7, temp6);
-				delete[] temp3;
+				resp->error_code = Unknown3(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
-				ARMv8::WriteBytes(temp5, temp7, temp6);
-				delete[] temp7;
+				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
+				delete[] (uint8_t *)temp7;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IAudioOutManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size);
-		uint32_t Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size);
+		uint32_t Unknown0(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size);
+		uint32_t Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size);
 	};
 	class IAudioOutManagerForApplet : public IpcService {
 	public:
@@ -8378,8 +8378,8 @@ namespace nn::audio::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IAudioOutManagerForApplet", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService* _2);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService* _2);
+		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2);
+		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2);
 		uint32_t Unknown2(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown3(uint32_t _0, uint64_t _1, uint64_t _2);
 	};
@@ -8440,21 +8440,21 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(6, 1, temp8);
-				auto temp9 = new uint8_t[temp8];
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
 				ns_print("IPC message to nn::audio::detail::IAudioRenderer::Unknown4: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown4((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
-				ARMv8::WriteBytes(temp7, temp9, temp8);
-				delete[] temp9;
+				resp->error_code = Unknown4(temp3, temp2, temp6, temp5, temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
+				ARMv8::WriteBytes(temp7, (uint8_t *) temp9, temp8);
+				delete[] (uint8_t *)temp9;
 				return 0;
 			}
 			case 5: {
@@ -8494,21 +8494,21 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x22, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(0x22, 1, temp8);
-				auto temp9 = new uint8_t[temp8];
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
 				ns_print("IPC message to nn::audio::detail::IAudioRenderer::Unknown10: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown10((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
-				ARMv8::WriteBytes(temp7, temp9, temp8);
-				delete[] temp9;
+				resp->error_code = Unknown10(temp3, temp2, temp6, temp5, temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
+				ARMv8::WriteBytes(temp7, (uint8_t *) temp9, temp8);
+				delete[] (uint8_t *)temp9;
 				return 0;
 			}
 			case 11: {
@@ -8523,14 +8523,14 @@ namespace nn::audio::detail {
 		}
 		uint32_t Unknown0(uint32_t& _0);
 		uint32_t Unknown1(uint32_t& _0);
-		uint32_t Unknown10(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown10(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown11();
 		uint32_t Unknown2(uint32_t& _0);
 		uint32_t Unknown3(uint32_t& _0);
-		uint32_t Unknown4(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown4(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown5();
 		uint32_t Unknown6();
-		uint32_t Unknown7(IpcService* _0);
+		uint32_t Unknown7(IpcService*& _0);
 		uint32_t Unknown8(uint32_t _0);
 		uint32_t Unknown9(uint32_t& _0);
 	};
@@ -8576,10 +8576,10 @@ namespace nn::audio::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IAudioRendererManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, IpcService* _4, IpcService* _5, IUnknown* _6);
+		uint32_t Unknown0(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, IpcService* _4, IpcService* _5, IUnknown*& _6);
 		uint32_t Unknown1(uint8_t * _0, uint64_t& _1);
-		uint32_t Unknown2(uint64_t _0, IUnknown* _1);
-		uint32_t Unknown3(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t _4, IpcService* _5, IUnknown* _6);
+		uint32_t Unknown2(uint64_t _0, IUnknown*& _1);
+		uint32_t Unknown3(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t _4, IpcService* _5, IUnknown*& _6);
 	};
 	class IAudioRendererManagerForApplet : public IpcService {
 	public:
@@ -8632,8 +8632,8 @@ namespace nn::audio::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IAudioRendererManagerForApplet", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService* _2);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService* _2);
+		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2);
+		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2);
 		uint32_t Unknown2(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown3(uint32_t _0, uint64_t _1, uint64_t _2);
 		uint32_t Unknown4(uint64_t _0);
@@ -8690,11 +8690,11 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorder::Unknown3: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown3(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 4: {
@@ -8710,11 +8710,11 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorder::Unknown5\n");
-				resp->error_code = Unknown5(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown5(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
@@ -8733,22 +8733,22 @@ namespace nn::audio::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorder::Unknown8: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown8(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown8(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorder::Unknown9\n");
-				resp->error_code = Unknown9(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown9(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -8759,12 +8759,12 @@ namespace nn::audio::detail {
 		uint32_t Unknown1();
 		uint32_t Unknown2();
 		uint32_t Unknown3(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown4(IpcService* _0);
-		uint32_t Unknown5(uint32_t& _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown4(IpcService*& _0);
+		uint32_t Unknown5(uint32_t& _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown6(uint64_t _0, uint8_t& _1);
 		uint32_t Unknown7(uint64_t _0, uint64_t& _1);
 		uint32_t Unknown8(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown9(uint32_t& _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown9(uint32_t& _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size);
 	};
 	class IFinalOutputRecorderManager : public IpcService {
 	public:
@@ -8784,7 +8784,7 @@ namespace nn::audio::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IFinalOutputRecorderManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService* _2, uint128_t& _3, IUnknown* _4);
+		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService* _2, uint128_t& _3, IUnknown*& _4);
 	};
 	class IFinalOutputRecorderManagerForApplet : public IpcService {
 	public:
@@ -8813,8 +8813,8 @@ namespace nn::audio::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::audio::detail::IFinalOutputRecorderManagerForApplet", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService* _2);
-		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService* _2);
+		uint32_t Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2);
+		uint32_t Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2);
 	};
 	class IFinalOutputRecorderManagerForDebugger : public IpcService {
 	public:
@@ -8858,7 +8858,7 @@ uint32_t nn::audio::detail::IAudioDebugManager::Unknown3() {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDebugManager::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioDevice::Unknown0(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioDevice::Unknown0(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown0\n");
 	return 0;
 }
@@ -8866,15 +8866,15 @@ uint32_t nn::audio::detail::IAudioDevice::Unknown1(uint32_t _0, uint8_t * _1, un
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown1\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioDevice::Unknown10(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::audio::detail::IAudioDevice::Unknown10(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown10\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioDevice::Unknown11(IpcService* _0) {
+uint32_t nn::audio::detail::IAudioDevice::Unknown11(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown11\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioDevice::Unknown12(IpcService* _0) {
+uint32_t nn::audio::detail::IAudioDevice::Unknown12(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown12\n");
 	return 0;
 }
@@ -8882,11 +8882,11 @@ uint32_t nn::audio::detail::IAudioDevice::Unknown2(uint8_t * _0, unsigned int _0
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown2\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioDevice::Unknown3(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::audio::detail::IAudioDevice::Unknown3(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioDevice::Unknown4(IpcService* _0) {
+uint32_t nn::audio::detail::IAudioDevice::Unknown4(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown4\n");
 	return 0;
 }
@@ -8894,7 +8894,7 @@ uint32_t nn::audio::detail::IAudioDevice::Unknown5(uint32_t& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown5\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioDevice::Unknown6(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioDevice::Unknown6(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioDevice::Unknown6\n");
 	return 0;
 }
@@ -8926,11 +8926,11 @@ uint32_t nn::audio::detail::IAudioIn::Unknown3(uint64_t _0, uint8_t * _1, unsign
 	ns_print("Stub implementation for nn::audio::detail::IAudioIn::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioIn::Unknown4(IpcService* _0) {
+uint32_t nn::audio::detail::IAudioIn::Unknown4(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioIn::Unknown4\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioIn::Unknown5(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioIn::Unknown5(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioIn::Unknown5\n");
 	return 0;
 }
@@ -8946,35 +8946,35 @@ uint32_t nn::audio::detail::IAudioIn::Unknown8(uint64_t _0, uint8_t * _1, unsign
 	ns_print("Stub implementation for nn::audio::detail::IAudioIn::Unknown8\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioIn::Unknown9(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioIn::Unknown9(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioIn::Unknown9\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioInManager::Unknown0(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioInManager::Unknown0(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioInManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioInManager::Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size) {
+uint32_t nn::audio::detail::IAudioInManager::Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioInManager::Unknown1\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioInManager::Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioInManager::Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioInManager::Unknown2\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioInManager::Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size) {
+uint32_t nn::audio::detail::IAudioInManager::Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioInManager::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioInManager::Unknown4(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioInManager::Unknown4(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioInManager::Unknown4\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioInManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IAudioInManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioInManagerForApplet::Unknown0\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioInManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IAudioInManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioInManagerForApplet::Unknown1\n");
 	return 0;
 }
@@ -9010,11 +9010,11 @@ uint32_t nn::audio::detail::IAudioOut::Unknown3(uint64_t _0, uint8_t * _1, unsig
 	ns_print("Stub implementation for nn::audio::detail::IAudioOut::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOut::Unknown4(IpcService* _0) {
+uint32_t nn::audio::detail::IAudioOut::Unknown4(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOut::Unknown4\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOut::Unknown5(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioOut::Unknown5(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOut::Unknown5\n");
 	return 0;
 }
@@ -9026,31 +9026,31 @@ uint32_t nn::audio::detail::IAudioOut::Unknown7(uint64_t _0, uint8_t * _1, unsig
 	ns_print("Stub implementation for nn::audio::detail::IAudioOut::Unknown7\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOut::Unknown8(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioOut::Unknown8(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOut::Unknown8\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOutManager::Unknown0(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioOutManager::Unknown0(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOutManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOutManager::Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size) {
+uint32_t nn::audio::detail::IAudioOutManager::Unknown1(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOutManager::Unknown1\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOutManager::Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::audio::detail::IAudioOutManager::Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOutManager::Unknown2\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOutManager::Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown* _6, uint8_t * _7, unsigned int _7_size) {
+uint32_t nn::audio::detail::IAudioOutManager::Unknown3(uint64_t _0, uint64_t _1, uint64_t _2, IpcService* _3, uint8_t * _4, unsigned int _4_size, uint128_t& _5, IUnknown*& _6, uint8_t *& _7, unsigned int _7_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOutManager::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOutManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IAudioOutManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOutManagerForApplet::Unknown0\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioOutManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IAudioOutManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioOutManagerForApplet::Unknown1\n");
 	return 0;
 }
@@ -9078,7 +9078,7 @@ uint32_t nn::audio::detail::IAudioRenderer::Unknown1(uint32_t& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRenderer::Unknown1\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRenderer::Unknown10(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::audio::detail::IAudioRenderer::Unknown10(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRenderer::Unknown10\n");
 	return 0;
 }
@@ -9094,7 +9094,7 @@ uint32_t nn::audio::detail::IAudioRenderer::Unknown3(uint32_t& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRenderer::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRenderer::Unknown4(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::audio::detail::IAudioRenderer::Unknown4(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRenderer::Unknown4\n");
 	return 0;
 }
@@ -9106,7 +9106,7 @@ uint32_t nn::audio::detail::IAudioRenderer::Unknown6() {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRenderer::Unknown6\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRenderer::Unknown7(IpcService* _0) {
+uint32_t nn::audio::detail::IAudioRenderer::Unknown7(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRenderer::Unknown7\n");
 	return 0;
 }
@@ -9118,7 +9118,7 @@ uint32_t nn::audio::detail::IAudioRenderer::Unknown9(uint32_t& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRenderer::Unknown9\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRendererManager::Unknown0(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, IpcService* _4, IpcService* _5, IUnknown* _6) {
+uint32_t nn::audio::detail::IAudioRendererManager::Unknown0(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, IpcService* _4, IpcService* _5, IUnknown*& _6) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRendererManager::Unknown0\n");
 	return 0;
 }
@@ -9126,19 +9126,19 @@ uint32_t nn::audio::detail::IAudioRendererManager::Unknown1(uint8_t * _0, uint64
 	ns_print("Stub implementation for nn::audio::detail::IAudioRendererManager::Unknown1\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRendererManager::Unknown2(uint64_t _0, IUnknown* _1) {
+uint32_t nn::audio::detail::IAudioRendererManager::Unknown2(uint64_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRendererManager::Unknown2\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRendererManager::Unknown3(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t _4, IpcService* _5, IUnknown* _6) {
+uint32_t nn::audio::detail::IAudioRendererManager::Unknown3(uint8_t * _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t _4, IpcService* _5, IUnknown*& _6) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRendererManager::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRendererManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IAudioRendererManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRendererManagerForApplet::Unknown0\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IAudioRendererManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IAudioRendererManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IAudioRendererManagerForApplet::Unknown1\n");
 	return 0;
 }
@@ -9182,11 +9182,11 @@ uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown3(uint64_t _0, uint8_t 
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorder::Unknown3\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown4(IpcService* _0) {
+uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown4(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorder::Unknown4\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown5(uint32_t& _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown5(uint32_t& _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorder::Unknown5\n");
 	return 0;
 }
@@ -9202,19 +9202,19 @@ uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown8(uint64_t _0, uint8_t 
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorder::Unknown8\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown9(uint32_t& _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::audio::detail::IFinalOutputRecorder::Unknown9(uint32_t& _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorder::Unknown9\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IFinalOutputRecorderManager::Unknown0(uint64_t _0, uint64_t _1, IpcService* _2, uint128_t& _3, IUnknown* _4) {
+uint32_t nn::audio::detail::IFinalOutputRecorderManager::Unknown0(uint64_t _0, uint64_t _1, IpcService* _2, uint128_t& _3, IUnknown*& _4) {
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorderManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown0(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown0\n");
 	return 0;
 }
-uint32_t nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown1(uint64_t _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown1\n");
 	return 0;
 }
@@ -9392,9 +9392,9 @@ namespace nn::audioctrl::detail {
 		uint32_t Unknown16(uint8_t _0);
 		uint32_t Unknown17(uint32_t _0);
 		uint32_t Unknown18(uint32_t& _0);
-		uint32_t Unknown19(IpcService* _0);
+		uint32_t Unknown19(IpcService*& _0);
 		uint32_t Unknown2(uint32_t& _0);
-		uint32_t Unknown20(IpcService* _0);
+		uint32_t Unknown20(IpcService*& _0);
 		uint32_t Unknown21(uint32_t& _0);
 		uint32_t Unknown22();
 		uint32_t Unknown3(uint32_t& _0);
@@ -9451,7 +9451,7 @@ uint32_t nn::audioctrl::detail::IAudioController::Unknown18(uint32_t& _0) {
 	ns_print("Stub implementation for nn::audioctrl::detail::IAudioController::Unknown18\n");
 	return 0;
 }
-uint32_t nn::audioctrl::detail::IAudioController::Unknown19(IpcService* _0) {
+uint32_t nn::audioctrl::detail::IAudioController::Unknown19(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audioctrl::detail::IAudioController::Unknown19\n");
 	return 0;
 }
@@ -9459,7 +9459,7 @@ uint32_t nn::audioctrl::detail::IAudioController::Unknown2(uint32_t& _0) {
 	ns_print("Stub implementation for nn::audioctrl::detail::IAudioController::Unknown2\n");
 	return 0;
 }
-uint32_t nn::audioctrl::detail::IAudioController::Unknown20(IpcService* _0) {
+uint32_t nn::audioctrl::detail::IAudioController::Unknown20(IpcService*& _0) {
 	ns_print("Stub implementation for nn::audioctrl::detail::IAudioController::Unknown20\n");
 	return 0;
 }
@@ -9528,11 +9528,11 @@ namespace nn::bcat::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::bcat::detail::ipc::IBcatService::SetPassphrase: nn::ApplicationId = 0x%%lx, int8_t *= buffer<0x%lx>\n", req->GetData<nn::ApplicationId>(8), temp2);
-				resp->error_code = SetPassphrase(req->GetData<nn::ApplicationId>(8), (int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetPassphrase(req->GetData<nn::ApplicationId>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 30200: {
@@ -9563,22 +9563,22 @@ namespace nn::bcat::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::bcat::TaskInfo* temp3 = (nn::bcat::TaskInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bcat::detail::ipc::IBcatService::EnumerateBackgroundDeliveryTask\n");
-				resp->error_code = EnumerateBackgroundDeliveryTask(*resp->GetDataPointer<int32_t *>(8), (nn::bcat::TaskInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = EnumerateBackgroundDeliveryTask(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 90200: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bcat::detail::ipc::IBcatService::GetDeliveryList: nn::ApplicationId = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
-				resp->error_code = GetDeliveryList(req->GetData<nn::ApplicationId>(8), *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetDeliveryList(req->GetData<nn::ApplicationId>(8), *resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 90201: {
@@ -9591,11 +9591,11 @@ namespace nn::bcat::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::bcat::PushNotificationLog* temp3 = (nn::bcat::PushNotificationLog *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bcat::detail::ipc::IBcatService::GetPushNotificationLog\n");
-				resp->error_code = GetPushNotificationLog(*resp->GetDataPointer<int32_t *>(8), (nn::bcat::PushNotificationLog *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPushNotificationLog(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -9604,12 +9604,12 @@ namespace nn::bcat::detail::ipc {
 		}
 		uint32_t BlockDeliveryTask(nn::ApplicationId _0);
 		uint32_t ClearDeliveryCacheStorage(nn::ApplicationId _0);
-		uint32_t EnumerateBackgroundDeliveryTask(int32_t& _0, nn::bcat::TaskInfo * _1, unsigned int _1_size);
-		uint32_t GetDeliveryList(nn::ApplicationId _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t GetPushNotificationLog(int32_t& _0, nn::bcat::PushNotificationLog * _1, unsigned int _1_size);
+		uint32_t EnumerateBackgroundDeliveryTask(int32_t& _0, nn::bcat::TaskInfo *& _1, unsigned int _1_size);
+		uint32_t GetDeliveryList(nn::ApplicationId _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size);
+		uint32_t GetPushNotificationLog(int32_t& _0, nn::bcat::PushNotificationLog *& _1, unsigned int _1_size);
 		uint32_t RegisterBackgroundDeliveryTask(uint32_t _0, nn::ApplicationId _1);
-		uint32_t RequestSyncDeliveryCache(nn::bcat::detail::ipc::IDeliveryCacheProgressService* _0);
-		uint32_t RequestSyncDeliveryCacheWithApplicationId(uint32_t _0, nn::ApplicationId _1, nn::bcat::detail::ipc::IDeliveryCacheProgressService* _2);
+		uint32_t RequestSyncDeliveryCache(nn::bcat::detail::ipc::IDeliveryCacheProgressService*& _0);
+		uint32_t RequestSyncDeliveryCacheWithApplicationId(uint32_t _0, nn::ApplicationId _1, nn::bcat::detail::ipc::IDeliveryCacheProgressService*& _2);
 		uint32_t SetPassphrase(nn::ApplicationId _0, int8_t * _1, unsigned int _1_size);
 		uint32_t UnblockDeliveryTask(nn::ApplicationId _0);
 		uint32_t UnregisterBackgroundDeliveryTask(nn::ApplicationId _0);
@@ -9629,11 +9629,11 @@ namespace nn::bcat::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::bcat::DeliveryCacheDirectoryEntry* temp3 = (nn::bcat::DeliveryCacheDirectoryEntry *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Read\n");
-				resp->error_code = Read(*resp->GetDataPointer<int32_t *>(8), (nn::bcat::DeliveryCacheDirectoryEntry *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -9648,7 +9648,7 @@ namespace nn::bcat::detail::ipc {
 		}
 		uint32_t GetCount(int32_t& _0);
 		uint32_t Open(nn::bcat::DirectoryName _0);
-		uint32_t Read(int32_t& _0, nn::bcat::DeliveryCacheDirectoryEntry * _1, unsigned int _1_size);
+		uint32_t Read(int32_t& _0, nn::bcat::DeliveryCacheDirectoryEntry *& _1, unsigned int _1_size);
 	};
 	class IDeliveryCacheFileService : public IpcService {
 	public:
@@ -9665,11 +9665,11 @@ namespace nn::bcat::detail::ipc {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheFileService::Read: int64_t = 0x%%lx\n", req->GetData<int64_t>(8));
-				resp->error_code = Read(req->GetData<int64_t>(8), *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(req->GetData<int64_t>(8), *resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -9691,7 +9691,7 @@ namespace nn::bcat::detail::ipc {
 		uint32_t GetDigest(nn::bcat::Digest& _0);
 		uint32_t GetSize(int64_t& _0);
 		uint32_t Open(nn::bcat::DirectoryName _0, nn::bcat::FileName _1);
-		uint32_t Read(int64_t _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Read(int64_t _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size);
 	};
 	class IDeliveryCacheProgressService : public IpcService {
 	public:
@@ -9711,19 +9711,19 @@ namespace nn::bcat::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::bcat::detail::DeliveryCacheProgressImpl* temp3 = (nn::bcat::detail::DeliveryCacheProgressImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetImpl\n");
-				resp->error_code = GetImpl((nn::bcat::detail::DeliveryCacheProgressImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetImpl(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::bcat::detail::ipc::IDeliveryCacheProgressService", req->cmd_id);
 			}
 		}
-		uint32_t GetEvent(IpcService* _0);
-		uint32_t GetImpl(nn::bcat::detail::DeliveryCacheProgressImpl * _0, unsigned int _0_size);
+		uint32_t GetEvent(IpcService*& _0);
+		uint32_t GetImpl(nn::bcat::detail::DeliveryCacheProgressImpl *& _0, unsigned int _0_size);
 	};
 	class IDeliveryCacheStorageService : public IpcService {
 	public:
@@ -9752,20 +9752,20 @@ namespace nn::bcat::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::bcat::DirectoryName* temp3 = (nn::bcat::DirectoryName *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheStorageService::EnumerateDeliveryCacheDirectory\n");
-				resp->error_code = EnumerateDeliveryCacheDirectory(*resp->GetDataPointer<int32_t *>(8), (nn::bcat::DirectoryName *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = EnumerateDeliveryCacheDirectory(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::bcat::detail::ipc::IDeliveryCacheStorageService", req->cmd_id);
 			}
 		}
-		uint32_t CreateDirectoryService(nn::bcat::detail::ipc::IDeliveryCacheDirectoryService* _0);
-		uint32_t CreateFileService(nn::bcat::detail::ipc::IDeliveryCacheFileService* _0);
-		uint32_t EnumerateDeliveryCacheDirectory(int32_t& _0, nn::bcat::DirectoryName * _1, unsigned int _1_size);
+		uint32_t CreateDirectoryService(nn::bcat::detail::ipc::IDeliveryCacheDirectoryService*& _0);
+		uint32_t CreateFileService(nn::bcat::detail::ipc::IDeliveryCacheFileService*& _0);
+		uint32_t EnumerateDeliveryCacheDirectory(int32_t& _0, nn::bcat::DirectoryName *& _1, unsigned int _1_size);
 	};
 	class IServiceCreator : public IpcService {
 	public:
@@ -9803,9 +9803,9 @@ namespace nn::bcat::detail::ipc {
 				ns_abort("Unknown message cmdId %u to interface nn::bcat::detail::ipc::IServiceCreator", req->cmd_id);
 			}
 		}
-		uint32_t CreateBcatService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IBcatService* _2);
-		uint32_t CreateDeliveryCacheStorageService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IDeliveryCacheStorageService* _2);
-		uint32_t CreateDeliveryCacheStorageServiceWithApplicationId(nn::ApplicationId _0, nn::bcat::detail::ipc::IDeliveryCacheStorageService* _1);
+		uint32_t CreateBcatService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IBcatService*& _2);
+		uint32_t CreateDeliveryCacheStorageService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IDeliveryCacheStorageService*& _2);
+		uint32_t CreateDeliveryCacheStorageServiceWithApplicationId(nn::ApplicationId _0, nn::bcat::detail::ipc::IDeliveryCacheStorageService*& _1);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -9817,15 +9817,15 @@ uint32_t nn::bcat::detail::ipc::IBcatService::ClearDeliveryCacheStorage(nn::Appl
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IBcatService::ClearDeliveryCacheStorage\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IBcatService::EnumerateBackgroundDeliveryTask(int32_t& _0, nn::bcat::TaskInfo * _1, unsigned int _1_size) {
+uint32_t nn::bcat::detail::ipc::IBcatService::EnumerateBackgroundDeliveryTask(int32_t& _0, nn::bcat::TaskInfo *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IBcatService::EnumerateBackgroundDeliveryTask\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IBcatService::GetDeliveryList(nn::ApplicationId _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::bcat::detail::ipc::IBcatService::GetDeliveryList(nn::ApplicationId _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IBcatService::GetDeliveryList\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IBcatService::GetPushNotificationLog(int32_t& _0, nn::bcat::PushNotificationLog * _1, unsigned int _1_size) {
+uint32_t nn::bcat::detail::ipc::IBcatService::GetPushNotificationLog(int32_t& _0, nn::bcat::PushNotificationLog *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IBcatService::GetPushNotificationLog\n");
 	return 0;
 }
@@ -9833,11 +9833,11 @@ uint32_t nn::bcat::detail::ipc::IBcatService::RegisterBackgroundDeliveryTask(uin
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IBcatService::RegisterBackgroundDeliveryTask\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCache(nn::bcat::detail::ipc::IDeliveryCacheProgressService* _0) {
+uint32_t nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCache(nn::bcat::detail::ipc::IDeliveryCacheProgressService*& _0) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCache\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCacheWithApplicationId(uint32_t _0, nn::ApplicationId _1, nn::bcat::detail::ipc::IDeliveryCacheProgressService* _2) {
+uint32_t nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCacheWithApplicationId(uint32_t _0, nn::ApplicationId _1, nn::bcat::detail::ipc::IDeliveryCacheProgressService*& _2) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCacheWithApplicationId\n");
 	return 0;
 }
@@ -9861,7 +9861,7 @@ uint32_t nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Open(nn::bcat::D
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Open\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Read(int32_t& _0, nn::bcat::DeliveryCacheDirectoryEntry * _1, unsigned int _1_size) {
+uint32_t nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Read(int32_t& _0, nn::bcat::DeliveryCacheDirectoryEntry *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheDirectoryService::Read\n");
 	return 0;
 }
@@ -9877,39 +9877,39 @@ uint32_t nn::bcat::detail::ipc::IDeliveryCacheFileService::Open(nn::bcat::Direct
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheFileService::Open\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IDeliveryCacheFileService::Read(int64_t _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::bcat::detail::ipc::IDeliveryCacheFileService::Read(int64_t _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheFileService::Read\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetEvent(IpcService* _0) {
+uint32_t nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetEvent\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetImpl(nn::bcat::detail::DeliveryCacheProgressImpl * _0, unsigned int _0_size) {
+uint32_t nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetImpl(nn::bcat::detail::DeliveryCacheProgressImpl *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetImpl\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateDirectoryService(nn::bcat::detail::ipc::IDeliveryCacheDirectoryService* _0) {
+uint32_t nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateDirectoryService(nn::bcat::detail::ipc::IDeliveryCacheDirectoryService*& _0) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateDirectoryService\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateFileService(nn::bcat::detail::ipc::IDeliveryCacheFileService* _0) {
+uint32_t nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateFileService(nn::bcat::detail::ipc::IDeliveryCacheFileService*& _0) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateFileService\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IDeliveryCacheStorageService::EnumerateDeliveryCacheDirectory(int32_t& _0, nn::bcat::DirectoryName * _1, unsigned int _1_size) {
+uint32_t nn::bcat::detail::ipc::IDeliveryCacheStorageService::EnumerateDeliveryCacheDirectory(int32_t& _0, nn::bcat::DirectoryName *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IDeliveryCacheStorageService::EnumerateDeliveryCacheDirectory\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IServiceCreator::CreateBcatService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IBcatService* _2) {
+uint32_t nn::bcat::detail::ipc::IServiceCreator::CreateBcatService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IBcatService*& _2) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IServiceCreator::CreateBcatService\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IDeliveryCacheStorageService* _2) {
+uint32_t nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageService(uint64_t _0, uint64_t _1, nn::bcat::detail::ipc::IDeliveryCacheStorageService*& _2) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageService\n");
 	return 0;
 }
-uint32_t nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageServiceWithApplicationId(nn::ApplicationId _0, nn::bcat::detail::ipc::IDeliveryCacheStorageService* _1) {
+uint32_t nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageServiceWithApplicationId(nn::ApplicationId _0, nn::bcat::detail::ipc::IDeliveryCacheStorageService*& _1) {
 	ns_print("Stub implementation for nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageServiceWithApplicationId\n");
 	return 0;
 }
@@ -9958,7 +9958,7 @@ namespace nn::bgtc {
 			}
 		}
 		uint32_t Unknown1(uint32_t& _0);
-		uint32_t Unknown2(IpcService* _0);
+		uint32_t Unknown2(IpcService*& _0);
 		uint32_t Unknown3();
 		uint32_t Unknown4();
 		uint32_t Unknown5(uint8_t _0);
@@ -10069,10 +10069,10 @@ namespace nn::bgtc {
 		uint32_t Unknown11(uint32_t _0);
 		uint32_t Unknown12(uint32_t& _0);
 		uint32_t Unknown13();
-		uint32_t Unknown14(IpcService* _0);
+		uint32_t Unknown14(IpcService*& _0);
 		uint32_t Unknown15(uint32_t _0, uint32_t _1);
 		uint32_t Unknown2();
-		uint32_t Unknown3(IpcService* _0);
+		uint32_t Unknown3(IpcService*& _0);
 		uint32_t Unknown4(uint8_t& _0);
 		uint32_t Unknown5();
 		uint32_t Unknown6(uint8_t& _0);
@@ -10083,7 +10083,7 @@ uint32_t nn::bgtc::IStateControlService::Unknown1(uint32_t& _0) {
 	ns_print("Stub implementation for nn::bgtc::IStateControlService::Unknown1\n");
 	return 0;
 }
-uint32_t nn::bgtc::IStateControlService::Unknown2(IpcService* _0) {
+uint32_t nn::bgtc::IStateControlService::Unknown2(IpcService*& _0) {
 	ns_print("Stub implementation for nn::bgtc::IStateControlService::Unknown2\n");
 	return 0;
 }
@@ -10127,7 +10127,7 @@ uint32_t nn::bgtc::ITaskService::Unknown13() {
 	ns_print("Stub implementation for nn::bgtc::ITaskService::Unknown13\n");
 	return 0;
 }
-uint32_t nn::bgtc::ITaskService::Unknown14(IpcService* _0) {
+uint32_t nn::bgtc::ITaskService::Unknown14(IpcService*& _0) {
 	ns_print("Stub implementation for nn::bgtc::ITaskService::Unknown14\n");
 	return 0;
 }
@@ -10139,7 +10139,7 @@ uint32_t nn::bgtc::ITaskService::Unknown2() {
 	ns_print("Stub implementation for nn::bgtc::ITaskService::Unknown2\n");
 	return 0;
 }
-uint32_t nn::bgtc::ITaskService::Unknown3(IpcService* _0) {
+uint32_t nn::bgtc::ITaskService::Unknown3(IpcService*& _0) {
 	ns_print("Stub implementation for nn::bgtc::ITaskService::Unknown3\n");
 	return 0;
 }
@@ -10259,11 +10259,11 @@ namespace nn::bluetooth {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown15\n");
-				resp->error_code = Unknown15(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown15(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 16: {
@@ -10336,11 +10336,11 @@ namespace nn::bluetooth {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown27\n");
-				resp->error_code = Unknown27(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown27(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 28: {
@@ -10404,11 +10404,11 @@ namespace nn::bluetooth {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown37\n");
-				resp->error_code = Unknown37(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown37(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 38: {
@@ -10458,13 +10458,13 @@ namespace nn::bluetooth {
 			}
 		}
 		uint32_t Unknown0();
-		uint32_t Unknown1(IpcService* _0);
+		uint32_t Unknown1(IpcService*& _0);
 		uint32_t Unknown10();
 		uint32_t Unknown11(uint8_t * _0);
 		uint32_t Unknown12(uint8_t * _0);
 		uint32_t Unknown13();
 		uint32_t Unknown14();
-		uint32_t Unknown15(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown15(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown16();
 		uint32_t Unknown17(uint8_t * _0);
 		uint32_t Unknown18(uint8_t * _0);
@@ -10477,7 +10477,7 @@ namespace nn::bluetooth {
 		uint32_t Unknown24();
 		uint32_t Unknown25();
 		uint32_t Unknown26();
-		uint32_t Unknown27(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown27(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown28();
 		uint32_t Unknown29();
 		uint32_t Unknown3();
@@ -10487,8 +10487,8 @@ namespace nn::bluetooth {
 		uint32_t Unknown33();
 		uint32_t Unknown34(uint8_t _0);
 		uint32_t Unknown35();
-		uint32_t Unknown36(IpcService* _0);
-		uint32_t Unknown37(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown36(IpcService*& _0);
+		uint32_t Unknown37(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown38();
 		uint32_t Unknown39();
 		uint32_t Unknown4();
@@ -10509,7 +10509,7 @@ uint32_t nn::bluetooth::IBluetoothDriver::Unknown0() {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown0\n");
 	return 0;
 }
-uint32_t nn::bluetooth::IBluetoothDriver::Unknown1(IpcService* _0) {
+uint32_t nn::bluetooth::IBluetoothDriver::Unknown1(IpcService*& _0) {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown1\n");
 	return 0;
 }
@@ -10533,7 +10533,7 @@ uint32_t nn::bluetooth::IBluetoothDriver::Unknown14() {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown14\n");
 	return 0;
 }
-uint32_t nn::bluetooth::IBluetoothDriver::Unknown15(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::bluetooth::IBluetoothDriver::Unknown15(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown15\n");
 	return 0;
 }
@@ -10585,7 +10585,7 @@ uint32_t nn::bluetooth::IBluetoothDriver::Unknown26() {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown26\n");
 	return 0;
 }
-uint32_t nn::bluetooth::IBluetoothDriver::Unknown27(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::bluetooth::IBluetoothDriver::Unknown27(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown27\n");
 	return 0;
 }
@@ -10625,11 +10625,11 @@ uint32_t nn::bluetooth::IBluetoothDriver::Unknown35() {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown35\n");
 	return 0;
 }
-uint32_t nn::bluetooth::IBluetoothDriver::Unknown36(IpcService* _0) {
+uint32_t nn::bluetooth::IBluetoothDriver::Unknown36(IpcService*& _0) {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown36\n");
 	return 0;
 }
-uint32_t nn::bluetooth::IBluetoothDriver::Unknown37(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::bluetooth::IBluetoothDriver::Unknown37(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::bluetooth::IBluetoothDriver::Unknown37\n");
 	return 0;
 }
@@ -10795,9 +10795,9 @@ namespace nn::bpc {
 		uint32_t Unknown2(uint32_t& _0);
 		uint32_t Unknown3(uint32_t& _0);
 		uint32_t Unknown4(uint8_t& _0);
-		uint32_t Unknown5(uint32_t _0, IpcService* _1);
+		uint32_t Unknown5(uint32_t _0, IpcService*& _1);
 		uint32_t Unknown6(uint32_t& _0);
-		uint32_t Unknown7(uint32_t _0, IpcService* _1);
+		uint32_t Unknown7(uint32_t _0, IpcService*& _1);
 		uint32_t Unknown8(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown9(uint32_t _0);
 	};
@@ -10884,7 +10884,7 @@ uint32_t nn::bpc::IBoardPowerControlManager::Unknown4(uint8_t& _0) {
 	ns_print("Stub implementation for nn::bpc::IBoardPowerControlManager::Unknown4\n");
 	return 0;
 }
-uint32_t nn::bpc::IBoardPowerControlManager::Unknown5(uint32_t _0, IpcService* _1) {
+uint32_t nn::bpc::IBoardPowerControlManager::Unknown5(uint32_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::bpc::IBoardPowerControlManager::Unknown5\n");
 	return 0;
 }
@@ -10892,7 +10892,7 @@ uint32_t nn::bpc::IBoardPowerControlManager::Unknown6(uint32_t& _0) {
 	ns_print("Stub implementation for nn::bpc::IBoardPowerControlManager::Unknown6\n");
 	return 0;
 }
-uint32_t nn::bpc::IBoardPowerControlManager::Unknown7(uint32_t _0, IpcService* _1) {
+uint32_t nn::bpc::IBoardPowerControlManager::Unknown7(uint32_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::bpc::IBoardPowerControlManager::Unknown7\n");
 	return 0;
 }
@@ -10947,22 +10947,22 @@ namespace nn::bsdsocket::cfg {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::bsdsocket::cfg::ServerInterface::Unknown2: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::bsdsocket::cfg::ServerInterface::Unknown3: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown3(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(req->GetData<uint32_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 4: {
@@ -10975,11 +10975,11 @@ namespace nn::bsdsocket::cfg {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::bsdsocket::cfg::ServerInterface::Unknown5: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown5((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown5(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 6: {
@@ -11016,11 +11016,11 @@ namespace nn::bsdsocket::cfg {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::bsdsocket::cfg::ServerInterface::Unknown11: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown11((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown11(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 12: {
@@ -11337,7 +11337,7 @@ namespace nn::btm {
 				ns_abort("Unknown message cmdId %u to interface nn::btm::IBtmSystem", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class IBtmSystemCore : public IpcService {
 	public:
@@ -11533,7 +11533,7 @@ uint32_t nn::btm::IBtmDebug::Unknown8() {
 	ns_print("Stub implementation for nn::btm::IBtmDebug::Unknown8\n");
 	return 0;
 }
-uint32_t nn::btm::IBtmSystem::Unknown0(IUnknown* _0) {
+uint32_t nn::btm::IBtmSystem::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::btm::IBtmSystem::Unknown0\n");
 	return 0;
 }
@@ -11860,24 +11860,24 @@ namespace nn::capsrv::sf {
 				resp->GenBuf(0, 0, 32);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x45, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				auto temp4 = resp->GetDataPointer<nn::capsrv::ApplicationAlbumEntry>(8);
 				ns_print("IPC message to nn::capsrv::sf::IScreenShotApplicationService::SaveScreenShot: uint32_t = 0x%x, uint32_t = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<nn::applet::AppletResourceUserId>(0x10), temp2);
-				resp->error_code = SaveScreenShot(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->pid, (uint8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = SaveScreenShot(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->pid, temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 203: {
 				resp->GenBuf(0, 0, 32);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x45, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				auto temp4 = resp->GetDataPointer<nn::capsrv::ApplicationAlbumEntry>(8);
 				ns_print("IPC message to nn::capsrv::sf::IScreenShotApplicationService::SaveScreenShotEx0: nn::capsrv::detail::ScreenShotAttributeEx0 = %s, uint32_t = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), req->GetData<uint32_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), temp2);
-				resp->error_code = SaveScreenShotEx0(req->GetDataPointer<nn::capsrv::detail::ScreenShotAttributeEx0>(8), req->GetData<uint32_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), req->pid, (uint8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = SaveScreenShotEx0(req->GetDataPointer<nn::capsrv::detail::ScreenShotAttributeEx0>(8), req->GetData<uint32_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), req->pid, temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
@@ -11950,11 +11950,11 @@ namespace nn::capsrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::capsrv::sf::IScreenShotControlService::Unknown1203: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown1203(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1203(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -11969,7 +11969,7 @@ namespace nn::capsrv::sf {
 		uint32_t Unknown1012(uint64_t _0);
 		uint32_t Unknown1201();
 		uint32_t Unknown1202();
-		uint32_t Unknown1203(uint64_t _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown1203(uint64_t _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown2();
 	};
 	class IScreenShotService : public IpcService {
@@ -12196,7 +12196,7 @@ uint32_t nn::capsrv::sf::IScreenShotControlService::Unknown1202() {
 	ns_print("Stub implementation for nn::capsrv::sf::IScreenShotControlService::Unknown1202\n");
 	return 0;
 }
-uint32_t nn::capsrv::sf::IScreenShotControlService::Unknown1203(uint64_t _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::capsrv::sf::IScreenShotControlService::Unknown1203(uint64_t _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::capsrv::sf::IScreenShotControlService::Unknown1203\n");
 	return 0;
 }
@@ -12322,63 +12322,63 @@ namespace nn::codec::detail {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::codec::detail::IHardwareOpusDecoder::Unknown0: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown0((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown0(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::codec::detail::IHardwareOpusDecoder::Unknown1: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::codec::detail::IHardwareOpusDecoder::Unknown2: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown2(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::codec::detail::IHardwareOpusDecoder::Unknown3: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown3((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::codec::detail::IHardwareOpusDecoder", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size);
 		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size);
 		uint32_t Unknown3(uint8_t * _0, unsigned int _0_size);
 	};
 	class IHardwareOpusDecoderManager : public IpcService {
@@ -12405,12 +12405,12 @@ namespace nn::codec::detail {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				IUnknown* temp4;
 				ns_print("IPC message to nn::codec::detail::IHardwareOpusDecoderManager::Unknown2: uint32_t = 0x%x, KObject = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetCopied(0), temp2);
-				resp->error_code = Unknown2(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = Unknown2(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -12419,25 +12419,25 @@ namespace nn::codec::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::codec::detail::IHardwareOpusDecoderManager::Unknown3: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown3((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
-				delete[] temp3;
+				resp->error_code = Unknown3(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::codec::detail::IHardwareOpusDecoderManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint32_t _1, IpcService* _2, IUnknown* _3);
+		uint32_t Unknown0(uint64_t _0, uint32_t _1, IpcService* _2, IUnknown*& _3);
 		uint32_t Unknown1(uint64_t _0, uint32_t& _1);
-		uint32_t Unknown2(uint32_t _0, IpcService* _1, uint8_t * _2, unsigned int _2_size, IUnknown* _3);
+		uint32_t Unknown2(uint32_t _0, IpcService* _1, uint8_t * _2, unsigned int _2_size, IUnknown*& _3);
 		uint32_t Unknown3(uint8_t * _0, unsigned int _0_size, uint32_t& _1);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::codec::detail::IHardwareOpusDecoder::Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::codec::detail::IHardwareOpusDecoder::Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::codec::detail::IHardwareOpusDecoder::Unknown0\n");
 	return 0;
 }
@@ -12445,7 +12445,7 @@ uint32_t nn::codec::detail::IHardwareOpusDecoder::Unknown1(uint8_t * _0, unsigne
 	ns_print("Stub implementation for nn::codec::detail::IHardwareOpusDecoder::Unknown1\n");
 	return 0;
 }
-uint32_t nn::codec::detail::IHardwareOpusDecoder::Unknown2(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::codec::detail::IHardwareOpusDecoder::Unknown2(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::codec::detail::IHardwareOpusDecoder::Unknown2\n");
 	return 0;
 }
@@ -12453,7 +12453,7 @@ uint32_t nn::codec::detail::IHardwareOpusDecoder::Unknown3(uint8_t * _0, unsigne
 	ns_print("Stub implementation for nn::codec::detail::IHardwareOpusDecoder::Unknown3\n");
 	return 0;
 }
-uint32_t nn::codec::detail::IHardwareOpusDecoderManager::Unknown0(uint64_t _0, uint32_t _1, IpcService* _2, IUnknown* _3) {
+uint32_t nn::codec::detail::IHardwareOpusDecoderManager::Unknown0(uint64_t _0, uint32_t _1, IpcService* _2, IUnknown*& _3) {
 	ns_print("Stub implementation for nn::codec::detail::IHardwareOpusDecoderManager::Unknown0\n");
 	return 0;
 }
@@ -12461,7 +12461,7 @@ uint32_t nn::codec::detail::IHardwareOpusDecoderManager::Unknown1(uint64_t _0, u
 	ns_print("Stub implementation for nn::codec::detail::IHardwareOpusDecoderManager::Unknown1\n");
 	return 0;
 }
-uint32_t nn::codec::detail::IHardwareOpusDecoderManager::Unknown2(uint32_t _0, IpcService* _1, uint8_t * _2, unsigned int _2_size, IUnknown* _3) {
+uint32_t nn::codec::detail::IHardwareOpusDecoderManager::Unknown2(uint32_t _0, IpcService* _1, uint8_t * _2, unsigned int _2_size, IUnknown*& _3) {
 	ns_print("Stub implementation for nn::codec::detail::IHardwareOpusDecoderManager::Unknown2\n");
 	return 0;
 }
@@ -12548,7 +12548,7 @@ namespace nn::erpt::sf {
 			}
 		}
 		uint32_t Unknown0();
-		uint32_t Unknown1(IpcService* _0);
+		uint32_t Unknown1(IpcService*& _0);
 	};
 	class IReport : public IpcService {
 	public:
@@ -12565,11 +12565,11 @@ namespace nn::erpt::sf {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::erpt::sf::IReport::Unknown1\n");
-				resp->error_code = Unknown1(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -12601,7 +12601,7 @@ namespace nn::erpt::sf {
 			}
 		}
 		uint32_t Unknown0();
-		uint32_t Unknown1(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown1(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown2(uint32_t _0);
 		uint32_t Unknown3(uint32_t& _0);
 		uint32_t Unknown4();
@@ -12634,8 +12634,8 @@ namespace nn::erpt::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::erpt::sf::ISession", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
-		uint32_t Unknown1(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
+		uint32_t Unknown1(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -12667,7 +12667,7 @@ uint32_t nn::erpt::sf::IManager::Unknown0() {
 	ns_print("Stub implementation for nn::erpt::sf::IManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::erpt::sf::IManager::Unknown1(IpcService* _0) {
+uint32_t nn::erpt::sf::IManager::Unknown1(IpcService*& _0) {
 	ns_print("Stub implementation for nn::erpt::sf::IManager::Unknown1\n");
 	return 0;
 }
@@ -12675,7 +12675,7 @@ uint32_t nn::erpt::sf::IReport::Unknown0() {
 	ns_print("Stub implementation for nn::erpt::sf::IReport::Unknown0\n");
 	return 0;
 }
-uint32_t nn::erpt::sf::IReport::Unknown1(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::erpt::sf::IReport::Unknown1(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::erpt::sf::IReport::Unknown1\n");
 	return 0;
 }
@@ -12695,11 +12695,11 @@ uint32_t nn::erpt::sf::IReport::Unknown5(uint64_t& _0) {
 	ns_print("Stub implementation for nn::erpt::sf::IReport::Unknown5\n");
 	return 0;
 }
-uint32_t nn::erpt::sf::ISession::Unknown0(IUnknown* _0) {
+uint32_t nn::erpt::sf::ISession::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::erpt::sf::ISession::Unknown0\n");
 	return 0;
 }
-uint32_t nn::erpt::sf::ISession::Unknown1(IUnknown* _0) {
+uint32_t nn::erpt::sf::ISession::Unknown1(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::erpt::sf::ISession::Unknown1\n");
 	return 0;
 }
@@ -12720,22 +12720,22 @@ namespace nn::es {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::es::IETicketService::Unknown2: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::es::IETicketService::Unknown3: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown3((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 4: {
@@ -12760,11 +12760,11 @@ namespace nn::es {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::es::IETicketService::Unknown7: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown7((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown7(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 8: {
@@ -12789,22 +12789,22 @@ namespace nn::es {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::es::IETicketService::Unknown11\n");
-				resp->error_code = Unknown11(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown11(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::es::IETicketService::Unknown12\n");
-				resp->error_code = Unknown12(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown12(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 13: {
@@ -12867,8 +12867,8 @@ namespace nn::es {
 		}
 		uint32_t Unknown1();
 		uint32_t Unknown10(uint32_t& _0);
-		uint32_t Unknown11(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown12(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown11(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown12(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown13();
 		uint32_t Unknown14();
 		uint32_t Unknown15();
@@ -12897,11 +12897,11 @@ uint32_t nn::es::IETicketService::Unknown10(uint32_t& _0) {
 	ns_print("Stub implementation for nn::es::IETicketService::Unknown10\n");
 	return 0;
 }
-uint32_t nn::es::IETicketService::Unknown11(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::es::IETicketService::Unknown11(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::es::IETicketService::Unknown11\n");
 	return 0;
 }
-uint32_t nn::es::IETicketService::Unknown12(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::es::IETicketService::Unknown12(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::es::IETicketService::Unknown12\n");
 	return 0;
 }
@@ -13069,7 +13069,7 @@ namespace nn::eth::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::eth::sf::IEthInterfaceGroup", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1();
 		uint32_t Unknown2();
 		uint32_t Unknown3();
@@ -13101,7 +13101,7 @@ uint32_t nn::eth::sf::IEthInterface::Unknown5() {
 	ns_print("Stub implementation for nn::eth::sf::IEthInterface::Unknown5\n");
 	return 0;
 }
-uint32_t nn::eth::sf::IEthInterfaceGroup::Unknown0(IpcService* _0) {
+uint32_t nn::eth::sf::IEthInterfaceGroup::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::eth::sf::IEthInterfaceGroup::Unknown0\n");
 	return 0;
 }
@@ -13132,22 +13132,22 @@ namespace nn::eupld::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::eupld::sf::IControl::Unknown0: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown0((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::eupld::sf::IControl::Unknown1: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
@@ -13195,22 +13195,22 @@ namespace nn::eupld::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::eupld::sf::IRequest::Unknown2: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::eupld::sf::IRequest::Unknown3\n");
-				resp->error_code = Unknown3((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown3(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
@@ -13229,10 +13229,10 @@ namespace nn::eupld::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::eupld::sf::IRequest", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1();
 		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown3(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown3(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown4();
 		uint32_t Unknown5();
 	};
@@ -13254,7 +13254,7 @@ uint32_t nn::eupld::sf::IControl::Unknown3() {
 	ns_print("Stub implementation for nn::eupld::sf::IControl::Unknown3\n");
 	return 0;
 }
-uint32_t nn::eupld::sf::IRequest::Unknown0(IpcService* _0) {
+uint32_t nn::eupld::sf::IRequest::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::eupld::sf::IRequest::Unknown0\n");
 	return 0;
 }
@@ -13266,7 +13266,7 @@ uint32_t nn::eupld::sf::IRequest::Unknown2(uint8_t * _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::eupld::sf::IRequest::Unknown2\n");
 	return 0;
 }
-uint32_t nn::eupld::sf::IRequest::Unknown3(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::eupld::sf::IRequest::Unknown3(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::eupld::sf::IRequest::Unknown3\n");
 	return 0;
 }
@@ -13364,7 +13364,7 @@ namespace nn::fan::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::fan::detail::IManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, IUnknown* _1);
+		uint32_t Unknown0(uint32_t _0, IUnknown*& _1);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -13400,7 +13400,7 @@ uint32_t nn::fan::detail::IController::Unknown7(uint32_t& _0) {
 	ns_print("Stub implementation for nn::fan::detail::IController::Unknown7\n");
 	return 0;
 }
-uint32_t nn::fan::detail::IManager::Unknown0(uint32_t _0, IUnknown* _1) {
+uint32_t nn::fan::detail::IManager::Unknown0(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::fan::detail::IManager::Unknown0\n");
 	return 0;
 }
@@ -13424,7 +13424,7 @@ namespace nn::fatalsrv {
 				ns_abort("Unknown message cmdId %u to interface nn::fatalsrv::IPrivateService", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 	};
 	class IService : public IpcService {
 	public:
@@ -13459,7 +13459,7 @@ namespace nn::fatalsrv {
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::fatalsrv::IPrivateService::Unknown0(IpcService* _0) {
+uint32_t nn::fatalsrv::IPrivateService::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::fatalsrv::IPrivateService::Unknown0\n");
 	return 0;
 }
@@ -13495,11 +13495,11 @@ namespace nn::fgm::sf {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fgm::sf::IDebugger::Read\n");
-				resp->error_code = Read(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -13513,8 +13513,8 @@ namespace nn::fgm::sf {
 			}
 		}
 		uint32_t Cancel();
-		uint32_t Initialize(uint64_t _0, IpcService* _1, IpcService* _2);
-		uint32_t Read(uint32_t& _0, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t Initialize(uint64_t _0, IpcService* _1, IpcService*& _2);
+		uint32_t Read(uint32_t& _0, uint32_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size);
 	};
 	class IRequest : public IpcService {
 	public:
@@ -13554,7 +13554,7 @@ namespace nn::fgm::sf {
 		}
 		uint32_t Cancel();
 		uint32_t Get(uint32_t& _0);
-		uint32_t Initialize(nn::fgm::Module _0, uint64_t _1, uint64_t _2, IpcService* _3);
+		uint32_t Initialize(nn::fgm::Module _0, uint64_t _1, uint64_t _2, IpcService*& _3);
 		uint32_t Set(uint32_t _0, uint32_t _1);
 	};
 	class ISession : public IpcService {
@@ -13575,7 +13575,7 @@ namespace nn::fgm::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::fgm::sf::ISession", req->cmd_id);
 			}
 		}
-		uint32_t Initialize(nn::fgm::sf::IRequest* _0);
+		uint32_t Initialize(nn::fgm::sf::IRequest*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -13583,11 +13583,11 @@ uint32_t nn::fgm::sf::IDebugger::Cancel() {
 	ns_print("Stub implementation for nn::fgm::sf::IDebugger::Cancel\n");
 	return 0;
 }
-uint32_t nn::fgm::sf::IDebugger::Initialize(uint64_t _0, IpcService* _1, IpcService* _2) {
+uint32_t nn::fgm::sf::IDebugger::Initialize(uint64_t _0, IpcService* _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::fgm::sf::IDebugger::Initialize\n");
 	return 0;
 }
-uint32_t nn::fgm::sf::IDebugger::Read(uint32_t& _0, uint32_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::fgm::sf::IDebugger::Read(uint32_t& _0, uint32_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::fgm::sf::IDebugger::Read\n");
 	return 0;
 }
@@ -13599,7 +13599,7 @@ uint32_t nn::fgm::sf::IRequest::Get(uint32_t& _0) {
 	ns_print("Stub implementation for nn::fgm::sf::IRequest::Get\n");
 	return 0;
 }
-uint32_t nn::fgm::sf::IRequest::Initialize(nn::fgm::Module _0, uint64_t _1, uint64_t _2, IpcService* _3) {
+uint32_t nn::fgm::sf::IRequest::Initialize(nn::fgm::Module _0, uint64_t _1, uint64_t _2, IpcService*& _3) {
 	ns_print("Stub implementation for nn::fgm::sf::IRequest::Initialize\n");
 	return 0;
 }
@@ -13607,7 +13607,7 @@ uint32_t nn::fgm::sf::IRequest::Set(uint32_t _0, uint32_t _1) {
 	ns_print("Stub implementation for nn::fgm::sf::IRequest::Set\n");
 	return 0;
 }
-uint32_t nn::fgm::sf::ISession::Initialize(nn::fgm::sf::IRequest* _0) {
+uint32_t nn::fgm::sf::ISession::Initialize(nn::fgm::sf::IRequest*& _0) {
 	ns_print("Stub implementation for nn::fgm::sf::ISession::Initialize\n");
 	return 0;
 }
@@ -13637,113 +13637,113 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::NetworkServiceAccountId* temp3 = (nn::account::NetworkServiceAccountId *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendListIds: int32_t = 0x%x, nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x20), 0x10).c_str(), req->GetData<uint64_t>(0x30));
-				resp->error_code = GetFriendListIds(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::friends::detail::ipc::SizedFriendFilter>(0x20), req->GetData<uint64_t>(0x30), req->pid, *resp->GetDataPointer<int32_t *>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFriendListIds(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::friends::detail::ipc::SizedFriendFilter>(0x20), req->GetData<uint64_t>(0x30), req->pid, *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10101: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::FriendImpl* temp3 = (nn::friends::detail::FriendImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendList: int32_t = 0x%x, nn::account::Uid = %s, nn::friends::detail::ipc::SizedFriendFilter = %s, uint64_t = 0x%%lx\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x20), 0x10).c_str(), req->GetData<uint64_t>(0x30));
-				resp->error_code = GetFriendList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::friends::detail::ipc::SizedFriendFilter>(0x20), req->GetData<uint64_t>(0x30), req->pid, *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::FriendImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFriendList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::friends::detail::ipc::SizedFriendFilter>(0x20), req->GetData<uint64_t>(0x30), req->pid, *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10102: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::NetworkServiceAccountId* temp3 = (nn::account::NetworkServiceAccountId *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::friends::detail::FriendImpl* temp6 = (nn::friends::detail::FriendImpl *) new uint8_t[temp5];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UpdateFriendInfo: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2);
-				resp->error_code = UpdateFriendInfo(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (nn::account::NetworkServiceAccountId *) temp3, temp2, (nn::friends::detail::FriendImpl *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = UpdateFriendInfo(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 10110: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendProfileImage: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
-				resp->error_code = GetFriendProfileImage(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), *resp->GetDataPointer<int32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFriendProfileImage(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10200: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::friends::InAppScreenName* temp3 = (nn::friends::InAppScreenName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::friends::InAppScreenName* temp6 = (nn::friends::InAppScreenName *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestForApplication: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, uint64_t = 0x%%lx, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18), req->GetData<uint64_t>(0x20), temp2, temp5);
-				resp->error_code = SendFriendRequestForApplication(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), req->GetData<uint64_t>(0x20), req->pid, (nn::friends::InAppScreenName *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SendFriendRequestForApplication(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), req->GetData<uint64_t>(0x20), req->pid, temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 10211: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::friends::InAppScreenName* temp6 = (nn::friends::InAppScreenName *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(0x19, 1, temp8);
-				auto temp9 = new uint8_t[temp8];
-				ARMv8::ReadBytes(temp7, temp9, temp8);
+				nn::friends::InAppScreenName* temp9 = (nn::friends::InAppScreenName *) new uint8_t[temp8];
+				ARMv8::ReadBytes(temp7, (uint8_t *)temp9, temp8);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddFacedFriendRequestForApplication: nn::friends::FacedFriendRequestRegistrationKey = %s, nn::account::Nickname = %s, nn::account::Uid = %s, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x48), 0x21).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x70), 0x10).c_str(), req->GetData<uint64_t>(0x80), temp2, temp5, temp8);
-				resp->error_code = AddFacedFriendRequestForApplication(req->GetDataPointer<nn::friends::FacedFriendRequestRegistrationKey>(8), req->GetDataPointer<nn::account::Nickname>(0x48), req->GetData<nn::account::Uid>(0x70), req->GetData<uint64_t>(0x80), req->pid, (uint8_t *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5, (nn::friends::InAppScreenName *) temp9, temp8);
-				delete[] temp3;
-				delete[] temp6;
-				delete[] temp9;
+				resp->error_code = AddFacedFriendRequestForApplication(req->GetDataPointer<nn::friends::FacedFriendRequestRegistrationKey>(8), req->GetDataPointer<nn::account::Nickname>(0x48), req->GetData<nn::account::Uid>(0x70), req->GetData<uint64_t>(0x80), req->pid, temp3, temp2, temp6, temp5, temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				delete[] (uint8_t *) temp9;
 				return 0;
 			}
 			case 10400: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::account::NetworkServiceAccountId* temp3 = (nn::account::NetworkServiceAccountId *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetBlockedUserListIds: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetBlockedUserListIds(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetBlockedUserListIds(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10500: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::NetworkServiceAccountId* temp3 = (nn::account::NetworkServiceAccountId *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::friends::detail::ProfileImpl* temp6 = (nn::friends::detail::ProfileImpl *) new uint8_t[temp5];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileList: nn::account::Uid = %s, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), temp2);
-				resp->error_code = GetProfileList(req->GetData<nn::account::Uid>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2, (nn::friends::detail::ProfileImpl *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetProfileList(req->GetData<nn::account::Uid>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 10600: {
@@ -13762,54 +13762,54 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::friends::detail::UserPresenceImpl* temp3 = (nn::friends::detail::UserPresenceImpl *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::UpdateUserPresence: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::friends::detail::UserPresenceImpl *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2);
-				resp->error_code = UpdateUserPresence(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (nn::friends::detail::UserPresenceImpl *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = UpdateUserPresence(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 10700: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::PlayHistoryRegistrationKey* temp3 = (nn::friends::PlayHistoryRegistrationKey *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKey: bool = 0x%x, nn::account::Uid = %s\n", req->GetData<bool>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetPlayHistoryRegistrationKey(req->GetData<bool>(8), req->GetData<nn::account::Uid>(0x10), (nn::friends::PlayHistoryRegistrationKey *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPlayHistoryRegistrationKey(req->GetData<bool>(8), req->GetData<nn::account::Uid>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10701: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::PlayHistoryRegistrationKey* temp3 = (nn::friends::PlayHistoryRegistrationKey *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId: bool = 0x%x, nn::account::NetworkServiceAccountId = 0x%%lx\n", req->GetData<bool>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x10));
-				resp->error_code = GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId(req->GetData<bool>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x10), (nn::friends::PlayHistoryRegistrationKey *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId(req->GetData<bool>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10702: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::friends::PlayHistoryRegistrationKey* temp3 = (nn::friends::PlayHistoryRegistrationKey *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::friends::InAppScreenName* temp6 = (nn::friends::InAppScreenName *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(0x19, 2, temp8);
-				auto temp9 = new uint8_t[temp8];
-				ARMv8::ReadBytes(temp7, temp9, temp8);
+				nn::friends::InAppScreenName* temp9 = (nn::friends::InAppScreenName *) new uint8_t[temp8];
+				ARMv8::ReadBytes(temp7, (uint8_t *)temp9, temp8);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddPlayHistory: nn::account::Uid = %s, uint64_t = 0x%%lx, nn::friends::PlayHistoryRegistrationKey *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2, temp5, temp8);
-				resp->error_code = AddPlayHistory(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (nn::friends::PlayHistoryRegistrationKey *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5, (nn::friends::InAppScreenName *) temp9, temp8);
-				delete[] temp3;
-				delete[] temp6;
-				delete[] temp9;
+				resp->error_code = AddPlayHistory(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, temp3, temp2, temp6, temp5, temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				delete[] (uint8_t *) temp9;
 				return 0;
 			}
 			case 11000: {
@@ -13835,11 +13835,11 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::FriendDetailedInfoImpl* temp3 = (nn::friends::detail::FriendDetailedInfoImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendDetailedInfo: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
-				resp->error_code = GetFriendDetailedInfo(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), (nn::friends::detail::FriendDetailedInfoImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFriendDetailedInfo(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20103: {
@@ -13858,11 +13858,11 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::FriendSettingImpl* temp3 = (nn::friends::detail::FriendSettingImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::LoadFriendSetting: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
-				resp->error_code = LoadFriendSetting(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), (nn::friends::detail::FriendSettingImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadFriendSetting(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20200: {
@@ -13875,49 +13875,49 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::FriendRequestImpl* temp3 = (nn::friends::detail::FriendRequestImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendRequestList: int32_t = 0x%x, int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetFriendRequestList(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::FriendRequestImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFriendRequestList(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20300: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::FriendCandidateImpl* temp3 = (nn::friends::detail::FriendCandidateImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFriendCandidateList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetFriendCandidateList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::FriendCandidateImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFriendCandidateList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20301: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::NintendoNetworkIdUserInfo* temp3 = (nn::friends::NintendoNetworkIdUserInfo *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::friends::detail::NintendoNetworkIdFriendImpl* temp6 = (nn::friends::detail::NintendoNetworkIdFriendImpl *) new uint8_t[temp5];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetNintendoNetworkIdInfo: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetNintendoNetworkIdInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::NintendoNetworkIdUserInfo *) temp3, temp2, (nn::friends::detail::NintendoNetworkIdFriendImpl *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetNintendoNetworkIdInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 20400: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::BlockedUserImpl* temp3 = (nn::friends::detail::BlockedUserImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetBlockedUserList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetBlockedUserList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::BlockedUserImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetBlockedUserList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20401: {
@@ -13930,16 +13930,16 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::account::NetworkServiceAccountId* temp3 = (nn::account::NetworkServiceAccountId *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::friends::detail::ProfileExtraImpl* temp6 = (nn::friends::detail::ProfileExtraImpl *) new uint8_t[temp5];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileExtraList: nn::account::Uid = %s, nn::account::NetworkServiceAccountId *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), temp2);
-				resp->error_code = GetProfileExtraList(req->GetData<nn::account::Uid>(8), (nn::account::NetworkServiceAccountId *) temp3, temp2, (nn::friends::detail::ProfileExtraImpl *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetProfileExtraList(req->GetData<nn::account::Uid>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 20501: {
@@ -13952,22 +13952,22 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::UserPresenceViewImpl* temp3 = (nn::friends::detail::UserPresenceViewImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetUserPresenceView: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
-				resp->error_code = GetUserPresenceView(req->GetData<nn::account::Uid>(8), (nn::friends::detail::UserPresenceViewImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetUserPresenceView(req->GetData<nn::account::Uid>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20700: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::PlayHistoryImpl* temp3 = (nn::friends::detail::PlayHistoryImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetPlayHistoryList: int32_t = 0x%x, nn::account::Uid = %s\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetPlayHistoryList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), (nn::friends::detail::PlayHistoryImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPlayHistoryList(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20701: {
@@ -13980,11 +13980,11 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::UserSettingImpl* temp3 = (nn::friends::detail::UserSettingImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::LoadUserSetting: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
-				resp->error_code = LoadUserSetting(req->GetData<nn::account::Uid>(8), (nn::friends::detail::UserSettingImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadUserSetting(req->GetData<nn::account::Uid>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20801: {
@@ -14003,11 +14003,11 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::ExternalApplicationCatalog* temp3 = (nn::friends::ExternalApplicationCatalog *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetExternalApplicationCatalog: nn::settings::LanguageCode = 0x%%lx, nn::friends::ExternalApplicationCatalogId = %s\n", req->GetData<nn::settings::LanguageCode>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str());
-				resp->error_code = GetExternalApplicationCatalog(req->GetData<nn::settings::LanguageCode>(8), req->GetData<nn::friends::ExternalApplicationCatalogId>(0x10), (nn::friends::ExternalApplicationCatalog *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetExternalApplicationCatalog(req->GetData<nn::settings::LanguageCode>(8), req->GetData<nn::friends::ExternalApplicationCatalogId>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 30100: {
@@ -14050,16 +14050,16 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::friends::InAppScreenName* temp3 = (nn::friends::InAppScreenName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::friends::InAppScreenName* temp6 = (nn::friends::InAppScreenName *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithApplicationInfo: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ApplicationInfo = %s, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str(), temp2, temp5);
-				resp->error_code = SendFriendRequestWithApplicationInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ApplicationInfo>(0x28), (nn::friends::InAppScreenName *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SendFriendRequestWithApplicationInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ApplicationInfo>(0x28), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 30202: {
@@ -14097,11 +14097,11 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::AddFacedFriendRequest: nn::friends::FacedFriendRequestRegistrationKey = %s, nn::account::Nickname = %s, nn::account::Uid = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x48), 0x21).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x70), 0x10).c_str(), temp2);
-				resp->error_code = AddFacedFriendRequest(req->GetDataPointer<nn::friends::FacedFriendRequestRegistrationKey>(8), req->GetDataPointer<nn::account::Nickname>(0x48), req->GetData<nn::account::Uid>(0x70), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = AddFacedFriendRequest(req->GetDataPointer<nn::friends::FacedFriendRequestRegistrationKey>(8), req->GetDataPointer<nn::account::Nickname>(0x48), req->GetData<nn::account::Uid>(0x70), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 30212: {
@@ -14114,43 +14114,43 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImage: nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x18));
-				resp->error_code = GetFacedFriendRequestProfileImage(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), *resp->GetDataPointer<int32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFacedFriendRequestProfileImage(req->GetData<nn::account::Uid>(8), req->GetData<nn::account::NetworkServiceAccountId>(0x18), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 30214: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImageFromPath: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = GetFacedFriendRequestProfileImageFromPath((int8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetFacedFriendRequestProfileImageFromPath(temp3, temp2, *resp->GetDataPointer<int32_t *>(8), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 30215: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::friends::InAppScreenName* temp3 = (nn::friends::InAppScreenName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::friends::InAppScreenName* temp6 = (nn::friends::InAppScreenName *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::SendFriendRequestWithExternalApplicationCatalogId: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ExternalApplicationCatalogId = %s, nn::friends::InAppScreenName *= buffer<0x%lx>, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str(), temp2, temp5);
-				resp->error_code = SendFriendRequestWithExternalApplicationCatalogId(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ExternalApplicationCatalogId>(0x28), (nn::friends::InAppScreenName *) temp3, temp2, (nn::friends::InAppScreenName *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SendFriendRequestWithExternalApplicationCatalogId(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ExternalApplicationCatalogId>(0x28), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 30216: {
@@ -14175,11 +14175,11 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::friends::InAppScreenName* temp3 = (nn::friends::InAppScreenName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::BlockUserWithApplicationInfo: int32_t = 0x%x, nn::account::Uid = %s, nn::account::NetworkServiceAccountId = 0x%%lx, nn::friends::ApplicationInfo = %s, nn::friends::InAppScreenName *= buffer<0x%lx>\n", req->GetData<int32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x10).c_str(), req->GetData<nn::account::NetworkServiceAccountId>(0x20), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str(), temp2);
-				resp->error_code = BlockUserWithApplicationInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ApplicationInfo>(0x28), (nn::friends::InAppScreenName *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = BlockUserWithApplicationInfo(req->GetData<int32_t>(8), req->GetData<nn::account::Uid>(0x10), req->GetData<nn::account::NetworkServiceAccountId>(0x20), req->GetData<nn::friends::ApplicationInfo>(0x28), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 30402: {
@@ -14192,11 +14192,11 @@ namespace nn::friends::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::friends::detail::ProfileExtraImpl* temp3 = (nn::friends::detail::ProfileExtraImpl *) new uint8_t[temp2];
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetProfileExtraFromFriendCode: nn::friends::FriendCode = %s, nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x28), 0x10).c_str());
-				resp->error_code = GetProfileExtraFromFriendCode(req->GetDataPointer<nn::friends::FriendCode>(8), req->GetData<nn::account::Uid>(0x28), (nn::friends::detail::ProfileExtraImpl *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetProfileExtraFromFriendCode(req->GetDataPointer<nn::friends::FriendCode>(8), req->GetData<nn::account::Uid>(0x28), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 30700: {
@@ -14267,36 +14267,36 @@ namespace nn::friends::detail::ipc {
 		uint32_t DeletePlayHistory(nn::account::Uid _0);
 		uint32_t DropFriendNewlyFlag(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1);
 		uint32_t DropFriendNewlyFlags(nn::account::Uid _0);
-		uint32_t GetBlockedUserList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::BlockedUserImpl * _3, unsigned int _3_size);
-		uint32_t GetBlockedUserListIds(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::account::NetworkServiceAccountId * _3, unsigned int _3_size);
-		uint32_t GetCompletionEvent(IpcService* _0);
-		uint32_t GetExternalApplicationCatalog(nn::settings::LanguageCode _0, nn::friends::ExternalApplicationCatalogId _1, nn::friends::ExternalApplicationCatalog * _2, unsigned int _2_size);
-		uint32_t GetFacedFriendRequestProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t GetFacedFriendRequestProfileImageFromPath(int8_t * _0, unsigned int _0_size, int32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t GetBlockedUserList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::BlockedUserImpl *& _3, unsigned int _3_size);
+		uint32_t GetBlockedUserListIds(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::account::NetworkServiceAccountId *& _3, unsigned int _3_size);
+		uint32_t GetCompletionEvent(IpcService*& _0);
+		uint32_t GetExternalApplicationCatalog(nn::settings::LanguageCode _0, nn::friends::ExternalApplicationCatalogId _1, nn::friends::ExternalApplicationCatalog *& _2, unsigned int _2_size);
+		uint32_t GetFacedFriendRequestProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t GetFacedFriendRequestProfileImageFromPath(int8_t * _0, unsigned int _0_size, int32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t GetFacedFriendRequestRegistrationKey(nn::account::Uid _0, nn::friends::FacedFriendRequestRegistrationKey& _1);
-		uint32_t GetFriendCandidateList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::FriendCandidateImpl * _3, unsigned int _3_size);
+		uint32_t GetFriendCandidateList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::FriendCandidateImpl *& _3, unsigned int _3_size);
 		uint32_t GetFriendCount(nn::account::Uid _0, nn::friends::detail::ipc::SizedFriendFilter _1, uint64_t _2, uint64_t _3, int32_t& _4);
-		uint32_t GetFriendDetailedInfo(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendDetailedInfoImpl * _2, unsigned int _2_size);
-		uint32_t GetFriendList(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::friends::detail::FriendImpl * _6, unsigned int _6_size);
-		uint32_t GetFriendListIds(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::account::NetworkServiceAccountId * _6, unsigned int _6_size);
-		uint32_t GetFriendProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t GetFriendRequestList(int32_t _0, int32_t _1, nn::account::Uid _2, int32_t& _3, nn::friends::detail::FriendRequestImpl * _4, unsigned int _4_size);
+		uint32_t GetFriendDetailedInfo(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendDetailedInfoImpl *& _2, unsigned int _2_size);
+		uint32_t GetFriendList(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::friends::detail::FriendImpl *& _6, unsigned int _6_size);
+		uint32_t GetFriendListIds(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::account::NetworkServiceAccountId *& _6, unsigned int _6_size);
+		uint32_t GetFriendProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t GetFriendRequestList(int32_t _0, int32_t _1, nn::account::Uid _2, int32_t& _3, nn::friends::detail::FriendRequestImpl *& _4, unsigned int _4_size);
 		uint32_t GetNewlyFriendCount(nn::account::Uid _0, int32_t& _1);
-		uint32_t GetNintendoNetworkIdInfo(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::NintendoNetworkIdUserInfo * _3, unsigned int _3_size, nn::friends::detail::NintendoNetworkIdFriendImpl * _4, unsigned int _4_size);
-		uint32_t GetPlayHistoryList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::PlayHistoryImpl * _3, unsigned int _3_size);
-		uint32_t GetPlayHistoryRegistrationKey(bool _0, nn::account::Uid _1, nn::friends::PlayHistoryRegistrationKey * _2, unsigned int _2_size);
-		uint32_t GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId(bool _0, nn::account::NetworkServiceAccountId _1, nn::friends::PlayHistoryRegistrationKey * _2, unsigned int _2_size);
+		uint32_t GetNintendoNetworkIdInfo(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::NintendoNetworkIdUserInfo *& _3, unsigned int _3_size, nn::friends::detail::NintendoNetworkIdFriendImpl *& _4, unsigned int _4_size);
+		uint32_t GetPlayHistoryList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::PlayHistoryImpl *& _3, unsigned int _3_size);
+		uint32_t GetPlayHistoryRegistrationKey(bool _0, nn::account::Uid _1, nn::friends::PlayHistoryRegistrationKey *& _2, unsigned int _2_size);
+		uint32_t GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId(bool _0, nn::account::NetworkServiceAccountId _1, nn::friends::PlayHistoryRegistrationKey *& _2, unsigned int _2_size);
 		uint32_t GetPlayHistoryStatistics(nn::account::Uid _0, nn::friends::PlayHistoryStatistics& _1);
-		uint32_t GetProfileExtraFromFriendCode(nn::friends::FriendCode _0, nn::account::Uid _1, nn::friends::detail::ProfileExtraImpl * _2, unsigned int _2_size);
-		uint32_t GetProfileExtraList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileExtraImpl * _2, unsigned int _2_size);
+		uint32_t GetProfileExtraFromFriendCode(nn::friends::FriendCode _0, nn::account::Uid _1, nn::friends::detail::ProfileExtraImpl *& _2, unsigned int _2_size);
+		uint32_t GetProfileExtraList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileExtraImpl *& _2, unsigned int _2_size);
 		uint32_t GetProfileImageUrl(nn::friends::Url _0, int32_t _1, nn::friends::Url& _2);
-		uint32_t GetProfileList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileImpl * _2, unsigned int _2_size);
+		uint32_t GetProfileList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileImpl *& _2, unsigned int _2_size);
 		uint32_t GetReceivedFriendRequestCount(nn::account::Uid _0, int32_t& _1, int32_t& _2);
 		uint32_t GetRelationship(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::Relationship& _2);
-		uint32_t GetUserPresenceView(nn::account::Uid _0, nn::friends::detail::UserPresenceViewImpl * _1, unsigned int _1_size);
+		uint32_t GetUserPresenceView(nn::account::Uid _0, nn::friends::detail::UserPresenceViewImpl *& _1, unsigned int _1_size);
 		uint32_t IssueFriendCode(nn::account::Uid _0);
-		uint32_t LoadFriendSetting(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendSettingImpl * _2, unsigned int _2_size);
-		uint32_t LoadUserSetting(nn::account::Uid _0, nn::friends::detail::UserSettingImpl * _1, unsigned int _1_size);
+		uint32_t LoadFriendSetting(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendSettingImpl *& _2, unsigned int _2_size);
+		uint32_t LoadUserSetting(nn::account::Uid _0, nn::friends::detail::UserSettingImpl *& _1, unsigned int _1_size);
 		uint32_t ReadFriendRequest(nn::account::Uid _0, nn::friends::RequestId _1);
 		uint32_t RejectFriendRequest(nn::account::Uid _0, nn::friends::RequestId _1);
 		uint32_t RequestListSummaryOverlayNotification();
@@ -14311,7 +14311,7 @@ namespace nn::friends::detail::ipc {
 		uint32_t SyncFriendList(nn::account::Uid _0);
 		uint32_t SyncUserSetting(nn::account::Uid _0);
 		uint32_t UnblockUser(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1);
-		uint32_t UpdateFriendInfo(nn::account::Uid _0, uint64_t _1, uint64_t _2, nn::account::NetworkServiceAccountId * _3, unsigned int _3_size, nn::friends::detail::FriendImpl * _4, unsigned int _4_size);
+		uint32_t UpdateFriendInfo(nn::account::Uid _0, uint64_t _1, uint64_t _2, nn::account::NetworkServiceAccountId * _3, unsigned int _3_size, nn::friends::detail::FriendImpl *& _4, unsigned int _4_size);
 		uint32_t UpdateUserPresence(nn::account::Uid _0, uint64_t _1, uint64_t _2, nn::friends::detail::UserPresenceImpl * _3, unsigned int _3_size);
 	};
 	class INotificationService : public IpcService {
@@ -14345,7 +14345,7 @@ namespace nn::friends::detail::ipc {
 			}
 		}
 		uint32_t Clear();
-		uint32_t GetEvent(IpcService* _0);
+		uint32_t GetEvent(IpcService*& _0);
 		uint32_t Pop(nn::friends::detail::ipc::SizedNotificationInfo& _0);
 	};
 	class IServiceCreator : public IpcService {
@@ -14375,8 +14375,8 @@ namespace nn::friends::detail::ipc {
 				ns_abort("Unknown message cmdId %u to interface nn::friends::detail::ipc::IServiceCreator", req->cmd_id);
 			}
 		}
-		uint32_t CreateFriendService(nn::friends::detail::ipc::IFriendService* _0);
-		uint32_t CreateNotificationService(nn::account::Uid _0, nn::friends::detail::ipc::INotificationService* _1);
+		uint32_t CreateFriendService(nn::friends::detail::ipc::IFriendService*& _0);
+		uint32_t CreateNotificationService(nn::account::Uid _0, nn::friends::detail::ipc::INotificationService*& _1);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -14468,27 +14468,27 @@ uint32_t nn::friends::detail::ipc::IFriendService::DropFriendNewlyFlags(nn::acco
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::DropFriendNewlyFlags\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetBlockedUserList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::BlockedUserImpl * _3, unsigned int _3_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetBlockedUserList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::BlockedUserImpl *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetBlockedUserList\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetBlockedUserListIds(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::account::NetworkServiceAccountId * _3, unsigned int _3_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetBlockedUserListIds(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::account::NetworkServiceAccountId *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetBlockedUserListIds\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetCompletionEvent(IpcService* _0) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetCompletionEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetCompletionEvent\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetExternalApplicationCatalog(nn::settings::LanguageCode _0, nn::friends::ExternalApplicationCatalogId _1, nn::friends::ExternalApplicationCatalog * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetExternalApplicationCatalog(nn::settings::LanguageCode _0, nn::friends::ExternalApplicationCatalogId _1, nn::friends::ExternalApplicationCatalog *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetExternalApplicationCatalog\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImage\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImageFromPath(int8_t * _0, unsigned int _0_size, int32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImageFromPath(int8_t * _0, unsigned int _0_size, int32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestProfileImageFromPath\n");
 	return 0;
 }
@@ -14496,7 +14496,7 @@ uint32_t nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestRegistra
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFacedFriendRequestRegistrationKey\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFriendCandidateList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::FriendCandidateImpl * _3, unsigned int _3_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFriendCandidateList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::FriendCandidateImpl *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFriendCandidateList\n");
 	return 0;
 }
@@ -14504,23 +14504,23 @@ uint32_t nn::friends::detail::ipc::IFriendService::GetFriendCount(nn::account::U
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFriendCount\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFriendDetailedInfo(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendDetailedInfoImpl * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFriendDetailedInfo(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendDetailedInfoImpl *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFriendDetailedInfo\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFriendList(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::friends::detail::FriendImpl * _6, unsigned int _6_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFriendList(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::friends::detail::FriendImpl *& _6, unsigned int _6_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFriendList\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFriendListIds(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::account::NetworkServiceAccountId * _6, unsigned int _6_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFriendListIds(int32_t _0, nn::account::Uid _1, nn::friends::detail::ipc::SizedFriendFilter _2, uint64_t _3, uint64_t _4, int32_t& _5, nn::account::NetworkServiceAccountId *& _6, unsigned int _6_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFriendListIds\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFriendProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFriendProfileImage(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, int32_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFriendProfileImage\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetFriendRequestList(int32_t _0, int32_t _1, nn::account::Uid _2, int32_t& _3, nn::friends::detail::FriendRequestImpl * _4, unsigned int _4_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetFriendRequestList(int32_t _0, int32_t _1, nn::account::Uid _2, int32_t& _3, nn::friends::detail::FriendRequestImpl *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetFriendRequestList\n");
 	return 0;
 }
@@ -14528,19 +14528,19 @@ uint32_t nn::friends::detail::ipc::IFriendService::GetNewlyFriendCount(nn::accou
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetNewlyFriendCount\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetNintendoNetworkIdInfo(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::NintendoNetworkIdUserInfo * _3, unsigned int _3_size, nn::friends::detail::NintendoNetworkIdFriendImpl * _4, unsigned int _4_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetNintendoNetworkIdInfo(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::NintendoNetworkIdUserInfo *& _3, unsigned int _3_size, nn::friends::detail::NintendoNetworkIdFriendImpl *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetNintendoNetworkIdInfo\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetPlayHistoryList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::PlayHistoryImpl * _3, unsigned int _3_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetPlayHistoryList(int32_t _0, nn::account::Uid _1, int32_t& _2, nn::friends::detail::PlayHistoryImpl *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetPlayHistoryList\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKey(bool _0, nn::account::Uid _1, nn::friends::PlayHistoryRegistrationKey * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKey(bool _0, nn::account::Uid _1, nn::friends::PlayHistoryRegistrationKey *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKey\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId(bool _0, nn::account::NetworkServiceAccountId _1, nn::friends::PlayHistoryRegistrationKey * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId(bool _0, nn::account::NetworkServiceAccountId _1, nn::friends::PlayHistoryRegistrationKey *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetPlayHistoryRegistrationKeyWithNetworkServiceAccountId\n");
 	return 0;
 }
@@ -14548,11 +14548,11 @@ uint32_t nn::friends::detail::ipc::IFriendService::GetPlayHistoryStatistics(nn::
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetPlayHistoryStatistics\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetProfileExtraFromFriendCode(nn::friends::FriendCode _0, nn::account::Uid _1, nn::friends::detail::ProfileExtraImpl * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetProfileExtraFromFriendCode(nn::friends::FriendCode _0, nn::account::Uid _1, nn::friends::detail::ProfileExtraImpl *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetProfileExtraFromFriendCode\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetProfileExtraList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileExtraImpl * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetProfileExtraList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileExtraImpl *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetProfileExtraList\n");
 	return 0;
 }
@@ -14560,7 +14560,7 @@ uint32_t nn::friends::detail::ipc::IFriendService::GetProfileImageUrl(nn::friend
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetProfileImageUrl\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetProfileList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileImpl * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetProfileList(nn::account::Uid _0, nn::account::NetworkServiceAccountId * _1, unsigned int _1_size, nn::friends::detail::ProfileImpl *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetProfileList\n");
 	return 0;
 }
@@ -14572,7 +14572,7 @@ uint32_t nn::friends::detail::ipc::IFriendService::GetRelationship(nn::account::
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetRelationship\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::GetUserPresenceView(nn::account::Uid _0, nn::friends::detail::UserPresenceViewImpl * _1, unsigned int _1_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::GetUserPresenceView(nn::account::Uid _0, nn::friends::detail::UserPresenceViewImpl *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::GetUserPresenceView\n");
 	return 0;
 }
@@ -14580,11 +14580,11 @@ uint32_t nn::friends::detail::ipc::IFriendService::IssueFriendCode(nn::account::
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::IssueFriendCode\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::LoadFriendSetting(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendSettingImpl * _2, unsigned int _2_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::LoadFriendSetting(nn::account::Uid _0, nn::account::NetworkServiceAccountId _1, nn::friends::detail::FriendSettingImpl *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::LoadFriendSetting\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::LoadUserSetting(nn::account::Uid _0, nn::friends::detail::UserSettingImpl * _1, unsigned int _1_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::LoadUserSetting(nn::account::Uid _0, nn::friends::detail::UserSettingImpl *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::LoadUserSetting\n");
 	return 0;
 }
@@ -14644,7 +14644,7 @@ uint32_t nn::friends::detail::ipc::IFriendService::UnblockUser(nn::account::Uid 
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::UnblockUser\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IFriendService::UpdateFriendInfo(nn::account::Uid _0, uint64_t _1, uint64_t _2, nn::account::NetworkServiceAccountId * _3, unsigned int _3_size, nn::friends::detail::FriendImpl * _4, unsigned int _4_size) {
+uint32_t nn::friends::detail::ipc::IFriendService::UpdateFriendInfo(nn::account::Uid _0, uint64_t _1, uint64_t _2, nn::account::NetworkServiceAccountId * _3, unsigned int _3_size, nn::friends::detail::FriendImpl *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IFriendService::UpdateFriendInfo\n");
 	return 0;
 }
@@ -14656,7 +14656,7 @@ uint32_t nn::friends::detail::ipc::INotificationService::Clear() {
 	ns_print("Stub implementation for nn::friends::detail::ipc::INotificationService::Clear\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::INotificationService::GetEvent(IpcService* _0) {
+uint32_t nn::friends::detail::ipc::INotificationService::GetEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::INotificationService::GetEvent\n");
 	return 0;
 }
@@ -14664,11 +14664,11 @@ uint32_t nn::friends::detail::ipc::INotificationService::Pop(nn::friends::detail
 	ns_print("Stub implementation for nn::friends::detail::ipc::INotificationService::Pop\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IServiceCreator::CreateFriendService(nn::friends::detail::ipc::IFriendService* _0) {
+uint32_t nn::friends::detail::ipc::IServiceCreator::CreateFriendService(nn::friends::detail::ipc::IFriendService*& _0) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IServiceCreator::CreateFriendService\n");
 	return 0;
 }
-uint32_t nn::friends::detail::ipc::IServiceCreator::CreateNotificationService(nn::account::Uid _0, nn::friends::detail::ipc::INotificationService* _1) {
+uint32_t nn::friends::detail::ipc::IServiceCreator::CreateNotificationService(nn::account::Uid _0, nn::friends::detail::ipc::INotificationService*& _1) {
 	ns_print("Stub implementation for nn::friends::detail::ipc::IServiceCreator::CreateNotificationService\n");
 	return 0;
 }
@@ -14695,11 +14695,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetSdCardCid: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetSdCardCid(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetSdCardCid(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -14718,22 +14718,22 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 24);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetAndClearSdCardErrorInfo: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetAndClearSdCardErrorInfo(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAndClearSdCardErrorInfo(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 100: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetMmcCid: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetMmcCid(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetMmcCid(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 101: {
@@ -14764,22 +14764,22 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 24);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetAndClearMmcErrorInfo: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetAndClearMmcErrorInfo(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAndClearMmcErrorInfo(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint64_t *>(0x18), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 114: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetMmcExtendedCsd: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetMmcExtendedCsd(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetMmcExtendedCsd(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 200: {
@@ -14822,49 +14822,49 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceCertificate: uint64_t = 0x%%lx, uint32_t = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10));
-				resp->error_code = GetGameCardDeviceCertificate(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGameCardDeviceCertificate(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 207: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardAsicInfo: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = GetGameCardAsicInfo(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetGameCardAsicInfo(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 208: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardIdSet: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetGameCardIdSet(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGameCardIdSet(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 209: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::WriteToGameCard: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = WriteToGameCard(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = WriteToGameCard(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 210: {
@@ -14877,49 +14877,49 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardImageHash: uint64_t = 0x%%lx, uint32_t = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10));
-				resp->error_code = GetGameCardImageHash(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGameCardImageHash(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 212: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceIdForProdCard: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = GetGameCardDeviceIdForProdCard(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetGameCardDeviceIdForProdCard(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 213: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::EraseAndWriteParamDirectly: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = EraseAndWriteParamDirectly(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = EraseAndWriteParamDirectly(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 214: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardCid: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetGameCardCid(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGameCardCid(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 215: {
@@ -14945,11 +14945,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceId: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetGameCardDeviceId(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGameCardDeviceId(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 300: {
@@ -14973,26 +14973,26 @@ namespace nn::fssrv::sf {
 		uint32_t EraseMmc(uint32_t _0);
 		uint32_t FinalizeGameCardDriver();
 		uint32_t ForceEraseGameCard();
-		uint32_t GetAndClearMmcErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t GetAndClearSdCardErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t GetGameCardAsicInfo(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size);
+		uint32_t GetAndClearMmcErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t GetAndClearSdCardErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t GetGameCardAsicInfo(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t *& _3, unsigned int _3_size);
 		uint32_t GetGameCardAttribute(uint32_t _0, uint8_t& attribute);
-		uint32_t GetGameCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size);
-		uint32_t GetGameCardDeviceCertificate(uint64_t _0, uint32_t _1, uint8_t * certificate, unsigned int certificate_size);
-		uint32_t GetGameCardDeviceId(uint64_t _0, uint8_t * deviceID, unsigned int deviceID_size);
-		uint32_t GetGameCardDeviceIdForProdCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * errorInfo, unsigned int errorInfo_size);
+		uint32_t GetGameCardCid(uint64_t _0, uint8_t *& cid, unsigned int cid_size);
+		uint32_t GetGameCardDeviceCertificate(uint64_t _0, uint32_t _1, uint8_t *& certificate, unsigned int certificate_size);
+		uint32_t GetGameCardDeviceId(uint64_t _0, uint8_t *& deviceID, unsigned int deviceID_size);
+		uint32_t GetGameCardDeviceIdForProdCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t *& errorInfo, unsigned int errorInfo_size);
 		uint32_t GetGameCardErrorInfo(uint128_t& errorInfo);
-		uint32_t GetGameCardErrorReportInfo(uint8_t * errorReportInfo);
+		uint32_t GetGameCardErrorReportInfo(uint8_t *& errorReportInfo);
 		uint32_t GetGameCardHandle(uint32_t& gamecardHandle);
-		uint32_t GetGameCardIdSet(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetGameCardImageHash(uint64_t _0, uint32_t _1, uint8_t * imageHash, unsigned int imageHash_size);
+		uint32_t GetGameCardIdSet(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetGameCardImageHash(uint64_t _0, uint32_t _1, uint8_t *& imageHash, unsigned int imageHash_size);
 		uint32_t GetGameCardUpdatePartitionInfo(uint32_t _0, uint32_t& version, nn::ApplicationId& TID);
-		uint32_t GetMmcCid(uint64_t _0, uint8_t * cid, unsigned int cid_size);
-		uint32_t GetMmcExtendedCsd(uint64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetMmcCid(uint64_t _0, uint8_t *& cid, unsigned int cid_size);
+		uint32_t GetMmcExtendedCsd(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t GetMmcPartitionSize(uint32_t _0, uint64_t& paritionSize);
 		uint32_t GetMmcPatrolCount(uint32_t& patrolCount);
 		uint32_t GetMmcSpeedMode(uint64_t& speedMode);
-		uint32_t GetSdCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size);
+		uint32_t GetSdCardCid(uint64_t _0, uint8_t *& cid, unsigned int cid_size);
 		uint32_t GetSdCardProtectedAreaSize(uint64_t& protectedSize);
 		uint32_t GetSdCardSpeedMode(uint64_t& sdSpeed);
 		uint32_t GetSdCardUserAreaSize(uint64_t& size);
@@ -15001,7 +15001,7 @@ namespace nn::fssrv::sf {
 		uint32_t IsSdCardInserted(uint8_t& isSdInserted);
 		uint32_t SetSpeedEmulationMode(uint32_t mode);
 		uint32_t SetVerifyWriteEnalbleFlag(uint8_t flag);
-		uint32_t WriteToGameCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t WriteToGameCard(uint64_t _0, uint64_t _1, uint8_t *& _2, unsigned int _2_size);
 	};
 	class IDirectory : public IpcService {
 	public:
@@ -15012,11 +15012,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IDirectory::Read\n");
-				resp->error_code = Read(*resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(*resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
@@ -15030,7 +15030,7 @@ namespace nn::fssrv::sf {
 			}
 		}
 		uint32_t GetEntryCount(uint64_t& _0);
-		uint32_t Read(uint64_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Read(uint64_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IEventNotifier : public IpcService {
 	public:
@@ -15050,7 +15050,7 @@ namespace nn::fssrv::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::IEventNotifier", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 	};
 	class IFile : public IpcService {
 	public:
@@ -15061,22 +15061,22 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x46, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IFile::Read: uint64_t = 0x%%lx, uint64_t offset = 0x%%lx, uint32_t size = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18));
-				resp->error_code = Read(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), *resp->GetDataPointer<uint64_t *>(8), (int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), *resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x45, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFile::Write: uint64_t = 0x%%lx, uint64_t offset = 0x%%lx, uint32_t size = 0x%x, int8_t *buf = buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), temp2);
-				resp->error_code = Write(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), (int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Write(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint32_t>(0x18), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
@@ -15103,7 +15103,7 @@ namespace nn::fssrv::sf {
 		}
 		uint32_t Flush();
 		uint32_t GetSize(uint64_t& fileSize);
-		uint32_t Read(uint64_t _0, uint64_t offset, uint32_t size, uint64_t& out_size, int8_t * out_buf, unsigned int out_buf_size);
+		uint32_t Read(uint64_t _0, uint64_t offset, uint32_t size, uint64_t& out_size, int8_t *& out_buf, unsigned int out_buf_size);
 		uint32_t SetSize(uint64_t size);
 		uint32_t Write(uint64_t _0, uint64_t offset, uint32_t size, int8_t * buf, unsigned int buf_size);
 	};
@@ -15116,110 +15116,110 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::CreateFile: uint64_t mode = 0x%%lx, uint32_t size = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = CreateFile(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = CreateFile(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::DeleteFile: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = DeleteFile((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = DeleteFile(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::CreateDirectory: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = CreateDirectory((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = CreateDirectory(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::DeleteDirectory: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = DeleteDirectory((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = DeleteDirectory(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::DeleteDirectoryRecursively: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = DeleteDirectoryRecursively((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = DeleteDirectoryRecursively(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 5: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				int8_t* temp6 = (int8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::RenameFile: int8_t *oldPath = buffer<0x%lx>, int8_t *newPath = buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = RenameFile((int8_t *) temp3, temp2, (int8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = RenameFile(temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				int8_t* temp6 = (int8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::RenameDirectory: int8_t *oldPath = buffer<0x%lx>, int8_t *newPath = buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = RenameDirectory((int8_t *) temp3, temp2, (int8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = RenameDirectory(temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetEntryType: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = GetEntryType((int8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
-				delete[] temp3;
+				resp->error_code = GetEntryType(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 8: {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::fssrv::sf::IFile* temp4;
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::OpenFile: uint32_t mode = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = OpenFile(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = OpenFile(req->GetData<uint32_t>(8), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -15228,12 +15228,12 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::fssrv::sf::IDirectory* temp4;
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::OpenDirectory: uint32_t = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = OpenDirectory(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = OpenDirectory(req->GetData<uint32_t>(8), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -15248,45 +15248,45 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetFreeSpaceSize: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = GetFreeSpaceSize((int8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
-				delete[] temp3;
+				resp->error_code = GetFreeSpaceSize(temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetTotalSpaceSize: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = GetTotalSpaceSize((int8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
-				delete[] temp3;
+				resp->error_code = GetTotalSpaceSize(temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 13: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::CleanDirectoryRecursively: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = CleanDirectoryRecursively((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = CleanDirectoryRecursively(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 14: {
 				resp->GenBuf(0, 0, 32);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				auto temp4 = resp->GetDataPointer<uint8_t *>(8);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystem::GetFileTimeStampRaw: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = GetFileTimeStampRaw((int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = GetFileTimeStampRaw(temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
@@ -15301,11 +15301,11 @@ namespace nn::fssrv::sf {
 		uint32_t DeleteDirectoryRecursively(int8_t * path, unsigned int path_size);
 		uint32_t DeleteFile(int8_t * path, unsigned int path_size);
 		uint32_t GetEntryType(int8_t * path, unsigned int path_size, uint32_t& _1);
-		uint32_t GetFileTimeStampRaw(int8_t * path, unsigned int path_size, uint8_t * timestamp);
+		uint32_t GetFileTimeStampRaw(int8_t * path, unsigned int path_size, uint8_t *& timestamp);
 		uint32_t GetFreeSpaceSize(int8_t * path, unsigned int path_size, uint64_t& totalFreeSpace);
 		uint32_t GetTotalSpaceSize(int8_t * path, unsigned int path_size, uint64_t& totalSize);
-		uint32_t OpenDirectory(uint32_t _0, int8_t * path, unsigned int path_size, nn::fssrv::sf::IDirectory* directory);
-		uint32_t OpenFile(uint32_t mode, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFile* file);
+		uint32_t OpenDirectory(uint32_t _0, int8_t * path, unsigned int path_size, nn::fssrv::sf::IDirectory*& directory);
+		uint32_t OpenFile(uint32_t mode, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFile*& file);
 		uint32_t RenameDirectory(int8_t * oldPath, unsigned int oldPath_size, int8_t * newPath, unsigned int newPath_size);
 		uint32_t RenameFile(int8_t * oldPath, unsigned int oldPath_size, int8_t * newPath, unsigned int newPath_size);
 	};
@@ -15342,12 +15342,12 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::fssrv::sf::IFileSystem* temp4;
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountContent: nn::ApplicationId tid = 0x%%lx, uint32_t flag = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = MountContent(req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), (int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = MountContent(req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -15365,12 +15365,12 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::fssrv::sf::IFileSystem* temp4;
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountBis: nn::fssrv::sf::Partition partitionID = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<nn::fssrv::sf::Partition>(8), temp2);
-				resp->error_code = MountBis(req->GetData<nn::fssrv::sf::Partition>(8), (int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = MountBis(req->GetData<nn::fssrv::sf::Partition>(8), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -15394,12 +15394,12 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::fssrv::sf::IFileSystem* temp4;
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = OpenHostFileSystemImpl((int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = OpenHostFileSystemImpl(temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -15441,11 +15441,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				void* temp3 = (void *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::RegisterSaveDataAtomicDeletion: void *= buffer<0x%lx>\n", temp2);
-				resp->error_code = RegisterSaveDataAtomicDeletion((void *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = RegisterSaveDataAtomicDeletion(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 25: {
@@ -15521,33 +15521,33 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				void* temp3 = (void *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraDataWithSpaceId: uint8_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = ReadSaveDataFileSystemExtraDataWithSpaceId(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), (void *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ReadSaveDataFileSystemExtraDataWithSpaceId(req->GetData<uint8_t>(8), req->GetData<uint64_t>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 58: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				void* temp3 = (void *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraData: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = ReadSaveDataFileSystemExtraData(req->GetData<uint64_t>(8), (void *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ReadSaveDataFileSystemExtraData(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 59: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				void* temp3 = (void *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::WriteSaveDataFileSystemExtraData: uint64_t = 0x%%lx, uint8_t = 0x%x, void *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), temp2);
-				resp->error_code = WriteSaveDataFileSystemExtraData(req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), (void *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = WriteSaveDataFileSystemExtraData(req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 60: {
@@ -15674,11 +15674,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				void* temp3 = (void *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::VerifySaveData: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
-				resp->error_code = VerifySaveData(req->GetData<nn::ApplicationId>(8), (void *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = VerifySaveData(req->GetData<nn::ApplicationId>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 603: {
@@ -15721,22 +15721,22 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = GetRightsIdByPath((int8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8));
-				delete[] temp3;
+				resp->error_code = GetRightsIdByPath(temp3, temp2, *resp->GetDataPointer<uint128_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 610: {
 				resp->GenBuf(0, 0, 17);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::GetRightsIdByPath2: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = GetRightsIdByPath2((int8_t *) temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint8_t *>(0x18));
-				delete[] temp3;
+				resp->error_code = GetRightsIdByPath2(temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), *resp->GetDataPointer<uint8_t *>(0x18));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 620: {
@@ -15756,11 +15756,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetBisRootForHost: uint32_t = 0x%x, int8_t *path = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = SetBisRootForHost(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetBisRootForHost(req->GetData<uint32_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1001: {
@@ -15773,11 +15773,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::SetSaveDataRootPath: int8_t *path = buffer<0x%lx>\n", temp2);
-				resp->error_code = SetSaveDataRootPath((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetSaveDataRootPath(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1003: {
@@ -15802,11 +15802,11 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				void* temp3 = (void *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OutputAccessLogToSdCard: void *logText = buffer<0x%lx>\n", temp2);
-				resp->error_code = OutputAccessLogToSdCard((void *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = OutputAccessLogToSdCard(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
@@ -15824,7 +15824,7 @@ namespace nn::fssrv::sf {
 		uint32_t ExtendSaveData(uint8_t _0, uint64_t _1, uint64_t _2, uint64_t _3);
 		uint32_t FormatSdCard();
 		uint32_t FormatSdCardDryRun();
-		uint32_t GetAndClearFileSystemProxyErrorInfo(uint8_t * errorInfo);
+		uint32_t GetAndClearFileSystemProxyErrorInfo(uint8_t *& errorInfo);
 		uint32_t GetGlobalAccessLogMode(uint32_t& logMode);
 		uint32_t GetRightsId(uint64_t _0, uint8_t _1, uint128_t& rights);
 		uint32_t GetRightsIdByPath(int8_t * path, unsigned int path_size, uint128_t& rights);
@@ -15832,35 +15832,35 @@ namespace nn::fssrv::sf {
 		uint32_t Initialize(uint64_t _0, uint64_t _1);
 		uint32_t InvalidateBisCache();
 		uint32_t IsExFatSupported(uint8_t& isSupported);
-		uint32_t MountBis(nn::fssrv::sf::Partition partitionID, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* Bis);
-		uint32_t MountContent(nn::ApplicationId tid, uint32_t flag, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* contentFs);
-		uint32_t MountContent7(nn::ApplicationId tid, uint32_t ncaType, nn::fssrv::sf::IFileSystem* _2);
-		uint32_t MountContentStorage(uint32_t contentStorageID, nn::fssrv::sf::IFileSystem* contentFs);
-		uint32_t MountGameCardPartition(uint32_t _0, uint32_t _1, nn::fssrv::sf::IFileSystem* gameCardPartitionFs);
-		uint32_t MountImageDirectory(uint32_t _0, nn::fssrv::sf::IFileSystem* imageFs);
-		uint32_t MountSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs);
-		uint32_t MountSaveDataReadOnly(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs);
-		uint32_t MountSdCard(nn::fssrv::sf::IFileSystem* sdCard);
-		uint32_t MountSystemSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* systemSaveDataFs);
-		uint32_t OpenBisPartition(nn::fssrv::sf::Partition partitionID, nn::fssrv::sf::IStorage* BisPartition);
-		uint32_t OpenDataFileSystemByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IFileSystem* dataFiles);
-		uint32_t OpenDataFileSystemByCurrentProcess(nn::fssrv::sf::IFileSystem* _0);
-		uint32_t OpenDataStorageByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IStorage* dataStorage);
-		uint32_t OpenDataStorageByCurrentProcess(nn::fssrv::sf::IStorage* dataStorage);
-		uint32_t OpenDataStorageByDataId(nn::ApplicationId tid, uint8_t storageId, nn::fssrv::sf::IStorage* dataStorage);
-		uint32_t OpenDeviceOperator(nn::fssrv::sf::IDeviceOperator* _0);
-		uint32_t OpenGameCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* GameCardEventNotify);
-		uint32_t OpenGameCardPartition(nn::fssrv::sf::Partition partitionID, uint32_t _1, nn::fssrv::sf::IStorage* gameCardFs);
-		uint32_t OpenHostFileSystemImpl(int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* _1);
-		uint32_t OpenRomStorage(nn::fssrv::sf::IStorage* _0);
-		uint32_t OpenSaveDataInfoReader(nn::fssrv::sf::ISaveDataInfoReader* _0);
-		uint32_t OpenSaveDataIterator(uint8_t _0, IUnknown* _1);
-		uint32_t OpenSaveDataThumbnailFile(uint8_t _0, uint8_t * _1, uint32_t _2, nn::fssrv::sf::IFile* thumbnail);
-		uint32_t OpenSdCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* SdEventNotify);
+		uint32_t MountBis(nn::fssrv::sf::Partition partitionID, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& Bis);
+		uint32_t MountContent(nn::ApplicationId tid, uint32_t flag, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& contentFs);
+		uint32_t MountContent7(nn::ApplicationId tid, uint32_t ncaType, nn::fssrv::sf::IFileSystem*& _2);
+		uint32_t MountContentStorage(uint32_t contentStorageID, nn::fssrv::sf::IFileSystem*& contentFs);
+		uint32_t MountGameCardPartition(uint32_t _0, uint32_t _1, nn::fssrv::sf::IFileSystem*& gameCardPartitionFs);
+		uint32_t MountImageDirectory(uint32_t _0, nn::fssrv::sf::IFileSystem*& imageFs);
+		uint32_t MountSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& saveDataFs);
+		uint32_t MountSaveDataReadOnly(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& saveDataFs);
+		uint32_t MountSdCard(nn::fssrv::sf::IFileSystem*& sdCard);
+		uint32_t MountSystemSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& systemSaveDataFs);
+		uint32_t OpenBisPartition(nn::fssrv::sf::Partition partitionID, nn::fssrv::sf::IStorage*& BisPartition);
+		uint32_t OpenDataFileSystemByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IFileSystem*& dataFiles);
+		uint32_t OpenDataFileSystemByCurrentProcess(nn::fssrv::sf::IFileSystem*& _0);
+		uint32_t OpenDataStorageByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IStorage*& dataStorage);
+		uint32_t OpenDataStorageByCurrentProcess(nn::fssrv::sf::IStorage*& dataStorage);
+		uint32_t OpenDataStorageByDataId(nn::ApplicationId tid, uint8_t storageId, nn::fssrv::sf::IStorage*& dataStorage);
+		uint32_t OpenDeviceOperator(nn::fssrv::sf::IDeviceOperator*& _0);
+		uint32_t OpenGameCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier*& GameCardEventNotify);
+		uint32_t OpenGameCardPartition(nn::fssrv::sf::Partition partitionID, uint32_t _1, nn::fssrv::sf::IStorage*& gameCardFs);
+		uint32_t OpenHostFileSystemImpl(int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& _1);
+		uint32_t OpenRomStorage(nn::fssrv::sf::IStorage*& _0);
+		uint32_t OpenSaveDataInfoReader(nn::fssrv::sf::ISaveDataInfoReader*& _0);
+		uint32_t OpenSaveDataIterator(uint8_t _0, IUnknown*& _1);
+		uint32_t OpenSaveDataThumbnailFile(uint8_t _0, uint8_t * _1, uint32_t _2, nn::fssrv::sf::IFile*& thumbnail);
+		uint32_t OpenSdCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier*& SdEventNotify);
 		uint32_t OutputAccessLogToSdCard(void * logText, unsigned int logText_size);
 		uint32_t QuerySaveDataTotalSize(uint64_t _0, uint64_t _1, uint64_t& saveDataSize);
-		uint32_t ReadSaveDataFileSystemExtraData(uint64_t _0, void * _1, unsigned int _1_size);
-		uint32_t ReadSaveDataFileSystemExtraDataWithSpaceId(uint8_t _0, uint64_t _1, void * _2, unsigned int _2_size);
+		uint32_t ReadSaveDataFileSystemExtraData(uint64_t _0, void *& _1, unsigned int _1_size);
+		uint32_t ReadSaveDataFileSystemExtraDataWithSpaceId(uint8_t _0, uint64_t _1, void *& _2, unsigned int _2_size);
 		uint32_t RegisterExternalKey(uint128_t _0, uint128_t _1);
 		uint32_t RegisterSaveDataAtomicDeletion(void * _0, unsigned int _0_size);
 		uint32_t SetBisRootForHost(uint32_t _0, int8_t * path, unsigned int path_size);
@@ -15870,7 +15870,7 @@ namespace nn::fssrv::sf {
 		uint32_t SetSaveDataSize(uint64_t _0, uint64_t _1);
 		uint32_t SetSdCardEncryptionSeed(uint128_t seedmaybe);
 		uint32_t UnregisterExternalKey();
-		uint32_t VerifySaveData(nn::ApplicationId tid, void * _1, unsigned int _1_size);
+		uint32_t VerifySaveData(nn::ApplicationId tid, void *& _1, unsigned int _1_size);
 		uint32_t WriteSaveDataFileSystemExtraData(uint64_t _0, uint8_t _1, void * _2, unsigned int _2_size);
 	};
 	class IFileSystemProxyForLoader : public IpcService {
@@ -15882,12 +15882,12 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::fssrv::sf::IFileSystem* temp4;
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxyForLoader::MountCode: nn::ApplicationId TID = 0x%%lx, int8_t *contentPath = buffer<0x%lx>\n", req->GetData<nn::ApplicationId>(8), temp2);
-				resp->error_code = MountCode(req->GetData<nn::ApplicationId>(8), (int8_t *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = MountCode(req->GetData<nn::ApplicationId>(8), temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -15903,7 +15903,7 @@ namespace nn::fssrv::sf {
 			}
 		}
 		uint32_t IsCodeMounted(nn::ApplicationId TID, uint8_t& isMounted);
-		uint32_t MountCode(nn::ApplicationId TID, int8_t * contentPath, unsigned int contentPath_size, nn::fssrv::sf::IFileSystem* contentFs);
+		uint32_t MountCode(nn::ApplicationId TID, int8_t * contentPath, unsigned int contentPath_size, nn::fssrv::sf::IFileSystem*& contentFs);
 	};
 	class IProgramRegistry : public IpcService {
 	public:
@@ -15914,16 +15914,16 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::fssrv::sf::IProgramRegistry::SetFsPermissions: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t = 0x%x, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint8_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), temp2, temp5);
-				resp->error_code = SetFsPermissions(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint8_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SetFsPermissions(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetData<uint8_t>(0x18), req->GetData<uint64_t>(0x20), req->GetData<uint64_t>(0x28), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 1: {
@@ -15955,18 +15955,18 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::ISaveDataInfoReader::Unknown0\n");
-				resp->error_code = Unknown0(*resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(*resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::fssrv::sf::ISaveDataInfoReader", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown0(uint64_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IStorage : public IpcService {
 	public:
@@ -15977,22 +15977,22 @@ namespace nn::fssrv::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x46, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::fssrv::sf::IStorage::Read: uint64_t offset = 0x%%lx, uint64_t length = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = Read(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x45, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::fssrv::sf::IStorage::Write: uint64_t offset = 0x%%lx, uint64_t length = 0x%%lx, int8_t *data = buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Write(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Write(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
@@ -16019,7 +16019,7 @@ namespace nn::fssrv::sf {
 		}
 		uint32_t Flush();
 		uint32_t GetSize(uint64_t& size);
-		uint32_t Read(uint64_t offset, uint64_t length, int8_t * buffer, unsigned int buffer_size);
+		uint32_t Read(uint64_t offset, uint64_t length, int8_t *& buffer, unsigned int buffer_size);
 		uint32_t SetSize(uint64_t size);
 		uint32_t Write(uint64_t offset, uint64_t length, int8_t * data, unsigned int data_size);
 	};
@@ -16045,15 +16045,15 @@ uint32_t nn::fssrv::sf::IDeviceOperator::ForceEraseGameCard() {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::ForceEraseGameCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetAndClearMmcErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetAndClearMmcErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetAndClearMmcErrorInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetAndClearSdCardErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetAndClearSdCardErrorInfo(uint64_t _0, uint128_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetAndClearSdCardErrorInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardAsicInfo(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardAsicInfo(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardAsicInfo\n");
 	return 0;
 }
@@ -16061,19 +16061,19 @@ uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardAttribute(uint32_t _0, uint8
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardAttribute\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardCid(uint64_t _0, uint8_t *& cid, unsigned int cid_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardCid\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceCertificate(uint64_t _0, uint32_t _1, uint8_t * certificate, unsigned int certificate_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceCertificate(uint64_t _0, uint32_t _1, uint8_t *& certificate, unsigned int certificate_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceCertificate\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceId(uint64_t _0, uint8_t * deviceID, unsigned int deviceID_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceId(uint64_t _0, uint8_t *& deviceID, unsigned int deviceID_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceId\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceIdForProdCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t * errorInfo, unsigned int errorInfo_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceIdForProdCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint8_t *& errorInfo, unsigned int errorInfo_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardDeviceIdForProdCard\n");
 	return 0;
 }
@@ -16081,7 +16081,7 @@ uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardErrorInfo(uint128_t& errorIn
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardErrorInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardErrorReportInfo(uint8_t * errorReportInfo) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardErrorReportInfo(uint8_t *& errorReportInfo) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardErrorReportInfo\n");
 	return 0;
 }
@@ -16089,11 +16089,11 @@ uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardHandle(uint32_t& gamecardHan
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardHandle\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardIdSet(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardIdSet(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardIdSet\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardImageHash(uint64_t _0, uint32_t _1, uint8_t * imageHash, unsigned int imageHash_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardImageHash(uint64_t _0, uint32_t _1, uint8_t *& imageHash, unsigned int imageHash_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardImageHash\n");
 	return 0;
 }
@@ -16101,11 +16101,11 @@ uint32_t nn::fssrv::sf::IDeviceOperator::GetGameCardUpdatePartitionInfo(uint32_t
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetGameCardUpdatePartitionInfo\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcCid(uint64_t _0, uint8_t * cid, unsigned int cid_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcCid(uint64_t _0, uint8_t *& cid, unsigned int cid_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcCid\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcExtendedCsd(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcExtendedCsd(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcExtendedCsd\n");
 	return 0;
 }
@@ -16121,7 +16121,7 @@ uint32_t nn::fssrv::sf::IDeviceOperator::GetMmcSpeedMode(uint64_t& speedMode) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetMmcSpeedMode\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::GetSdCardCid(uint64_t _0, uint8_t * cid, unsigned int cid_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::GetSdCardCid(uint64_t _0, uint8_t *& cid, unsigned int cid_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::GetSdCardCid\n");
 	return 0;
 }
@@ -16157,7 +16157,7 @@ uint32_t nn::fssrv::sf::IDeviceOperator::SetVerifyWriteEnalbleFlag(uint8_t flag)
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::SetVerifyWriteEnalbleFlag\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDeviceOperator::WriteToGameCard(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::fssrv::sf::IDeviceOperator::WriteToGameCard(uint64_t _0, uint64_t _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDeviceOperator::WriteToGameCard\n");
 	return 0;
 }
@@ -16165,11 +16165,11 @@ uint32_t nn::fssrv::sf::IDirectory::GetEntryCount(uint64_t& _0) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDirectory::GetEntryCount\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IDirectory::Read(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::fssrv::sf::IDirectory::Read(uint64_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IDirectory::Read\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IEventNotifier::Unknown0(IpcService* _0) {
+uint32_t nn::fssrv::sf::IEventNotifier::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::fssrv::sf::IEventNotifier::Unknown0\n");
 	return 0;
 }
@@ -16181,7 +16181,7 @@ uint32_t nn::fssrv::sf::IFile::GetSize(uint64_t& fileSize) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFile::GetSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFile::Read(uint64_t _0, uint64_t offset, uint32_t size, uint64_t& out_size, int8_t * out_buf, unsigned int out_buf_size) {
+uint32_t nn::fssrv::sf::IFile::Read(uint64_t _0, uint64_t offset, uint32_t size, uint64_t& out_size, int8_t *& out_buf, unsigned int out_buf_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFile::Read\n");
 	return 0;
 }
@@ -16225,7 +16225,7 @@ uint32_t nn::fssrv::sf::IFileSystem::GetEntryType(int8_t * path, unsigned int pa
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::GetEntryType\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::GetFileTimeStampRaw(int8_t * path, unsigned int path_size, uint8_t * timestamp) {
+uint32_t nn::fssrv::sf::IFileSystem::GetFileTimeStampRaw(int8_t * path, unsigned int path_size, uint8_t *& timestamp) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::GetFileTimeStampRaw\n");
 	return 0;
 }
@@ -16237,11 +16237,11 @@ uint32_t nn::fssrv::sf::IFileSystem::GetTotalSpaceSize(int8_t * path, unsigned i
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::GetTotalSpaceSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::OpenDirectory(uint32_t _0, int8_t * path, unsigned int path_size, nn::fssrv::sf::IDirectory* directory) {
+uint32_t nn::fssrv::sf::IFileSystem::OpenDirectory(uint32_t _0, int8_t * path, unsigned int path_size, nn::fssrv::sf::IDirectory*& directory) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::OpenDirectory\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystem::OpenFile(uint32_t mode, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFile* file) {
+uint32_t nn::fssrv::sf::IFileSystem::OpenFile(uint32_t mode, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFile*& file) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystem::OpenFile\n");
 	return 0;
 }
@@ -16297,7 +16297,7 @@ uint32_t nn::fssrv::sf::IFileSystemProxy::FormatSdCardDryRun() {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::FormatSdCardDryRun\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::GetAndClearFileSystemProxyErrorInfo(uint8_t * errorInfo) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::GetAndClearFileSystemProxyErrorInfo(uint8_t *& errorInfo) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::GetAndClearFileSystemProxyErrorInfo\n");
 	return 0;
 }
@@ -16329,79 +16329,79 @@ uint32_t nn::fssrv::sf::IFileSystemProxy::IsExFatSupported(uint8_t& isSupported)
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::IsExFatSupported\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountBis(nn::fssrv::sf::Partition partitionID, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* Bis) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountBis(nn::fssrv::sf::Partition partitionID, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& Bis) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountBis\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent(nn::ApplicationId tid, uint32_t flag, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* contentFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent(nn::ApplicationId tid, uint32_t flag, int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& contentFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContent\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent7(nn::ApplicationId tid, uint32_t ncaType, nn::fssrv::sf::IFileSystem* _2) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountContent7(nn::ApplicationId tid, uint32_t ncaType, nn::fssrv::sf::IFileSystem*& _2) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContent7\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountContentStorage(uint32_t contentStorageID, nn::fssrv::sf::IFileSystem* contentFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountContentStorage(uint32_t contentStorageID, nn::fssrv::sf::IFileSystem*& contentFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountContentStorage\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition(uint32_t _0, uint32_t _1, nn::fssrv::sf::IFileSystem* gameCardPartitionFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition(uint32_t _0, uint32_t _1, nn::fssrv::sf::IFileSystem*& gameCardPartitionFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountImageDirectory(uint32_t _0, nn::fssrv::sf::IFileSystem* imageFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountImageDirectory(uint32_t _0, nn::fssrv::sf::IFileSystem*& imageFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountImageDirectory\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& saveDataFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* saveDataFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& saveDataFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSdCard(nn::fssrv::sf::IFileSystem* sdCard) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSdCard(nn::fssrv::sf::IFileSystem*& sdCard) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSdCard\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem* systemSaveDataFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData(uint8_t input, nn::fssrv::sf::SaveStruct saveStruct, nn::fssrv::sf::IFileSystem*& systemSaveDataFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IFileSystem* dataFiles) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId(nn::ApplicationId tid, nn::fssrv::sf::IFileSystem*& dataFiles) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess(nn::fssrv::sf::IFileSystem* _0) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess(nn::fssrv::sf::IFileSystem*& _0) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator(nn::fssrv::sf::IDeviceOperator* _0) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator(nn::fssrv::sf::IDeviceOperator*& _0) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* GameCardEventNotify) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier*& GameCardEventNotify) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl(int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem* _1) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl(int8_t * path, unsigned int path_size, nn::fssrv::sf::IFileSystem*& _1) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenHostFileSystemImpl\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader(nn::fssrv::sf::ISaveDataInfoReader* _0) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader(nn::fssrv::sf::ISaveDataInfoReader*& _0) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataIterator(uint8_t _0, IUnknown* _1) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataIterator(uint8_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSaveDataIterator\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile(uint8_t _0, uint8_t * _1, uint32_t _2, nn::fssrv::sf::IFile* thumbnail) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile(uint8_t _0, uint8_t * _1, uint32_t _2, nn::fssrv::sf::IFile*& thumbnail) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSdCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier* SdEventNotify) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::OpenSdCardDetectionEventNotifier(nn::fssrv::sf::IEventNotifier*& SdEventNotify) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::OpenSdCardDetectionEventNotifier\n");
 	return 0;
 }
@@ -16413,11 +16413,11 @@ uint32_t nn::fssrv::sf::IFileSystemProxy::QuerySaveDataTotalSize(uint64_t _0, ui
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::QuerySaveDataTotalSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraData(uint64_t _0, void * _1, unsigned int _1_size) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraData(uint64_t _0, void *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraData\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraDataWithSpaceId(uint8_t _0, uint64_t _1, void * _2, unsigned int _2_size) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraDataWithSpaceId(uint8_t _0, uint64_t _1, void *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::ReadSaveDataFileSystemExtraDataWithSpaceId\n");
 	return 0;
 }
@@ -16457,7 +16457,7 @@ uint32_t nn::fssrv::sf::IFileSystemProxy::UnregisterExternalKey() {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::UnregisterExternalKey\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxy::VerifySaveData(nn::ApplicationId tid, void * _1, unsigned int _1_size) {
+uint32_t nn::fssrv::sf::IFileSystemProxy::VerifySaveData(nn::ApplicationId tid, void *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxy::VerifySaveData\n");
 	return 0;
 }
@@ -16469,7 +16469,7 @@ uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::IsCodeMounted(nn::Application
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::IsCodeMounted\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::MountCode(nn::ApplicationId TID, int8_t * contentPath, unsigned int contentPath_size, nn::fssrv::sf::IFileSystem* contentFs) {
+uint32_t nn::fssrv::sf::IFileSystemProxyForLoader::MountCode(nn::ApplicationId TID, int8_t * contentPath, unsigned int contentPath_size, nn::fssrv::sf::IFileSystem*& contentFs) {
 	ns_print("Stub implementation for nn::fssrv::sf::IFileSystemProxyForLoader::MountCode\n");
 	return 0;
 }
@@ -16485,7 +16485,7 @@ uint32_t nn::fssrv::sf::IProgramRegistry::SetFsPermissions(uint64_t _0, uint64_t
 	ns_print("Stub implementation for nn::fssrv::sf::IProgramRegistry::SetFsPermissions\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::ISaveDataInfoReader::Unknown0(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::fssrv::sf::ISaveDataInfoReader::Unknown0(uint64_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::ISaveDataInfoReader::Unknown0\n");
 	return 0;
 }
@@ -16497,7 +16497,7 @@ uint32_t nn::fssrv::sf::IStorage::GetSize(uint64_t& size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IStorage::GetSize\n");
 	return 0;
 }
-uint32_t nn::fssrv::sf::IStorage::Read(uint64_t offset, uint64_t length, int8_t * buffer, unsigned int buffer_size) {
+uint32_t nn::fssrv::sf::IStorage::Read(uint64_t offset, uint64_t length, int8_t *& buffer, unsigned int buffer_size) {
 	ns_print("Stub implementation for nn::fssrv::sf::IStorage::Read\n");
 	return 0;
 }
@@ -16571,9 +16571,9 @@ namespace nn::gpio {
 				ns_abort("Unknown message cmdId %u to interface nn::gpio::IManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, IUnknown* _1);
-		uint32_t Unknown1(uint32_t _0, IUnknown* _1);
-		uint32_t Unknown2(uint32_t _0, IUnknown* _1);
+		uint32_t Unknown0(uint32_t _0, IUnknown*& _1);
+		uint32_t Unknown1(uint32_t _0, IUnknown*& _1);
+		uint32_t Unknown2(uint32_t _0, IUnknown*& _1);
 		uint32_t Unknown3(uint32_t _0, uint8_t& _1);
 		uint32_t Unknown4(uint128_t& _0);
 		uint32_t Unknown5(uint8_t _0, uint32_t _1);
@@ -16689,7 +16689,7 @@ namespace nn::gpio {
 		}
 		uint32_t Unknown0(uint32_t _0);
 		uint32_t Unknown1(uint32_t& _0);
-		uint32_t Unknown10(IpcService* _0);
+		uint32_t Unknown10(IpcService*& _0);
 		uint32_t Unknown11();
 		uint32_t Unknown12(uint8_t _0);
 		uint32_t Unknown13(uint8_t& _0);
@@ -16706,15 +16706,15 @@ namespace nn::gpio {
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::gpio::IManager::Unknown0(uint32_t _0, IUnknown* _1) {
+uint32_t nn::gpio::IManager::Unknown0(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::gpio::IManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::gpio::IManager::Unknown1(uint32_t _0, IUnknown* _1) {
+uint32_t nn::gpio::IManager::Unknown1(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::gpio::IManager::Unknown1\n");
 	return 0;
 }
-uint32_t nn::gpio::IManager::Unknown2(uint32_t _0, IUnknown* _1) {
+uint32_t nn::gpio::IManager::Unknown2(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::gpio::IManager::Unknown2\n");
 	return 0;
 }
@@ -16742,7 +16742,7 @@ uint32_t nn::gpio::IPadSession::Unknown1(uint32_t& _0) {
 	ns_print("Stub implementation for nn::gpio::IPadSession::Unknown1\n");
 	return 0;
 }
-uint32_t nn::gpio::IPadSession::Unknown10(IpcService* _0) {
+uint32_t nn::gpio::IPadSession::Unknown10(IpcService*& _0) {
 	ns_print("Stub implementation for nn::gpio::IPadSession::Unknown10\n");
 	return 0;
 }
@@ -16835,7 +16835,7 @@ namespace nn::hid {
 				ns_abort("Unknown message cmdId %u to interface nn::hid::IAppletResource", req->cmd_id);
 			}
 		}
-		uint32_t GetSharedMemoryHandle(IpcService* _0);
+		uint32_t GetSharedMemoryHandle(IpcService*& _0);
 	};
 	class IHidDebugServer : public IpcService {
 	public:
@@ -16870,11 +16870,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::hid::TouchState* temp3 = (nn::hid::TouchState *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::hid::IHidDebugServer::SetTouchScreenAutoPilotState: nn::hid::TouchState *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetTouchScreenAutoPilotState((nn::hid::TouchState *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetTouchScreenAutoPilotState(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 12: {
@@ -17209,11 +17209,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::hid::BasicXpadId* temp3 = (nn::hid::BasicXpadId *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidServer::GetXpadIds\n");
-				resp->error_code = GetXpadIds(*resp->GetDataPointer<int64_t *>(8), (nn::hid::BasicXpadId *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetXpadIds(*resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 56: {
@@ -17235,11 +17235,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::hid::JoyXpadId* temp3 = (nn::hid::JoyXpadId *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidServer::GetJoyXpadIds\n");
-				resp->error_code = GetJoyXpadIds(*resp->GetDataPointer<int64_t *>(8), (nn::hid::JoyXpadId *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetJoyXpadIds(*resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 60: {
@@ -17408,11 +17408,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint32_t* temp3 = (uint32_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::hid::IHidServer::SetSupportedNpadIdType: nn::applet::AppletResourceUserId = 0x%%lx, uint32_t *= buffer<0x%lx>\n", req->GetData<nn::applet::AppletResourceUserId>(8), temp2);
-				resp->error_code = SetSupportedNpadIdType(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, (uint32_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetSupportedNpadIdType(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 103: {
@@ -17569,16 +17569,16 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::hid::VibrationDeviceHandle* temp3 = (nn::hid::VibrationDeviceHandle *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(9, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::hid::VibrationValue* temp6 = (nn::hid::VibrationValue *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::hid::IHidServer::SendVibrationValues: nn::applet::AppletResourceUserId = 0x%%lx, nn::hid::VibrationDeviceHandle *= buffer<0x%lx>, nn::hid::VibrationValue *= buffer<0x%lx>\n", req->GetData<nn::applet::AppletResourceUserId>(8), temp2, temp5);
-				resp->error_code = SendVibrationValues(req->GetData<nn::applet::AppletResourceUserId>(8), (nn::hid::VibrationDeviceHandle *) temp3, temp2, (nn::hid::VibrationValue *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SendVibrationValues(req->GetData<nn::applet::AppletResourceUserId>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 300: {
@@ -17633,8 +17633,8 @@ namespace nn::hid {
 				ns_abort("Unknown message cmdId %u to interface nn::hid::IHidServer", req->cmd_id);
 			}
 		}
-		uint32_t AcquireNpadStyleSetUpdateEventHandle(uint32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, uint64_t _3, IpcService* _4);
-		uint32_t AcquireXpadIdEventHandle(uint64_t _0, IpcService* _1);
+		uint32_t AcquireNpadStyleSetUpdateEventHandle(uint32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, uint64_t _3, IpcService*& _4);
+		uint32_t AcquireXpadIdEventHandle(uint64_t _0, IpcService*& _1);
 		uint32_t ActivateConsoleSixAxisSensor(nn::applet::AppletResourceUserId _0, uint64_t _1);
 		uint32_t ActivateDebugPad(nn::applet::AppletResourceUserId _0, uint64_t _1);
 		uint32_t ActivateGesture(int32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2);
@@ -17646,8 +17646,8 @@ namespace nn::hid {
 		uint32_t ActivateSixAxisSensor(nn::hid::BasicXpadId _0);
 		uint32_t ActivateTouchScreen(nn::applet::AppletResourceUserId _0, uint64_t _1);
 		uint32_t ActivateXpad(nn::hid::BasicXpadId _0, nn::applet::AppletResourceUserId _1, uint64_t _2);
-		uint32_t CreateActiveVibrationDeviceList(nn::hid::IActiveVibrationDeviceList* _0);
-		uint32_t CreateAppletResource(nn::applet::AppletResourceUserId _0, uint64_t _1, nn::hid::IAppletResource* _2);
+		uint32_t CreateActiveVibrationDeviceList(nn::hid::IActiveVibrationDeviceList*& _0);
+		uint32_t CreateAppletResource(nn::applet::AppletResourceUserId _0, uint64_t _1, nn::hid::IAppletResource*& _2);
 		uint32_t DeactivateJoySixAxisSensor(nn::hid::JoyXpadId _0);
 		uint32_t DeactivateNpad(nn::applet::AppletResourceUserId _0, uint64_t _1);
 		uint32_t DeactivateSixAxisSensor(nn::hid::BasicXpadId _0);
@@ -17659,18 +17659,18 @@ namespace nn::hid {
 		uint32_t GetAccelerometerPlayMode(nn::hid::SixAxisSensorHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, uint32_t& _3);
 		uint32_t GetActualVibrationValue(nn::hid::VibrationDeviceHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, nn::hid::VibrationValue& _3);
 		uint32_t GetGyroscopeZeroDriftMode(nn::hid::SixAxisSensorHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, uint32_t& _3);
-		uint32_t GetJoySixAxisSensorLifoHandle(nn::hid::JoyXpadId _0, IpcService* _1);
-		uint32_t GetJoyXpadIds(int64_t& _0, nn::hid::JoyXpadId * _1, unsigned int _1_size);
-		uint32_t GetJoyXpadLifoHandle(nn::hid::JoyXpadId _0, IpcService* _1);
+		uint32_t GetJoySixAxisSensorLifoHandle(nn::hid::JoyXpadId _0, IpcService*& _1);
+		uint32_t GetJoyXpadIds(int64_t& _0, nn::hid::JoyXpadId *& _1, unsigned int _1_size);
+		uint32_t GetJoyXpadLifoHandle(nn::hid::JoyXpadId _0, IpcService*& _1);
 		uint32_t GetNpadCommunicationMode(int64_t& _0);
 		uint32_t GetNpadHandheldActivationMode(nn::applet::AppletResourceUserId _0, uint64_t _1, int64_t& _2);
 		uint32_t GetNpadJoyHoldType(nn::applet::AppletResourceUserId _0, uint64_t _1, int64_t& _2);
 		uint32_t GetPlayerLedPattern(uint32_t _0, uint64_t& _1);
 		uint32_t GetSixAxisSensorFusionParameters(nn::hid::SixAxisSensorHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, float& _3, float& _4);
-		uint32_t GetSixAxisSensorLifoHandle(nn::hid::BasicXpadId _0, IpcService* _1);
+		uint32_t GetSixAxisSensorLifoHandle(nn::hid::BasicXpadId _0, IpcService*& _1);
 		uint32_t GetSupportedNpadStyleSet(nn::applet::AppletResourceUserId _0, uint64_t _1, nn::hid::NpadStyleTag& _2);
 		uint32_t GetVibrationDeviceInfo(nn::hid::VibrationDeviceHandle _0, nn::hid::VibrationDeviceInfoForIpc& _1);
-		uint32_t GetXpadIds(int64_t& _0, nn::hid::BasicXpadId * _1, unsigned int _1_size);
+		uint32_t GetXpadIds(int64_t& _0, nn::hid::BasicXpadId *& _1, unsigned int _1_size);
 		uint32_t IsSixAxisSensorAtRest(nn::hid::SixAxisSensorHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, bool& _3);
 		uint32_t IsSixAxisSensorFusionEnabled(nn::hid::SixAxisSensorHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, bool& _3);
 		uint32_t IsUnintendedHomeButtonInputProtectionEnabled(uint32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, bool& _3);
@@ -17775,11 +17775,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint32_t* temp3 = (uint32_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidSystemServer::GetNpadsWithNfc\n");
-				resp->error_code = GetNpadsWithNfc(*resp->GetDataPointer<int64_t *>(8), (uint32_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetNpadsWithNfc(*resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 212: {
@@ -17858,11 +17858,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::hid::system::UniquePadId* temp3 = (nn::hid::system::UniquePadId *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidSystemServer::GetUniquePadsFromNpad: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = GetUniquePadsFromNpad(req->GetData<uint32_t>(8), *resp->GetDataPointer<int64_t *>(8), (nn::hid::system::UniquePadId *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetUniquePadsFromNpad(req->GetData<uint32_t>(8), *resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 322: {
@@ -17962,11 +17962,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::hid::system::PlayReportControllerUsage* temp3 = (nn::hid::system::PlayReportControllerUsage *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidSystemServer::GetPlayReportControllerUsages\n");
-				resp->error_code = GetPlayReportControllerUsages(*resp->GetDataPointer<int64_t *>(8), (nn::hid::system::PlayReportControllerUsage *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPlayReportControllerUsages(*resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 542: {
@@ -17982,11 +17982,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::hid::system::RegisteredDevice* temp3 = (nn::hid::system::RegisteredDevice *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidSystemServer::GetRegisteredDevices\n");
-				resp->error_code = GetRegisteredDevices(*resp->GetDataPointer<int64_t *>(8), (nn::hid::system::RegisteredDevice *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetRegisteredDevices(*resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 544: {
@@ -18038,11 +18038,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::hid::system::UniquePadId* temp3 = (nn::hid::system::UniquePadId *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidSystemServer::GetUniquePadIds\n");
-				resp->error_code = GetUniquePadIds(*resp->GetDataPointer<int64_t *>(8), (nn::hid::system::UniquePadId *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetUniquePadIds(*resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 751: {
@@ -18058,11 +18058,11 @@ namespace nn::hid {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::hid::system::UniqueSixAxisSensorHandle* temp3 = (nn::hid::system::UniqueSixAxisSensorHandle *) new uint8_t[temp2];
 				ns_print("IPC message to nn::hid::IHidSystemServer::ListSixAxisSensorHandles: nn::hid::system::UniquePadId = 0x%%lx\n", req->GetData<nn::hid::system::UniquePadId>(8));
-				resp->error_code = ListSixAxisSensorHandles(req->GetData<nn::hid::system::UniquePadId>(8), *resp->GetDataPointer<int64_t *>(8), (nn::hid::system::UniqueSixAxisSensorHandle *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListSixAxisSensorHandles(req->GetData<nn::hid::system::UniquePadId>(8), *resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 801: {
@@ -18209,18 +18209,18 @@ namespace nn::hid {
 			}
 		}
 		uint32_t AbortFirmwareUpdate();
-		uint32_t AcquireCaptureButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2);
-		uint32_t AcquireConnectionTriggerTimeoutEvent(IpcService* _0);
-		uint32_t AcquireDeviceRegisteredEventForControllerSupport(IpcService* _0);
-		uint32_t AcquireHomeButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2);
-		uint32_t AcquireIrSensorEventHandle(uint32_t _0, IpcService* _1);
-		uint32_t AcquireJoyDetachOnBluetoothOffEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2);
-		uint32_t AcquireNfcActivateEventHandle(uint32_t _0, IpcService* _1);
-		uint32_t AcquireNfcDeviceUpdateEventHandle(IpcService* _0);
-		uint32_t AcquirePlayReportControllerUsageUpdateEvent(IpcService* _0);
-		uint32_t AcquirePlayReportRegisteredDeviceUpdateEvent(IpcService* _0);
-		uint32_t AcquireSleepButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2);
-		uint32_t AcquireUniquePadConnectionEventHandle(IpcService* _0);
+		uint32_t AcquireCaptureButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2);
+		uint32_t AcquireConnectionTriggerTimeoutEvent(IpcService*& _0);
+		uint32_t AcquireDeviceRegisteredEventForControllerSupport(IpcService*& _0);
+		uint32_t AcquireHomeButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2);
+		uint32_t AcquireIrSensorEventHandle(uint32_t _0, IpcService*& _1);
+		uint32_t AcquireJoyDetachOnBluetoothOffEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2);
+		uint32_t AcquireNfcActivateEventHandle(uint32_t _0, IpcService*& _1);
+		uint32_t AcquireNfcDeviceUpdateEventHandle(IpcService*& _0);
+		uint32_t AcquirePlayReportControllerUsageUpdateEvent(IpcService*& _0);
+		uint32_t AcquirePlayReportRegisteredDeviceUpdateEvent(IpcService*& _0);
+		uint32_t AcquireSleepButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2);
+		uint32_t AcquireUniquePadConnectionEventHandle(IpcService*& _0);
 		uint32_t ActivateCaptureButton(nn::applet::AppletResourceUserId _0, uint64_t _1);
 		uint32_t ActivateHomeButton(nn::applet::AppletResourceUserId _0, uint64_t _1);
 		uint32_t ActivateInputDetector(nn::applet::AppletResourceUserId _0, uint64_t _1);
@@ -18250,12 +18250,12 @@ namespace nn::hid {
 		uint32_t GetIrSensorState(uint32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, int64_t& _3);
 		uint32_t GetLastActiveNpad(uint32_t& _0);
 		uint32_t GetNpadSystemExtStyle(uint32_t _0, int64_t& _1, int64_t& _2);
-		uint32_t GetNpadsWithNfc(int64_t& _0, uint32_t * _1, unsigned int _1_size);
-		uint32_t GetPlayReportControllerUsages(int64_t& _0, nn::hid::system::PlayReportControllerUsage * _1, unsigned int _1_size);
-		uint32_t GetRegisteredDevices(int64_t& _0, nn::hid::system::RegisteredDevice * _1, unsigned int _1_size);
+		uint32_t GetNpadsWithNfc(int64_t& _0, uint32_t *& _1, unsigned int _1_size);
+		uint32_t GetPlayReportControllerUsages(int64_t& _0, nn::hid::system::PlayReportControllerUsage *& _1, unsigned int _1_size);
+		uint32_t GetRegisteredDevices(int64_t& _0, nn::hid::system::RegisteredDevice *& _1, unsigned int _1_size);
 		uint32_t GetUniquePadBluetoothAddress(nn::hid::system::UniquePadId _0, nn::bluetooth::Address& _1);
-		uint32_t GetUniquePadIds(int64_t& _0, nn::hid::system::UniquePadId * _1, unsigned int _1_size);
-		uint32_t GetUniquePadsFromNpad(uint32_t _0, int64_t& _1, nn::hid::system::UniquePadId * _2, unsigned int _2_size);
+		uint32_t GetUniquePadIds(int64_t& _0, nn::hid::system::UniquePadId *& _1, unsigned int _1_size);
+		uint32_t GetUniquePadsFromNpad(uint32_t _0, int64_t& _1, nn::hid::system::UniquePadId *& _2, unsigned int _2_size);
 		uint32_t GetVibrationMasterVolume(float& _0);
 		uint32_t GetXcdHandleForNpadWithIrSensor(uint32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, uint64_t& _3);
 		uint32_t InitializeFirmwareUpdate();
@@ -18263,7 +18263,7 @@ namespace nn::hid {
 		uint32_t IsSixAxisSensorUserCalibrationSupported(nn::hid::system::UniqueSixAxisSensorHandle _0, bool& _1);
 		uint32_t IsUsbConnected(nn::hid::system::UniquePadId _0, bool& _1);
 		uint32_t IsUsbFullKeyControllerEnabled(bool& _0);
-		uint32_t ListSixAxisSensorHandles(nn::hid::system::UniquePadId _0, int64_t& _1, nn::hid::system::UniqueSixAxisSensorHandle * _2, unsigned int _2_size);
+		uint32_t ListSixAxisSensorHandles(nn::hid::system::UniquePadId _0, int64_t& _1, nn::hid::system::UniqueSixAxisSensorHandle *& _2, unsigned int _2_size);
 		uint32_t NotifyInputDetector(nn::hid::system::InputSourceId _0);
 		uint32_t RegisterAppletResourceUserId(bool _0, nn::applet::AppletResourceUserId _1);
 		uint32_t ResetAnalogStickManualCalibration(nn::hid::system::UniquePadId _0, int64_t _1);
@@ -18304,7 +18304,7 @@ uint32_t nn::hid::IActiveVibrationDeviceList::ActivateVibrationDevice(nn::hid::V
 	ns_print("Stub implementation for nn::hid::IActiveVibrationDeviceList::ActivateVibrationDevice\n");
 	return 0;
 }
-uint32_t nn::hid::IAppletResource::GetSharedMemoryHandle(IpcService* _0) {
+uint32_t nn::hid::IAppletResource::GetSharedMemoryHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::hid::IAppletResource::GetSharedMemoryHandle\n");
 	return 0;
 }
@@ -18476,11 +18476,11 @@ uint32_t nn::hid::IHidDebugServer::UpdateControllerColor(nn::util::Unorm8x4 _0, 
 	ns_print("Stub implementation for nn::hid::IHidDebugServer::UpdateControllerColor\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::AcquireNpadStyleSetUpdateEventHandle(uint32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, uint64_t _3, IpcService* _4) {
+uint32_t nn::hid::IHidServer::AcquireNpadStyleSetUpdateEventHandle(uint32_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, uint64_t _3, IpcService*& _4) {
 	ns_print("Stub implementation for nn::hid::IHidServer::AcquireNpadStyleSetUpdateEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::AcquireXpadIdEventHandle(uint64_t _0, IpcService* _1) {
+uint32_t nn::hid::IHidServer::AcquireXpadIdEventHandle(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::hid::IHidServer::AcquireXpadIdEventHandle\n");
 	return 0;
 }
@@ -18528,11 +18528,11 @@ uint32_t nn::hid::IHidServer::ActivateXpad(nn::hid::BasicXpadId _0, nn::applet::
 	ns_print("Stub implementation for nn::hid::IHidServer::ActivateXpad\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::CreateActiveVibrationDeviceList(nn::hid::IActiveVibrationDeviceList* _0) {
+uint32_t nn::hid::IHidServer::CreateActiveVibrationDeviceList(nn::hid::IActiveVibrationDeviceList*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidServer::CreateActiveVibrationDeviceList\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::CreateAppletResource(nn::applet::AppletResourceUserId _0, uint64_t _1, nn::hid::IAppletResource* _2) {
+uint32_t nn::hid::IHidServer::CreateAppletResource(nn::applet::AppletResourceUserId _0, uint64_t _1, nn::hid::IAppletResource*& _2) {
 	ns_print("Stub implementation for nn::hid::IHidServer::CreateAppletResource\n");
 	return 0;
 }
@@ -18580,15 +18580,15 @@ uint32_t nn::hid::IHidServer::GetGyroscopeZeroDriftMode(nn::hid::SixAxisSensorHa
 	ns_print("Stub implementation for nn::hid::IHidServer::GetGyroscopeZeroDriftMode\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::GetJoySixAxisSensorLifoHandle(nn::hid::JoyXpadId _0, IpcService* _1) {
+uint32_t nn::hid::IHidServer::GetJoySixAxisSensorLifoHandle(nn::hid::JoyXpadId _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::hid::IHidServer::GetJoySixAxisSensorLifoHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::GetJoyXpadIds(int64_t& _0, nn::hid::JoyXpadId * _1, unsigned int _1_size) {
+uint32_t nn::hid::IHidServer::GetJoyXpadIds(int64_t& _0, nn::hid::JoyXpadId *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::hid::IHidServer::GetJoyXpadIds\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::GetJoyXpadLifoHandle(nn::hid::JoyXpadId _0, IpcService* _1) {
+uint32_t nn::hid::IHidServer::GetJoyXpadLifoHandle(nn::hid::JoyXpadId _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::hid::IHidServer::GetJoyXpadLifoHandle\n");
 	return 0;
 }
@@ -18612,7 +18612,7 @@ uint32_t nn::hid::IHidServer::GetSixAxisSensorFusionParameters(nn::hid::SixAxisS
 	ns_print("Stub implementation for nn::hid::IHidServer::GetSixAxisSensorFusionParameters\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::GetSixAxisSensorLifoHandle(nn::hid::BasicXpadId _0, IpcService* _1) {
+uint32_t nn::hid::IHidServer::GetSixAxisSensorLifoHandle(nn::hid::BasicXpadId _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::hid::IHidServer::GetSixAxisSensorLifoHandle\n");
 	return 0;
 }
@@ -18624,7 +18624,7 @@ uint32_t nn::hid::IHidServer::GetVibrationDeviceInfo(nn::hid::VibrationDeviceHan
 	ns_print("Stub implementation for nn::hid::IHidServer::GetVibrationDeviceInfo\n");
 	return 0;
 }
-uint32_t nn::hid::IHidServer::GetXpadIds(int64_t& _0, nn::hid::BasicXpadId * _1, unsigned int _1_size) {
+uint32_t nn::hid::IHidServer::GetXpadIds(int64_t& _0, nn::hid::BasicXpadId *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::hid::IHidServer::GetXpadIds\n");
 	return 0;
 }
@@ -18768,51 +18768,51 @@ uint32_t nn::hid::IHidSystemServer::AbortFirmwareUpdate() {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AbortFirmwareUpdate\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireCaptureButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::hid::IHidSystemServer::AcquireCaptureButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireCaptureButtonEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireConnectionTriggerTimeoutEvent(IpcService* _0) {
+uint32_t nn::hid::IHidSystemServer::AcquireConnectionTriggerTimeoutEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireConnectionTriggerTimeoutEvent\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireDeviceRegisteredEventForControllerSupport(IpcService* _0) {
+uint32_t nn::hid::IHidSystemServer::AcquireDeviceRegisteredEventForControllerSupport(IpcService*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireDeviceRegisteredEventForControllerSupport\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireHomeButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::hid::IHidSystemServer::AcquireHomeButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireHomeButtonEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireIrSensorEventHandle(uint32_t _0, IpcService* _1) {
+uint32_t nn::hid::IHidSystemServer::AcquireIrSensorEventHandle(uint32_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireIrSensorEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireJoyDetachOnBluetoothOffEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::hid::IHidSystemServer::AcquireJoyDetachOnBluetoothOffEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireJoyDetachOnBluetoothOffEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireNfcActivateEventHandle(uint32_t _0, IpcService* _1) {
+uint32_t nn::hid::IHidSystemServer::AcquireNfcActivateEventHandle(uint32_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireNfcActivateEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireNfcDeviceUpdateEventHandle(IpcService* _0) {
+uint32_t nn::hid::IHidSystemServer::AcquireNfcDeviceUpdateEventHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireNfcDeviceUpdateEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquirePlayReportControllerUsageUpdateEvent(IpcService* _0) {
+uint32_t nn::hid::IHidSystemServer::AcquirePlayReportControllerUsageUpdateEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquirePlayReportControllerUsageUpdateEvent\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquirePlayReportRegisteredDeviceUpdateEvent(IpcService* _0) {
+uint32_t nn::hid::IHidSystemServer::AcquirePlayReportRegisteredDeviceUpdateEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquirePlayReportRegisteredDeviceUpdateEvent\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireSleepButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::hid::IHidSystemServer::AcquireSleepButtonEventHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireSleepButtonEventHandle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::AcquireUniquePadConnectionEventHandle(IpcService* _0) {
+uint32_t nn::hid::IHidSystemServer::AcquireUniquePadConnectionEventHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::AcquireUniquePadConnectionEventHandle\n");
 	return 0;
 }
@@ -18932,15 +18932,15 @@ uint32_t nn::hid::IHidSystemServer::GetNpadSystemExtStyle(uint32_t _0, int64_t& 
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::GetNpadSystemExtStyle\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::GetNpadsWithNfc(int64_t& _0, uint32_t * _1, unsigned int _1_size) {
+uint32_t nn::hid::IHidSystemServer::GetNpadsWithNfc(int64_t& _0, uint32_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::GetNpadsWithNfc\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::GetPlayReportControllerUsages(int64_t& _0, nn::hid::system::PlayReportControllerUsage * _1, unsigned int _1_size) {
+uint32_t nn::hid::IHidSystemServer::GetPlayReportControllerUsages(int64_t& _0, nn::hid::system::PlayReportControllerUsage *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::GetPlayReportControllerUsages\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::GetRegisteredDevices(int64_t& _0, nn::hid::system::RegisteredDevice * _1, unsigned int _1_size) {
+uint32_t nn::hid::IHidSystemServer::GetRegisteredDevices(int64_t& _0, nn::hid::system::RegisteredDevice *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::GetRegisteredDevices\n");
 	return 0;
 }
@@ -18948,11 +18948,11 @@ uint32_t nn::hid::IHidSystemServer::GetUniquePadBluetoothAddress(nn::hid::system
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::GetUniquePadBluetoothAddress\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::GetUniquePadIds(int64_t& _0, nn::hid::system::UniquePadId * _1, unsigned int _1_size) {
+uint32_t nn::hid::IHidSystemServer::GetUniquePadIds(int64_t& _0, nn::hid::system::UniquePadId *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::GetUniquePadIds\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::GetUniquePadsFromNpad(uint32_t _0, int64_t& _1, nn::hid::system::UniquePadId * _2, unsigned int _2_size) {
+uint32_t nn::hid::IHidSystemServer::GetUniquePadsFromNpad(uint32_t _0, int64_t& _1, nn::hid::system::UniquePadId *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::GetUniquePadsFromNpad\n");
 	return 0;
 }
@@ -18984,7 +18984,7 @@ uint32_t nn::hid::IHidSystemServer::IsUsbFullKeyControllerEnabled(bool& _0) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::IsUsbFullKeyControllerEnabled\n");
 	return 0;
 }
-uint32_t nn::hid::IHidSystemServer::ListSixAxisSensorHandles(nn::hid::system::UniquePadId _0, int64_t& _1, nn::hid::system::UniqueSixAxisSensorHandle * _2, unsigned int _2_size) {
+uint32_t nn::hid::IHidSystemServer::ListSixAxisSensorHandles(nn::hid::system::UniquePadId _0, int64_t& _1, nn::hid::system::UniqueSixAxisSensorHandle *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::hid::IHidSystemServer::ListSixAxisSensorHandles\n");
 	return 0;
 }
@@ -19063,11 +19063,11 @@ namespace nn::htc::tenv {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::htc::tenv::IService::Unknown0: uint8_t[0x40] = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str());
-				resp->error_code = Unknown0(req->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1: {
@@ -19086,7 +19086,7 @@ namespace nn::htc::tenv {
 				ns_abort("Unknown message cmdId %u to interface nn::htc::tenv::IService", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t * _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown0(uint8_t * _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown1(uint8_t * _0, uint64_t& _1);
 		uint32_t Unknown2(uint64_t _0);
 	};
@@ -19108,11 +19108,11 @@ namespace nn::htc::tenv {
 				ns_abort("Unknown message cmdId %u to interface nn::htc::tenv::IServiceManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, IUnknown* _2);
+		uint32_t Unknown0(uint64_t _0, uint64_t _1, IUnknown*& _2);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::htc::tenv::IService::Unknown0(uint8_t * _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::htc::tenv::IService::Unknown0(uint8_t * _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::htc::tenv::IService::Unknown0\n");
 	return 0;
 }
@@ -19124,7 +19124,7 @@ uint32_t nn::htc::tenv::IService::Unknown2(uint64_t _0) {
 	ns_print("Stub implementation for nn::htc::tenv::IService::Unknown2\n");
 	return 0;
 }
-uint32_t nn::htc::tenv::IServiceManager::Unknown0(uint64_t _0, uint64_t _1, IUnknown* _2) {
+uint32_t nn::htc::tenv::IServiceManager::Unknown0(uint64_t _0, uint64_t _1, IUnknown*& _2) {
 	ns_print("Stub implementation for nn::htc::tenv::IServiceManager::Unknown0\n");
 	return 0;
 }
@@ -19169,8 +19169,8 @@ namespace nn::i2c {
 				ns_abort("Unknown message cmdId %u to interface nn::i2c::IManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint16_t _0, uint32_t _1, uint32_t _2, uint32_t _3, IUnknown* _4);
-		uint32_t Unknown1(uint32_t _0, IUnknown* _1);
+		uint32_t Unknown0(uint16_t _0, uint32_t _1, uint32_t _2, uint32_t _3, IUnknown*& _4);
+		uint32_t Unknown1(uint32_t _0, IUnknown*& _1);
 		uint32_t Unknown2(uint32_t _0, uint8_t& _1);
 		uint32_t Unknown3(uint16_t _0, uint32_t _1, uint32_t _2, uint32_t _3, uint8_t& _4);
 	};
@@ -19183,76 +19183,76 @@ namespace nn::i2c {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::i2c::ISession::Unknown0: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown0(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetData<uint32_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::i2c::ISession::Unknown1: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown1(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(req->GetData<uint32_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::i2c::ISession::Unknown2: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown2(temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::i2c::ISession::Unknown10: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown10(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown10(req->GetData<uint32_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::i2c::ISession::Unknown11: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown11(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown11(req->GetData<uint32_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x22, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::i2c::ISession::Unknown12: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown12((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown12(temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			default:
@@ -19260,19 +19260,19 @@ namespace nn::i2c {
 			}
 		}
 		uint32_t Unknown0(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown1(uint32_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown1(uint32_t _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown10(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown11(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown12(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown11(uint32_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown12(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::i2c::IManager::Unknown0(uint16_t _0, uint32_t _1, uint32_t _2, uint32_t _3, IUnknown* _4) {
+uint32_t nn::i2c::IManager::Unknown0(uint16_t _0, uint32_t _1, uint32_t _2, uint32_t _3, IUnknown*& _4) {
 	ns_print("Stub implementation for nn::i2c::IManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::i2c::IManager::Unknown1(uint32_t _0, IUnknown* _1) {
+uint32_t nn::i2c::IManager::Unknown1(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::i2c::IManager::Unknown1\n");
 	return 0;
 }
@@ -19288,7 +19288,7 @@ uint32_t nn::i2c::ISession::Unknown0(uint32_t _0, uint8_t * _1, unsigned int _1_
 	ns_print("Stub implementation for nn::i2c::ISession::Unknown0\n");
 	return 0;
 }
-uint32_t nn::i2c::ISession::Unknown1(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::i2c::ISession::Unknown1(uint32_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::i2c::ISession::Unknown1\n");
 	return 0;
 }
@@ -19296,15 +19296,15 @@ uint32_t nn::i2c::ISession::Unknown10(uint32_t _0, uint8_t * _1, unsigned int _1
 	ns_print("Stub implementation for nn::i2c::ISession::Unknown10\n");
 	return 0;
 }
-uint32_t nn::i2c::ISession::Unknown11(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::i2c::ISession::Unknown11(uint32_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::i2c::ISession::Unknown11\n");
 	return 0;
 }
-uint32_t nn::i2c::ISession::Unknown12(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::i2c::ISession::Unknown12(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::i2c::ISession::Unknown12\n");
 	return 0;
 }
-uint32_t nn::i2c::ISession::Unknown2(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::i2c::ISession::Unknown2(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::i2c::ISession::Unknown2\n");
 	return 0;
 }
@@ -19358,7 +19358,7 @@ namespace nn::idle::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::idle::detail::IPolicyManagerSystem", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1();
 		uint32_t Unknown2();
 		uint32_t Unknown3();
@@ -19367,7 +19367,7 @@ namespace nn::idle::detail {
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::idle::detail::IPolicyManagerSystem::Unknown0(IpcService* _0) {
+uint32_t nn::idle::detail::IPolicyManagerSystem::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::idle::detail::IPolicyManagerSystem::Unknown0\n");
 	return 0;
 }
@@ -19447,11 +19447,11 @@ namespace nn::irsensor {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::irsensor::IIrSensorServer::GetImageTransferProcessorState: nn::irsensor::IrCameraHandle = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10));
-				resp->error_code = GetImageTransferProcessorState(req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->pid, *resp->GetDataPointer<nn::irsensor::ImageTransferProcessorState *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetImageTransferProcessorState(req->GetData<nn::irsensor::IrCameraHandle>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->pid, *resp->GetDataPointer<nn::irsensor::ImageTransferProcessorState *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 310: {
@@ -19491,8 +19491,8 @@ namespace nn::irsensor {
 		uint32_t ActivateIrsensor(nn::applet::AppletResourceUserId _0, uint64_t _1);
 		uint32_t CheckFirmwareVersion(nn::irsensor::IrCameraHandle _0, nn::irsensor::PackedMcuVersion _1, nn::applet::AppletResourceUserId _2, uint64_t _3);
 		uint32_t DeactivateIrsensor(nn::applet::AppletResourceUserId _0, uint64_t _1);
-		uint32_t GetImageTransferProcessorState(nn::irsensor::IrCameraHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, nn::irsensor::ImageTransferProcessorState& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t GetIrsensorSharedMemoryHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2);
+		uint32_t GetImageTransferProcessorState(nn::irsensor::IrCameraHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, nn::irsensor::ImageTransferProcessorState& _3, uint8_t *& _4, unsigned int _4_size);
+		uint32_t GetIrsensorSharedMemoryHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2);
 		uint32_t GetNpadIrCameraHandle(uint32_t _0, nn::irsensor::IrCameraHandle& _1);
 		uint32_t RunClusteringProcessor(nn::irsensor::IrCameraHandle _0, nn::applet::AppletResourceUserId _1, nn::irsensor::PackedClusteringProcessorConfig _2, uint64_t _3);
 		uint32_t RunDpdProcessor(nn::irsensor::IrCameraHandle _0, nn::irsensor::PackedDpdProcessorConfig _1, nn::applet::AppletResourceUserId _2, uint64_t _3);
@@ -19554,11 +19554,11 @@ uint32_t nn::irsensor::IIrSensorServer::DeactivateIrsensor(nn::applet::AppletRes
 	ns_print("Stub implementation for nn::irsensor::IIrSensorServer::DeactivateIrsensor\n");
 	return 0;
 }
-uint32_t nn::irsensor::IIrSensorServer::GetImageTransferProcessorState(nn::irsensor::IrCameraHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, nn::irsensor::ImageTransferProcessorState& _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::irsensor::IIrSensorServer::GetImageTransferProcessorState(nn::irsensor::IrCameraHandle _0, nn::applet::AppletResourceUserId _1, uint64_t _2, nn::irsensor::ImageTransferProcessorState& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::irsensor::IIrSensorServer::GetImageTransferProcessorState\n");
 	return 0;
 }
-uint32_t nn::irsensor::IIrSensorServer::GetIrsensorSharedMemoryHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService* _2) {
+uint32_t nn::irsensor::IIrSensorServer::GetIrsensorSharedMemoryHandle(nn::applet::AppletResourceUserId _0, uint64_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::irsensor::IIrSensorServer::GetIrsensorSharedMemoryHandle\n");
 	return 0;
 }
@@ -19810,9 +19810,9 @@ namespace nn::lbl::detail {
 		uint32_t Unknown18(uint32_t _0, uint32_t& _1);
 		uint32_t Unknown19(uint8_t * _0);
 		uint32_t Unknown2(uint32_t _0);
-		uint32_t Unknown20(uint8_t * _0);
+		uint32_t Unknown20(uint8_t *& _0);
 		uint32_t Unknown21(uint8_t * _0);
-		uint32_t Unknown22(uint8_t * _0);
+		uint32_t Unknown22(uint8_t *& _0);
 		uint32_t Unknown23(uint8_t& _0);
 		uint32_t Unknown24(uint32_t _0);
 		uint32_t Unknown25(uint32_t& _0);
@@ -19881,7 +19881,7 @@ uint32_t nn::lbl::detail::ILblController::Unknown2(uint32_t _0) {
 	ns_print("Stub implementation for nn::lbl::detail::ILblController::Unknown2\n");
 	return 0;
 }
-uint32_t nn::lbl::detail::ILblController::Unknown20(uint8_t * _0) {
+uint32_t nn::lbl::detail::ILblController::Unknown20(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::lbl::detail::ILblController::Unknown20\n");
 	return 0;
 }
@@ -19889,7 +19889,7 @@ uint32_t nn::lbl::detail::ILblController::Unknown21(uint8_t * _0) {
 	ns_print("Stub implementation for nn::lbl::detail::ILblController::Unknown21\n");
 	return 0;
 }
-uint32_t nn::lbl::detail::ILblController::Unknown22(uint8_t * _0) {
+uint32_t nn::lbl::detail::ILblController::Unknown22(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::lbl::detail::ILblController::Unknown22\n");
 	return 0;
 }
@@ -19962,11 +19962,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ldn::detail::IMonitorService::Unknown1\n");
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -20012,13 +20012,13 @@ namespace nn::ldn::detail {
 			}
 		}
 		uint32_t Unknown0(uint32_t& _0);
-		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown1(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown100();
 		uint32_t Unknown101();
 		uint32_t Unknown2(uint32_t& _0, uint32_t& _1);
 		uint32_t Unknown3(uint16_t& _0);
-		uint32_t Unknown4(uint8_t * _0);
-		uint32_t Unknown5(uint8_t * _0);
+		uint32_t Unknown4(uint8_t *& _0);
+		uint32_t Unknown5(uint8_t *& _0);
 	};
 	class IMonitorServiceCreator : public IpcService {
 	public:
@@ -20038,7 +20038,7 @@ namespace nn::ldn::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::ldn::detail::IMonitorServiceCreator", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class ISystemLocalCommunicationService : public IpcService {
 	public:
@@ -20055,11 +20055,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown1\n");
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -20101,38 +20101,38 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0xa, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown101\n");
-				resp->error_code = Unknown101((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown101(temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 102: {
 				resp->GenBuf(0, 0, 2);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown102: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
-				resp->error_code = Unknown102(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown102(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 103: {
 				resp->GenBuf(0, 0, 2);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown103: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
-				resp->error_code = Unknown103(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown103(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 200: {
@@ -20157,11 +20157,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown203: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x6c), 0x30).c_str(), read_string(req->GetDataPointer<uint8_t *>(0xa0), 0x20).c_str(), temp2);
-				resp->error_code = Unknown203(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetDataPointer<uint8_t *>(0xa0), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown203(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetDataPointer<uint8_t *>(0xa0), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 204: {
@@ -20180,11 +20180,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown206: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown206((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown206(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 207: {
@@ -20221,11 +20221,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown302: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x30).c_str(), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp2);
-				resp->error_code = Unknown302(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown302(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 303: {
@@ -20257,11 +20257,11 @@ namespace nn::ldn::detail {
 			}
 		}
 		uint32_t Unknown0(uint32_t& _0);
-		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown100(IpcService* _0);
-		uint32_t Unknown101(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t Unknown1(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown100(IpcService*& _0);
+		uint32_t Unknown101(uint8_t *& _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size);
 		uint32_t Unknown2(uint32_t& _0, uint32_t& _1);
 		uint32_t Unknown200();
 		uint32_t Unknown201();
@@ -20279,10 +20279,10 @@ namespace nn::ldn::detail {
 		uint32_t Unknown302(uint8_t * _0, uint8_t * _1, uint32_t _2, uint32_t _3, uint8_t * _4, unsigned int _4_size);
 		uint32_t Unknown303(uint8_t * _0, uint8_t * _1, uint8_t * _2, uint32_t _3, uint32_t _4, uint8_t * _5);
 		uint32_t Unknown304();
-		uint32_t Unknown4(uint8_t * _0);
+		uint32_t Unknown4(uint8_t *& _0);
 		uint32_t Unknown400(uint64_t _0, uint64_t _1);
 		uint32_t Unknown401();
-		uint32_t Unknown5(uint8_t * _0);
+		uint32_t Unknown5(uint8_t *& _0);
 	};
 	class ISystemServiceCreator : public IpcService {
 	public:
@@ -20302,7 +20302,7 @@ namespace nn::ldn::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::ldn::detail::ISystemServiceCreator", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class IUserLocalCommunicationService : public IpcService {
 	public:
@@ -20319,11 +20319,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown1\n");
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -20365,38 +20365,38 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0xa, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown101\n");
-				resp->error_code = Unknown101((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown101(temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 102: {
 				resp->GenBuf(0, 0, 2);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown102: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
-				resp->error_code = Unknown102(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown102(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 103: {
 				resp->GenBuf(0, 0, 2);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown103: uint16_t = 0x%x, uint8_t[0x60] = %s\n", req->GetData<uint16_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x60).c_str());
-				resp->error_code = Unknown103(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown103(req->GetData<uint16_t>(8), req->GetDataPointer<uint8_t *>(0x10), *resp->GetDataPointer<uint16_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 200: {
@@ -20421,11 +20421,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown203: uint8_t[0x44] = %s, uint8_t[0x20] = %s, uint8_t[0x30] = %s, uint8_t[0x20] = %s, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x20).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x6c), 0x30).c_str(), read_string(req->GetDataPointer<uint8_t *>(0xa0), 0x20).c_str(), temp2);
-				resp->error_code = Unknown203(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetDataPointer<uint8_t *>(0xa0), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown203(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetDataPointer<uint8_t *>(0x6c), req->GetDataPointer<uint8_t *>(0xa0), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 204: {
@@ -20444,11 +20444,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown206: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown206((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown206(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 207: {
@@ -20485,11 +20485,11 @@ namespace nn::ldn::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown302: uint8_t[0x44] = %s, uint8_t[0x30] = %s, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x44).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x4c), 0x30).c_str(), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp2);
-				resp->error_code = Unknown302(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown302(req->GetDataPointer<uint8_t *>(8), req->GetDataPointer<uint8_t *>(0x4c), req->GetData<uint32_t>(0x7c), req->GetData<uint32_t>(0x80), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 303: {
@@ -20521,11 +20521,11 @@ namespace nn::ldn::detail {
 			}
 		}
 		uint32_t Unknown0(uint32_t& _0);
-		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown100(IpcService* _0);
-		uint32_t Unknown101(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t Unknown1(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown100(IpcService*& _0);
+		uint32_t Unknown101(uint8_t *& _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size);
 		uint32_t Unknown2(uint32_t& _0, uint32_t& _1);
 		uint32_t Unknown200();
 		uint32_t Unknown201();
@@ -20543,10 +20543,10 @@ namespace nn::ldn::detail {
 		uint32_t Unknown302(uint8_t * _0, uint8_t * _1, uint32_t _2, uint32_t _3, uint8_t * _4, unsigned int _4_size);
 		uint32_t Unknown303(uint8_t * _0, uint8_t * _1, uint8_t * _2, uint32_t _3, uint32_t _4, uint8_t * _5);
 		uint32_t Unknown304();
-		uint32_t Unknown4(uint8_t * _0);
+		uint32_t Unknown4(uint8_t *& _0);
 		uint32_t Unknown400(uint64_t _0, uint64_t _1);
 		uint32_t Unknown401();
-		uint32_t Unknown5(uint8_t * _0);
+		uint32_t Unknown5(uint8_t *& _0);
 	};
 	class IUserServiceCreator : public IpcService {
 	public:
@@ -20566,7 +20566,7 @@ namespace nn::ldn::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::ldn::detail::IUserServiceCreator", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -20574,7 +20574,7 @@ uint32_t nn::ldn::detail::IMonitorService::Unknown0(uint32_t& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IMonitorService::Unknown0\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IMonitorService::Unknown1(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::ldn::detail::IMonitorService::Unknown1(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::ldn::detail::IMonitorService::Unknown1\n");
 	return 0;
 }
@@ -20594,15 +20594,15 @@ uint32_t nn::ldn::detail::IMonitorService::Unknown3(uint16_t& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IMonitorService::Unknown3\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IMonitorService::Unknown4(uint8_t * _0) {
+uint32_t nn::ldn::detail::IMonitorService::Unknown4(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IMonitorService::Unknown4\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IMonitorService::Unknown5(uint8_t * _0) {
+uint32_t nn::ldn::detail::IMonitorService::Unknown5(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IMonitorService::Unknown5\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IMonitorServiceCreator::Unknown0(IUnknown* _0) {
+uint32_t nn::ldn::detail::IMonitorServiceCreator::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IMonitorServiceCreator::Unknown0\n");
 	return 0;
 }
@@ -20610,23 +20610,23 @@ uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown0(uint32_t& _
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown0\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown1(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown1(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown1\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown100(IpcService* _0) {
+uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown100(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown100\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown101(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown101(uint8_t *& _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown101\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown102\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown103\n");
 	return 0;
 }
@@ -20698,7 +20698,7 @@ uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown304() {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown304\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown4(uint8_t * _0) {
+uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown4(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown4\n");
 	return 0;
 }
@@ -20710,11 +20710,11 @@ uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown401() {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown401\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown5(uint8_t * _0) {
+uint32_t nn::ldn::detail::ISystemLocalCommunicationService::Unknown5(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemLocalCommunicationService::Unknown5\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::ISystemServiceCreator::Unknown0(IUnknown* _0) {
+uint32_t nn::ldn::detail::ISystemServiceCreator::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::ISystemServiceCreator::Unknown0\n");
 	return 0;
 }
@@ -20722,23 +20722,23 @@ uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown0(uint32_t& _0)
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown0\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown1(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown1(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown1\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown100(IpcService* _0) {
+uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown100(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown100\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown101(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown101(uint8_t *& _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown101\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown102(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown102\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown103(uint16_t _0, uint8_t * _1, uint16_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown103\n");
 	return 0;
 }
@@ -20810,7 +20810,7 @@ uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown304() {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown304\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown4(uint8_t * _0) {
+uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown4(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown4\n");
 	return 0;
 }
@@ -20822,11 +20822,11 @@ uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown401() {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown401\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown5(uint8_t * _0) {
+uint32_t nn::ldn::detail::IUserLocalCommunicationService::Unknown5(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserLocalCommunicationService::Unknown5\n");
 	return 0;
 }
-uint32_t nn::ldn::detail::IUserServiceCreator::Unknown0(IUnknown* _0) {
+uint32_t nn::ldn::detail::IUserServiceCreator::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ldn::detail::IUserServiceCreator::Unknown0\n");
 	return 0;
 }
@@ -20886,7 +20886,7 @@ namespace nn::lm {
 				ns_abort("Unknown message cmdId %u to interface nn::lm::ILogService", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint64_t _0, uint64_t _1, IUnknown* _2);
+		uint32_t Unknown0(uint64_t _0, uint64_t _1, IUnknown*& _2);
 	};
 	class ILogger : public IpcService {
 	public:
@@ -20897,11 +20897,11 @@ namespace nn::lm {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::lm::ILogger::Unknown0: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown0((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -20919,7 +20919,7 @@ namespace nn::lm {
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::lm::ILogService::Unknown0(uint64_t _0, uint64_t _1, IUnknown* _2) {
+uint32_t nn::lm::ILogService::Unknown0(uint64_t _0, uint64_t _1, IUnknown*& _2) {
 	ns_print("Stub implementation for nn::lm::ILogService::Unknown0\n");
 	return 0;
 }
@@ -21084,9 +21084,9 @@ namespace nn::lr {
 			}
 		}
 		uint32_t Unknown0();
-		uint32_t Unknown1(IUnknown* _0);
+		uint32_t Unknown1(IUnknown*& _0);
 		uint32_t Unknown2(uint8_t _0);
-		uint32_t Unknown3(IUnknown* _0);
+		uint32_t Unknown3(IUnknown*& _0);
 	};
 	class IRegisteredLocationResolver : public IpcService {
 	public:
@@ -21212,7 +21212,7 @@ uint32_t nn::lr::ILocationResolverManager::Unknown0() {
 	ns_print("Stub implementation for nn::lr::ILocationResolverManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::lr::ILocationResolverManager::Unknown1(IUnknown* _0) {
+uint32_t nn::lr::ILocationResolverManager::Unknown1(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::lr::ILocationResolverManager::Unknown1\n");
 	return 0;
 }
@@ -21220,7 +21220,7 @@ uint32_t nn::lr::ILocationResolverManager::Unknown2(uint8_t _0) {
 	ns_print("Stub implementation for nn::lr::ILocationResolverManager::Unknown2\n");
 	return 0;
 }
-uint32_t nn::lr::ILocationResolverManager::Unknown3(IUnknown* _0) {
+uint32_t nn::lr::ILocationResolverManager::Unknown3(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::lr::ILocationResolverManager::Unknown3\n");
 	return 0;
 }
@@ -21285,22 +21285,22 @@ namespace nn::mii::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::mii::CharInfoElement* temp3 = (nn::mii::CharInfoElement *) new uint8_t[temp2];
 				ns_print("IPC message to nn::mii::detail::IDatabaseService::Get: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = Get(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::mii::CharInfoElement *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Get(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::mii::CharInfo* temp3 = (nn::mii::CharInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::mii::detail::IDatabaseService::Get1: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = Get1(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::mii::CharInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Get1(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 5: {
@@ -21328,22 +21328,22 @@ namespace nn::mii::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::mii::StoreDataElement* temp3 = (nn::mii::StoreDataElement *) new uint8_t[temp2];
 				ns_print("IPC message to nn::mii::detail::IDatabaseService::Get2: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = Get2(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::mii::StoreDataElement *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Get2(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::mii::StoreData* temp3 = (nn::mii::StoreData *) new uint8_t[temp2];
 				ns_print("IPC message to nn::mii::detail::IDatabaseService::Get3: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = Get3(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::mii::StoreData *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Get3(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10: {
@@ -21399,22 +21399,22 @@ namespace nn::mii::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::mii::detail::IDatabaseService::Import: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Import((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Import(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 19: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::mii::detail::IDatabaseService::Export\n");
-				resp->error_code = Export((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Export(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20: {
@@ -21439,13 +21439,13 @@ namespace nn::mii::detail {
 		uint32_t Delete(nn::mii::CreateId _0);
 		uint32_t DeleteFile();
 		uint32_t DestroyFile();
-		uint32_t Export(uint8_t * _0, unsigned int _0_size);
+		uint32_t Export(uint8_t *& _0, unsigned int _0_size);
 		uint32_t FindIndex(nn::mii::CreateId _0, bool _1, int32_t& _2);
 		uint32_t Format();
-		uint32_t Get(int32_t _0, int32_t& _1, nn::mii::CharInfoElement * _2, unsigned int _2_size);
-		uint32_t Get1(int32_t _0, int32_t& _1, nn::mii::CharInfo * _2, unsigned int _2_size);
-		uint32_t Get2(int32_t _0, int32_t& _1, nn::mii::StoreDataElement * _2, unsigned int _2_size);
-		uint32_t Get3(int32_t _0, int32_t& _1, nn::mii::StoreData * _2, unsigned int _2_size);
+		uint32_t Get(int32_t _0, int32_t& _1, nn::mii::CharInfoElement *& _2, unsigned int _2_size);
+		uint32_t Get1(int32_t _0, int32_t& _1, nn::mii::CharInfo *& _2, unsigned int _2_size);
+		uint32_t Get2(int32_t _0, int32_t& _1, nn::mii::StoreDataElement *& _2, unsigned int _2_size);
+		uint32_t Get3(int32_t _0, int32_t& _1, nn::mii::StoreData *& _2, unsigned int _2_size);
 		uint32_t GetCount(int32_t _0, int32_t& _1);
 		uint32_t GetIndex(nn::mii::CharInfo _0, int32_t& _1);
 		uint32_t Import(uint8_t * _0, unsigned int _0_size);
@@ -21474,7 +21474,7 @@ namespace nn::mii::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::mii::detail::IStaticService", req->cmd_id);
 			}
 		}
-		uint32_t GetDatabaseService(int32_t _0, nn::mii::detail::IDatabaseService* _1);
+		uint32_t GetDatabaseService(int32_t _0, nn::mii::detail::IDatabaseService*& _1);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -21502,7 +21502,7 @@ uint32_t nn::mii::detail::IDatabaseService::DestroyFile() {
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::DestroyFile\n");
 	return 0;
 }
-uint32_t nn::mii::detail::IDatabaseService::Export(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::mii::detail::IDatabaseService::Export(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::Export\n");
 	return 0;
 }
@@ -21514,19 +21514,19 @@ uint32_t nn::mii::detail::IDatabaseService::Format() {
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::Format\n");
 	return 0;
 }
-uint32_t nn::mii::detail::IDatabaseService::Get(int32_t _0, int32_t& _1, nn::mii::CharInfoElement * _2, unsigned int _2_size) {
+uint32_t nn::mii::detail::IDatabaseService::Get(int32_t _0, int32_t& _1, nn::mii::CharInfoElement *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::Get\n");
 	return 0;
 }
-uint32_t nn::mii::detail::IDatabaseService::Get1(int32_t _0, int32_t& _1, nn::mii::CharInfo * _2, unsigned int _2_size) {
+uint32_t nn::mii::detail::IDatabaseService::Get1(int32_t _0, int32_t& _1, nn::mii::CharInfo *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::Get1\n");
 	return 0;
 }
-uint32_t nn::mii::detail::IDatabaseService::Get2(int32_t _0, int32_t& _1, nn::mii::StoreDataElement * _2, unsigned int _2_size) {
+uint32_t nn::mii::detail::IDatabaseService::Get2(int32_t _0, int32_t& _1, nn::mii::StoreDataElement *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::Get2\n");
 	return 0;
 }
-uint32_t nn::mii::detail::IDatabaseService::Get3(int32_t _0, int32_t& _1, nn::mii::StoreData * _2, unsigned int _2_size) {
+uint32_t nn::mii::detail::IDatabaseService::Get3(int32_t _0, int32_t& _1, nn::mii::StoreData *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::Get3\n");
 	return 0;
 }
@@ -21566,7 +21566,7 @@ uint32_t nn::mii::detail::IDatabaseService::UpdateLatest1(nn::mii::StoreData _0,
 	ns_print("Stub implementation for nn::mii::detail::IDatabaseService::UpdateLatest1\n");
 	return 0;
 }
-uint32_t nn::mii::detail::IStaticService::GetDatabaseService(int32_t _0, nn::mii::detail::IDatabaseService* _1) {
+uint32_t nn::mii::detail::IStaticService::GetDatabaseService(int32_t _0, nn::mii::detail::IDatabaseService*& _1) {
 	ns_print("Stub implementation for nn::mii::detail::IStaticService::GetDatabaseService\n");
 	return 0;
 }
@@ -21986,11 +21986,11 @@ namespace nn::ncm {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ncm::IContentStorage::Unknown11\n");
-				resp->error_code = Unknown11(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown11(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 12: {
@@ -22078,7 +22078,7 @@ namespace nn::ncm {
 		uint32_t Unknown0(uint128_t& _0);
 		uint32_t Unknown1();
 		uint32_t Unknown10();
-		uint32_t Unknown11(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown11(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown12(uint32_t& _0);
 		uint32_t Unknown13();
 		uint32_t Unknown14();
@@ -22239,7 +22239,7 @@ uint32_t nn::ncm::IContentStorage::Unknown10() {
 	ns_print("Stub implementation for nn::ncm::IContentStorage::Unknown10\n");
 	return 0;
 }
-uint32_t nn::ncm::IContentStorage::Unknown11(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ncm::IContentStorage::Unknown11(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ncm::IContentStorage::Unknown11\n");
 	return 0;
 }
@@ -22347,7 +22347,7 @@ namespace nn::news::detail::ipc {
 				ns_abort("Unknown message cmdId %u to interface nn::news::detail::ipc::INewlyArrivedEventHolder", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 	};
 	class INewsDataService : public IpcService {
 	public:
@@ -22358,11 +22358,11 @@ namespace nn::news::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::news::detail::ipc::INewsDataService::Unknown0: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown0((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -22375,11 +22375,11 @@ namespace nn::news::detail::ipc {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::news::detail::ipc::INewsDataService::Unknown2: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown2(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -22394,7 +22394,7 @@ namespace nn::news::detail::ipc {
 		}
 		uint32_t Unknown0(uint8_t * _0, unsigned int _0_size);
 		uint32_t Unknown1();
-		uint32_t Unknown2(uint64_t _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown2(uint64_t _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown3(uint64_t& _0);
 	};
 	class INewsDatabaseService : public IpcService {
@@ -22458,22 +22458,22 @@ namespace nn::news::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::news::detail::ipc::INewsService::Unknown10100: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown10100((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown10100(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 20100: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::news::detail::ipc::INewsService::Unknown20100: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown20100(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown20100(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 30100: {
@@ -22486,11 +22486,11 @@ namespace nn::news::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::news::detail::ipc::INewsService::Unknown30101: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown30101(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown30101(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 30200: {
@@ -22503,11 +22503,11 @@ namespace nn::news::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::news::detail::ipc::INewsService::Unknown30300: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown30300((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown30300(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 30400: {
@@ -22544,11 +22544,11 @@ namespace nn::news::detail::ipc {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::news::detail::ipc::INewsService::Unknown90100\n");
-				resp->error_code = Unknown90100(*resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown90100(*resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -22558,7 +22558,7 @@ namespace nn::news::detail::ipc {
 		uint32_t Unknown10100(uint8_t * _0, unsigned int _0_size);
 		uint32_t Unknown20100(uint64_t _0, uint8_t * _1, unsigned int _1_size);
 		uint32_t Unknown30100();
-		uint32_t Unknown30101(uint32_t _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown30101(uint32_t _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown30200(uint8_t& _0);
 		uint32_t Unknown30300(uint8_t * _0, unsigned int _0_size);
 		uint32_t Unknown30400();
@@ -22566,7 +22566,7 @@ namespace nn::news::detail::ipc {
 		uint32_t Unknown40101(uint64_t _0);
 		uint32_t Unknown40200();
 		uint32_t Unknown40201();
-		uint32_t Unknown90100(uint64_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown90100(uint64_t& _0, uint8_t *& _1, unsigned int _1_size);
 	};
 	class IOverwriteEventHolder : public IpcService {
 	public:
@@ -22586,7 +22586,7 @@ namespace nn::news::detail::ipc {
 				ns_abort("Unknown message cmdId %u to interface nn::news::detail::ipc::IOverwriteEventHolder", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 	};
 	class IServiceCreator : public IpcService {
 	public:
@@ -22642,15 +22642,15 @@ namespace nn::news::detail::ipc {
 				ns_abort("Unknown message cmdId %u to interface nn::news::detail::ipc::IServiceCreator", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
-		uint32_t Unknown1(IUnknown* _0);
-		uint32_t Unknown2(IUnknown* _0);
-		uint32_t Unknown3(IUnknown* _0);
-		uint32_t Unknown4(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
+		uint32_t Unknown1(IUnknown*& _0);
+		uint32_t Unknown2(IUnknown*& _0);
+		uint32_t Unknown3(IUnknown*& _0);
+		uint32_t Unknown4(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::news::detail::ipc::INewlyArrivedEventHolder::Unknown0(IpcService* _0) {
+uint32_t nn::news::detail::ipc::INewlyArrivedEventHolder::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::news::detail::ipc::INewlyArrivedEventHolder::Unknown0\n");
 	return 0;
 }
@@ -22662,7 +22662,7 @@ uint32_t nn::news::detail::ipc::INewsDataService::Unknown1() {
 	ns_print("Stub implementation for nn::news::detail::ipc::INewsDataService::Unknown1\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::INewsDataService::Unknown2(uint64_t _0, uint64_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::news::detail::ipc::INewsDataService::Unknown2(uint64_t _0, uint64_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::news::detail::ipc::INewsDataService::Unknown2\n");
 	return 0;
 }
@@ -22706,7 +22706,7 @@ uint32_t nn::news::detail::ipc::INewsService::Unknown30100() {
 	ns_print("Stub implementation for nn::news::detail::ipc::INewsService::Unknown30100\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::INewsService::Unknown30101(uint32_t _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::news::detail::ipc::INewsService::Unknown30101(uint32_t _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::news::detail::ipc::INewsService::Unknown30101\n");
 	return 0;
 }
@@ -22738,31 +22738,31 @@ uint32_t nn::news::detail::ipc::INewsService::Unknown40201() {
 	ns_print("Stub implementation for nn::news::detail::ipc::INewsService::Unknown40201\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::INewsService::Unknown90100(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::news::detail::ipc::INewsService::Unknown90100(uint64_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::news::detail::ipc::INewsService::Unknown90100\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::IOverwriteEventHolder::Unknown0(IpcService* _0) {
+uint32_t nn::news::detail::ipc::IOverwriteEventHolder::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::news::detail::ipc::IOverwriteEventHolder::Unknown0\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::IServiceCreator::Unknown0(IUnknown* _0) {
+uint32_t nn::news::detail::ipc::IServiceCreator::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::news::detail::ipc::IServiceCreator::Unknown0\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::IServiceCreator::Unknown1(IUnknown* _0) {
+uint32_t nn::news::detail::ipc::IServiceCreator::Unknown1(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::news::detail::ipc::IServiceCreator::Unknown1\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::IServiceCreator::Unknown2(IUnknown* _0) {
+uint32_t nn::news::detail::ipc::IServiceCreator::Unknown2(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::news::detail::ipc::IServiceCreator::Unknown2\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::IServiceCreator::Unknown3(IUnknown* _0) {
+uint32_t nn::news::detail::ipc::IServiceCreator::Unknown3(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::news::detail::ipc::IServiceCreator::Unknown3\n");
 	return 0;
 }
-uint32_t nn::news::detail::ipc::IServiceCreator::Unknown4(IUnknown* _0) {
+uint32_t nn::news::detail::ipc::IServiceCreator::Unknown4(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::news::detail::ipc::IServiceCreator::Unknown4\n");
 	return 0;
 }
@@ -22817,7 +22817,7 @@ namespace nn::nfc::am::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nfc::am::detail::IAmManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -22833,7 +22833,7 @@ uint32_t nn::nfc::am::detail::IAm::Unknown2(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfc::am::detail::IAm::Unknown2\n");
 	return 0;
 }
-uint32_t nn::nfc::am::detail::IAmManager::Unknown0(IUnknown* _0) {
+uint32_t nn::nfc::am::detail::IAmManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::nfc::am::detail::IAmManager::Unknown0\n");
 	return 0;
 }
@@ -22848,11 +22848,11 @@ namespace nn::nfc::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfc::detail::ISystem::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -22907,7 +22907,7 @@ namespace nn::nfc::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nfc::detail::ISystemManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class IUser : public IpcService {
 	public:
@@ -22918,11 +22918,11 @@ namespace nn::nfc::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfc::detail::IUser::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -22970,7 +22970,7 @@ namespace nn::nfc::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nfc::detail::IUserManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -22994,7 +22994,7 @@ uint32_t nn::nfc::detail::ISystem::Unknown3(uint8_t& _0) {
 	ns_print("Stub implementation for nn::nfc::detail::ISystem::Unknown3\n");
 	return 0;
 }
-uint32_t nn::nfc::detail::ISystemManager::Unknown0(IUnknown* _0) {
+uint32_t nn::nfc::detail::ISystemManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::nfc::detail::ISystemManager::Unknown0\n");
 	return 0;
 }
@@ -23014,7 +23014,7 @@ uint32_t nn::nfc::detail::IUser::Unknown3(uint8_t& _0) {
 	ns_print("Stub implementation for nn::nfc::detail::IUser::Unknown3\n");
 	return 0;
 }
-uint32_t nn::nfc::detail::IUserManager::Unknown0(IUnknown* _0) {
+uint32_t nn::nfc::detail::IUserManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::nfc::detail::IUserManager::Unknown0\n");
 	return 0;
 }
@@ -23029,11 +23029,11 @@ namespace nn::nfc::mifare::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -23046,11 +23046,11 @@ namespace nn::nfc::mifare::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown2\n");
-				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -23069,38 +23069,38 @@ namespace nn::nfc::mifare::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown5: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown5(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown5(req->GetData<uint64_t>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown6: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown6(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown6(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown7: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown7(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown7(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 8: {
@@ -23157,15 +23157,15 @@ namespace nn::nfc::mifare::detail {
 		uint32_t Unknown10(uint32_t& _0);
 		uint32_t Unknown11(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown12(uint64_t _0, uint32_t& _1);
-		uint32_t Unknown13(IpcService* _0);
-		uint32_t Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown13(IpcService*& _0);
+		uint32_t Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown3(uint64_t _0);
 		uint32_t Unknown4(uint64_t _0);
-		uint32_t Unknown5(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown5(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown6(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown7(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown8(uint64_t _0, IpcService* _1);
-		uint32_t Unknown9(uint64_t _0, IpcService* _1);
+		uint32_t Unknown7(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown8(uint64_t _0, IpcService*& _1);
+		uint32_t Unknown9(uint64_t _0, IpcService*& _1);
 	};
 	class IUserManager : public IpcService {
 	public:
@@ -23185,7 +23185,7 @@ namespace nn::nfc::mifare::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nfc::mifare::detail::IUserManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -23209,11 +23209,11 @@ uint32_t nn::nfc::mifare::detail::IUser::Unknown12(uint64_t _0, uint32_t& _1) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown12\n");
 	return 0;
 }
-uint32_t nn::nfc::mifare::detail::IUser::Unknown13(IpcService* _0) {
+uint32_t nn::nfc::mifare::detail::IUser::Unknown13(IpcService*& _0) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown13\n");
 	return 0;
 }
-uint32_t nn::nfc::mifare::detail::IUser::Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfc::mifare::detail::IUser::Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown2\n");
 	return 0;
 }
@@ -23225,7 +23225,7 @@ uint32_t nn::nfc::mifare::detail::IUser::Unknown4(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown4\n");
 	return 0;
 }
-uint32_t nn::nfc::mifare::detail::IUser::Unknown5(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::nfc::mifare::detail::IUser::Unknown5(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown5\n");
 	return 0;
 }
@@ -23233,19 +23233,19 @@ uint32_t nn::nfc::mifare::detail::IUser::Unknown6(uint64_t _0, uint8_t * _1, uns
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown6\n");
 	return 0;
 }
-uint32_t nn::nfc::mifare::detail::IUser::Unknown7(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfc::mifare::detail::IUser::Unknown7(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown7\n");
 	return 0;
 }
-uint32_t nn::nfc::mifare::detail::IUser::Unknown8(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfc::mifare::detail::IUser::Unknown8(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown8\n");
 	return 0;
 }
-uint32_t nn::nfc::mifare::detail::IUser::Unknown9(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfc::mifare::detail::IUser::Unknown9(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUser::Unknown9\n");
 	return 0;
 }
-uint32_t nn::nfc::mifare::detail::IUserManager::Unknown0(IUnknown* _0) {
+uint32_t nn::nfc::mifare::detail::IUserManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::nfc::mifare::detail::IUserManager::Unknown0\n");
 	return 0;
 }
@@ -23260,11 +23260,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -23277,11 +23277,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown2\n");
-				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -23318,22 +23318,22 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown8: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown8(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown8(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown9: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown9(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown9(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 10: {
@@ -23352,55 +23352,55 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown12: uint64_t = 0x%%lx, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = Unknown12(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown12(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 13: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown13: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown13(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown13(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 14: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown14: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown14(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown14(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown15: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown15(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown15(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 16: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown16: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown16(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown16(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 17: {
@@ -23458,11 +23458,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown24: uint64_t = 0x%%lx, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = Unknown24(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown24(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 100: {
@@ -23475,33 +23475,33 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown101: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown101(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown101(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 102: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown102: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown102(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown102(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 103: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown103: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown103(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown103(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 104: {
@@ -23526,22 +23526,22 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown200: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown200(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown200(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 201: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown201: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown201(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown201(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 202: {
@@ -23560,44 +23560,44 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown204\n");
-				resp->error_code = Unknown204(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown204(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 205: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown205: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown205((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown205(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 206: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown206: uint64_t = 0x%%lx, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = Unknown206(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown206(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 300: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown300: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown300(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown300(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 301: {
@@ -23610,11 +23610,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown302\n");
-				resp->error_code = Unknown302(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown302(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 303: {
@@ -23633,27 +23633,27 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown305: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown305(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown305(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 306: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown306: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown306(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown306(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 307: {
@@ -23721,55 +23721,55 @@ namespace nn::nfp::detail {
 		uint32_t Unknown1();
 		uint32_t Unknown10(uint64_t _0);
 		uint32_t Unknown100(uint64_t _0);
-		uint32_t Unknown101(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown102(uint64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown101(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown102(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown103(uint64_t _0, uint8_t * _1, unsigned int _1_size);
 		uint32_t Unknown104(uint64_t _0);
 		uint32_t Unknown105(uint64_t _0);
 		uint32_t Unknown106(uint64_t _0, uint8_t& _1);
 		uint32_t Unknown11(uint64_t _0);
 		uint32_t Unknown12(uint64_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown13(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown14(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown15(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown16(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown17(uint64_t _0, IpcService* _1);
-		uint32_t Unknown18(uint64_t _0, IpcService* _1);
+		uint32_t Unknown13(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown14(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown15(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown16(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown17(uint64_t _0, IpcService*& _1);
+		uint32_t Unknown18(uint64_t _0, IpcService*& _1);
 		uint32_t Unknown19(uint32_t& _0);
-		uint32_t Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown20(uint64_t _0, uint32_t& _1);
-		uint32_t Unknown200(uint64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown200(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown201(uint64_t _0, uint8_t * _1, unsigned int _1_size);
 		uint32_t Unknown202(uint64_t _0);
 		uint32_t Unknown203(uint64_t _0, uint32_t _1);
-		uint32_t Unknown204(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown204(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown205(uint8_t * _0, unsigned int _0_size);
 		uint32_t Unknown206(uint64_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size);
 		uint32_t Unknown21(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown22(uint64_t _0, uint32_t& _1);
-		uint32_t Unknown23(IpcService* _0);
+		uint32_t Unknown23(IpcService*& _0);
 		uint32_t Unknown24(uint64_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size);
 		uint32_t Unknown3(uint64_t _0);
 		uint32_t Unknown300(uint64_t _0, uint64_t _1, uint64_t _2, uint8_t * _3, unsigned int _3_size);
 		uint32_t Unknown301();
-		uint32_t Unknown302(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown302(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown303(uint64_t _0, uint32_t _1);
 		uint32_t Unknown304(uint64_t _0);
-		uint32_t Unknown305(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t Unknown306(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown307(uint64_t _0, IpcService* _1);
-		uint32_t Unknown308(uint64_t _0, IpcService* _1);
+		uint32_t Unknown305(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint8_t *& _4, unsigned int _4_size);
+		uint32_t Unknown306(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown307(uint64_t _0, IpcService*& _1);
+		uint32_t Unknown308(uint64_t _0, IpcService*& _1);
 		uint32_t Unknown309(uint32_t& _0);
 		uint32_t Unknown310(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown311(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown312(uint64_t _0);
 		uint32_t Unknown313(uint64_t _0);
-		uint32_t Unknown314(IpcService* _0);
+		uint32_t Unknown314(IpcService*& _0);
 		uint32_t Unknown4(uint64_t _0);
 		uint32_t Unknown5(uint64_t _0, uint32_t _1, uint32_t _2);
 		uint32_t Unknown6(uint64_t _0);
 		uint32_t Unknown7(uint64_t _0, uint32_t _1);
-		uint32_t Unknown8(uint64_t _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown8(uint64_t _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown9(uint64_t _0, uint8_t * _1, unsigned int _1_size);
 	};
 	class IDebugManager : public IpcService {
@@ -23790,7 +23790,7 @@ namespace nn::nfp::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nfp::detail::IDebugManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class ISystem : public IpcService {
 	public:
@@ -23801,11 +23801,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -23818,11 +23818,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown2\n");
-				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -23865,44 +23865,44 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown13: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown13(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown13(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 14: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown14: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown14(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown14(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown15: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown15(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown15(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 16: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown16: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown16(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown16(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 17: {
@@ -23960,33 +23960,33 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown101: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown101(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown101(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 102: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown102: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown102(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown102(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 103: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown103: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown103(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown103(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 104: {
@@ -24015,24 +24015,24 @@ namespace nn::nfp::detail {
 		uint32_t Unknown1();
 		uint32_t Unknown10(uint64_t _0);
 		uint32_t Unknown100(uint64_t _0);
-		uint32_t Unknown101(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown102(uint64_t _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown101(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown102(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown103(uint64_t _0, uint8_t * _1, unsigned int _1_size);
 		uint32_t Unknown104(uint64_t _0);
 		uint32_t Unknown105(uint64_t _0);
 		uint32_t Unknown106(uint64_t _0, uint8_t& _1);
 		uint32_t Unknown11(uint64_t _0);
-		uint32_t Unknown13(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown14(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown15(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown16(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown17(uint64_t _0, IpcService* _1);
-		uint32_t Unknown18(uint64_t _0, IpcService* _1);
+		uint32_t Unknown13(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown14(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown15(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown16(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown17(uint64_t _0, IpcService*& _1);
+		uint32_t Unknown18(uint64_t _0, IpcService*& _1);
 		uint32_t Unknown19(uint32_t& _0);
-		uint32_t Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown20(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown21(uint64_t _0, uint32_t& _1);
-		uint32_t Unknown23(IpcService* _0);
+		uint32_t Unknown23(IpcService*& _0);
 		uint32_t Unknown3(uint64_t _0);
 		uint32_t Unknown4(uint64_t _0);
 		uint32_t Unknown5(uint64_t _0, uint32_t _1, uint32_t _2);
@@ -24056,7 +24056,7 @@ namespace nn::nfp::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nfp::detail::ISystemManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class IUser : public IpcService {
 	public:
@@ -24067,11 +24067,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -24084,11 +24084,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown2\n");
-				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -24125,22 +24125,22 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown8: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown8(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown8(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown9: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = Unknown9(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown9(req->GetData<uint64_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 10: {
@@ -24159,55 +24159,55 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown12: uint64_t = 0x%%lx, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = Unknown12(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown12(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 13: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown13: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown13(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown13(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 14: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown14: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown14(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown14(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown15: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown15(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown15(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 16: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown16: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown16(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown16(req->GetData<uint64_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 17: {
@@ -24265,11 +24265,11 @@ namespace nn::nfp::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown24: uint64_t = 0x%%lx, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = Unknown24(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown24(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
@@ -24281,25 +24281,25 @@ namespace nn::nfp::detail {
 		uint32_t Unknown10(uint64_t _0);
 		uint32_t Unknown11(uint64_t _0);
 		uint32_t Unknown12(uint64_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown13(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown14(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown15(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown16(uint64_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown17(uint64_t _0, IpcService* _1);
-		uint32_t Unknown18(uint64_t _0, IpcService* _1);
+		uint32_t Unknown13(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown14(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown15(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown16(uint64_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown17(uint64_t _0, IpcService*& _1);
+		uint32_t Unknown18(uint64_t _0, IpcService*& _1);
 		uint32_t Unknown19(uint32_t& _0);
-		uint32_t Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown20(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown21(uint64_t _0, uint32_t& _1);
 		uint32_t Unknown22(uint64_t _0, uint32_t& _1);
-		uint32_t Unknown23(IpcService* _0);
+		uint32_t Unknown23(IpcService*& _0);
 		uint32_t Unknown24(uint64_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size);
 		uint32_t Unknown3(uint64_t _0);
 		uint32_t Unknown4(uint64_t _0);
 		uint32_t Unknown5(uint64_t _0, uint32_t _1, uint32_t _2);
 		uint32_t Unknown6(uint64_t _0);
 		uint32_t Unknown7(uint64_t _0, uint32_t _1);
-		uint32_t Unknown8(uint64_t _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown8(uint64_t _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown9(uint64_t _0, uint8_t * _1, unsigned int _1_size);
 	};
 	class IUserManager : public IpcService {
@@ -24320,7 +24320,7 @@ namespace nn::nfp::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nfp::detail::IUserManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -24340,11 +24340,11 @@ uint32_t nn::nfp::detail::IDebug::Unknown100(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown100\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown101(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown101(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown101\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown102(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown102(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown102\n");
 	return 0;
 }
@@ -24372,27 +24372,27 @@ uint32_t nn::nfp::detail::IDebug::Unknown12(uint64_t _0, uint32_t _1, uint8_t * 
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown12\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown13(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown13(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown13\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown14(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown14(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown14\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown15(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown15(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown15\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown16(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown16(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown16\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown17(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::IDebug::Unknown17(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown17\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown18(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::IDebug::Unknown18(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown18\n");
 	return 0;
 }
@@ -24400,7 +24400,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown19(uint32_t& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown19\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown2\n");
 	return 0;
 }
@@ -24408,7 +24408,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown20(uint64_t _0, uint32_t& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown20\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown200(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown200(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown200\n");
 	return 0;
 }
@@ -24424,7 +24424,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown203(uint64_t _0, uint32_t _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown203\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown204(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown204(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown204\n");
 	return 0;
 }
@@ -24444,7 +24444,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown22(uint64_t _0, uint32_t& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown22\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown23(IpcService* _0) {
+uint32_t nn::nfp::detail::IDebug::Unknown23(IpcService*& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown23\n");
 	return 0;
 }
@@ -24464,7 +24464,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown301() {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown301\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown302(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown302(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown302\n");
 	return 0;
 }
@@ -24476,19 +24476,19 @@ uint32_t nn::nfp::detail::IDebug::Unknown304(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown304\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown305(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown305(uint64_t _0, uint64_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown305\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown306(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown306(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown306\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown307(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::IDebug::Unknown307(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown307\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown308(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::IDebug::Unknown308(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown308\n");
 	return 0;
 }
@@ -24512,7 +24512,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown313(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown313\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown314(IpcService* _0) {
+uint32_t nn::nfp::detail::IDebug::Unknown314(IpcService*& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown314\n");
 	return 0;
 }
@@ -24532,7 +24532,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown7(uint64_t _0, uint32_t _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown7\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebug::Unknown8(uint64_t _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::nfp::detail::IDebug::Unknown8(uint64_t _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown8\n");
 	return 0;
 }
@@ -24540,7 +24540,7 @@ uint32_t nn::nfp::detail::IDebug::Unknown9(uint64_t _0, uint8_t * _1, unsigned i
 	ns_print("Stub implementation for nn::nfp::detail::IDebug::Unknown9\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IDebugManager::Unknown0(IUnknown* _0) {
+uint32_t nn::nfp::detail::IDebugManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IDebugManager::Unknown0\n");
 	return 0;
 }
@@ -24560,11 +24560,11 @@ uint32_t nn::nfp::detail::ISystem::Unknown100(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown100\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown101(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::ISystem::Unknown101(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown101\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown102(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::ISystem::Unknown102(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown102\n");
 	return 0;
 }
@@ -24588,27 +24588,27 @@ uint32_t nn::nfp::detail::ISystem::Unknown11(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown11\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown13(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::ISystem::Unknown13(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown13\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown14(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::ISystem::Unknown14(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown14\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown15(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::ISystem::Unknown15(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown15\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown16(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::ISystem::Unknown16(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown16\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown17(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::ISystem::Unknown17(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown17\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown18(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::ISystem::Unknown18(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown18\n");
 	return 0;
 }
@@ -24616,7 +24616,7 @@ uint32_t nn::nfp::detail::ISystem::Unknown19(uint32_t& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown19\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::ISystem::Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown2\n");
 	return 0;
 }
@@ -24628,7 +24628,7 @@ uint32_t nn::nfp::detail::ISystem::Unknown21(uint64_t _0, uint32_t& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown21\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystem::Unknown23(IpcService* _0) {
+uint32_t nn::nfp::detail::ISystem::Unknown23(IpcService*& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown23\n");
 	return 0;
 }
@@ -24648,7 +24648,7 @@ uint32_t nn::nfp::detail::ISystem::Unknown6(uint64_t _0) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystem::Unknown6\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::ISystemManager::Unknown0(IUnknown* _0) {
+uint32_t nn::nfp::detail::ISystemManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::ISystemManager::Unknown0\n");
 	return 0;
 }
@@ -24672,27 +24672,27 @@ uint32_t nn::nfp::detail::IUser::Unknown12(uint64_t _0, uint32_t _1, uint8_t * _
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown12\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown13(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IUser::Unknown13(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown13\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown14(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IUser::Unknown14(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown14\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown15(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IUser::Unknown15(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown15\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown16(uint64_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IUser::Unknown16(uint64_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown16\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown17(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::IUser::Unknown17(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown17\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown18(uint64_t _0, IpcService* _1) {
+uint32_t nn::nfp::detail::IUser::Unknown18(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown18\n");
 	return 0;
 }
@@ -24700,7 +24700,7 @@ uint32_t nn::nfp::detail::IUser::Unknown19(uint32_t& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown19\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nfp::detail::IUser::Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown2\n");
 	return 0;
 }
@@ -24716,7 +24716,7 @@ uint32_t nn::nfp::detail::IUser::Unknown22(uint64_t _0, uint32_t& _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown22\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown23(IpcService* _0) {
+uint32_t nn::nfp::detail::IUser::Unknown23(IpcService*& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown23\n");
 	return 0;
 }
@@ -24744,7 +24744,7 @@ uint32_t nn::nfp::detail::IUser::Unknown7(uint64_t _0, uint32_t _1) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown7\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUser::Unknown8(uint64_t _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::nfp::detail::IUser::Unknown8(uint64_t _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown8\n");
 	return 0;
 }
@@ -24752,7 +24752,7 @@ uint32_t nn::nfp::detail::IUser::Unknown9(uint64_t _0, uint8_t * _1, unsigned in
 	ns_print("Stub implementation for nn::nfp::detail::IUser::Unknown9\n");
 	return 0;
 }
-uint32_t nn::nfp::detail::IUserManager::Unknown0(IUnknown* _0) {
+uint32_t nn::nfp::detail::IUserManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::nfp::detail::IUserManager::Unknown0\n");
 	return 0;
 }
@@ -24767,11 +24767,11 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::ClientId* temp3 = (nn::nifm::ClientId *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetClientId\n");
-				resp->error_code = GetClientId((nn::nifm::ClientId *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetClientId(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -24796,55 +24796,55 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::detail::sf::NetworkProfileData* temp3 = (nn::nifm::detail::sf::NetworkProfileData *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetCurrentNetworkProfile\n");
-				resp->error_code = GetCurrentNetworkProfile((nn::nifm::detail::sf::NetworkProfileData *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetCurrentNetworkProfile(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::detail::sf::NetworkInterfaceInfo* temp3 = (nn::nifm::detail::sf::NetworkInterfaceInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::EnumerateNetworkInterfaces: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = EnumerateNetworkInterfaces(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::nifm::detail::sf::NetworkInterfaceInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = EnumerateNetworkInterfaces(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::detail::sf::NetworkProfileBasicInfo* temp3 = (nn::nifm::detail::sf::NetworkProfileBasicInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::EnumerateNetworkProfiles: uint8_t = 0x%x\n", req->GetData<uint8_t>(8));
-				resp->error_code = EnumerateNetworkProfiles(req->GetData<uint8_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::nifm::detail::sf::NetworkProfileBasicInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = EnumerateNetworkProfiles(req->GetData<uint8_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 8: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::detail::sf::NetworkProfileData* temp3 = (nn::nifm::detail::sf::NetworkProfileData *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetNetworkProfile: nn::util::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
-				resp->error_code = GetNetworkProfile(req->GetData<nn::util::Uuid>(8), (nn::nifm::detail::sf::NetworkProfileData *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetNetworkProfile(req->GetData<nn::util::Uuid>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::nifm::detail::sf::NetworkProfileData* temp3 = (nn::nifm::detail::sf::NetworkProfileData *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::SetNetworkProfile: nn::nifm::detail::sf::NetworkProfileData *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetNetworkProfile((nn::nifm::detail::sf::NetworkProfileData *) temp3, temp2, *resp->GetDataPointer<nn::util::Uuid *>(8));
-				delete[] temp3;
+				resp->error_code = SetNetworkProfile(temp3, temp2, *resp->GetDataPointer<nn::util::Uuid *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 10: {
@@ -24857,11 +24857,11 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::detail::sf::AccessPointData* temp3 = (nn::nifm::detail::sf::AccessPointData *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetScanData\n");
-				resp->error_code = GetScanData(*resp->GetDataPointer<int32_t *>(8), (nn::nifm::detail::sf::AccessPointData *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetScanData(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 12: {
@@ -24874,23 +24874,23 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::detail::sf::AccessPointData* temp3 = (nn::nifm::detail::sf::AccessPointData *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetCurrentAccessPoint\n");
-				resp->error_code = GetCurrentAccessPoint((nn::nifm::detail::sf::AccessPointData *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetCurrentAccessPoint(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 14: {
 				resp->GenBuf(1, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::nifm::detail::sf::NetworkProfileData* temp3 = (nn::nifm::detail::sf::NetworkProfileData *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::nifm::detail::INetworkProfile* temp4;
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::CreateTemporaryNetworkProfile: nn::nifm::detail::sf::NetworkProfileData *= buffer<0x%lx>\n", temp2);
-				resp->error_code = CreateTemporaryNetworkProfile((nn::nifm::detail::sf::NetworkProfileData *) temp3, temp2, *resp->GetDataPointer<nn::util::Uuid *>(8), temp4);
-				delete[] temp3;
+				resp->error_code = CreateTemporaryNetworkProfile(temp3, temp2, *resp->GetDataPointer<nn::util::Uuid *>(8), temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -24938,11 +24938,11 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 1);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::nifm::ClientId* temp3 = (nn::nifm::ClientId *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::IsAnyInternetRequestAccepted: nn::nifm::ClientId *= buffer<0x%lx>\n", temp2);
-				resp->error_code = IsAnyInternetRequestAccepted((nn::nifm::ClientId *) temp3, temp2, *resp->GetDataPointer<bool *>(8));
-				delete[] temp3;
+				resp->error_code = IsAnyInternetRequestAccepted(temp3, temp2, *resp->GetDataPointer<bool *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 22: {
@@ -24973,33 +24973,33 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::nifm::ClientId* temp3 = (nn::nifm::ClientId *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::SetExclusiveClient: nn::nifm::ClientId *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetExclusiveClient((nn::nifm::ClientId *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetExclusiveClient(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 27: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::IpSettingData* temp3 = (nn::nifm::IpSettingData *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetDefaultIpSetting\n");
-				resp->error_code = GetDefaultIpSetting((nn::nifm::IpSettingData *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetDefaultIpSetting(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 28: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::nifm::IpSettingData* temp3 = (nn::nifm::IpSettingData *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::SetDefaultIpSetting: nn::nifm::IpSettingData *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetDefaultIpSetting((nn::nifm::IpSettingData *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetDefaultIpSetting(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 29: {
@@ -25027,11 +25027,11 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::TelemetryInfo* temp3 = (nn::nifm::TelemetryInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetTelemetryInfo\n");
-				resp->error_code = GetTelemetryInfo((nn::nifm::TelemetryInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetTelemetryInfo(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 33: {
@@ -25045,23 +25045,23 @@ namespace nn::nifm::detail {
 			}
 		}
 		uint32_t ConfirmSystemAvailability();
-		uint32_t CreateRequest(int32_t _0, nn::nifm::detail::IRequest* _1);
-		uint32_t CreateScanRequest(nn::nifm::detail::IScanRequest* _0);
-		uint32_t CreateTemporaryNetworkProfile(nn::nifm::detail::sf::NetworkProfileData * _0, unsigned int _0_size, nn::util::Uuid& _1, nn::nifm::detail::INetworkProfile* _2);
-		uint32_t EnumerateNetworkInterfaces(uint32_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkInterfaceInfo * _2, unsigned int _2_size);
-		uint32_t EnumerateNetworkProfiles(uint8_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkProfileBasicInfo * _2, unsigned int _2_size);
-		uint32_t GetClientId(nn::nifm::ClientId * _0, unsigned int _0_size);
-		uint32_t GetCurrentAccessPoint(nn::nifm::detail::sf::AccessPointData * _0, unsigned int _0_size);
+		uint32_t CreateRequest(int32_t _0, nn::nifm::detail::IRequest*& _1);
+		uint32_t CreateScanRequest(nn::nifm::detail::IScanRequest*& _0);
+		uint32_t CreateTemporaryNetworkProfile(nn::nifm::detail::sf::NetworkProfileData * _0, unsigned int _0_size, nn::util::Uuid& _1, nn::nifm::detail::INetworkProfile*& _2);
+		uint32_t EnumerateNetworkInterfaces(uint32_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkInterfaceInfo *& _2, unsigned int _2_size);
+		uint32_t EnumerateNetworkProfiles(uint8_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkProfileBasicInfo *& _2, unsigned int _2_size);
+		uint32_t GetClientId(nn::nifm::ClientId *& _0, unsigned int _0_size);
+		uint32_t GetCurrentAccessPoint(nn::nifm::detail::sf::AccessPointData *& _0, unsigned int _0_size);
 		uint32_t GetCurrentIpAddress(nn::nifm::IpV4Address& _0);
 		uint32_t GetCurrentIpConfigInfo(nn::nifm::IpAddressSetting& _0, nn::nifm::DnsSetting& _1);
-		uint32_t GetCurrentNetworkProfile(nn::nifm::detail::sf::NetworkProfileData * _0, unsigned int _0_size);
-		uint32_t GetDefaultIpSetting(nn::nifm::IpSettingData * _0, unsigned int _0_size);
+		uint32_t GetCurrentNetworkProfile(nn::nifm::detail::sf::NetworkProfileData *& _0, unsigned int _0_size);
+		uint32_t GetDefaultIpSetting(nn::nifm::IpSettingData *& _0, unsigned int _0_size);
 		uint32_t GetInternetConnectionStatus(nn::nifm::detail::sf::InternetConnectionStatus& _0);
-		uint32_t GetNetworkProfile(nn::util::Uuid _0, nn::nifm::detail::sf::NetworkProfileData * _1, unsigned int _1_size);
-		uint32_t GetScanData(int32_t& _0, nn::nifm::detail::sf::AccessPointData * _1, unsigned int _1_size);
+		uint32_t GetNetworkProfile(nn::util::Uuid _0, nn::nifm::detail::sf::NetworkProfileData *& _1, unsigned int _1_size);
+		uint32_t GetScanData(int32_t& _0, nn::nifm::detail::sf::AccessPointData *& _1, unsigned int _1_size);
 		uint32_t GetSsidListVersion(nn::nifm::SsidListVersion& _0);
-		uint32_t GetTelemetorySystemEventReadableHandle(IpcService* _0);
-		uint32_t GetTelemetryInfo(nn::nifm::TelemetryInfo * _0, unsigned int _0_size);
+		uint32_t GetTelemetorySystemEventReadableHandle(IpcService*& _0);
+		uint32_t GetTelemetryInfo(nn::nifm::TelemetryInfo *& _0, unsigned int _0_size);
 		uint32_t IsAnyForegroundRequestAccepted(bool& _0);
 		uint32_t IsAnyInternetRequestAccepted(nn::nifm::ClientId * _0, unsigned int _0_size, bool& _1);
 		uint32_t IsEthernetCommunicationEnabled(bool& _0);
@@ -25086,11 +25086,11 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::nifm::detail::sf::NetworkProfileData* temp3 = (nn::nifm::detail::sf::NetworkProfileData *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nifm::detail::INetworkProfile::Update: nn::nifm::detail::sf::NetworkProfileData *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Update((nn::nifm::detail::sf::NetworkProfileData *) temp3, temp2, *resp->GetDataPointer<nn::util::Uuid *>(8));
-				delete[] temp3;
+				resp->error_code = Update(temp3, temp2, *resp->GetDataPointer<nn::util::Uuid *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -25249,22 +25249,22 @@ namespace nn::nifm::detail {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IRequest::GetAppletInfo: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = GetAppletInfo(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAppletInfo(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 22: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::nifm::AdditionalInfo* temp3 = (nn::nifm::AdditionalInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nifm::detail::IRequest::GetAdditionalInfo\n");
-				resp->error_code = GetAdditionalInfo(*resp->GetDataPointer<uint32_t *>(8), (nn::nifm::AdditionalInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAdditionalInfo(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 23: {
@@ -25290,13 +25290,13 @@ namespace nn::nifm::detail {
 			}
 		}
 		uint32_t Cancel();
-		uint32_t GetAdditionalInfo(uint32_t& _0, nn::nifm::AdditionalInfo * _1, unsigned int _1_size);
-		uint32_t GetAppletInfo(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size);
+		uint32_t GetAdditionalInfo(uint32_t& _0, nn::nifm::AdditionalInfo *& _1, unsigned int _1_size);
+		uint32_t GetAppletInfo(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t *& _4, unsigned int _4_size);
 		uint32_t GetRequestState(int32_t& _0);
 		uint32_t GetRequirement(nn::nifm::Requirement& _0);
 		uint32_t GetResult();
 		uint32_t GetRevision(uint32_t& _0);
-		uint32_t GetSystemEventReadableHandles(IpcService* _0, IpcService* _1);
+		uint32_t GetSystemEventReadableHandles(IpcService*& _0, IpcService*& _1);
 		uint32_t RegisterSocketDescriptor(int32_t _0);
 		uint32_t SetConnectionConfirmationOption(int8_t _0);
 		uint32_t SetGreedy(bool _0);
@@ -25352,7 +25352,7 @@ namespace nn::nifm::detail {
 			}
 		}
 		uint32_t GetResult();
-		uint32_t GetSystemEventReadableHandle(IpcService* _0);
+		uint32_t GetSystemEventReadableHandle(IpcService*& _0);
 		uint32_t IsProcessing(bool& _0);
 		uint32_t Submit();
 	};
@@ -25383,8 +25383,8 @@ namespace nn::nifm::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nifm::detail::IStaticService", req->cmd_id);
 			}
 		}
-		uint32_t CreateGeneralService(uint64_t _0, uint64_t _1, nn::nifm::detail::IGeneralService* _2);
-		uint32_t CreateGeneralServiceOld(nn::nifm::detail::IGeneralService* _0);
+		uint32_t CreateGeneralService(uint64_t _0, uint64_t _1, nn::nifm::detail::IGeneralService*& _2);
+		uint32_t CreateGeneralServiceOld(nn::nifm::detail::IGeneralService*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -25392,31 +25392,31 @@ uint32_t nn::nifm::detail::IGeneralService::ConfirmSystemAvailability() {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::ConfirmSystemAvailability\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::CreateRequest(int32_t _0, nn::nifm::detail::IRequest* _1) {
+uint32_t nn::nifm::detail::IGeneralService::CreateRequest(int32_t _0, nn::nifm::detail::IRequest*& _1) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::CreateRequest\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::CreateScanRequest(nn::nifm::detail::IScanRequest* _0) {
+uint32_t nn::nifm::detail::IGeneralService::CreateScanRequest(nn::nifm::detail::IScanRequest*& _0) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::CreateScanRequest\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::CreateTemporaryNetworkProfile(nn::nifm::detail::sf::NetworkProfileData * _0, unsigned int _0_size, nn::util::Uuid& _1, nn::nifm::detail::INetworkProfile* _2) {
+uint32_t nn::nifm::detail::IGeneralService::CreateTemporaryNetworkProfile(nn::nifm::detail::sf::NetworkProfileData * _0, unsigned int _0_size, nn::util::Uuid& _1, nn::nifm::detail::INetworkProfile*& _2) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::CreateTemporaryNetworkProfile\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::EnumerateNetworkInterfaces(uint32_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkInterfaceInfo * _2, unsigned int _2_size) {
+uint32_t nn::nifm::detail::IGeneralService::EnumerateNetworkInterfaces(uint32_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkInterfaceInfo *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::EnumerateNetworkInterfaces\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::EnumerateNetworkProfiles(uint8_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkProfileBasicInfo * _2, unsigned int _2_size) {
+uint32_t nn::nifm::detail::IGeneralService::EnumerateNetworkProfiles(uint8_t _0, int32_t& _1, nn::nifm::detail::sf::NetworkProfileBasicInfo *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::EnumerateNetworkProfiles\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetClientId(nn::nifm::ClientId * _0, unsigned int _0_size) {
+uint32_t nn::nifm::detail::IGeneralService::GetClientId(nn::nifm::ClientId *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetClientId\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetCurrentAccessPoint(nn::nifm::detail::sf::AccessPointData * _0, unsigned int _0_size) {
+uint32_t nn::nifm::detail::IGeneralService::GetCurrentAccessPoint(nn::nifm::detail::sf::AccessPointData *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetCurrentAccessPoint\n");
 	return 0;
 }
@@ -25428,11 +25428,11 @@ uint32_t nn::nifm::detail::IGeneralService::GetCurrentIpConfigInfo(nn::nifm::IpA
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetCurrentIpConfigInfo\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetCurrentNetworkProfile(nn::nifm::detail::sf::NetworkProfileData * _0, unsigned int _0_size) {
+uint32_t nn::nifm::detail::IGeneralService::GetCurrentNetworkProfile(nn::nifm::detail::sf::NetworkProfileData *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetCurrentNetworkProfile\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetDefaultIpSetting(nn::nifm::IpSettingData * _0, unsigned int _0_size) {
+uint32_t nn::nifm::detail::IGeneralService::GetDefaultIpSetting(nn::nifm::IpSettingData *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetDefaultIpSetting\n");
 	return 0;
 }
@@ -25440,11 +25440,11 @@ uint32_t nn::nifm::detail::IGeneralService::GetInternetConnectionStatus(nn::nifm
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetInternetConnectionStatus\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetNetworkProfile(nn::util::Uuid _0, nn::nifm::detail::sf::NetworkProfileData * _1, unsigned int _1_size) {
+uint32_t nn::nifm::detail::IGeneralService::GetNetworkProfile(nn::util::Uuid _0, nn::nifm::detail::sf::NetworkProfileData *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetNetworkProfile\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetScanData(int32_t& _0, nn::nifm::detail::sf::AccessPointData * _1, unsigned int _1_size) {
+uint32_t nn::nifm::detail::IGeneralService::GetScanData(int32_t& _0, nn::nifm::detail::sf::AccessPointData *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetScanData\n");
 	return 0;
 }
@@ -25452,11 +25452,11 @@ uint32_t nn::nifm::detail::IGeneralService::GetSsidListVersion(nn::nifm::SsidLis
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetSsidListVersion\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetTelemetorySystemEventReadableHandle(IpcService* _0) {
+uint32_t nn::nifm::detail::IGeneralService::GetTelemetorySystemEventReadableHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetTelemetorySystemEventReadableHandle\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IGeneralService::GetTelemetryInfo(nn::nifm::TelemetryInfo * _0, unsigned int _0_size) {
+uint32_t nn::nifm::detail::IGeneralService::GetTelemetryInfo(nn::nifm::TelemetryInfo *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IGeneralService::GetTelemetryInfo\n");
 	return 0;
 }
@@ -25532,11 +25532,11 @@ uint32_t nn::nifm::detail::IRequest::Cancel() {
 	ns_print("Stub implementation for nn::nifm::detail::IRequest::Cancel\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IRequest::GetAdditionalInfo(uint32_t& _0, nn::nifm::AdditionalInfo * _1, unsigned int _1_size) {
+uint32_t nn::nifm::detail::IRequest::GetAdditionalInfo(uint32_t& _0, nn::nifm::AdditionalInfo *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IRequest::GetAdditionalInfo\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IRequest::GetAppletInfo(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::nifm::detail::IRequest::GetAppletInfo(uint32_t _0, uint32_t& _1, uint32_t& _2, uint32_t& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::nifm::detail::IRequest::GetAppletInfo\n");
 	return 0;
 }
@@ -25556,7 +25556,7 @@ uint32_t nn::nifm::detail::IRequest::GetRevision(uint32_t& _0) {
 	ns_print("Stub implementation for nn::nifm::detail::IRequest::GetRevision\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IRequest::GetSystemEventReadableHandles(IpcService* _0, IpcService* _1) {
+uint32_t nn::nifm::detail::IRequest::GetSystemEventReadableHandles(IpcService*& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::nifm::detail::IRequest::GetSystemEventReadableHandles\n");
 	return 0;
 }
@@ -25632,7 +25632,7 @@ uint32_t nn::nifm::detail::IScanRequest::GetResult() {
 	ns_print("Stub implementation for nn::nifm::detail::IScanRequest::GetResult\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IScanRequest::GetSystemEventReadableHandle(IpcService* _0) {
+uint32_t nn::nifm::detail::IScanRequest::GetSystemEventReadableHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::nifm::detail::IScanRequest::GetSystemEventReadableHandle\n");
 	return 0;
 }
@@ -25644,11 +25644,11 @@ uint32_t nn::nifm::detail::IScanRequest::Submit() {
 	ns_print("Stub implementation for nn::nifm::detail::IScanRequest::Submit\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IStaticService::CreateGeneralService(uint64_t _0, uint64_t _1, nn::nifm::detail::IGeneralService* _2) {
+uint32_t nn::nifm::detail::IStaticService::CreateGeneralService(uint64_t _0, uint64_t _1, nn::nifm::detail::IGeneralService*& _2) {
 	ns_print("Stub implementation for nn::nifm::detail::IStaticService::CreateGeneralService\n");
 	return 0;
 }
-uint32_t nn::nifm::detail::IStaticService::CreateGeneralServiceOld(nn::nifm::detail::IGeneralService* _0) {
+uint32_t nn::nifm::detail::IStaticService::CreateGeneralServiceOld(nn::nifm::detail::IGeneralService*& _0) {
 	ns_print("Stub implementation for nn::nifm::detail::IStaticService::CreateGeneralServiceOld\n");
 	return 0;
 }
@@ -25769,11 +25769,11 @@ namespace nn::nim::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nim::detail::IAsyncValue::Unknown1\n");
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -25787,7 +25787,7 @@ namespace nn::nim::detail {
 			}
 		}
 		uint32_t Unknown0(uint64_t& _0);
-		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown1(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown2();
 	};
 	class INetworkInstallManager : public IpcService {
@@ -25811,11 +25811,11 @@ namespace nn::nim::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown2\n");
-				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -25852,11 +25852,11 @@ namespace nn::nim::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown8\n");
-				resp->error_code = Unknown8(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown8(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
@@ -26043,11 +26043,11 @@ namespace nn::nim::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nim::detail::INetworkInstallManager::Unknown40\n");
-				resp->error_code = Unknown40(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown40(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 41: {
@@ -26101,7 +26101,7 @@ namespace nn::nim::detail {
 		uint32_t Unknown17();
 		uint32_t Unknown18();
 		uint32_t Unknown19();
-		uint32_t Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown20();
 		uint32_t Unknown21();
 		uint32_t Unknown22(uint128_t& _0);
@@ -26124,7 +26124,7 @@ namespace nn::nim::detail {
 		uint32_t Unknown38();
 		uint32_t Unknown39();
 		uint32_t Unknown4();
-		uint32_t Unknown40(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown40(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown41(uint128_t _0);
 		uint32_t Unknown42();
 		uint32_t Unknown43(uint128_t& _0);
@@ -26134,7 +26134,7 @@ namespace nn::nim::detail {
 		uint32_t Unknown5(uint128_t _0);
 		uint32_t Unknown6();
 		uint32_t Unknown7(uint128_t _0);
-		uint32_t Unknown8(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown8(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown9();
 	};
 	class IShopServiceManager : public IpcService {
@@ -26260,7 +26260,7 @@ namespace nn::nim::detail {
 		uint32_t Unknown100();
 		uint32_t Unknown101();
 		uint32_t Unknown102();
-		uint32_t Unknown103(uint8_t * _0);
+		uint32_t Unknown103(uint8_t *& _0);
 		uint32_t Unknown104();
 		uint32_t Unknown105();
 		uint32_t Unknown106();
@@ -26320,7 +26320,7 @@ uint32_t nn::nim::detail::IAsyncValue::Unknown0(uint64_t& _0) {
 	ns_print("Stub implementation for nn::nim::detail::IAsyncValue::Unknown0\n");
 	return 0;
 }
-uint32_t nn::nim::detail::IAsyncValue::Unknown1(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::nim::detail::IAsyncValue::Unknown1(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nim::detail::IAsyncValue::Unknown1\n");
 	return 0;
 }
@@ -26372,7 +26372,7 @@ uint32_t nn::nim::detail::INetworkInstallManager::Unknown19() {
 	ns_print("Stub implementation for nn::nim::detail::INetworkInstallManager::Unknown19\n");
 	return 0;
 }
-uint32_t nn::nim::detail::INetworkInstallManager::Unknown2(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nim::detail::INetworkInstallManager::Unknown2(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nim::detail::INetworkInstallManager::Unknown2\n");
 	return 0;
 }
@@ -26464,7 +26464,7 @@ uint32_t nn::nim::detail::INetworkInstallManager::Unknown4() {
 	ns_print("Stub implementation for nn::nim::detail::INetworkInstallManager::Unknown4\n");
 	return 0;
 }
-uint32_t nn::nim::detail::INetworkInstallManager::Unknown40(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nim::detail::INetworkInstallManager::Unknown40(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nim::detail::INetworkInstallManager::Unknown40\n");
 	return 0;
 }
@@ -26504,7 +26504,7 @@ uint32_t nn::nim::detail::INetworkInstallManager::Unknown7(uint128_t _0) {
 	ns_print("Stub implementation for nn::nim::detail::INetworkInstallManager::Unknown7\n");
 	return 0;
 }
-uint32_t nn::nim::detail::INetworkInstallManager::Unknown8(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nim::detail::INetworkInstallManager::Unknown8(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nim::detail::INetworkInstallManager::Unknown8\n");
 	return 0;
 }
@@ -26532,7 +26532,7 @@ uint32_t nn::nim::detail::IShopServiceManager::Unknown102() {
 	ns_print("Stub implementation for nn::nim::detail::IShopServiceManager::Unknown102\n");
 	return 0;
 }
-uint32_t nn::nim::detail::IShopServiceManager::Unknown103(uint8_t * _0) {
+uint32_t nn::nim::detail::IShopServiceManager::Unknown103(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::nim::detail::IShopServiceManager::Unknown103\n");
 	return 0;
 }
@@ -26721,11 +26721,11 @@ namespace nn::npns {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::npns::INpnsSystem::Unknown104\n");
-				resp->error_code = Unknown104((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown104(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 105: {
@@ -26787,8 +26787,8 @@ namespace nn::npns {
 		uint32_t Unknown101();
 		uint32_t Unknown102();
 		uint32_t Unknown103(uint32_t& _0);
-		uint32_t Unknown104(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown105(IpcService* _0);
+		uint32_t Unknown104(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown105(IpcService*& _0);
 		uint32_t Unknown11();
 		uint32_t Unknown111();
 		uint32_t Unknown112();
@@ -26809,9 +26809,9 @@ namespace nn::npns {
 		uint32_t Unknown31();
 		uint32_t Unknown32();
 		uint32_t Unknown4();
-		uint32_t Unknown5(IpcService* _0);
+		uint32_t Unknown5(IpcService*& _0);
 		uint32_t Unknown6();
-		uint32_t Unknown7(IpcService* _0);
+		uint32_t Unknown7(IpcService*& _0);
 	};
 	class INpnsUser : public IpcService {
 	public:
@@ -26900,11 +26900,11 @@ namespace nn::npns {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::npns::INpnsUser::Unknown104\n");
-				resp->error_code = Unknown104((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown104(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 111: {
@@ -26921,7 +26921,7 @@ namespace nn::npns {
 		uint32_t Unknown101();
 		uint32_t Unknown102();
 		uint32_t Unknown103(uint32_t& _0);
-		uint32_t Unknown104(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown104(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown111();
 		uint32_t Unknown2(uint64_t _0);
 		uint32_t Unknown21();
@@ -26929,8 +26929,8 @@ namespace nn::npns {
 		uint32_t Unknown25();
 		uint32_t Unknown3();
 		uint32_t Unknown4();
-		uint32_t Unknown5(IpcService* _0);
-		uint32_t Unknown7(IpcService* _0);
+		uint32_t Unknown5(IpcService*& _0);
+		uint32_t Unknown7(IpcService*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -26950,11 +26950,11 @@ uint32_t nn::npns::INpnsSystem::Unknown103(uint32_t& _0) {
 	ns_print("Stub implementation for nn::npns::INpnsSystem::Unknown103\n");
 	return 0;
 }
-uint32_t nn::npns::INpnsSystem::Unknown104(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::npns::INpnsSystem::Unknown104(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::npns::INpnsSystem::Unknown104\n");
 	return 0;
 }
-uint32_t nn::npns::INpnsSystem::Unknown105(IpcService* _0) {
+uint32_t nn::npns::INpnsSystem::Unknown105(IpcService*& _0) {
 	ns_print("Stub implementation for nn::npns::INpnsSystem::Unknown105\n");
 	return 0;
 }
@@ -27038,7 +27038,7 @@ uint32_t nn::npns::INpnsSystem::Unknown4() {
 	ns_print("Stub implementation for nn::npns::INpnsSystem::Unknown4\n");
 	return 0;
 }
-uint32_t nn::npns::INpnsSystem::Unknown5(IpcService* _0) {
+uint32_t nn::npns::INpnsSystem::Unknown5(IpcService*& _0) {
 	ns_print("Stub implementation for nn::npns::INpnsSystem::Unknown5\n");
 	return 0;
 }
@@ -27046,7 +27046,7 @@ uint32_t nn::npns::INpnsSystem::Unknown6() {
 	ns_print("Stub implementation for nn::npns::INpnsSystem::Unknown6\n");
 	return 0;
 }
-uint32_t nn::npns::INpnsSystem::Unknown7(IpcService* _0) {
+uint32_t nn::npns::INpnsSystem::Unknown7(IpcService*& _0) {
 	ns_print("Stub implementation for nn::npns::INpnsSystem::Unknown7\n");
 	return 0;
 }
@@ -27066,7 +27066,7 @@ uint32_t nn::npns::INpnsUser::Unknown103(uint32_t& _0) {
 	ns_print("Stub implementation for nn::npns::INpnsUser::Unknown103\n");
 	return 0;
 }
-uint32_t nn::npns::INpnsUser::Unknown104(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::npns::INpnsUser::Unknown104(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::npns::INpnsUser::Unknown104\n");
 	return 0;
 }
@@ -27098,11 +27098,11 @@ uint32_t nn::npns::INpnsUser::Unknown4() {
 	ns_print("Stub implementation for nn::npns::INpnsUser::Unknown4\n");
 	return 0;
 }
-uint32_t nn::npns::INpnsUser::Unknown5(IpcService* _0) {
+uint32_t nn::npns::INpnsUser::Unknown5(IpcService*& _0) {
 	ns_print("Stub implementation for nn::npns::INpnsUser::Unknown5\n");
 	return 0;
 }
-uint32_t nn::npns::INpnsUser::Unknown7(IpcService* _0) {
+uint32_t nn::npns::INpnsUser::Unknown7(IpcService*& _0) {
 	ns_print("Stub implementation for nn::npns::INpnsUser::Unknown7\n");
 	return 0;
 }
@@ -27275,11 +27275,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown35: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown35((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown35(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 36: {
@@ -27292,11 +27292,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown37\n");
-				resp->error_code = Unknown37(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown37(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 38: {
@@ -27582,11 +27582,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown301\n");
-				resp->error_code = Unknown301(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown301(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 302: {
@@ -27659,11 +27659,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown405\n");
-				resp->error_code = Unknown405(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown405(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 502: {
@@ -27757,11 +27757,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown700: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown700((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown700(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 701: {
@@ -27786,11 +27786,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown704\n");
-				resp->error_code = Unknown704(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown704(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 705: {
@@ -27809,11 +27809,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown801\n");
-				resp->error_code = Unknown801(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown801(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 802: {
@@ -28019,22 +28019,22 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown1802\n");
-				resp->error_code = Unknown1802(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1802(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1803: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown1803\n");
-				resp->error_code = Unknown1803(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1803(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1900: {
@@ -28069,7 +28069,7 @@ namespace nn::ns::detail {
 		uint32_t Unknown1504();
 		uint32_t Unknown1505();
 		uint32_t Unknown16();
-		uint32_t Unknown1600(uint8_t * _0);
+		uint32_t Unknown1600(uint8_t *& _0);
 		uint32_t Unknown1601();
 		uint32_t Unknown17();
 		uint32_t Unknown1700();
@@ -28077,11 +28077,11 @@ namespace nn::ns::detail {
 		uint32_t Unknown1702(uint64_t _0, uint8_t& _1);
 		uint32_t Unknown1800(uint8_t& _0);
 		uint32_t Unknown1801(uint64_t& _0);
-		uint32_t Unknown1802(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown1803(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown1802(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown1803(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown19(uint64_t _0, uint64_t& _1);
 		uint32_t Unknown1900(uint32_t _0, uint8_t& _1);
-		uint32_t Unknown2(IpcService* _0);
+		uint32_t Unknown2(IpcService*& _0);
 		uint32_t Unknown200();
 		uint32_t Unknown201();
 		uint32_t Unknown21();
@@ -28093,8 +28093,8 @@ namespace nn::ns::detail {
 		uint32_t Unknown27(uint64_t _0);
 		uint32_t Unknown3();
 		uint32_t Unknown30();
-		uint32_t Unknown300(IpcService* _0);
-		uint32_t Unknown301(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown300(IpcService*& _0);
+		uint32_t Unknown301(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown302(uint64_t _0, uint64_t& _1);
 		uint32_t Unknown303(uint64_t _0);
 		uint32_t Unknown304(uint64_t& _0);
@@ -28106,7 +28106,7 @@ namespace nn::ns::detail {
 		uint32_t Unknown33(uint64_t _0);
 		uint32_t Unknown35(uint8_t * _0, unsigned int _0_size);
 		uint32_t Unknown36(uint32_t _0, uint64_t _1);
-		uint32_t Unknown37(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown37(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown38(uint64_t _0);
 		uint32_t Unknown39(uint64_t _0);
 		uint32_t Unknown4(uint64_t _0);
@@ -28116,25 +28116,25 @@ namespace nn::ns::detail {
 		uint32_t Unknown402();
 		uint32_t Unknown403(uint32_t& _0);
 		uint32_t Unknown404(uint64_t _0);
-		uint32_t Unknown405(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown405(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown41();
 		uint32_t Unknown42();
 		uint32_t Unknown43();
-		uint32_t Unknown44(IpcService* _0);
-		uint32_t Unknown45(IpcService* _0);
+		uint32_t Unknown44(IpcService*& _0);
+		uint32_t Unknown45(IpcService*& _0);
 		uint32_t Unknown46(uint128_t& _0);
 		uint32_t Unknown47();
 		uint32_t Unknown48();
-		uint32_t Unknown49(IpcService* _0);
+		uint32_t Unknown49(IpcService*& _0);
 		uint32_t Unknown5(uint64_t _0);
 		uint32_t Unknown502();
 		uint32_t Unknown503();
 		uint32_t Unknown504();
-		uint32_t Unknown505(IpcService* _0);
+		uint32_t Unknown505(IpcService*& _0);
 		uint32_t Unknown506(uint8_t& _0);
 		uint32_t Unknown507();
 		uint32_t Unknown508();
-		uint32_t Unknown52(IpcService* _0);
+		uint32_t Unknown52(IpcService*& _0);
 		uint32_t Unknown53(uint64_t _0);
 		uint32_t Unknown54(uint64_t _0);
 		uint32_t Unknown55(uint32_t _0, uint8_t& _1);
@@ -28152,10 +28152,10 @@ namespace nn::ns::detail {
 		uint32_t Unknown605();
 		uint32_t Unknown606();
 		uint32_t Unknown61(uint128_t& _0);
-		uint32_t Unknown62(IUnknown* _0);
+		uint32_t Unknown62(IUnknown*& _0);
 		uint32_t Unknown63(uint64_t _0, uint8_t& _1);
 		uint32_t Unknown64(uint64_t _0);
-		uint32_t Unknown65(IUnknown* _0);
+		uint32_t Unknown65(IUnknown*& _0);
 		uint32_t Unknown66(uint128_t& _0);
 		uint32_t Unknown67(uint64_t _0);
 		uint32_t Unknown68(uint64_t _0);
@@ -28166,13 +28166,13 @@ namespace nn::ns::detail {
 		uint32_t Unknown701();
 		uint32_t Unknown702();
 		uint32_t Unknown703();
-		uint32_t Unknown704(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown704(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown705();
 		uint32_t Unknown71();
 		uint32_t Unknown8();
 		uint32_t Unknown80();
 		uint32_t Unknown800();
-		uint32_t Unknown801(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown801(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown802();
 		uint32_t Unknown81();
 		uint32_t Unknown82();
@@ -28227,11 +28227,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IAsyncValue::Unknown1\n");
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -28245,7 +28245,7 @@ namespace nn::ns::detail {
 			}
 		}
 		uint32_t Unknown0(uint64_t& _0);
-		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown1(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown2();
 	};
 	class IContentManagementInterface : public IpcService {
@@ -28438,11 +28438,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IDownloadTaskInterface::Unknown704\n");
-				resp->error_code = Unknown704(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown704(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 705: {
@@ -28458,7 +28458,7 @@ namespace nn::ns::detail {
 		uint32_t Unknown701();
 		uint32_t Unknown702();
 		uint32_t Unknown703();
-		uint32_t Unknown704(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown704(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown705();
 	};
 	class IFactoryResetInterface : public IpcService {
@@ -28513,11 +28513,11 @@ namespace nn::ns::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ns::detail::IProgressAsyncResult::Unknown2\n");
-				resp->error_code = Unknown2((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown2(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -28532,7 +28532,7 @@ namespace nn::ns::detail {
 		}
 		uint32_t Unknown0();
 		uint32_t Unknown1();
-		uint32_t Unknown2(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown2(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown3();
 	};
 	class IProgressMonitorForDeleteUserSaveDataAll : public IpcService {
@@ -28572,9 +28572,9 @@ namespace nn::ns::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1(uint8_t& _0);
-		uint32_t Unknown10(uint8_t * _0);
+		uint32_t Unknown10(uint8_t *& _0);
 		uint32_t Unknown2();
 	};
 	class IServiceGetterInterface : public IpcService {
@@ -28640,12 +28640,12 @@ namespace nn::ns::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::ns::detail::IServiceGetterInterface", req->cmd_id);
 			}
 		}
-		uint32_t Unknown7994(IUnknown* _0);
-		uint32_t Unknown7995(IUnknown* _0);
-		uint32_t Unknown7996(IUnknown* _0);
-		uint32_t Unknown7997(IUnknown* _0);
-		uint32_t Unknown7998(IUnknown* _0);
-		uint32_t Unknown7999(IUnknown* _0);
+		uint32_t Unknown7994(IUnknown*& _0);
+		uint32_t Unknown7995(IUnknown*& _0);
+		uint32_t Unknown7996(IUnknown*& _0);
+		uint32_t Unknown7997(IUnknown*& _0);
+		uint32_t Unknown7998(IUnknown*& _0);
+		uint32_t Unknown7999(IUnknown*& _0);
 	};
 	class ISystemUpdateControl : public IpcService {
 	public:
@@ -28861,19 +28861,19 @@ namespace nn::ns::detail {
 			}
 		}
 		uint32_t Unknown0(uint8_t& _0);
-		uint32_t Unknown1(IUnknown* _0);
+		uint32_t Unknown1(IUnknown*& _0);
 		uint32_t Unknown10();
 		uint32_t Unknown11();
-		uint32_t Unknown12(IpcService* _0);
+		uint32_t Unknown12(IpcService*& _0);
 		uint32_t Unknown13();
-		uint32_t Unknown14(IpcService* _0);
+		uint32_t Unknown14(IpcService*& _0);
 		uint32_t Unknown15();
 		uint32_t Unknown2();
 		uint32_t Unknown3();
 		uint32_t Unknown4();
 		uint32_t Unknown5();
 		uint32_t Unknown6();
-		uint32_t Unknown9(IpcService* _0);
+		uint32_t Unknown9(IpcService*& _0);
 	};
 	class IVulnerabilityManagerInterface : public IpcService {
 	public:
@@ -28986,7 +28986,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown16() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown16\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1600(uint8_t * _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1600(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown1600\n");
 	return 0;
 }
@@ -29018,11 +29018,11 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1801(uint64_t& _0)
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown1801\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1802(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1802(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown1802\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1803(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1803(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown1803\n");
 	return 0;
 }
@@ -29034,7 +29034,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown1900(uint32_t _0, 
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown1900\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown2(IpcService* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown2(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown2\n");
 	return 0;
 }
@@ -29082,11 +29082,11 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown30() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown30\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown300(IpcService* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown300(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown300\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown301(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown301(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown301\n");
 	return 0;
 }
@@ -29134,7 +29134,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown36(uint32_t _0, ui
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown36\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown37(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown37(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown37\n");
 	return 0;
 }
@@ -29174,7 +29174,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown404(uint64_t _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown404\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown405(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown405(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown405\n");
 	return 0;
 }
@@ -29190,11 +29190,11 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown43() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown43\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown44(IpcService* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown44(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown44\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown45(IpcService* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown45(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown45\n");
 	return 0;
 }
@@ -29210,7 +29210,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown48() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown48\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown49(IpcService* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown49(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown49\n");
 	return 0;
 }
@@ -29230,7 +29230,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown504() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown504\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown505(IpcService* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown505(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown505\n");
 	return 0;
 }
@@ -29246,7 +29246,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown508() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown508\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown52(IpcService* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown52(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown52\n");
 	return 0;
 }
@@ -29318,7 +29318,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown61(uint128_t& _0) 
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown61\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown62(IUnknown* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown62(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown62\n");
 	return 0;
 }
@@ -29330,7 +29330,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown64(uint64_t _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown64\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown65(IUnknown* _0) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown65(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown65\n");
 	return 0;
 }
@@ -29374,7 +29374,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown703() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown703\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown704(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown704(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown704\n");
 	return 0;
 }
@@ -29398,7 +29398,7 @@ uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown800() {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown800\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown801(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IApplicationManagerInterface::Unknown801(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IApplicationManagerInterface::Unknown801\n");
 	return 0;
 }
@@ -29470,7 +29470,7 @@ uint32_t nn::ns::detail::IAsyncValue::Unknown0(uint64_t& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IAsyncValue::Unknown0\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IAsyncValue::Unknown1(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::ns::detail::IAsyncValue::Unknown1(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::ns::detail::IAsyncValue::Unknown1\n");
 	return 0;
 }
@@ -29566,7 +29566,7 @@ uint32_t nn::ns::detail::IDownloadTaskInterface::Unknown703() {
 	ns_print("Stub implementation for nn::ns::detail::IDownloadTaskInterface::Unknown703\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IDownloadTaskInterface::Unknown704(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ns::detail::IDownloadTaskInterface::Unknown704(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ns::detail::IDownloadTaskInterface::Unknown704\n");
 	return 0;
 }
@@ -29594,7 +29594,7 @@ uint32_t nn::ns::detail::IProgressAsyncResult::Unknown1() {
 	ns_print("Stub implementation for nn::ns::detail::IProgressAsyncResult::Unknown1\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IProgressAsyncResult::Unknown2(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::ns::detail::IProgressAsyncResult::Unknown2(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::ns::detail::IProgressAsyncResult::Unknown2\n");
 	return 0;
 }
@@ -29602,7 +29602,7 @@ uint32_t nn::ns::detail::IProgressAsyncResult::Unknown3() {
 	ns_print("Stub implementation for nn::ns::detail::IProgressAsyncResult::Unknown3\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown0(IpcService* _0) {
+uint32_t nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown0\n");
 	return 0;
 }
@@ -29610,7 +29610,7 @@ uint32_t nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown1(uint
 	ns_print("Stub implementation for nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown1\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown10(uint8_t * _0) {
+uint32_t nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown10(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown10\n");
 	return 0;
 }
@@ -29618,27 +29618,27 @@ uint32_t nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown2() {
 	ns_print("Stub implementation for nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown2\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7994(IUnknown* _0) {
+uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7994(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IServiceGetterInterface::Unknown7994\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7995(IUnknown* _0) {
+uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7995(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IServiceGetterInterface::Unknown7995\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7996(IUnknown* _0) {
+uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7996(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IServiceGetterInterface::Unknown7996\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7997(IUnknown* _0) {
+uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7997(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IServiceGetterInterface::Unknown7997\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7998(IUnknown* _0) {
+uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7998(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IServiceGetterInterface::Unknown7998\n");
 	return 0;
 }
-uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7999(IUnknown* _0) {
+uint32_t nn::ns::detail::IServiceGetterInterface::Unknown7999(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::IServiceGetterInterface::Unknown7999\n");
 	return 0;
 }
@@ -29702,7 +29702,7 @@ uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown0(uint8_t& _0) {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown0\n");
 	return 0;
 }
-uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown1(IUnknown* _0) {
+uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown1(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown1\n");
 	return 0;
 }
@@ -29714,7 +29714,7 @@ uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown11() {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown11\n");
 	return 0;
 }
-uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown12(IpcService* _0) {
+uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown12(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown12\n");
 	return 0;
 }
@@ -29722,7 +29722,7 @@ uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown13() {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown13\n");
 	return 0;
 }
-uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown14(IpcService* _0) {
+uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown14(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown14\n");
 	return 0;
 }
@@ -29750,7 +29750,7 @@ uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown6() {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown6\n");
 	return 0;
 }
-uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown9(IpcService* _0) {
+uint32_t nn::ns::detail::ISystemUpdateInterface::Unknown9(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ns::detail::ISystemUpdateInterface::Unknown9\n");
 	return 0;
 }
@@ -29769,22 +29769,22 @@ namespace nn::nsd::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown10\n");
-				resp->error_code = Unknown10((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown10(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown11\n");
-				resp->error_code = Unknown11((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown11(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 12: {
@@ -29803,157 +29803,157 @@ namespace nn::nsd::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown14: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown14(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown14(req->GetData<uint32_t>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 20: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x16, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown20: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown20((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown20(temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 21: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x16, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown21: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown21((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown21(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 30: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x16, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown30: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown30((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown30(temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 31: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x16, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown31: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown31((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown31(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 40: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown40\n");
-				resp->error_code = Unknown40((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown40(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 41: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown41\n");
-				resp->error_code = Unknown41(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown41(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 42: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown42\n");
-				resp->error_code = Unknown42((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown42(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 43: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown43\n");
-				resp->error_code = Unknown43(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown43(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 50: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown50\n");
-				resp->error_code = Unknown50((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown50(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 60: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown60\n");
-				resp->error_code = Unknown60((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown60(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 61: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::nsd::detail::IManager::Unknown61: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown61((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown61(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 62: {
@@ -29966,31 +29966,31 @@ namespace nn::nsd::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::nsd::detail::IManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown10(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown11(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown10(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown11(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown12(uint128_t& _0);
 		uint32_t Unknown13(uint32_t _0);
-		uint32_t Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown20(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown21(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown30(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown31(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t Unknown40(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown41(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown42(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown43(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t Unknown50(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown60(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
+		uint32_t Unknown20(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown21(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
+		uint32_t Unknown30(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown31(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
+		uint32_t Unknown40(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown41(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown42(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown43(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t Unknown50(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown60(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown61(uint8_t * _0, unsigned int _0_size);
 		uint32_t Unknown62();
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::nsd::detail::IManager::Unknown10(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::nsd::detail::IManager::Unknown10(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown10\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown11(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::nsd::detail::IManager::Unknown11(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown11\n");
 	return 0;
 }
@@ -30002,47 +30002,47 @@ uint32_t nn::nsd::detail::IManager::Unknown13(uint32_t _0) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown13\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::nsd::detail::IManager::Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown14\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown20(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nsd::detail::IManager::Unknown20(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown20\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown21(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::nsd::detail::IManager::Unknown21(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown21\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown30(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nsd::detail::IManager::Unknown30(uint8_t * _0, unsigned int _0_size, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown30\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown31(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::nsd::detail::IManager::Unknown31(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown31\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown40(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::nsd::detail::IManager::Unknown40(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown40\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown41(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nsd::detail::IManager::Unknown41(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown41\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown42(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::nsd::detail::IManager::Unknown42(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown42\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown43(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::nsd::detail::IManager::Unknown43(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown43\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown50(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::nsd::detail::IManager::Unknown50(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown50\n");
 	return 0;
 }
-uint32_t nn::nsd::detail::IManager::Unknown60(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::nsd::detail::IManager::Unknown60(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::nsd::detail::IManager::Unknown60\n");
 	return 0;
 }
@@ -30105,7 +30105,7 @@ namespace nn::ntc::detail::service {
 			}
 		}
 		uint32_t Unknown0();
-		uint32_t Unknown1(IpcService* _0);
+		uint32_t Unknown1(IpcService*& _0);
 		uint32_t Unknown2();
 		uint32_t Unknown3();
 		uint32_t Unknown4(uint8_t& _0);
@@ -30141,7 +30141,7 @@ namespace nn::ntc::detail::service {
 				ns_abort("Unknown message cmdId %u to interface nn::ntc::detail::service::IStaticService", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, uint32_t _1, IUnknown* _2);
+		uint32_t Unknown0(uint32_t _0, uint32_t _1, IUnknown*& _2);
 		uint32_t Unknown100();
 		uint32_t Unknown101();
 	};
@@ -30151,7 +30151,7 @@ uint32_t nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unkno
 	ns_print("Stub implementation for nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unknown0\n");
 	return 0;
 }
-uint32_t nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unknown1(IpcService* _0) {
+uint32_t nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unknown1(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unknown1\n");
 	return 0;
 }
@@ -30171,7 +30171,7 @@ uint32_t nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unkno
 	ns_print("Stub implementation for nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unknown5\n");
 	return 0;
 }
-uint32_t nn::ntc::detail::service::IStaticService::Unknown0(uint32_t _0, uint32_t _1, IUnknown* _2) {
+uint32_t nn::ntc::detail::service::IStaticService::Unknown0(uint32_t _0, uint32_t _1, IUnknown*& _2) {
 	ns_print("Stub implementation for nn::ntc::detail::service::IStaticService::Unknown0\n");
 	return 0;
 }
@@ -30291,10 +30291,10 @@ namespace nn::omm::detail {
 			}
 		}
 		uint32_t Unknown0(uint8_t& _0);
-		uint32_t Unknown1(IpcService* _0);
+		uint32_t Unknown1(IpcService*& _0);
 		uint32_t Unknown10(uint8_t _0);
 		uint32_t Unknown11();
-		uint32_t Unknown12(IpcService* _0);
+		uint32_t Unknown12(IpcService*& _0);
 		uint32_t Unknown13();
 		uint32_t Unknown14(uint8_t& _0);
 		uint32_t Unknown2();
@@ -30312,7 +30312,7 @@ uint32_t nn::omm::detail::IOperationModeManager::Unknown0(uint8_t& _0) {
 	ns_print("Stub implementation for nn::omm::detail::IOperationModeManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::omm::detail::IOperationModeManager::Unknown1(IpcService* _0) {
+uint32_t nn::omm::detail::IOperationModeManager::Unknown1(IpcService*& _0) {
 	ns_print("Stub implementation for nn::omm::detail::IOperationModeManager::Unknown1\n");
 	return 0;
 }
@@ -30324,7 +30324,7 @@ uint32_t nn::omm::detail::IOperationModeManager::Unknown11() {
 	ns_print("Stub implementation for nn::omm::detail::IOperationModeManager::Unknown11\n");
 	return 0;
 }
-uint32_t nn::omm::detail::IOperationModeManager::Unknown12(IpcService* _0) {
+uint32_t nn::omm::detail::IOperationModeManager::Unknown12(IpcService*& _0) {
 	ns_print("Stub implementation for nn::omm::detail::IOperationModeManager::Unknown12\n");
 	return 0;
 }
@@ -30414,7 +30414,7 @@ namespace nn::ovln {
 		}
 		uint32_t Unknown0(uint128_t _0);
 		uint32_t Unknown1(uint128_t _0);
-		uint32_t Unknown2(IpcService* _0);
+		uint32_t Unknown2(IpcService*& _0);
 		uint32_t Unknown3();
 		uint32_t Unknown4();
 	};
@@ -30436,7 +30436,7 @@ namespace nn::ovln {
 				ns_abort("Unknown message cmdId %u to interface nn::ovln::IReceiverService", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class ISender : public IpcService {
 	public:
@@ -30489,7 +30489,7 @@ uint32_t nn::ovln::IReceiver::Unknown1(uint128_t _0) {
 	ns_print("Stub implementation for nn::ovln::IReceiver::Unknown1\n");
 	return 0;
 }
-uint32_t nn::ovln::IReceiver::Unknown2(IpcService* _0) {
+uint32_t nn::ovln::IReceiver::Unknown2(IpcService*& _0) {
 	ns_print("Stub implementation for nn::ovln::IReceiver::Unknown2\n");
 	return 0;
 }
@@ -30501,7 +30501,7 @@ uint32_t nn::ovln::IReceiver::Unknown4() {
 	ns_print("Stub implementation for nn::ovln::IReceiver::Unknown4\n");
 	return 0;
 }
-uint32_t nn::ovln::IReceiverService::Unknown0(IUnknown* _0) {
+uint32_t nn::ovln::IReceiverService::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::ovln::IReceiverService::Unknown0\n");
 	return 0;
 }
@@ -30822,22 +30822,22 @@ namespace nn::pctl::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::ConfirmLaunchApplicationPermission: bool = 0x%x, nn::ncm::ApplicationId = 0x%%lx, int8_t *= buffer<0x%lx>\n", req->GetData<bool>(8), req->GetData<nn::ncm::ApplicationId>(0x10), temp2);
-				resp->error_code = ConfirmLaunchApplicationPermission(req->GetData<bool>(8), req->GetData<nn::ncm::ApplicationId>(0x10), (int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ConfirmLaunchApplicationPermission(req->GetData<bool>(8), req->GetData<nn::ncm::ApplicationId>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1003: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::ConfirmResumeApplicationPermission: bool = 0x%x, nn::ncm::ApplicationId = 0x%%lx, int8_t *= buffer<0x%lx>\n", req->GetData<bool>(8), req->GetData<nn::ncm::ApplicationId>(0x10), temp2);
-				resp->error_code = ConfirmResumeApplicationPermission(req->GetData<bool>(8), req->GetData<nn::ncm::ApplicationId>(0x10), (int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ConfirmResumeApplicationPermission(req->GetData<bool>(8), req->GetData<nn::ncm::ApplicationId>(0x10), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1004: {
@@ -30966,22 +30966,22 @@ namespace nn::pctl::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::pctl::FreeCommunicationApplicationInfo* temp3 = (nn::pctl::FreeCommunicationApplicationInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetFreeCommunicationApplicationList: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = GetFreeCommunicationApplicationList(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::pctl::FreeCommunicationApplicationInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFreeCommunicationApplicationList(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1045: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::pctl::FreeCommunicationApplicationInfo* temp3 = (nn::pctl::FreeCommunicationApplicationInfo *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::UpdateFreeCommunicationApplicationList: nn::pctl::FreeCommunicationApplicationInfo *= buffer<0x%lx>\n", temp2);
-				resp->error_code = UpdateFreeCommunicationApplicationList((nn::pctl::FreeCommunicationApplicationInfo *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = UpdateFreeCommunicationApplicationList(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1046: {
@@ -31000,33 +31000,33 @@ namespace nn::pctl::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::UnlockRestrictionTemporarily: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = UnlockRestrictionTemporarily((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = UnlockRestrictionTemporarily(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1202: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::UnlockSystemSettingsRestriction: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = UnlockSystemSettingsRestriction((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = UnlockSystemSettingsRestriction(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1203: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::SetPinCode: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetPinCode((int8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetPinCode(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1204: {
@@ -31040,11 +31040,11 @@ namespace nn::pctl::detail::ipc {
 				resp->GenBuf(0, 0, 1);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::CheckMasterKey: nn::pctl::InquiryCode = %s, int8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x20).c_str(), temp2);
-				resp->error_code = CheckMasterKey(req->GetDataPointer<nn::pctl::InquiryCode>(8), (int8_t *) temp3, temp2, *resp->GetDataPointer<bool *>(8));
-				delete[] temp3;
+				resp->error_code = CheckMasterKey(req->GetDataPointer<nn::pctl::InquiryCode>(8), temp3, temp2, *resp->GetDataPointer<bool *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1206: {
@@ -31084,11 +31084,11 @@ namespace nn::pctl::detail::ipc {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountNickname: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
-				resp->error_code = GetAccountNickname(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<uint32_t *>(8), (int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAccountNickname(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1424: {
@@ -31231,12 +31231,12 @@ namespace nn::pctl::detail::ipc {
 				resp->GenBuf(0, 1, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				IpcService *temp4;
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::RequestPairingAsync: int8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = RequestPairingAsync((int8_t *) temp3, temp2, *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp4);
-				delete[] temp3;
+				resp->error_code = RequestPairingAsync(temp3, temp2, *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp4));
 				return 0;
@@ -31297,24 +31297,24 @@ namespace nn::pctl::detail::ipc {
 				IpcService *temp1;
 				unsigned int temp3;
 				auto temp2 = req->GetBuffer(6, 0, temp3);
-				auto temp4 = new uint8_t[temp3];
+				uint8_t* temp4 = (uint8_t *) new uint8_t[temp3];
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
-				resp->error_code = GetAccountMiiImageAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, (uint8_t *) temp4, temp3);
+				resp->error_code = GetAccountMiiImageAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, temp4, temp3);
 				if(temp1 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp1));
-				ARMv8::WriteBytes(temp2, temp4, temp3);
-				delete[] temp4;
+				ARMv8::WriteBytes(temp2, (uint8_t *) temp4, temp3);
+				delete[] (uint8_t *)temp4;
 				return 0;
 			}
 			case 2010: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImage: nn::pctl::detail::AsyncData = 0x%%lx\n", req->GetData<nn::pctl::detail::AsyncData>(8));
-				resp->error_code = FinishGetAccountMiiImage(req->GetData<nn::pctl::detail::AsyncData>(8), *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = FinishGetAccountMiiImage(req->GetData<nn::pctl::detail::AsyncData>(8), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2011: {
@@ -31322,24 +31322,24 @@ namespace nn::pctl::detail::ipc {
 				IpcService *temp1;
 				unsigned int temp3;
 				auto temp2 = req->GetBuffer(0xa, 0, temp3);
-				auto temp4 = new uint8_t[temp3];
+				int8_t* temp4 = (int8_t *) new uint8_t[temp3];
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageContentTypeAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
-				resp->error_code = GetAccountMiiImageContentTypeAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, (int8_t *) temp4, temp3);
+				resp->error_code = GetAccountMiiImageContentTypeAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, temp4, temp3);
 				if(temp1 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp1));
-				ARMv8::WriteBytes(temp2, temp4, temp3);
-				delete[] temp4;
+				ARMv8::WriteBytes(temp2, (uint8_t *) temp4, temp3);
+				delete[] (uint8_t *)temp4;
 				return 0;
 			}
 			case 2012: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImageContentType: nn::pctl::detail::AsyncData = 0x%%lx\n", req->GetData<nn::pctl::detail::AsyncData>(8));
-				resp->error_code = FinishGetAccountMiiImageContentType(req->GetData<nn::pctl::detail::AsyncData>(8), *resp->GetDataPointer<uint32_t *>(8), (int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = FinishGetAccountMiiImageContentType(req->GetData<nn::pctl::detail::AsyncData>(8), *resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2013: {
@@ -31368,7 +31368,7 @@ namespace nn::pctl::detail::ipc {
 			}
 		}
 		uint32_t AddToFreeCommunicationApplicationList(nn::ncm::ApplicationId _0);
-		uint32_t AuthorizePairingAsync(nn::pctl::detail::PairingInfoBase _0, nn::pctl::detail::AsyncData& _1, IpcService* _2);
+		uint32_t AuthorizePairingAsync(nn::pctl::detail::PairingInfoBase _0, nn::pctl::detail::AsyncData& _1, IpcService*& _2);
 		uint32_t CancelNetworkRequest();
 		uint32_t CheckFreeCommunicationPermission();
 		uint32_t CheckMasterKey(nn::pctl::InquiryCode _0, int8_t * _1, unsigned int _1_size, bool& _2);
@@ -31385,26 +31385,26 @@ namespace nn::pctl::detail::ipc {
 		uint32_t DisableFeaturesForReset();
 		uint32_t EnterRestrictedSystemSettings();
 		uint32_t FinishAuthorizePairing(nn::pctl::detail::AsyncData _0, nn::pctl::detail::PairingInfoBase& _1);
-		uint32_t FinishGetAccountMiiImage(nn::pctl::detail::AsyncData _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
-		uint32_t FinishGetAccountMiiImageContentType(nn::pctl::detail::AsyncData _0, uint32_t& _1, int8_t * _2, unsigned int _2_size);
+		uint32_t FinishGetAccountMiiImage(nn::pctl::detail::AsyncData _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
+		uint32_t FinishGetAccountMiiImageContentType(nn::pctl::detail::AsyncData _0, uint32_t& _1, int8_t *& _2, unsigned int _2_size);
 		uint32_t FinishRequestPairing(nn::pctl::detail::AsyncData _0, nn::pctl::detail::PairingInfoBase& _1);
 		uint32_t FinishRetrievePairingInfo(nn::pctl::detail::AsyncData _0, nn::pctl::detail::PairingInfoBase& _1);
 		uint32_t FinishSynchronizeParentalControlSettings(nn::pctl::detail::AsyncData _0);
 		uint32_t FinishSynchronizeParentalControlSettingsWithLastUpdated(nn::pctl::detail::AsyncData _0, nn::time::PosixTime& _1);
 		uint32_t FinishUnlinkPairing(bool _0, nn::pctl::detail::AsyncData _1);
 		uint32_t GenerateInquiryCode(nn::pctl::InquiryCode& _0);
-		uint32_t GetAccountMiiImageAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService* _3, uint8_t * _4, unsigned int _4_size);
-		uint32_t GetAccountMiiImageContentTypeAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService* _3, int8_t * _4, unsigned int _4_size);
-		uint32_t GetAccountNickname(nn::pctl::detail::PairingAccountInfoBase _0, uint32_t& _1, int8_t * _2, unsigned int _2_size);
+		uint32_t GetAccountMiiImageAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService*& _3, uint8_t *& _4, unsigned int _4_size);
+		uint32_t GetAccountMiiImageContentTypeAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService*& _3, int8_t *& _4, unsigned int _4_size);
+		uint32_t GetAccountNickname(nn::pctl::detail::PairingAccountInfoBase _0, uint32_t& _1, int8_t *& _2, unsigned int _2_size);
 		uint32_t GetAccountState(nn::pctl::detail::PairingAccountInfoBase _0, int32_t& _1);
 		uint32_t GetCurrentSettings(nn::pctl::SafetyLevelSettings& _0);
 		uint32_t GetDefaultRatingOrganization(int32_t& _0);
-		uint32_t GetFreeCommunicationApplicationList(int32_t _0, int32_t& _1, nn::pctl::FreeCommunicationApplicationInfo * _2, unsigned int _2_size);
+		uint32_t GetFreeCommunicationApplicationList(int32_t _0, int32_t& _1, nn::pctl::FreeCommunicationApplicationInfo *& _2, unsigned int _2_size);
 		uint32_t GetFreeCommunicationApplicationListCount(int32_t& _0);
 		uint32_t GetPairingAccountInfo(nn::pctl::detail::PairingInfoBase _0, nn::pctl::detail::PairingAccountInfoBase& _1);
-		uint32_t GetPinCodeChangedEvent(IpcService* _0);
+		uint32_t GetPinCodeChangedEvent(IpcService*& _0);
 		uint32_t GetPinCodeLength(int32_t& _0);
-		uint32_t GetPlayTimerEventToRequestSuspension(IpcService* _0);
+		uint32_t GetPlayTimerEventToRequestSuspension(IpcService*& _0);
 		uint32_t GetPlayTimerRemainingTime(nn::TimeSpanType& _0);
 		uint32_t GetPlayTimerSettings(nn::pctl::PlayTimerSettings& _0);
 		uint32_t GetPlayTimerSpentTimeForTest(nn::TimeSpanType& _0);
@@ -31412,8 +31412,8 @@ namespace nn::pctl::detail::ipc {
 		uint32_t GetSafetyLevel(int32_t& _0);
 		uint32_t GetSafetyLevelSettings(int32_t _0, nn::pctl::SafetyLevelSettings& _1);
 		uint32_t GetSettingsLastUpdated(nn::time::PosixTime& _0);
-		uint32_t GetSynchronizationEvent(IpcService* _0);
-		uint32_t GetUnlinkedEvent(IpcService* _0);
+		uint32_t GetSynchronizationEvent(IpcService*& _0);
+		uint32_t GetUnlinkedEvent(IpcService*& _0);
 		uint32_t IsAllFeaturesDisabled(bool& _0, bool& _1);
 		uint32_t IsPairingActive(bool& _0);
 		uint32_t IsPlayTimerEnabled(bool& _0);
@@ -31425,8 +31425,8 @@ namespace nn::pctl::detail::ipc {
 		uint32_t NotifyApplicationDownloadStarted(nn::ncm::ApplicationId _0);
 		uint32_t NotifyWrongPinCodeInputManyTimes();
 		uint32_t PostEnableAllFeatures(bool& _0);
-		uint32_t RequestPairingAsync(int8_t * _0, unsigned int _0_size, nn::pctl::detail::AsyncData& _1, IpcService* _2);
-		uint32_t RetrievePairingInfoAsync(nn::pctl::detail::AsyncData& _0, IpcService* _1);
+		uint32_t RequestPairingAsync(int8_t * _0, unsigned int _0_size, nn::pctl::detail::AsyncData& _1, IpcService*& _2);
+		uint32_t RetrievePairingInfoAsync(nn::pctl::detail::AsyncData& _0, IpcService*& _1);
 		uint32_t RevertRestrictedSystemSettingsEntered();
 		uint32_t RevertRestrictionTemporaryUnlocked();
 		uint32_t SetCustomSafetyLevelSettings(nn::pctl::SafetyLevelSettings _0);
@@ -31436,8 +31436,8 @@ namespace nn::pctl::detail::ipc {
 		uint32_t SetSafetyLevel(int32_t _0);
 		uint32_t StartPlayTimer();
 		uint32_t StopPlayTimer();
-		uint32_t SynchronizeParentalControlSettingsAsync(nn::pctl::detail::AsyncData& _0, IpcService* _1);
-		uint32_t UnlinkPairingAsync(bool _0, nn::pctl::detail::AsyncData& _1, IpcService* _2);
+		uint32_t SynchronizeParentalControlSettingsAsync(nn::pctl::detail::AsyncData& _0, IpcService*& _1);
+		uint32_t UnlinkPairingAsync(bool _0, nn::pctl::detail::AsyncData& _1, IpcService*& _2);
 		uint32_t UnlockRestrictionTemporarily(int8_t * _0, unsigned int _0_size);
 		uint32_t UnlockSystemSettingsRestriction(int8_t * _0, unsigned int _0_size);
 		uint32_t UpdateFreeCommunicationApplicationList(nn::pctl::FreeCommunicationApplicationInfo * _0, unsigned int _0_size);
@@ -31460,7 +31460,7 @@ namespace nn::pctl::detail::ipc {
 				ns_abort("Unknown message cmdId %u to interface nn::pctl::detail::ipc::IParentalControlServiceFactory", req->cmd_id);
 			}
 		}
-		uint32_t CreateService(uint64_t _0, uint64_t _1, nn::pctl::detail::ipc::IParentalControlService* _2);
+		uint32_t CreateService(uint64_t _0, uint64_t _1, nn::pctl::detail::ipc::IParentalControlService*& _2);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -31468,7 +31468,7 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::AddToFreeCommunicationA
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::AddToFreeCommunicationApplicationList\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::AuthorizePairingAsync(nn::pctl::detail::PairingInfoBase _0, nn::pctl::detail::AsyncData& _1, IpcService* _2) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::AuthorizePairingAsync(nn::pctl::detail::PairingInfoBase _0, nn::pctl::detail::AsyncData& _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::AuthorizePairingAsync\n");
 	return 0;
 }
@@ -31536,11 +31536,11 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::FinishAuthorizePairing(
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::FinishAuthorizePairing\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImage(nn::pctl::detail::AsyncData _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImage(nn::pctl::detail::AsyncData _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImage\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImageContentType(nn::pctl::detail::AsyncData _0, uint32_t& _1, int8_t * _2, unsigned int _2_size) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImageContentType(nn::pctl::detail::AsyncData _0, uint32_t& _1, int8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::FinishGetAccountMiiImageContentType\n");
 	return 0;
 }
@@ -31568,15 +31568,15 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::GenerateInquiryCode(nn:
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GenerateInquiryCode\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService* _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService*& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageAsync\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageContentTypeAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService* _3, int8_t * _4, unsigned int _4_size) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageContentTypeAsync(nn::pctl::detail::PairingAccountInfoBase _0, nn::pctl::detail::AsyncData& _1, uint32_t& _2, IpcService*& _3, int8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageContentTypeAsync\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetAccountNickname(nn::pctl::detail::PairingAccountInfoBase _0, uint32_t& _1, int8_t * _2, unsigned int _2_size) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetAccountNickname(nn::pctl::detail::PairingAccountInfoBase _0, uint32_t& _1, int8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetAccountNickname\n");
 	return 0;
 }
@@ -31592,7 +31592,7 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::GetDefaultRatingOrganiz
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetDefaultRatingOrganization\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetFreeCommunicationApplicationList(int32_t _0, int32_t& _1, nn::pctl::FreeCommunicationApplicationInfo * _2, unsigned int _2_size) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetFreeCommunicationApplicationList(int32_t _0, int32_t& _1, nn::pctl::FreeCommunicationApplicationInfo *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetFreeCommunicationApplicationList\n");
 	return 0;
 }
@@ -31604,7 +31604,7 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::GetPairingAccountInfo(n
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetPairingAccountInfo\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetPinCodeChangedEvent(IpcService* _0) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetPinCodeChangedEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetPinCodeChangedEvent\n");
 	return 0;
 }
@@ -31612,7 +31612,7 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::GetPinCodeLength(int32_
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetPinCodeLength\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetPlayTimerEventToRequestSuspension(IpcService* _0) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetPlayTimerEventToRequestSuspension(IpcService*& _0) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetPlayTimerEventToRequestSuspension\n");
 	return 0;
 }
@@ -31644,11 +31644,11 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::GetSettingsLastUpdated(
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetSettingsLastUpdated\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetSynchronizationEvent(IpcService* _0) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetSynchronizationEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetSynchronizationEvent\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::GetUnlinkedEvent(IpcService* _0) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::GetUnlinkedEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::GetUnlinkedEvent\n");
 	return 0;
 }
@@ -31696,11 +31696,11 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::PostEnableAllFeatures(b
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::PostEnableAllFeatures\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::RequestPairingAsync(int8_t * _0, unsigned int _0_size, nn::pctl::detail::AsyncData& _1, IpcService* _2) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::RequestPairingAsync(int8_t * _0, unsigned int _0_size, nn::pctl::detail::AsyncData& _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::RequestPairingAsync\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::RetrievePairingInfoAsync(nn::pctl::detail::AsyncData& _0, IpcService* _1) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::RetrievePairingInfoAsync(nn::pctl::detail::AsyncData& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::RetrievePairingInfoAsync\n");
 	return 0;
 }
@@ -31740,11 +31740,11 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::StopPlayTimer() {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::StopPlayTimer\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::SynchronizeParentalControlSettingsAsync(nn::pctl::detail::AsyncData& _0, IpcService* _1) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::SynchronizeParentalControlSettingsAsync(nn::pctl::detail::AsyncData& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::SynchronizeParentalControlSettingsAsync\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlService::UnlinkPairingAsync(bool _0, nn::pctl::detail::AsyncData& _1, IpcService* _2) {
+uint32_t nn::pctl::detail::ipc::IParentalControlService::UnlinkPairingAsync(bool _0, nn::pctl::detail::AsyncData& _1, IpcService*& _2) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::UnlinkPairingAsync\n");
 	return 0;
 }
@@ -31760,7 +31760,7 @@ uint32_t nn::pctl::detail::ipc::IParentalControlService::UpdateFreeCommunication
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlService::UpdateFreeCommunicationApplicationList\n");
 	return 0;
 }
-uint32_t nn::pctl::detail::ipc::IParentalControlServiceFactory::CreateService(uint64_t _0, uint64_t _1, nn::pctl::detail::ipc::IParentalControlService* _2) {
+uint32_t nn::pctl::detail::ipc::IParentalControlServiceFactory::CreateService(uint64_t _0, uint64_t _1, nn::pctl::detail::ipc::IParentalControlService*& _2) {
 	ns_print("Stub implementation for nn::pctl::detail::ipc::IParentalControlServiceFactory::CreateService\n");
 	return 0;
 }
@@ -31852,11 +31852,11 @@ namespace nn::pcv::detail {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint32_t* temp3 = (uint32_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pcv::detail::IPcvService::GetPossibleClockRates: int32_t = 0x%x, int32_t = 0x%x\n", req->GetData<int32_t>(8), req->GetData<int32_t>(0xc));
-				resp->error_code = GetPossibleClockRates(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<int32_t *>(0xc), (uint32_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPossibleClockRates(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<int32_t *>(0xc), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
@@ -31905,11 +31905,11 @@ namespace nn::pcv::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::pcv::TemperatureThreshold* temp3 = (nn::pcv::TemperatureThreshold *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pcv::detail::IPcvService::GetTemperatureThresholds: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = GetTemperatureThresholds(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::pcv::TemperatureThreshold *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetTemperatureThresholds(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 14: {
@@ -31973,49 +31973,49 @@ namespace nn::pcv::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint32_t* temp3 = (uint32_t *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0xa, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
+				int32_t* temp6 = (int32_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::pcv::detail::IPcvService::GetDvfsTable: int32_t = 0x%x, int32_t = 0x%x\n", req->GetData<int32_t>(8), req->GetData<int32_t>(0xc));
-				resp->error_code = GetDvfsTable(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), (uint32_t *) temp3, temp2, (int32_t *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetDvfsTable(req->GetData<int32_t>(8), req->GetData<int32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 24: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::pcv::ModuleState* temp3 = (nn::pcv::ModuleState *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pcv::detail::IPcvService::GetModuleStateTable: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = GetModuleStateTable(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::pcv::ModuleState *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetModuleStateTable(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 25: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::pcv::PowerDomainState* temp3 = (nn::pcv::PowerDomainState *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pcv::detail::IPcvService::GetPowerDomainStateTable: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = GetPowerDomainStateTable(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::pcv::PowerDomainState *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPowerDomainStateTable(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 26: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint32_t* temp3 = (uint32_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pcv::detail::IPcvService::GetFuseInfo: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = GetFuseInfo(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (uint32_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFuseInfo(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -32025,15 +32025,15 @@ namespace nn::pcv::detail {
 		uint32_t ChangeVoltage(nn::pcv::PowerControlTarget _0, int32_t _1);
 		uint32_t Finalize();
 		uint32_t GetClockRate(int32_t _0, uint32_t& _1);
-		uint32_t GetDvfsTable(int32_t _0, int32_t _1, int32_t& _2, uint32_t * _3, unsigned int _3_size, int32_t * _4, unsigned int _4_size);
-		uint32_t GetFuseInfo(int32_t _0, int32_t& _1, uint32_t * _2, unsigned int _2_size);
-		uint32_t GetModuleStateTable(int32_t _0, int32_t& _1, nn::pcv::ModuleState * _2, unsigned int _2_size);
+		uint32_t GetDvfsTable(int32_t _0, int32_t _1, int32_t& _2, uint32_t *& _3, unsigned int _3_size, int32_t *& _4, unsigned int _4_size);
+		uint32_t GetFuseInfo(int32_t _0, int32_t& _1, uint32_t *& _2, unsigned int _2_size);
+		uint32_t GetModuleStateTable(int32_t _0, int32_t& _1, nn::pcv::ModuleState *& _2, unsigned int _2_size);
 		uint32_t GetOscillatorClock(uint32_t& _0);
-		uint32_t GetPossibleClockRates(int32_t _0, int32_t _1, int32_t& _2, int32_t& _3, uint32_t * _4, unsigned int _4_size);
-		uint32_t GetPowerClockInfoEvent(IpcService* _0);
-		uint32_t GetPowerDomainStateTable(int32_t _0, int32_t& _1, nn::pcv::PowerDomainState * _2, unsigned int _2_size);
+		uint32_t GetPossibleClockRates(int32_t _0, int32_t _1, int32_t& _2, int32_t& _3, uint32_t *& _4, unsigned int _4_size);
+		uint32_t GetPowerClockInfoEvent(IpcService*& _0);
+		uint32_t GetPowerDomainStateTable(int32_t _0, int32_t& _1, nn::pcv::PowerDomainState *& _2, unsigned int _2_size);
 		uint32_t GetState(int32_t _0, nn::pcv::ModuleState& _1);
-		uint32_t GetTemperatureThresholds(int32_t _0, int32_t& _1, nn::pcv::TemperatureThreshold * _2, unsigned int _2_size);
+		uint32_t GetTemperatureThresholds(int32_t _0, int32_t& _1, nn::pcv::TemperatureThreshold *& _2, unsigned int _2_size);
 		uint32_t GetVoltageEnabled(int32_t _0, bool& _1);
 		uint32_t GetVoltageRange(int32_t _0, int32_t& _1, int32_t& _2, int32_t& _3);
 		uint32_t GetVoltageValue(int32_t _0, int32_t& _1);
@@ -32064,15 +32064,15 @@ uint32_t nn::pcv::detail::IPcvService::GetClockRate(int32_t _0, uint32_t& _1) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetClockRate\n");
 	return 0;
 }
-uint32_t nn::pcv::detail::IPcvService::GetDvfsTable(int32_t _0, int32_t _1, int32_t& _2, uint32_t * _3, unsigned int _3_size, int32_t * _4, unsigned int _4_size) {
+uint32_t nn::pcv::detail::IPcvService::GetDvfsTable(int32_t _0, int32_t _1, int32_t& _2, uint32_t *& _3, unsigned int _3_size, int32_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetDvfsTable\n");
 	return 0;
 }
-uint32_t nn::pcv::detail::IPcvService::GetFuseInfo(int32_t _0, int32_t& _1, uint32_t * _2, unsigned int _2_size) {
+uint32_t nn::pcv::detail::IPcvService::GetFuseInfo(int32_t _0, int32_t& _1, uint32_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetFuseInfo\n");
 	return 0;
 }
-uint32_t nn::pcv::detail::IPcvService::GetModuleStateTable(int32_t _0, int32_t& _1, nn::pcv::ModuleState * _2, unsigned int _2_size) {
+uint32_t nn::pcv::detail::IPcvService::GetModuleStateTable(int32_t _0, int32_t& _1, nn::pcv::ModuleState *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetModuleStateTable\n");
 	return 0;
 }
@@ -32080,15 +32080,15 @@ uint32_t nn::pcv::detail::IPcvService::GetOscillatorClock(uint32_t& _0) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetOscillatorClock\n");
 	return 0;
 }
-uint32_t nn::pcv::detail::IPcvService::GetPossibleClockRates(int32_t _0, int32_t _1, int32_t& _2, int32_t& _3, uint32_t * _4, unsigned int _4_size) {
+uint32_t nn::pcv::detail::IPcvService::GetPossibleClockRates(int32_t _0, int32_t _1, int32_t& _2, int32_t& _3, uint32_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetPossibleClockRates\n");
 	return 0;
 }
-uint32_t nn::pcv::detail::IPcvService::GetPowerClockInfoEvent(IpcService* _0) {
+uint32_t nn::pcv::detail::IPcvService::GetPowerClockInfoEvent(IpcService*& _0) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetPowerClockInfoEvent\n");
 	return 0;
 }
-uint32_t nn::pcv::detail::IPcvService::GetPowerDomainStateTable(int32_t _0, int32_t& _1, nn::pcv::PowerDomainState * _2, unsigned int _2_size) {
+uint32_t nn::pcv::detail::IPcvService::GetPowerDomainStateTable(int32_t _0, int32_t& _1, nn::pcv::PowerDomainState *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetPowerDomainStateTable\n");
 	return 0;
 }
@@ -32096,7 +32096,7 @@ uint32_t nn::pcv::detail::IPcvService::GetState(int32_t _0, nn::pcv::ModuleState
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetState\n");
 	return 0;
 }
-uint32_t nn::pcv::detail::IPcvService::GetTemperatureThresholds(int32_t _0, int32_t& _1, nn::pcv::TemperatureThreshold * _2, unsigned int _2_size) {
+uint32_t nn::pcv::detail::IPcvService::GetTemperatureThresholds(int32_t _0, int32_t& _1, nn::pcv::TemperatureThreshold *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::pcv::detail::IPcvService::GetTemperatureThresholds\n");
 	return 0;
 }
@@ -32195,11 +32195,11 @@ namespace nn::pdm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::pdm::detail::INotifyService::Unknown5: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown5((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown5(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			default:
@@ -32227,11 +32227,11 @@ namespace nn::pdm::detail {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::pdm::detail::IQueryService::Unknown1\n");
-				resp->error_code = Unknown1(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown1(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
@@ -32293,7 +32293,7 @@ namespace nn::pdm::detail {
 			}
 		}
 		uint32_t Unknown0();
-		uint32_t Unknown1(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Unknown1(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Unknown10();
 		uint32_t Unknown2();
 		uint32_t Unknown3();
@@ -32330,7 +32330,7 @@ uint32_t nn::pdm::detail::IQueryService::Unknown0() {
 	ns_print("Stub implementation for nn::pdm::detail::IQueryService::Unknown0\n");
 	return 0;
 }
-uint32_t nn::pdm::detail::IQueryService::Unknown1(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::pdm::detail::IQueryService::Unknown1(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::pdm::detail::IQueryService::Unknown1\n");
 	return 0;
 }
@@ -32390,7 +32390,7 @@ namespace nn::pinmux {
 				ns_abort("Unknown message cmdId %u to interface nn::pinmux::IManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, IUnknown* _1);
+		uint32_t Unknown0(uint32_t _0, IUnknown*& _1);
 	};
 	class ISession : public IpcService {
 	public:
@@ -32425,7 +32425,7 @@ namespace nn::pinmux {
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::pinmux::IManager::Unknown0(uint32_t _0, IUnknown* _1) {
+uint32_t nn::pinmux::IManager::Unknown0(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::pinmux::IManager::Unknown0\n");
 	return 0;
 }
@@ -32485,21 +32485,21 @@ namespace nn::pl::detail {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(6, 2, temp8);
-				auto temp9 = new uint8_t[temp8];
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
 				ns_print("IPC message to nn::pl::detail::ISharedFontManager::Unknown5: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = Unknown5(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
-				ARMv8::WriteBytes(temp7, temp9, temp8);
-				delete[] temp9;
+				resp->error_code = Unknown5(req->GetData<uint64_t>(8), *resp->GetDataPointer<uint8_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp3, temp2, temp6, temp5, temp9, temp8);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
+				ARMv8::WriteBytes(temp7, (uint8_t *) temp9, temp8);
+				delete[] (uint8_t *)temp9;
 				return 0;
 			}
 			default:
@@ -32510,8 +32510,8 @@ namespace nn::pl::detail {
 		uint32_t Unknown1(uint32_t _0, uint32_t& _1);
 		uint32_t Unknown2(uint32_t _0, uint32_t& _1);
 		uint32_t Unknown3(uint32_t _0, uint32_t& _1);
-		uint32_t Unknown4(IpcService* _0);
-		uint32_t Unknown5(uint64_t _0, uint8_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size);
+		uint32_t Unknown4(IpcService*& _0);
+		uint32_t Unknown5(uint64_t _0, uint8_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size, uint8_t *& _4, unsigned int _4_size, uint8_t *& _5, unsigned int _5_size);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -32531,11 +32531,11 @@ uint32_t nn::pl::detail::ISharedFontManager::Unknown3(uint32_t _0, uint32_t& _1)
 	ns_print("Stub implementation for nn::pl::detail::ISharedFontManager::Unknown3\n");
 	return 0;
 }
-uint32_t nn::pl::detail::ISharedFontManager::Unknown4(IpcService* _0) {
+uint32_t nn::pl::detail::ISharedFontManager::Unknown4(IpcService*& _0) {
 	ns_print("Stub implementation for nn::pl::detail::ISharedFontManager::Unknown4\n");
 	return 0;
 }
-uint32_t nn::pl::detail::ISharedFontManager::Unknown5(uint64_t _0, uint8_t& _1, uint32_t& _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size) {
+uint32_t nn::pl::detail::ISharedFontManager::Unknown5(uint64_t _0, uint8_t& _1, uint32_t& _2, uint8_t *& _3, unsigned int _3_size, uint8_t *& _4, unsigned int _4_size, uint8_t *& _5, unsigned int _5_size) {
 	ns_print("Stub implementation for nn::pl::detail::ISharedFontManager::Unknown5\n");
 	return 0;
 }
@@ -32651,7 +32651,7 @@ namespace nn::pm::detail {
 		uint32_t Unknown0();
 		uint32_t Unknown1(uint64_t _0);
 		uint32_t Unknown2(uint64_t _0);
-		uint32_t Unknown3(IpcService* _0);
+		uint32_t Unknown3(IpcService*& _0);
 		uint32_t Unknown4(uint128_t& _0);
 		uint32_t Unknown5(uint64_t _0);
 		uint32_t Unknown6(uint64_t _0);
@@ -32684,7 +32684,7 @@ uint32_t nn::pm::detail::IShellInterface::Unknown2(uint64_t _0) {
 	ns_print("Stub implementation for nn::pm::detail::IShellInterface::Unknown2\n");
 	return 0;
 }
-uint32_t nn::pm::detail::IShellInterface::Unknown3(IpcService* _0) {
+uint32_t nn::pm::detail::IShellInterface::Unknown3(IpcService*& _0) {
 	ns_print("Stub implementation for nn::pm::detail::IShellInterface::Unknown3\n");
 	return 0;
 }
@@ -32719,32 +32719,32 @@ namespace nn::prepo::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveReport: uint64_t = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2, temp5);
-				resp->error_code = SaveReport(req->GetData<uint64_t>(8), req->pid, (int8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SaveReport(req->GetData<uint64_t>(8), req->pid, temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 10101: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveReportWithUser: nn::account::Uid = %s, uint64_t = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<uint64_t>(0x18), temp2, temp5);
-				resp->error_code = SaveReportWithUser(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, (int8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SaveReportWithUser(req->GetData<nn::account::Uid>(8), req->GetData<uint64_t>(0x18), req->pid, temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 10200: {
@@ -32763,32 +32763,32 @@ namespace nn::prepo::detail::ipc {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveSystemReport: nn::ApplicationId = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<nn::ApplicationId>(8), temp2, temp5);
-				resp->error_code = SaveSystemReport(req->GetData<nn::ApplicationId>(8), (int8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SaveSystemReport(req->GetData<nn::ApplicationId>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 20101: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(9, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::prepo::detail::ipc::IPrepoService::SaveSystemReportWithUser: nn::account::Uid = %s, nn::ApplicationId = 0x%%lx, int8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str(), req->GetData<nn::ApplicationId>(0x18), temp2, temp5);
-				resp->error_code = SaveSystemReportWithUser(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), (int8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SaveSystemReportWithUser(req->GetData<nn::account::Uid>(8), req->GetData<nn::ApplicationId>(0x18), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 30100: {
@@ -32928,7 +32928,7 @@ namespace nn::psc::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::psc::sf::IPmControl", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1(uint32_t _0, uint32_t _1, uint32_t _2);
 		uint32_t Unknown2();
 		uint32_t Unknown3(uint32_t& _0);
@@ -32992,11 +32992,11 @@ namespace nn::psc::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::psc::sf::IPmService", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::psc::sf::IPmControl::Unknown0(IpcService* _0) {
+uint32_t nn::psc::sf::IPmControl::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::psc::sf::IPmControl::Unknown0\n");
 	return 0;
 }
@@ -33040,7 +33040,7 @@ uint32_t nn::psc::sf::IPmModule::Unknown3() {
 	ns_print("Stub implementation for nn::psc::sf::IPmModule::Unknown3\n");
 	return 0;
 }
-uint32_t nn::psc::sf::IPmService::Unknown0(IUnknown* _0) {
+uint32_t nn::psc::sf::IPmService::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::psc::sf::IPmService::Unknown0\n");
 	return 0;
 }
@@ -33186,15 +33186,15 @@ namespace nn::psm {
 		uint32_t Unknown13(uint64_t& _0);
 		uint32_t Unknown14(uint8_t& _0);
 		uint32_t Unknown15(uint64_t& _0);
-		uint32_t Unknown16(IpcService* _0);
+		uint32_t Unknown16(IpcService*& _0);
 		uint32_t Unknown17();
-		uint32_t Unknown18(IpcService* _0);
+		uint32_t Unknown18(IpcService*& _0);
 		uint32_t Unknown2();
 		uint32_t Unknown3();
 		uint32_t Unknown4(uint8_t& _0);
 		uint32_t Unknown5();
 		uint32_t Unknown6();
-		uint32_t Unknown7(IUnknown* _0);
+		uint32_t Unknown7(IUnknown*& _0);
 		uint32_t Unknown8();
 		uint32_t Unknown9();
 	};
@@ -33240,7 +33240,7 @@ namespace nn::psm {
 				ns_abort("Unknown message cmdId %u to interface nn::psm::IPsmSession", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1();
 		uint32_t Unknown2(uint8_t _0);
 		uint32_t Unknown3(uint8_t _0);
@@ -33280,7 +33280,7 @@ uint32_t nn::psm::IPsmServer::Unknown15(uint64_t& _0) {
 	ns_print("Stub implementation for nn::psm::IPsmServer::Unknown15\n");
 	return 0;
 }
-uint32_t nn::psm::IPsmServer::Unknown16(IpcService* _0) {
+uint32_t nn::psm::IPsmServer::Unknown16(IpcService*& _0) {
 	ns_print("Stub implementation for nn::psm::IPsmServer::Unknown16\n");
 	return 0;
 }
@@ -33288,7 +33288,7 @@ uint32_t nn::psm::IPsmServer::Unknown17() {
 	ns_print("Stub implementation for nn::psm::IPsmServer::Unknown17\n");
 	return 0;
 }
-uint32_t nn::psm::IPsmServer::Unknown18(IpcService* _0) {
+uint32_t nn::psm::IPsmServer::Unknown18(IpcService*& _0) {
 	ns_print("Stub implementation for nn::psm::IPsmServer::Unknown18\n");
 	return 0;
 }
@@ -33312,7 +33312,7 @@ uint32_t nn::psm::IPsmServer::Unknown6() {
 	ns_print("Stub implementation for nn::psm::IPsmServer::Unknown6\n");
 	return 0;
 }
-uint32_t nn::psm::IPsmServer::Unknown7(IUnknown* _0) {
+uint32_t nn::psm::IPsmServer::Unknown7(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::psm::IPsmServer::Unknown7\n");
 	return 0;
 }
@@ -33324,7 +33324,7 @@ uint32_t nn::psm::IPsmServer::Unknown9() {
 	ns_print("Stub implementation for nn::psm::IPsmServer::Unknown9\n");
 	return 0;
 }
-uint32_t nn::psm::IPsmSession::Unknown0(IpcService* _0) {
+uint32_t nn::psm::IPsmSession::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::psm::IPsmSession::Unknown0\n");
 	return 0;
 }
@@ -33425,8 +33425,8 @@ namespace nn::pwm {
 				ns_abort("Unknown message cmdId %u to interface nn::pwm::IManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, IUnknown* _1);
-		uint32_t Unknown1(uint32_t _0, IUnknown* _1);
+		uint32_t Unknown0(uint32_t _0, IUnknown*& _1);
+		uint32_t Unknown1(uint32_t _0, IUnknown*& _1);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -33454,11 +33454,11 @@ uint32_t nn::pwm::IChannelSession::Unknown5(uint8_t& _0) {
 	ns_print("Stub implementation for nn::pwm::IChannelSession::Unknown5\n");
 	return 0;
 }
-uint32_t nn::pwm::IManager::Unknown0(uint32_t _0, IUnknown* _1) {
+uint32_t nn::pwm::IManager::Unknown0(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::pwm::IManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::pwm::IManager::Unknown1(uint32_t _0, IUnknown* _1) {
+uint32_t nn::pwm::IManager::Unknown1(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::pwm::IManager::Unknown1\n");
 	return 0;
 }
@@ -33572,7 +33572,7 @@ namespace nn::sasbus {
 				ns_abort("Unknown message cmdId %u to interface nn::sasbus::IManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint32_t _0, IUnknown* _1);
+		uint32_t Unknown0(uint32_t _0, IUnknown*& _1);
 	};
 	class ISession : public IpcService {
 	public:
@@ -33614,7 +33614,7 @@ namespace nn::sasbus {
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::sasbus::IManager::Unknown0(uint32_t _0, IUnknown* _1) {
+uint32_t nn::sasbus::IManager::Unknown0(uint32_t _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::sasbus::IManager::Unknown0\n");
 	return 0;
 }
@@ -33700,11 +33700,11 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::CountryCode* temp3 = (nn::settings::factory::CountryCode *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetWirelessLanCountryCodes\n");
-				resp->error_code = GetWirelessLanCountryCodes(*resp->GetDataPointer<int32_t *>(8), (nn::settings::factory::CountryCode *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetWirelessLanCountryCodes(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
@@ -33737,66 +33737,66 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::EccB233DeviceCertificate* temp3 = (nn::settings::factory::EccB233DeviceCertificate *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetEciDeviceCertificate\n");
-				resp->error_code = GetEciDeviceCertificate((nn::settings::factory::EccB233DeviceCertificate *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetEciDeviceCertificate(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::Rsa2048DeviceCertificate* temp3 = (nn::settings::factory::Rsa2048DeviceCertificate *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetEticketDeviceCertificate\n");
-				resp->error_code = GetEticketDeviceCertificate((nn::settings::factory::Rsa2048DeviceCertificate *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetEticketDeviceCertificate(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 16: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::SslKey* temp3 = (nn::settings::factory::SslKey *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetSslKey\n");
-				resp->error_code = GetSslKey((nn::settings::factory::SslKey *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetSslKey(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 17: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::SslCertificate* temp3 = (nn::settings::factory::SslCertificate *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetSslCertificate\n");
-				resp->error_code = GetSslCertificate((nn::settings::factory::SslCertificate *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetSslCertificate(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 18: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::GameCardKey* temp3 = (nn::settings::factory::GameCardKey *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetGameCardKey\n");
-				resp->error_code = GetGameCardKey((nn::settings::factory::GameCardKey *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGameCardKey(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 19: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::GameCardCertificate* temp3 = (nn::settings::factory::GameCardCertificate *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetGameCardCertificate\n");
-				resp->error_code = GetGameCardCertificate((nn::settings::factory::GameCardCertificate *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGameCardCertificate(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 20: {
@@ -33810,11 +33810,11 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::factory::Rsa2048DeviceKey* temp3 = (nn::settings::factory::Rsa2048DeviceKey *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::IFactorySettingsServer::GetEticketDeviceKey\n");
-				resp->error_code = GetEticketDeviceKey((nn::settings::factory::Rsa2048DeviceKey *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetEticketDeviceKey(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 22: {
@@ -33833,20 +33833,20 @@ namespace nn::settings {
 		uint32_t GetBatteryLot(nn::settings::factory::BatteryLot& _0);
 		uint32_t GetBluetoothBdAddress(nn::settings::factory::BdAddress& _0);
 		uint32_t GetConfigurationId1(nn::settings::factory::ConfigurationId1& _0);
-		uint32_t GetEciDeviceCertificate(nn::settings::factory::EccB233DeviceCertificate * _0, unsigned int _0_size);
+		uint32_t GetEciDeviceCertificate(nn::settings::factory::EccB233DeviceCertificate *& _0, unsigned int _0_size);
 		uint32_t GetEciDeviceKey(nn::settings::factory::EccB233DeviceKey& _0);
-		uint32_t GetEticketDeviceCertificate(nn::settings::factory::Rsa2048DeviceCertificate * _0, unsigned int _0_size);
-		uint32_t GetEticketDeviceKey(nn::settings::factory::Rsa2048DeviceKey * _0, unsigned int _0_size);
-		uint32_t GetGameCardCertificate(nn::settings::factory::GameCardCertificate * _0, unsigned int _0_size);
-		uint32_t GetGameCardKey(nn::settings::factory::GameCardKey * _0, unsigned int _0_size);
+		uint32_t GetEticketDeviceCertificate(nn::settings::factory::Rsa2048DeviceCertificate *& _0, unsigned int _0_size);
+		uint32_t GetEticketDeviceKey(nn::settings::factory::Rsa2048DeviceKey *& _0, unsigned int _0_size);
+		uint32_t GetGameCardCertificate(nn::settings::factory::GameCardCertificate *& _0, unsigned int _0_size);
+		uint32_t GetGameCardKey(nn::settings::factory::GameCardKey *& _0, unsigned int _0_size);
 		uint32_t GetGyroscopeOffset(nn::settings::factory::GyroscopeOffset& _0);
 		uint32_t GetGyroscopeScale(nn::settings::factory::GyroscopeScale& _0);
 		uint32_t GetSerialNumber(nn::settings::factory::SerialNumber& _0);
 		uint32_t GetSpeakerParameter(nn::settings::factory::SpeakerParameter& _0);
-		uint32_t GetSslCertificate(nn::settings::factory::SslCertificate * _0, unsigned int _0_size);
-		uint32_t GetSslKey(nn::settings::factory::SslKey * _0, unsigned int _0_size);
+		uint32_t GetSslCertificate(nn::settings::factory::SslCertificate *& _0, unsigned int _0_size);
+		uint32_t GetSslKey(nn::settings::factory::SslKey *& _0, unsigned int _0_size);
 		uint32_t GetWirelessLanCountryCodeCount(int32_t& _0);
-		uint32_t GetWirelessLanCountryCodes(int32_t& _0, nn::settings::factory::CountryCode * _1, unsigned int _1_size);
+		uint32_t GetWirelessLanCountryCodes(int32_t& _0, nn::settings::factory::CountryCode *& _1, unsigned int _1_size);
 		uint32_t GetWirelessLanMacAddress(nn::settings::factory::MacAddress& _0);
 		uint32_t SetInitialSystemAppletProgramId(nn::ncm::ProgramId _0);
 		uint32_t SetOverlayDispProgramId(nn::ncm::ProgramId _0);
@@ -33860,49 +33860,49 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::SettingsName* temp3 = (nn::settings::SettingsName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::settings::SettingsItemKey* temp6 = (nn::settings::SettingsItemKey *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(5, 0, temp8);
-				auto temp9 = new uint8_t[temp8];
-				ARMv8::ReadBytes(temp7, temp9, temp8);
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
+				ARMv8::ReadBytes(temp7, (uint8_t *)temp9, temp8);
 				ns_print("IPC message to nn::settings::IFirmwareDebugSettingsServer::SetSettingsItemValue: nn::settings::SettingsName *= buffer<0x%lx>, nn::settings::SettingsItemKey *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", temp2, temp5, temp8);
-				resp->error_code = SetSettingsItemValue((nn::settings::SettingsName *) temp3, temp2, (nn::settings::SettingsItemKey *) temp6, temp5, (uint8_t *) temp9, temp8);
-				delete[] temp3;
-				delete[] temp6;
-				delete[] temp9;
+				resp->error_code = SetSettingsItemValue(temp3, temp2, temp6, temp5, temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				delete[] (uint8_t *) temp9;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::SettingsName* temp3 = (nn::settings::SettingsName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::settings::SettingsItemKey* temp6 = (nn::settings::SettingsItemKey *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::settings::IFirmwareDebugSettingsServer::ResetSettingsItemValue: nn::settings::SettingsName *= buffer<0x%lx>, nn::settings::SettingsItemKey *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = ResetSettingsItemValue((nn::settings::SettingsName *) temp3, temp2, (nn::settings::SettingsItemKey *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = ResetSettingsItemValue(temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(1, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::SettingsName* temp3 = (nn::settings::SettingsName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				nn::settings::ISettingsItemKeyIterator* temp4;
 				ns_print("IPC message to nn::settings::IFirmwareDebugSettingsServer::CreateSettingsItemKeyIterator: nn::settings::SettingsName *= buffer<0x%lx>\n", temp2);
-				resp->error_code = CreateSettingsItemKeyIterator((nn::settings::SettingsName *) temp3, temp2, temp4);
-				delete[] temp3;
+				resp->error_code = CreateSettingsItemKeyIterator(temp3, temp2, temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
 				return 0;
@@ -33911,7 +33911,7 @@ namespace nn::settings {
 				ns_abort("Unknown message cmdId %u to interface nn::settings::IFirmwareDebugSettingsServer", req->cmd_id);
 			}
 		}
-		uint32_t CreateSettingsItemKeyIterator(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::ISettingsItemKeyIterator* _1);
+		uint32_t CreateSettingsItemKeyIterator(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::ISettingsItemKeyIterator*& _1);
 		uint32_t ResetSettingsItemValue(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::SettingsItemKey * _1, unsigned int _1_size);
 		uint32_t SetSettingsItemValue(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::SettingsItemKey * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
 	};
@@ -33936,18 +33936,18 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISettingsItemKeyIterator::GetKey\n");
-				resp->error_code = GetKey(*resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetKey(*resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::settings::ISettingsItemKeyIterator", req->cmd_id);
 			}
 		}
-		uint32_t GetKey(uint64_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetKey(uint64_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t GetKeySize(uint64_t& _0);
 		uint32_t GoNext();
 	};
@@ -33966,11 +33966,11 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::LanguageCode* temp3 = (nn::settings::LanguageCode *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISettingsServer::GetAvailableLanguageCodes\n");
-				resp->error_code = GetAvailableLanguageCodes(*resp->GetDataPointer<int32_t *>(8), (nn::settings::LanguageCode *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAvailableLanguageCodes(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
@@ -33990,7 +33990,7 @@ namespace nn::settings {
 			}
 		}
 		uint32_t GetAvailableLanguageCodeCount(int32_t& _0);
-		uint32_t GetAvailableLanguageCodes(int32_t& _0, nn::settings::LanguageCode * _1, unsigned int _1_size);
+		uint32_t GetAvailableLanguageCodes(int32_t& _0, nn::settings::LanguageCode *& _1, unsigned int _1_size);
 		uint32_t GetLanguageCode(nn::settings::LanguageCode& _0);
 		uint32_t GetRegionCode(int32_t& _0);
 	};
@@ -34009,44 +34009,44 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::system::NetworkSettings* temp3 = (nn::settings::system::NetworkSettings *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetNetworkSettings: nn::settings::system::NetworkSettings *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetNetworkSettings((nn::settings::system::NetworkSettings *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetNetworkSettings(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::NetworkSettings* temp3 = (nn::settings::system::NetworkSettings *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetNetworkSettings\n");
-				resp->error_code = GetNetworkSettings(*resp->GetDataPointer<int32_t *>(8), (nn::settings::system::NetworkSettings *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetNetworkSettings(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::FirmwareVersion* temp3 = (nn::settings::system::FirmwareVersion *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetFirmwareVersion\n");
-				resp->error_code = GetFirmwareVersion((nn::settings::system::FirmwareVersion *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFirmwareVersion(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::FirmwareVersion* temp3 = (nn::settings::system::FirmwareVersion *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetFirmwareVersion2\n");
-				resp->error_code = GetFirmwareVersion2((nn::settings::system::FirmwareVersion *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetFirmwareVersion2(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 7: {
@@ -34078,22 +34078,22 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::system::BluetoothDevicesSettings* temp3 = (nn::settings::system::BluetoothDevicesSettings *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetBluetoothDevicesSettings: nn::settings::system::BluetoothDevicesSettings *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetBluetoothDevicesSettings((nn::settings::system::BluetoothDevicesSettings *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetBluetoothDevicesSettings(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::BluetoothDevicesSettings* temp3 = (nn::settings::system::BluetoothDevicesSettings *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetBluetoothDevicesSettings\n");
-				resp->error_code = GetBluetoothDevicesSettings(*resp->GetDataPointer<int32_t *>(8), (nn::settings::system::BluetoothDevicesSettings *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetBluetoothDevicesSettings(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 13: {
@@ -34149,22 +34149,22 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::EulaVersion* temp3 = (nn::settings::system::EulaVersion *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetEulaVersions\n");
-				resp->error_code = GetEulaVersions(*resp->GetDataPointer<int32_t *>(8), (nn::settings::system::EulaVersion *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetEulaVersions(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 22: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::system::EulaVersion* temp3 = (nn::settings::system::EulaVersion *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetEulaVersions: nn::settings::system::EulaVersion *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetEulaVersions((nn::settings::system::EulaVersion *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetEulaVersions(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 23: {
@@ -34220,22 +34220,22 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::AccountNotificationSettings* temp3 = (nn::settings::system::AccountNotificationSettings *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetAccountNotificationSettings\n");
-				resp->error_code = GetAccountNotificationSettings(*resp->GetDataPointer<int32_t *>(8), (nn::settings::system::AccountNotificationSettings *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetAccountNotificationSettings(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 32: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::system::AccountNotificationSettings* temp3 = (nn::settings::system::AccountNotificationSettings *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetAccountNotificationSettings: nn::settings::system::AccountNotificationSettings *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetAccountNotificationSettings((nn::settings::system::AccountNotificationSettings *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetAccountNotificationSettings(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 35: {
@@ -34254,37 +34254,37 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::SettingsName* temp3 = (nn::settings::SettingsName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::settings::SettingsItemKey* temp6 = (nn::settings::SettingsItemKey *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetSettingsItemValueSize: nn::settings::SettingsName *= buffer<0x%lx>, nn::settings::SettingsItemKey *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = GetSettingsItemValueSize((nn::settings::SettingsName *) temp3, temp2, (nn::settings::SettingsItemKey *) temp6, temp5, *resp->GetDataPointer<uint64_t *>(8));
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = GetSettingsItemValueSize(temp3, temp2, temp6, temp5, *resp->GetDataPointer<uint64_t *>(8));
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 38: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::SettingsName* temp3 = (nn::settings::SettingsName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x19, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				nn::settings::SettingsItemKey* temp6 = (nn::settings::SettingsItemKey *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(6, 0, temp8);
-				auto temp9 = new uint8_t[temp8];
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetSettingsItemValue: nn::settings::SettingsName *= buffer<0x%lx>, nn::settings::SettingsItemKey *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = GetSettingsItemValue((nn::settings::SettingsName *) temp3, temp2, (nn::settings::SettingsItemKey *) temp6, temp5, *resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp9, temp8);
-				delete[] temp3;
-				delete[] temp6;
-				ARMv8::WriteBytes(temp7, temp9, temp8);
-				delete[] temp9;
+				resp->error_code = GetSettingsItemValue(temp3, temp2, temp6, temp5, *resp->GetDataPointer<uint64_t *>(8), temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				ARMv8::WriteBytes(temp7, (uint8_t *) temp9, temp8);
+				delete[] (uint8_t *)temp9;
 				return 0;
 			}
 			case 39: {
@@ -34304,22 +34304,22 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x1a, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::Edid* temp3 = (nn::settings::system::Edid *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetEdid\n");
-				resp->error_code = GetEdid((nn::settings::system::Edid *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetEdid(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 42: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x19, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::system::Edid* temp3 = (nn::settings::system::Edid *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetEdid: nn::settings::system::Edid *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetEdid((nn::settings::system::Edid *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetEdid(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 43: {
@@ -34405,11 +34405,11 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetWirelessCertificationFile\n");
-				resp->error_code = GetWirelessCertificationFile(*resp->GetDataPointer<uint64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetWirelessCertificationFile(*resp->GetDataPointer<uint64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 57: {
@@ -34541,22 +34541,22 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::DeviceNickName* temp3 = (nn::settings::system::DeviceNickName *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetDeviceNickName\n");
-				resp->error_code = GetDeviceNickName((nn::settings::system::DeviceNickName *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetDeviceNickName(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 78: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::system::DeviceNickName* temp3 = (nn::settings::system::DeviceNickName *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetDeviceNickName: nn::settings::system::DeviceNickName *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetDeviceNickName((nn::settings::system::DeviceNickName *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetDeviceNickName(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 79: {
@@ -34679,22 +34679,22 @@ namespace nn::settings {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::settings::system::NxControllerSettings* temp3 = (nn::settings::system::NxControllerSettings *) new uint8_t[temp2];
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::GetNxControllerSettings\n");
-				resp->error_code = GetNxControllerSettings(*resp->GetDataPointer<int32_t *>(8), (nn::settings::system::NxControllerSettings *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetNxControllerSettings(*resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 98: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::settings::system::NxControllerSettings* temp3 = (nn::settings::system::NxControllerSettings *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::SetNxControllerSettings: nn::settings::system::NxControllerSettings *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetNxControllerSettings((nn::settings::system::NxControllerSettings *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetNxControllerSettings(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 99: {
@@ -34840,9 +34840,9 @@ namespace nn::settings {
 				ns_abort("Unknown message cmdId %u to interface nn::settings::ISystemSettingsServer", req->cmd_id);
 			}
 		}
-		uint32_t AcquireFatalDirtyFlagEventHandle(IpcService* _0);
-		uint32_t AcquireTelemetryDirtyFlagEventHandle(IpcService* _0);
-		uint32_t GetAccountNotificationSettings(int32_t& _0, nn::settings::system::AccountNotificationSettings * _1, unsigned int _1_size);
+		uint32_t AcquireFatalDirtyFlagEventHandle(IpcService*& _0);
+		uint32_t AcquireTelemetryDirtyFlagEventHandle(IpcService*& _0);
+		uint32_t GetAccountNotificationSettings(int32_t& _0, nn::settings::system::AccountNotificationSettings *& _1, unsigned int _1_size);
 		uint32_t GetAccountSettings(nn::settings::system::AccountSettings& _0);
 		uint32_t GetAudioOutputMode(int32_t _0, int32_t& _1);
 		uint32_t GetAudioVolume(int32_t _0, nn::settings::system::AudioVolume& _1);
@@ -34854,22 +34854,22 @@ namespace nn::settings {
 		uint32_t GetBatteryPercentageFlag(bool& _0);
 		uint32_t GetBluetoothAfhEnableFlag(bool& _0);
 		uint32_t GetBluetoothBoostEnableFlag(bool& _0);
-		uint32_t GetBluetoothDevicesSettings(int32_t& _0, nn::settings::system::BluetoothDevicesSettings * _1, unsigned int _1_size);
+		uint32_t GetBluetoothDevicesSettings(int32_t& _0, nn::settings::system::BluetoothDevicesSettings *& _1, unsigned int _1_size);
 		uint32_t GetBluetoothEnableFlag(bool& _0);
 		uint32_t GetColorSetId(int32_t& _0);
 		uint32_t GetConsoleInformationUploadFlag(bool& _0);
 		uint32_t GetDataDeletionSettings(nn::settings::system::DataDeletionSettings& _0);
 		uint32_t GetDebugModeFlag(bool& _0);
-		uint32_t GetDeviceNickName(nn::settings::system::DeviceNickName * _0, unsigned int _0_size);
+		uint32_t GetDeviceNickName(nn::settings::system::DeviceNickName *& _0, unsigned int _0_size);
 		uint32_t GetDeviceTimeZoneLocationName(nn::time::LocationName& _0);
-		uint32_t GetEdid(nn::settings::system::Edid * _0, unsigned int _0_size);
-		uint32_t GetEulaVersions(int32_t& _0, nn::settings::system::EulaVersion * _1, unsigned int _1_size);
+		uint32_t GetEdid(nn::settings::system::Edid *& _0, unsigned int _0_size);
+		uint32_t GetEulaVersions(int32_t& _0, nn::settings::system::EulaVersion *& _1, unsigned int _1_size);
 		uint32_t GetExternalRtcResetFlag(bool& _0);
 		uint32_t GetExternalSteadyClockInternalOffset(int64_t& _0);
 		uint32_t GetExternalSteadyClockSourceId(nn::util::Uuid& _0);
 		uint32_t GetFatalDirtyFlags(nn::settings::system::FatalDirtyFlag& _0);
-		uint32_t GetFirmwareVersion(nn::settings::system::FirmwareVersion * _0, unsigned int _0_size);
-		uint32_t GetFirmwareVersion2(nn::settings::system::FirmwareVersion * _0, unsigned int _0_size);
+		uint32_t GetFirmwareVersion(nn::settings::system::FirmwareVersion *& _0, unsigned int _0_size);
+		uint32_t GetFirmwareVersion2(nn::settings::system::FirmwareVersion *& _0, unsigned int _0_size);
 		uint32_t GetHeadphoneVolumeUpdateFlag(bool& _0);
 		uint32_t GetHeadphoneVolumeWarningCount(int32_t& _0);
 		uint32_t GetInRepairProcessEnableFlag(bool& _0);
@@ -34878,11 +34878,11 @@ namespace nn::settings {
 		uint32_t GetLdnChannel(int32_t& _0);
 		uint32_t GetLockScreenFlag(bool& _0);
 		uint32_t GetMiiAuthorId(nn::util::Uuid& _0);
-		uint32_t GetNetworkSettings(int32_t& _0, nn::settings::system::NetworkSettings * _1, unsigned int _1_size);
+		uint32_t GetNetworkSettings(int32_t& _0, nn::settings::system::NetworkSettings *& _1, unsigned int _1_size);
 		uint32_t GetNetworkSystemClockContext(nn::time::SystemClockContext& _0);
 		uint32_t GetNfcEnableFlag(bool& _0);
 		uint32_t GetNotificationSettings(nn::settings::system::NotificationSettings& _0);
-		uint32_t GetNxControllerSettings(int32_t& _0, nn::settings::system::NxControllerSettings * _1, unsigned int _1_size);
+		uint32_t GetNxControllerSettings(int32_t& _0, nn::settings::system::NxControllerSettings *& _1, unsigned int _1_size);
 		uint32_t GetOverlayDispProgramId(nn::ncm::ProgramId& _0);
 		uint32_t GetPrimaryAlbumStorage(int32_t& _0);
 		uint32_t GetProductModel(int32_t& _0);
@@ -34891,7 +34891,7 @@ namespace nn::settings {
 		uint32_t GetPushNotificationActivityModeOnSleep(int32_t& _0);
 		uint32_t GetQuestFlag(bool& _0);
 		uint32_t GetSerialNumber(nn::settings::system::SerialNumber& _0);
-		uint32_t GetSettingsItemValue(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::SettingsItemKey * _1, unsigned int _1_size, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t GetSettingsItemValue(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::SettingsItemKey * _1, unsigned int _1_size, uint64_t& _2, uint8_t *& _3, unsigned int _3_size);
 		uint32_t GetSettingsItemValueSize(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::SettingsItemKey * _1, unsigned int _1_size, uint64_t& _2);
 		uint32_t GetShutdownRtcValue(int64_t& _0);
 		uint32_t GetSleepSettings(nn::settings::system::SleepSettings& _0);
@@ -34901,7 +34901,7 @@ namespace nn::settings {
 		uint32_t GetUsbFullKeyEnableFlag(bool& _0);
 		uint32_t GetUserSystemClockContext(nn::time::SystemClockContext& _0);
 		uint32_t GetVibrationMasterVolume(float& _0);
-		uint32_t GetWirelessCertificationFile(uint64_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetWirelessCertificationFile(uint64_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t GetWirelessCertificationFileSize(uint64_t& _0);
 		uint32_t GetWirelessLanEnableFlag(bool& _0);
 		uint32_t IsForceMuteOnHeadphoneRemoved(bool& _0);
@@ -34981,7 +34981,7 @@ uint32_t nn::settings::IFactorySettingsServer::GetConfigurationId1(nn::settings:
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetConfigurationId1\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetEciDeviceCertificate(nn::settings::factory::EccB233DeviceCertificate * _0, unsigned int _0_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetEciDeviceCertificate(nn::settings::factory::EccB233DeviceCertificate *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetEciDeviceCertificate\n");
 	return 0;
 }
@@ -34989,19 +34989,19 @@ uint32_t nn::settings::IFactorySettingsServer::GetEciDeviceKey(nn::settings::fac
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetEciDeviceKey\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetEticketDeviceCertificate(nn::settings::factory::Rsa2048DeviceCertificate * _0, unsigned int _0_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetEticketDeviceCertificate(nn::settings::factory::Rsa2048DeviceCertificate *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetEticketDeviceCertificate\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetEticketDeviceKey(nn::settings::factory::Rsa2048DeviceKey * _0, unsigned int _0_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetEticketDeviceKey(nn::settings::factory::Rsa2048DeviceKey *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetEticketDeviceKey\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetGameCardCertificate(nn::settings::factory::GameCardCertificate * _0, unsigned int _0_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetGameCardCertificate(nn::settings::factory::GameCardCertificate *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetGameCardCertificate\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetGameCardKey(nn::settings::factory::GameCardKey * _0, unsigned int _0_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetGameCardKey(nn::settings::factory::GameCardKey *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetGameCardKey\n");
 	return 0;
 }
@@ -35021,11 +35021,11 @@ uint32_t nn::settings::IFactorySettingsServer::GetSpeakerParameter(nn::settings:
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetSpeakerParameter\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetSslCertificate(nn::settings::factory::SslCertificate * _0, unsigned int _0_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetSslCertificate(nn::settings::factory::SslCertificate *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetSslCertificate\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetSslKey(nn::settings::factory::SslKey * _0, unsigned int _0_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetSslKey(nn::settings::factory::SslKey *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetSslKey\n");
 	return 0;
 }
@@ -35033,7 +35033,7 @@ uint32_t nn::settings::IFactorySettingsServer::GetWirelessLanCountryCodeCount(in
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetWirelessLanCountryCodeCount\n");
 	return 0;
 }
-uint32_t nn::settings::IFactorySettingsServer::GetWirelessLanCountryCodes(int32_t& _0, nn::settings::factory::CountryCode * _1, unsigned int _1_size) {
+uint32_t nn::settings::IFactorySettingsServer::GetWirelessLanCountryCodes(int32_t& _0, nn::settings::factory::CountryCode *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::GetWirelessLanCountryCodes\n");
 	return 0;
 }
@@ -35049,7 +35049,7 @@ uint32_t nn::settings::IFactorySettingsServer::SetOverlayDispProgramId(nn::ncm::
 	ns_print("Stub implementation for nn::settings::IFactorySettingsServer::SetOverlayDispProgramId\n");
 	return 0;
 }
-uint32_t nn::settings::IFirmwareDebugSettingsServer::CreateSettingsItemKeyIterator(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::ISettingsItemKeyIterator* _1) {
+uint32_t nn::settings::IFirmwareDebugSettingsServer::CreateSettingsItemKeyIterator(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::ISettingsItemKeyIterator*& _1) {
 	ns_print("Stub implementation for nn::settings::IFirmwareDebugSettingsServer::CreateSettingsItemKeyIterator\n");
 	return 0;
 }
@@ -35061,7 +35061,7 @@ uint32_t nn::settings::IFirmwareDebugSettingsServer::SetSettingsItemValue(nn::se
 	ns_print("Stub implementation for nn::settings::IFirmwareDebugSettingsServer::SetSettingsItemValue\n");
 	return 0;
 }
-uint32_t nn::settings::ISettingsItemKeyIterator::GetKey(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISettingsItemKeyIterator::GetKey(uint64_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISettingsItemKeyIterator::GetKey\n");
 	return 0;
 }
@@ -35077,7 +35077,7 @@ uint32_t nn::settings::ISettingsServer::GetAvailableLanguageCodeCount(int32_t& _
 	ns_print("Stub implementation for nn::settings::ISettingsServer::GetAvailableLanguageCodeCount\n");
 	return 0;
 }
-uint32_t nn::settings::ISettingsServer::GetAvailableLanguageCodes(int32_t& _0, nn::settings::LanguageCode * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISettingsServer::GetAvailableLanguageCodes(int32_t& _0, nn::settings::LanguageCode *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISettingsServer::GetAvailableLanguageCodes\n");
 	return 0;
 }
@@ -35089,15 +35089,15 @@ uint32_t nn::settings::ISettingsServer::GetRegionCode(int32_t& _0) {
 	ns_print("Stub implementation for nn::settings::ISettingsServer::GetRegionCode\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::AcquireFatalDirtyFlagEventHandle(IpcService* _0) {
+uint32_t nn::settings::ISystemSettingsServer::AcquireFatalDirtyFlagEventHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::AcquireFatalDirtyFlagEventHandle\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::AcquireTelemetryDirtyFlagEventHandle(IpcService* _0) {
+uint32_t nn::settings::ISystemSettingsServer::AcquireTelemetryDirtyFlagEventHandle(IpcService*& _0) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::AcquireTelemetryDirtyFlagEventHandle\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetAccountNotificationSettings(int32_t& _0, nn::settings::system::AccountNotificationSettings * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetAccountNotificationSettings(int32_t& _0, nn::settings::system::AccountNotificationSettings *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetAccountNotificationSettings\n");
 	return 0;
 }
@@ -35145,7 +35145,7 @@ uint32_t nn::settings::ISystemSettingsServer::GetBluetoothBoostEnableFlag(bool& 
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetBluetoothBoostEnableFlag\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetBluetoothDevicesSettings(int32_t& _0, nn::settings::system::BluetoothDevicesSettings * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetBluetoothDevicesSettings(int32_t& _0, nn::settings::system::BluetoothDevicesSettings *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetBluetoothDevicesSettings\n");
 	return 0;
 }
@@ -35169,7 +35169,7 @@ uint32_t nn::settings::ISystemSettingsServer::GetDebugModeFlag(bool& _0) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetDebugModeFlag\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetDeviceNickName(nn::settings::system::DeviceNickName * _0, unsigned int _0_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetDeviceNickName(nn::settings::system::DeviceNickName *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetDeviceNickName\n");
 	return 0;
 }
@@ -35177,11 +35177,11 @@ uint32_t nn::settings::ISystemSettingsServer::GetDeviceTimeZoneLocationName(nn::
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetDeviceTimeZoneLocationName\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetEdid(nn::settings::system::Edid * _0, unsigned int _0_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetEdid(nn::settings::system::Edid *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetEdid\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetEulaVersions(int32_t& _0, nn::settings::system::EulaVersion * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetEulaVersions(int32_t& _0, nn::settings::system::EulaVersion *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetEulaVersions\n");
 	return 0;
 }
@@ -35201,11 +35201,11 @@ uint32_t nn::settings::ISystemSettingsServer::GetFatalDirtyFlags(nn::settings::s
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetFatalDirtyFlags\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetFirmwareVersion(nn::settings::system::FirmwareVersion * _0, unsigned int _0_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetFirmwareVersion(nn::settings::system::FirmwareVersion *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetFirmwareVersion\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetFirmwareVersion2(nn::settings::system::FirmwareVersion * _0, unsigned int _0_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetFirmwareVersion2(nn::settings::system::FirmwareVersion *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetFirmwareVersion2\n");
 	return 0;
 }
@@ -35241,7 +35241,7 @@ uint32_t nn::settings::ISystemSettingsServer::GetMiiAuthorId(nn::util::Uuid& _0)
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetMiiAuthorId\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetNetworkSettings(int32_t& _0, nn::settings::system::NetworkSettings * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetNetworkSettings(int32_t& _0, nn::settings::system::NetworkSettings *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetNetworkSettings\n");
 	return 0;
 }
@@ -35257,7 +35257,7 @@ uint32_t nn::settings::ISystemSettingsServer::GetNotificationSettings(nn::settin
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetNotificationSettings\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetNxControllerSettings(int32_t& _0, nn::settings::system::NxControllerSettings * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetNxControllerSettings(int32_t& _0, nn::settings::system::NxControllerSettings *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetNxControllerSettings\n");
 	return 0;
 }
@@ -35293,7 +35293,7 @@ uint32_t nn::settings::ISystemSettingsServer::GetSerialNumber(nn::settings::syst
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetSerialNumber\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetSettingsItemValue(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::SettingsItemKey * _1, unsigned int _1_size, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetSettingsItemValue(nn::settings::SettingsName * _0, unsigned int _0_size, nn::settings::SettingsItemKey * _1, unsigned int _1_size, uint64_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetSettingsItemValue\n");
 	return 0;
 }
@@ -35333,7 +35333,7 @@ uint32_t nn::settings::ISystemSettingsServer::GetVibrationMasterVolume(float& _0
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetVibrationMasterVolume\n");
 	return 0;
 }
-uint32_t nn::settings::ISystemSettingsServer::GetWirelessCertificationFile(uint64_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::settings::ISystemSettingsServer::GetWirelessCertificationFile(uint64_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::settings::ISystemSettingsServer::GetWirelessCertificationFile\n");
 	return 0;
 }
@@ -35572,16 +35572,16 @@ namespace nn::sm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::sm::detail::IManagerInterface::Unknown0: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2, temp5);
-				resp->error_code = Unknown0(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = Unknown0(req->GetData<uint64_t>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 1: {
@@ -35637,8 +35637,8 @@ namespace nn::sm::detail {
 			}
 		}
 		uint32_t Unknown0(uint64_t _0, uint64_t _1);
-		uint32_t Unknown1(uint64_t _0, IpcService* _1);
-		uint32_t Unknown2(uint64_t _0, uint8_t _1, uint32_t _2, IpcService* _3);
+		uint32_t Unknown1(uint64_t _0, IpcService*& _1);
+		uint32_t Unknown2(uint64_t _0, uint8_t _1, uint32_t _2, IpcService*& _3);
 		uint32_t Unknown3(uint64_t _0);
 	};
 }
@@ -35655,11 +35655,11 @@ uint32_t nn::sm::detail::IUserInterface::Unknown0(uint64_t _0, uint64_t _1) {
 	ns_print("Stub implementation for nn::sm::detail::IUserInterface::Unknown0\n");
 	return 0;
 }
-uint32_t nn::sm::detail::IUserInterface::Unknown1(uint64_t _0, IpcService* _1) {
+uint32_t nn::sm::detail::IUserInterface::Unknown1(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::sm::detail::IUserInterface::Unknown1\n");
 	return 0;
 }
-uint32_t nn::sm::detail::IUserInterface::Unknown2(uint64_t _0, uint8_t _1, uint32_t _2, IpcService* _3) {
+uint32_t nn::sm::detail::IUserInterface::Unknown2(uint64_t _0, uint8_t _1, uint32_t _2, IpcService*& _3) {
 	ns_print("Stub implementation for nn::sm::detail::IUserInterface::Unknown2\n");
 	return 0;
 }
@@ -35678,123 +35678,123 @@ namespace nn::socket::resolver {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::socket::resolver::IResolver::SetDnsAddressesPrivate: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = SetDnsAddressesPrivate(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetDnsAddressesPrivate(req->GetData<uint32_t>(8), temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::resolver::IResolver::GetDnsAddressPrivate: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = GetDnsAddressPrivate(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetDnsAddressPrivate(req->GetData<uint32_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::socket::resolver::IResolver::GetHostByName: uint8_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = GetHostByName(req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetHostByName(req->GetData<uint8_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::socket::resolver::IResolver::GetHostByAddr: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), temp2);
-				resp->error_code = GetHostByAddr(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetHostByAddr(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), req->pid, temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::resolver::IResolver::GetHostStringError: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = GetHostStringError(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetHostStringError(req->GetData<uint32_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 5: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::resolver::IResolver::GetGaiStringError: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = GetGaiStringError(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetGaiStringError(req->GetData<uint32_t>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				int8_t* temp6 = (int8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(5, 2, temp8);
-				auto temp9 = new uint8_t[temp8];
-				ARMv8::ReadBytes(temp7, temp9, temp8);
+				packed_addrinfo* temp9 = (packed_addrinfo *) new uint8_t[temp8];
+				ARMv8::ReadBytes(temp7, (uint8_t *)temp9, temp8);
 				unsigned int temp11;
 				auto temp10 = req->GetBuffer(6, 0, temp11);
-				auto temp12 = new uint8_t[temp11];
+				packed_addrinfo* temp12 = (packed_addrinfo *) new uint8_t[temp11];
 				ns_print("IPC message to nn::socket::resolver::IResolver::GetAddrInfo: bool enable_nsd_resolve = 0x%x, uint32_t = 0x%x, uint64_t pid_placeholder = 0x%%lx, int8_t *host = buffer<0x%lx>, int8_t *service = buffer<0x%lx>, packed_addrinfo *hints = buffer<0x%lx>\n", req->GetData<bool>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2, temp5, temp8);
-				resp->error_code = GetAddrInfo(req->GetData<bool>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (int8_t *) temp3, temp2, (int8_t *) temp6, temp5, (packed_addrinfo *) temp9, temp8, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (packed_addrinfo *) temp12, temp11);
-				delete[] temp3;
-				delete[] temp6;
-				delete[] temp9;
-				ARMv8::WriteBytes(temp10, temp12, temp11);
-				delete[] temp12;
+				resp->error_code = GetAddrInfo(req->GetData<bool>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2, temp6, temp5, temp9, temp8, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp12, temp11);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				delete[] (uint8_t *) temp9;
+				ARMv8::WriteBytes(temp10, (uint8_t *) temp12, temp11);
+				delete[] (uint8_t *)temp12;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(6, 1, temp8);
-				auto temp9 = new uint8_t[temp8];
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
 				ns_print("IPC message to nn::socket::resolver::IResolver::GetNameInfo: uint32_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), temp2);
-				resp->error_code = GetNameInfo(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
-				ARMv8::WriteBytes(temp7, temp9, temp8);
-				delete[] temp9;
+				resp->error_code = GetNameInfo(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint64_t>(0x10), req->pid, temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp6, temp5, temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
+				ARMv8::WriteBytes(temp7, (uint8_t *) temp9, temp8);
+				delete[] (uint8_t *)temp9;
 				return 0;
 			}
 			case 8: {
@@ -35814,13 +35814,13 @@ namespace nn::socket::resolver {
 			}
 		}
 		uint32_t CancelSocketCall(uint32_t _0, uint64_t _1, uint64_t _2);
-		uint32_t GetAddrInfo(bool enable_nsd_resolve, uint32_t _1, uint64_t pid_placeholder, uint64_t _3, int8_t * host, unsigned int host_size, int8_t * service, unsigned int service_size, packed_addrinfo * hints, unsigned int hints_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& packed_addrinfo_size, packed_addrinfo * response, unsigned int response_size);
-		uint32_t GetDnsAddressPrivate(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetGaiStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetHostByAddr(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size);
-		uint32_t GetHostByName(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t * _8, unsigned int _8_size);
-		uint32_t GetHostStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size);
-		uint32_t GetNameInfo(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size);
+		uint32_t GetAddrInfo(bool enable_nsd_resolve, uint32_t _1, uint64_t pid_placeholder, uint64_t _3, int8_t * host, unsigned int host_size, int8_t * service, unsigned int service_size, packed_addrinfo * hints, unsigned int hints_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& packed_addrinfo_size, packed_addrinfo *& response, unsigned int response_size);
+		uint32_t GetDnsAddressPrivate(uint32_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetGaiStringError(uint32_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetHostByAddr(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t *& _9, unsigned int _9_size);
+		uint32_t GetHostByName(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t *& _8, unsigned int _8_size);
+		uint32_t GetHostStringError(uint32_t _0, uint8_t *& _1, unsigned int _1_size);
+		uint32_t GetNameInfo(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t *& _7, unsigned int _7_size, uint8_t *& _8, unsigned int _8_size);
 		uint32_t RequestCancelHandle(uint64_t _0, uint64_t _1, uint32_t& _2);
 		uint32_t SetDnsAddressesPrivate(uint32_t _0, uint8_t * _1, unsigned int _1_size);
 	};
@@ -35830,31 +35830,31 @@ uint32_t nn::socket::resolver::IResolver::CancelSocketCall(uint32_t _0, uint64_t
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::CancelSocketCall\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::GetAddrInfo(bool enable_nsd_resolve, uint32_t _1, uint64_t pid_placeholder, uint64_t _3, int8_t * host, unsigned int host_size, int8_t * service, unsigned int service_size, packed_addrinfo * hints, unsigned int hints_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& packed_addrinfo_size, packed_addrinfo * response, unsigned int response_size) {
+uint32_t nn::socket::resolver::IResolver::GetAddrInfo(bool enable_nsd_resolve, uint32_t _1, uint64_t pid_placeholder, uint64_t _3, int8_t * host, unsigned int host_size, int8_t * service, unsigned int service_size, packed_addrinfo * hints, unsigned int hints_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& packed_addrinfo_size, packed_addrinfo *& response, unsigned int response_size) {
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetAddrInfo\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::GetDnsAddressPrivate(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::socket::resolver::IResolver::GetDnsAddressPrivate(uint32_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetDnsAddressPrivate\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::GetGaiStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::socket::resolver::IResolver::GetGaiStringError(uint32_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetGaiStringError\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::GetHostByAddr(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t * _9, unsigned int _9_size) {
+uint32_t nn::socket::resolver::IResolver::GetHostByAddr(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, uint64_t _4, uint8_t * _5, unsigned int _5_size, uint32_t& _6, uint32_t& _7, uint32_t& _8, uint8_t *& _9, unsigned int _9_size) {
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetHostByAddr\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::GetHostByName(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t * _8, unsigned int _8_size) {
+uint32_t nn::socket::resolver::IResolver::GetHostByName(uint8_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint32_t& _7, uint8_t *& _8, unsigned int _8_size) {
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetHostByName\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::GetHostStringError(uint32_t _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::socket::resolver::IResolver::GetHostStringError(uint32_t _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetHostStringError\n");
 	return 0;
 }
-uint32_t nn::socket::resolver::IResolver::GetNameInfo(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t * _7, unsigned int _7_size, uint8_t * _8, unsigned int _8_size) {
+uint32_t nn::socket::resolver::IResolver::GetNameInfo(uint32_t _0, uint32_t _1, uint64_t _2, uint64_t _3, uint8_t * _4, unsigned int _4_size, uint32_t& _5, uint32_t& _6, uint8_t *& _7, unsigned int _7_size, uint8_t *& _8, unsigned int _8_size) {
 	ns_print("Stub implementation for nn::socket::resolver::IResolver::GetNameInfo\n");
 	return 0;
 }
@@ -35901,204 +35901,204 @@ namespace nn::socket::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::socket::sf::IClient::Open: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Open(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
+				resp->error_code = Open(req->GetData<uint32_t>(8), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 5: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				fd_set* temp3 = (fd_set *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				fd_set* temp6 = (fd_set *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(0x21, 2, temp8);
-				auto temp9 = new uint8_t[temp8];
-				ARMv8::ReadBytes(temp7, temp9, temp8);
+				fd_set* temp9 = (fd_set *) new uint8_t[temp8];
+				ARMv8::ReadBytes(temp7, (uint8_t *)temp9, temp8);
 				unsigned int temp11;
 				auto temp10 = req->GetBuffer(0x22, 0, temp11);
-				auto temp12 = new uint8_t[temp11];
+				fd_set* temp12 = (fd_set *) new uint8_t[temp11];
 				unsigned int temp14;
 				auto temp13 = req->GetBuffer(0x22, 1, temp14);
-				auto temp15 = new uint8_t[temp14];
+				fd_set* temp15 = (fd_set *) new uint8_t[temp14];
 				unsigned int temp17;
 				auto temp16 = req->GetBuffer(0x22, 2, temp17);
-				auto temp18 = new uint8_t[temp17];
+				fd_set* temp18 = (fd_set *) new uint8_t[temp17];
 				ns_print("IPC message to nn::socket::sf::IClient::Select: uint32_t nfds = 0x%x, uint8_t[0x18] timeout = %s, fd_set *readfds_in = buffer<0x%lx>, fd_set *writefds_in = buffer<0x%lx>, fd_set *errorfds_in = buffer<0x%lx>\n", req->GetData<uint32_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x18).c_str(), temp2, temp5, temp8);
-				resp->error_code = Select(req->GetData<uint32_t>(8), req->GetDataPointer<uint8_t *>(0x10), (fd_set *) temp3, temp2, (fd_set *) temp6, temp5, (fd_set *) temp9, temp8, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (fd_set *) temp12, temp11, (fd_set *) temp15, temp14, (fd_set *) temp18, temp17);
-				delete[] temp3;
-				delete[] temp6;
-				delete[] temp9;
-				ARMv8::WriteBytes(temp10, temp12, temp11);
-				delete[] temp12;
-				ARMv8::WriteBytes(temp13, temp15, temp14);
-				delete[] temp15;
-				ARMv8::WriteBytes(temp16, temp18, temp17);
-				delete[] temp18;
+				resp->error_code = Select(req->GetData<uint32_t>(8), req->GetDataPointer<uint8_t *>(0x10), temp3, temp2, temp6, temp5, temp9, temp8, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp12, temp11, temp15, temp14, temp18, temp17);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				delete[] (uint8_t *) temp9;
+				ARMv8::WriteBytes(temp10, (uint8_t *) temp12, temp11);
+				delete[] (uint8_t *)temp12;
+				ARMv8::WriteBytes(temp13, (uint8_t *) temp15, temp14);
+				delete[] (uint8_t *)temp15;
+				ARMv8::WriteBytes(temp16, (uint8_t *) temp18, temp17);
+				delete[] (uint8_t *)temp18;
 				return 0;
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x22, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::socket::sf::IClient::Poll: uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2);
-				resp->error_code = Poll(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (uint8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Poll(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(0x22, 0, temp8);
-				auto temp9 = new uint8_t[temp8];
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
 				ns_print("IPC message to nn::socket::sf::IClient::Sysctl: uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = Sysctl((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp9, temp8);
-				delete[] temp3;
-				delete[] temp6;
-				ARMv8::WriteBytes(temp7, temp9, temp8);
-				delete[] temp9;
+				resp->error_code = Sysctl(temp3, temp2, temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp9, temp8);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				ARMv8::WriteBytes(temp7, (uint8_t *) temp9, temp8);
+				delete[] (uint8_t *)temp9;
 				return 0;
 			}
 			case 8: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::Recv: uint32_t socket = 0x%x, uint32_t flags = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Recv(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Recv(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x22, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
+				sockaddr* temp6 = (sockaddr *) new uint8_t[temp5];
 				ns_print("IPC message to nn::socket::sf::IClient::RecvFrom: uint32_t sock = 0x%x, uint32_t flags = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = RecvFrom(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (int8_t *) temp3, temp2, (sockaddr *) temp6, temp5);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = RecvFrom(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp3, temp2, temp6, temp5);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::socket::sf::IClient::Send: uint32_t socket = 0x%x, uint32_t flags = 0x%x, int8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2);
-				resp->error_code = Send(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (int8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
+				resp->error_code = Send(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				sockaddr* temp6 = (sockaddr *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::socket::sf::IClient::SendTo: uint32_t socket = 0x%x, uint32_t flags = 0x%x, int8_t *= buffer<0x%lx>, sockaddr *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2, temp5);
-				resp->error_code = SendTo(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (int8_t *) temp3, temp2, (sockaddr *) temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SendTo(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp3, temp2, temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 12: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				sockaddr* temp3 = (sockaddr *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::Accept: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Accept(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (sockaddr *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Accept(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 13: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				sockaddr* temp3 = (sockaddr *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::socket::sf::IClient::Bind: uint32_t socket = 0x%x, sockaddr *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Bind(req->GetData<uint32_t>(8), (sockaddr *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
+				resp->error_code = Bind(req->GetData<uint32_t>(8), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 14: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				sockaddr* temp3 = (sockaddr *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::socket::sf::IClient::Connect: uint32_t socket = 0x%x, sockaddr *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Connect(req->GetData<uint32_t>(8), (sockaddr *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
+				resp->error_code = Connect(req->GetData<uint32_t>(8), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 15: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				sockaddr* temp3 = (sockaddr *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::GetPeerName: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = GetPeerName(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (sockaddr *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetPeerName(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 16: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				sockaddr* temp3 = (sockaddr *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::GetSockName: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = GetSockName(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (sockaddr *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetSockName(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 17: {
 				resp->GenBuf(0, 0, 12);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::GetSockOpt: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10));
-				resp->error_code = GetSockOpt(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetSockOpt(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), *resp->GetDataPointer<uint32_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 18: {
@@ -36111,46 +36111,46 @@ namespace nn::socket::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				unsigned int temp8;
 				auto temp7 = req->GetBuffer(0x21, 2, temp8);
-				auto temp9 = new uint8_t[temp8];
-				ARMv8::ReadBytes(temp7, temp9, temp8);
+				uint8_t* temp9 = (uint8_t *) new uint8_t[temp8];
+				ARMv8::ReadBytes(temp7, (uint8_t *)temp9, temp8);
 				unsigned int temp11;
 				auto temp10 = req->GetBuffer(0x21, 3, temp11);
-				auto temp12 = new uint8_t[temp11];
-				ARMv8::ReadBytes(temp10, temp12, temp11);
+				uint8_t* temp12 = (uint8_t *) new uint8_t[temp11];
+				ARMv8::ReadBytes(temp10, (uint8_t *)temp12, temp11);
 				unsigned int temp14;
 				auto temp13 = req->GetBuffer(0x22, 0, temp14);
-				auto temp15 = new uint8_t[temp14];
+				uint8_t* temp15 = (uint8_t *) new uint8_t[temp14];
 				unsigned int temp17;
 				auto temp16 = req->GetBuffer(0x22, 1, temp17);
-				auto temp18 = new uint8_t[temp17];
+				uint8_t* temp18 = (uint8_t *) new uint8_t[temp17];
 				unsigned int temp20;
 				auto temp19 = req->GetBuffer(0x22, 2, temp20);
-				auto temp21 = new uint8_t[temp20];
+				uint8_t* temp21 = (uint8_t *) new uint8_t[temp20];
 				unsigned int temp23;
 				auto temp22 = req->GetBuffer(0x22, 3, temp23);
-				auto temp24 = new uint8_t[temp23];
+				uint8_t* temp24 = (uint8_t *) new uint8_t[temp23];
 				ns_print("IPC message to nn::socket::sf::IClient::Ioctl: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2, temp5, temp8, temp11);
-				resp->error_code = Ioctl(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, (uint8_t *) temp9, temp8, (uint8_t *) temp12, temp11, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp15, temp14, (uint8_t *) temp18, temp17, (uint8_t *) temp21, temp20, (uint8_t *) temp24, temp23);
-				delete[] temp3;
-				delete[] temp6;
-				delete[] temp9;
-				delete[] temp12;
-				ARMv8::WriteBytes(temp13, temp15, temp14);
-				delete[] temp15;
-				ARMv8::WriteBytes(temp16, temp18, temp17);
-				delete[] temp18;
-				ARMv8::WriteBytes(temp19, temp21, temp20);
-				delete[] temp21;
-				ARMv8::WriteBytes(temp22, temp24, temp23);
-				delete[] temp24;
+				resp->error_code = Ioctl(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp3, temp2, temp6, temp5, temp9, temp8, temp12, temp11, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp15, temp14, temp18, temp17, temp21, temp20, temp24, temp23);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
+				delete[] (uint8_t *) temp9;
+				delete[] (uint8_t *) temp12;
+				ARMv8::WriteBytes(temp13, (uint8_t *) temp15, temp14);
+				delete[] (uint8_t *)temp15;
+				ARMv8::WriteBytes(temp16, (uint8_t *) temp18, temp17);
+				delete[] (uint8_t *)temp18;
+				ARMv8::WriteBytes(temp19, (uint8_t *) temp21, temp20);
+				delete[] (uint8_t *)temp21;
+				ARMv8::WriteBytes(temp22, (uint8_t *) temp24, temp23);
+				delete[] (uint8_t *)temp24;
 				return 0;
 			}
 			case 20: {
@@ -36163,11 +36163,11 @@ namespace nn::socket::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::socket::sf::IClient::SetSockOpt: uint32_t socket = 0x%x, uint32_t level = 0x%x, uint32_t option_name = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = SetSockOpt(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
+				resp->error_code = SetSockOpt(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 22: {
@@ -36186,22 +36186,22 @@ namespace nn::socket::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::socket::sf::IClient::Write: uint32_t socket = 0x%x, int8_t *message = buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Write(req->GetData<uint32_t>(8), (int8_t *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
+				resp->error_code = Write(req->GetData<uint32_t>(8), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 25: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				int8_t* temp3 = (int8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::Read: uint32_t socket = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Read(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (int8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(req->GetData<uint32_t>(8), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 26: {
@@ -36220,64 +36220,64 @@ namespace nn::socket::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::GetResourceStatistics: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = GetResourceStatistics(req->GetData<uint64_t>(8), req->pid, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetResourceStatistics(req->GetData<uint64_t>(8), req->pid, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 29: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::socket::sf::IClient::RecvMMsg: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint128_t = %s\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), read_string(req->GetDataPointer<uint8_t *>(0x18), 0x10).c_str());
-				resp->error_code = RecvMMsg(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint128_t>(0x18), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = RecvMMsg(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint128_t>(0x18), *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 30: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::socket::sf::IClient::SendMMsg: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2, temp5);
-				resp->error_code = SendMMsg(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = SendMMsg(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp3, temp2, temp6, temp5, *resp->GetDataPointer<int32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc));
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::socket::sf::IClient", req->cmd_id);
 			}
 		}
-		uint32_t Accept(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size);
+		uint32_t Accept(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr *& addr, unsigned int addr_size);
 		uint32_t Bind(uint32_t socket, sockaddr * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t Close(uint32_t socket, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t Connect(uint32_t socket, sockaddr * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t DuplicateSocket(uint32_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t Fcntl(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno);
-		uint32_t GetPeerName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size);
-		uint32_t GetResourceStatistics(uint64_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno, uint8_t * _4, unsigned int _4_size);
-		uint32_t GetSockName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size);
-		uint32_t GetSockOpt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno, uint32_t& _5, uint8_t * _6, unsigned int _6_size);
-		uint32_t Ioctl(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _9, unsigned int _9_size, uint8_t * _10, unsigned int _10_size, uint8_t * _11, unsigned int _11_size, uint8_t * _12, unsigned int _12_size);
+		uint32_t GetPeerName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr *& addr, unsigned int addr_size);
+		uint32_t GetResourceStatistics(uint64_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _4, unsigned int _4_size);
+		uint32_t GetSockName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr *& addr, unsigned int addr_size);
+		uint32_t GetSockOpt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno, uint32_t& _5, uint8_t *& _6, unsigned int _6_size);
+		uint32_t Ioctl(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _9, unsigned int _9_size, uint8_t *& _10, unsigned int _10_size, uint8_t *& _11, unsigned int _11_size, uint8_t *& _12, unsigned int _12_size);
 		uint32_t Listen(uint32_t socket, uint32_t backlog, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t Open(uint32_t _0, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno);
-		uint32_t Poll(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _5, unsigned int _5_size);
-		uint32_t Read(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, int8_t * message, unsigned int message_size);
-		uint32_t Recv(uint32_t socket, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, int8_t * message, unsigned int message_size);
-		uint32_t RecvFrom(uint32_t sock, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, int8_t * message, unsigned int message_size, sockaddr * _6, unsigned int _6_size);
-		uint32_t RecvMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, int32_t& ret, uint32_t& bsd_errno, uint8_t * _6, unsigned int _6_size);
+		uint32_t Poll(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _5, unsigned int _5_size);
+		uint32_t Read(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, int8_t *& message, unsigned int message_size);
+		uint32_t Recv(uint32_t socket, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, int8_t *& message, unsigned int message_size);
+		uint32_t RecvFrom(uint32_t sock, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, int8_t *& message, unsigned int message_size, sockaddr *& _6, unsigned int _6_size);
+		uint32_t RecvMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _6, unsigned int _6_size);
 		uint32_t RegisterClient(uint64_t _0, uint64_t _1, uint64_t _2, uint64_t _3, uint64_t pid, uint64_t transferMemorySize, uint64_t _6, IpcService* _7, uint32_t& bsd_errno);
-		uint32_t Select(uint32_t nfds, uint8_t * timeout, fd_set * readfds_in, unsigned int readfds_in_size, fd_set * writefds_in, unsigned int writefds_in_size, fd_set * errorfds_in, unsigned int errorfds_in_size, int32_t& ret, uint32_t& bsd_errno, fd_set * readfds_out, unsigned int readfds_out_size, fd_set * writefds_out, unsigned int writefds_out_size, fd_set * errorfds_out, unsigned int errorfds_out_size);
+		uint32_t Select(uint32_t nfds, uint8_t * timeout, fd_set * readfds_in, unsigned int readfds_in_size, fd_set * writefds_in, unsigned int writefds_in_size, fd_set * errorfds_in, unsigned int errorfds_in_size, int32_t& ret, uint32_t& bsd_errno, fd_set *& readfds_out, unsigned int readfds_out_size, fd_set *& writefds_out, unsigned int writefds_out_size, fd_set *& errorfds_out, unsigned int errorfds_out_size);
 		uint32_t Send(uint32_t socket, uint32_t flags, int8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t SendMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t SendTo(uint32_t socket, uint32_t flags, int8_t * _2, unsigned int _2_size, sockaddr * _3, unsigned int _3_size, int32_t& ret, uint32_t& bsd_errno);
@@ -36287,7 +36287,7 @@ namespace nn::socket::sf {
 		uint32_t Socket(uint32_t domain, uint32_t type, uint32_t protocol, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t SocketExempt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno);
 		uint32_t StartMonitoring(uint64_t _0, uint64_t _1);
-		uint32_t Sysctl(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& _4, uint8_t * _5, unsigned int _5_size);
+		uint32_t Sysctl(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& _4, uint8_t *& _5, unsigned int _5_size);
 		uint32_t Write(uint32_t socket, int8_t * message, unsigned int message_size, int32_t& ret, uint32_t& bsd_errno);
 	};
 }
@@ -36300,19 +36300,19 @@ uint32_t nn::socket::sf::IClient::Fcntl(uint32_t _0, uint32_t _1, uint32_t _2, i
 	ns_print("Stub implementation for nn::socket::sf::IClient::Fcntl\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::GetPeerName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr * addr, unsigned int addr_size) {
+uint32_t nn::socket::sf::IClient::GetPeerName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, sockaddr *& addr, unsigned int addr_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::GetPeerName\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::GetResourceStatistics(uint64_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::socket::sf::IClient::GetResourceStatistics(uint64_t _0, uint64_t _1, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::GetResourceStatistics\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::GetSockOpt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno, uint32_t& _5, uint8_t * _6, unsigned int _6_size) {
+uint32_t nn::socket::sf::IClient::GetSockOpt(uint32_t _0, uint32_t _1, uint32_t _2, int32_t& ret, uint32_t& bsd_errno, uint32_t& _5, uint8_t *& _6, unsigned int _6_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::GetSockOpt\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Ioctl(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _9, unsigned int _9_size, uint8_t * _10, unsigned int _10_size, uint8_t * _11, unsigned int _11_size, uint8_t * _12, unsigned int _12_size) {
+uint32_t nn::socket::sf::IClient::Ioctl(uint32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint8_t * _5, unsigned int _5_size, uint8_t * _6, unsigned int _6_size, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _9, unsigned int _9_size, uint8_t *& _10, unsigned int _10_size, uint8_t *& _11, unsigned int _11_size, uint8_t *& _12, unsigned int _12_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::Ioctl\n");
 	return 0;
 }
@@ -36320,19 +36320,19 @@ uint32_t nn::socket::sf::IClient::Open(uint32_t _0, uint8_t * _1, unsigned int _
 	ns_print("Stub implementation for nn::socket::sf::IClient::Open\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Poll(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno, uint8_t * _5, unsigned int _5_size) {
+uint32_t nn::socket::sf::IClient::Poll(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _5, unsigned int _5_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::Poll\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Read(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, int8_t * message, unsigned int message_size) {
+uint32_t nn::socket::sf::IClient::Read(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, int8_t *& message, unsigned int message_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::Read\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::RecvFrom(uint32_t sock, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, int8_t * message, unsigned int message_size, sockaddr * _6, unsigned int _6_size) {
+uint32_t nn::socket::sf::IClient::RecvFrom(uint32_t sock, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, uint32_t& addrlen, int8_t *& message, unsigned int message_size, sockaddr *& _6, unsigned int _6_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::RecvFrom\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::RecvMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, int32_t& ret, uint32_t& bsd_errno, uint8_t * _6, unsigned int _6_size) {
+uint32_t nn::socket::sf::IClient::RecvMMsg(uint32_t _0, uint32_t _1, uint32_t _2, uint128_t _3, int32_t& ret, uint32_t& bsd_errno, uint8_t *& _6, unsigned int _6_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::RecvMMsg\n");
 	return 0;
 }
@@ -36340,7 +36340,7 @@ uint32_t nn::socket::sf::IClient::RegisterClient(uint64_t _0, uint64_t _1, uint6
 	ns_print("Stub implementation for nn::socket::sf::IClient::RegisterClient\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Select(uint32_t nfds, uint8_t * timeout, fd_set * readfds_in, unsigned int readfds_in_size, fd_set * writefds_in, unsigned int writefds_in_size, fd_set * errorfds_in, unsigned int errorfds_in_size, int32_t& ret, uint32_t& bsd_errno, fd_set * readfds_out, unsigned int readfds_out_size, fd_set * writefds_out, unsigned int writefds_out_size, fd_set * errorfds_out, unsigned int errorfds_out_size) {
+uint32_t nn::socket::sf::IClient::Select(uint32_t nfds, uint8_t * timeout, fd_set * readfds_in, unsigned int readfds_in_size, fd_set * writefds_in, unsigned int writefds_in_size, fd_set * errorfds_in, unsigned int errorfds_in_size, int32_t& ret, uint32_t& bsd_errno, fd_set *& readfds_out, unsigned int readfds_out_size, fd_set *& writefds_out, unsigned int writefds_out_size, fd_set *& errorfds_out, unsigned int errorfds_out_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::Select\n");
 	return 0;
 }
@@ -36360,7 +36360,7 @@ uint32_t nn::socket::sf::IClient::StartMonitoring(uint64_t _0, uint64_t _1) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::StartMonitoring\n");
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::Sysctl(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& _4, uint8_t * _5, unsigned int _5_size) {
+uint32_t nn::socket::sf::IClient::Sysctl(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, int32_t& ret, uint32_t& bsd_errno, uint32_t& _4, uint8_t *& _5, unsigned int _5_size) {
 	ns_print("Stub implementation for nn::socket::sf::IClient::Sysctl\n");
 	return 0;
 }
@@ -36542,7 +36542,7 @@ namespace nn::spl::detail {
 		uint32_t Unknown20();
 		uint32_t Unknown21(uint32_t& _0);
 		uint32_t Unknown22(uint32_t _0);
-		uint32_t Unknown23(IpcService* _0);
+		uint32_t Unknown23(IpcService*& _0);
 		uint32_t Unknown24();
 		uint32_t Unknown25();
 		uint32_t Unknown3();
@@ -36560,18 +36560,18 @@ namespace nn::spl::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::spl::detail::IRandomInterface::Unknown0\n");
-				resp->error_code = Unknown0((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::spl::detail::IRandomInterface", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown0(uint8_t *& _0, unsigned int _0_size);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -36639,7 +36639,7 @@ uint32_t nn::spl::detail::IGeneralInterface::Unknown22(uint32_t _0) {
 	ns_print("Stub implementation for nn::spl::detail::IGeneralInterface::Unknown22\n");
 	return 0;
 }
-uint32_t nn::spl::detail::IGeneralInterface::Unknown23(IpcService* _0) {
+uint32_t nn::spl::detail::IGeneralInterface::Unknown23(IpcService*& _0) {
 	ns_print("Stub implementation for nn::spl::detail::IGeneralInterface::Unknown23\n");
 	return 0;
 }
@@ -36671,7 +36671,7 @@ uint32_t nn::spl::detail::IGeneralInterface::Unknown9() {
 	ns_print("Stub implementation for nn::spl::detail::IGeneralInterface::Unknown9\n");
 	return 0;
 }
-uint32_t nn::spl::detail::IRandomInterface::Unknown0(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::spl::detail::IRandomInterface::Unknown0(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::spl::detail::IRandomInterface::Unknown0\n");
 	return 0;
 }
@@ -36740,11 +36740,11 @@ namespace nn::spsm::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::spsm::detail::IPowerStateInterface::Unknown8\n");
-				resp->error_code = Unknown8((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown8(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 9: {
@@ -36770,16 +36770,16 @@ namespace nn::spsm::detail {
 			}
 		}
 		uint32_t Unknown0(uint32_t& _0);
-		uint32_t Unknown1(IpcService* _0);
+		uint32_t Unknown1(IpcService*& _0);
 		uint32_t Unknown10();
 		uint32_t Unknown11(uint64_t _0);
 		uint32_t Unknown2(uint32_t& _0);
 		uint32_t Unknown3(uint8_t _0);
-		uint32_t Unknown4(IpcService* _0);
+		uint32_t Unknown4(IpcService*& _0);
 		uint32_t Unknown5(uint32_t& _0);
 		uint32_t Unknown6();
 		uint32_t Unknown7();
-		uint32_t Unknown8(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown8(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown9(uint64_t _0);
 	};
 }
@@ -36788,7 +36788,7 @@ uint32_t nn::spsm::detail::IPowerStateInterface::Unknown0(uint32_t& _0) {
 	ns_print("Stub implementation for nn::spsm::detail::IPowerStateInterface::Unknown0\n");
 	return 0;
 }
-uint32_t nn::spsm::detail::IPowerStateInterface::Unknown1(IpcService* _0) {
+uint32_t nn::spsm::detail::IPowerStateInterface::Unknown1(IpcService*& _0) {
 	ns_print("Stub implementation for nn::spsm::detail::IPowerStateInterface::Unknown1\n");
 	return 0;
 }
@@ -36808,7 +36808,7 @@ uint32_t nn::spsm::detail::IPowerStateInterface::Unknown3(uint8_t _0) {
 	ns_print("Stub implementation for nn::spsm::detail::IPowerStateInterface::Unknown3\n");
 	return 0;
 }
-uint32_t nn::spsm::detail::IPowerStateInterface::Unknown4(IpcService* _0) {
+uint32_t nn::spsm::detail::IPowerStateInterface::Unknown4(IpcService*& _0) {
 	ns_print("Stub implementation for nn::spsm::detail::IPowerStateInterface::Unknown4\n");
 	return 0;
 }
@@ -36824,7 +36824,7 @@ uint32_t nn::spsm::detail::IPowerStateInterface::Unknown7() {
 	ns_print("Stub implementation for nn::spsm::detail::IPowerStateInterface::Unknown7\n");
 	return 0;
 }
-uint32_t nn::spsm::detail::IPowerStateInterface::Unknown8(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::spsm::detail::IPowerStateInterface::Unknown8(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::spsm::detail::IPowerStateInterface::Unknown8\n");
 	return 0;
 }
@@ -36849,11 +36849,11 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ssl::sf::ISslConnection::SetHostName: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = SetHostName((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = SetHostName(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
@@ -36878,11 +36878,11 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ssl::sf::ISslConnection::GetHostName\n");
-				resp->error_code = GetHostName(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetHostName(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
@@ -36907,33 +36907,33 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ssl::sf::ISslConnection::DoHandshakeGetServerCert\n");
-				resp->error_code = DoHandshakeGetServerCert(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = DoHandshakeGetServerCert(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ssl::sf::ISslConnection::Read\n");
-				resp->error_code = Read(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Read(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 11: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ssl::sf::ISslConnection::Write: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Write((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
-				delete[] temp3;
+				resp->error_code = Write(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 12: {
@@ -36946,11 +36946,11 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ssl::sf::ISslConnection::Peek\n");
-				resp->error_code = Peek(*resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Peek(*resp->GetDataPointer<uint32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 14: {
@@ -37017,11 +37017,11 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::ssl::sf::ISslConnection::GetVerifyCertErrors\n");
-				resp->error_code = GetVerifyCertErrors(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetVerifyCertErrors(*resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint32_t *>(0xc), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -37029,9 +37029,9 @@ namespace nn::ssl::sf {
 			}
 		}
 		uint32_t DoHandshake();
-		uint32_t DoHandshakeGetServerCert(uint32_t& _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t DoHandshakeGetServerCert(uint32_t& _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t FlushSessionCache();
-		uint32_t GetHostName(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t GetHostName(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t GetIoMode(nn::ssl::sf::IoMode& _0);
 		uint32_t GetNeededServerCertBufferSize(uint32_t& _0);
 		uint32_t GetOption(nn::ssl::sf::OptionType _0, bool& _1);
@@ -37039,12 +37039,12 @@ namespace nn::ssl::sf {
 		uint32_t GetSessionCacheMode(nn::ssl::sf::SessionCacheMode& _0);
 		uint32_t GetSocketDescriptor(int32_t& _0);
 		uint32_t GetVerifyCertError();
-		uint32_t GetVerifyCertErrors(uint32_t& _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t GetVerifyCertErrors(uint32_t& _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t GetVerifyOption(nn::ssl::sf::VerifyOption& _0);
-		uint32_t Peek(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Peek(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t Pending(int32_t& _0);
 		uint32_t Poll(nn::ssl::sf::PollEvent _0, uint32_t _1, nn::ssl::sf::PollEvent& _2);
-		uint32_t Read(uint32_t& _0, uint8_t * _1, unsigned int _1_size);
+		uint32_t Read(uint32_t& _0, uint8_t *& _1, unsigned int _1_size);
 		uint32_t SetHostName(uint8_t * _0, unsigned int _0_size);
 		uint32_t SetIoMode(nn::ssl::sf::IoMode _0);
 		uint32_t SetOption(bool _0, nn::ssl::sf::OptionType _1);
@@ -37090,27 +37090,27 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ssl::sf::ISslContext::ImportServerPki: nn::ssl::sf::CertificateFormat = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<nn::ssl::sf::CertificateFormat>(8), temp2);
-				resp->error_code = ImportServerPki(req->GetData<nn::ssl::sf::CertificateFormat>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
-				delete[] temp3;
+				resp->error_code = ImportServerPki(req->GetData<nn::ssl::sf::CertificateFormat>(8), temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 5: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(5, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				ns_print("IPC message to nn::ssl::sf::ISslContext::ImportClientPki: uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", temp2, temp5);
-				resp->error_code = ImportClientPki((uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<uint64_t *>(8));
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = ImportClientPki(temp3, temp2, temp6, temp5, *resp->GetDataPointer<uint64_t *>(8));
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				return 0;
 			}
 			case 6: {
@@ -37135,22 +37135,22 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ssl::sf::ISslContext::AddPolicyOid: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = AddPolicyOid((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = AddPolicyOid(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 10: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ssl::sf::ISslContext::ImportCrl: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = ImportCrl((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
-				delete[] temp3;
+				resp->error_code = ImportCrl(temp3, temp2, *resp->GetDataPointer<uint64_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 11: {
@@ -37164,7 +37164,7 @@ namespace nn::ssl::sf {
 			}
 		}
 		uint32_t AddPolicyOid(uint8_t * _0, unsigned int _0_size);
-		uint32_t CreateConnection(nn::ssl::sf::ISslConnection* _0);
+		uint32_t CreateConnection(nn::ssl::sf::ISslConnection*& _0);
 		uint32_t GetConnectionCount(uint32_t& _0);
 		uint32_t GetOption(nn::ssl::sf::ContextOption _0, int32_t& _1);
 		uint32_t ImportClientPki(uint8_t * _0, unsigned int _0_size, uint8_t * _1, unsigned int _1_size, uint64_t& _2);
@@ -37200,43 +37200,43 @@ namespace nn::ssl::sf {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::ssl::sf::ISslService::GetCertificates: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = GetCertificates((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = GetCertificates(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 3: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::ssl::sf::ISslService::GetCertificateBufSize: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = GetCertificateBufSize((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
-				delete[] temp3;
+				resp->error_code = GetCertificateBufSize(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::ssl::sf::ISslService::DebugIoctl: uint64_t = 0x%%lx, uint8_t *= buffer<0x%lx>\n", req->GetData<uint64_t>(8), temp2);
-				resp->error_code = DebugIoctl(req->GetData<uint64_t>(8), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = DebugIoctl(req->GetData<uint64_t>(8), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 5: {
@@ -37249,10 +37249,10 @@ namespace nn::ssl::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::ssl::sf::ISslService", req->cmd_id);
 			}
 		}
-		uint32_t CreateContext(nn::ssl::sf::SslVersion _0, uint64_t _1, uint64_t _2, nn::ssl::sf::ISslContext* _3);
-		uint32_t DebugIoctl(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size);
+		uint32_t CreateContext(nn::ssl::sf::SslVersion _0, uint64_t _1, uint64_t _2, nn::ssl::sf::ISslContext*& _3);
+		uint32_t DebugIoctl(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size);
 		uint32_t GetCertificateBufSize(uint8_t * _0, unsigned int _0_size, uint32_t& _1);
-		uint32_t GetCertificates(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t GetCertificates(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t GetContextCount(uint32_t& _0);
 		uint32_t SetInterfaceVersion(uint32_t _0);
 	};
@@ -37262,7 +37262,7 @@ uint32_t nn::ssl::sf::ISslConnection::DoHandshake() {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::DoHandshake\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslConnection::DoHandshakeGetServerCert(uint32_t& _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::ssl::sf::ISslConnection::DoHandshakeGetServerCert(uint32_t& _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::DoHandshakeGetServerCert\n");
 	return 0;
 }
@@ -37270,7 +37270,7 @@ uint32_t nn::ssl::sf::ISslConnection::FlushSessionCache() {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::FlushSessionCache\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslConnection::GetHostName(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ssl::sf::ISslConnection::GetHostName(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::GetHostName\n");
 	return 0;
 }
@@ -37302,7 +37302,7 @@ uint32_t nn::ssl::sf::ISslConnection::GetVerifyCertError() {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::GetVerifyCertError\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslConnection::GetVerifyCertErrors(uint32_t& _0, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::ssl::sf::ISslConnection::GetVerifyCertErrors(uint32_t& _0, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::GetVerifyCertErrors\n");
 	return 0;
 }
@@ -37310,7 +37310,7 @@ uint32_t nn::ssl::sf::ISslConnection::GetVerifyOption(nn::ssl::sf::VerifyOption&
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::GetVerifyOption\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslConnection::Peek(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ssl::sf::ISslConnection::Peek(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::Peek\n");
 	return 0;
 }
@@ -37322,7 +37322,7 @@ uint32_t nn::ssl::sf::ISslConnection::Poll(nn::ssl::sf::PollEvent _0, uint32_t _
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::Poll\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslConnection::Read(uint32_t& _0, uint8_t * _1, unsigned int _1_size) {
+uint32_t nn::ssl::sf::ISslConnection::Read(uint32_t& _0, uint8_t *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslConnection::Read\n");
 	return 0;
 }
@@ -37362,7 +37362,7 @@ uint32_t nn::ssl::sf::ISslContext::AddPolicyOid(uint8_t * _0, unsigned int _0_si
 	ns_print("Stub implementation for nn::ssl::sf::ISslContext::AddPolicyOid\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslContext::CreateConnection(nn::ssl::sf::ISslConnection* _0) {
+uint32_t nn::ssl::sf::ISslContext::CreateConnection(nn::ssl::sf::ISslConnection*& _0) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslContext::CreateConnection\n");
 	return 0;
 }
@@ -37406,11 +37406,11 @@ uint32_t nn::ssl::sf::ISslContext::SetOption(nn::ssl::sf::ContextOption _0, int3
 	ns_print("Stub implementation for nn::ssl::sf::ISslContext::SetOption\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslService::CreateContext(nn::ssl::sf::SslVersion _0, uint64_t _1, uint64_t _2, nn::ssl::sf::ISslContext* _3) {
+uint32_t nn::ssl::sf::ISslService::CreateContext(nn::ssl::sf::SslVersion _0, uint64_t _1, uint64_t _2, nn::ssl::sf::ISslContext*& _3) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslService::CreateContext\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslService::DebugIoctl(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::ssl::sf::ISslService::DebugIoctl(uint64_t _0, uint8_t * _1, unsigned int _1_size, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslService::DebugIoctl\n");
 	return 0;
 }
@@ -37418,7 +37418,7 @@ uint32_t nn::ssl::sf::ISslService::GetCertificateBufSize(uint8_t * _0, unsigned 
 	ns_print("Stub implementation for nn::ssl::sf::ISslService::GetCertificateBufSize\n");
 	return 0;
 }
-uint32_t nn::ssl::sf::ISslService::GetCertificates(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::ssl::sf::ISslService::GetCertificates(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::ssl::sf::ISslService::GetCertificates\n");
 	return 0;
 }
@@ -37499,7 +37499,7 @@ namespace nn::tc {
 			}
 		}
 		uint32_t Unknown0(uint32_t _0);
-		uint32_t Unknown1(uint32_t _0, IpcService* _1);
+		uint32_t Unknown1(uint32_t _0, IpcService*& _1);
 		uint32_t Unknown2(uint32_t _0, uint8_t& _1);
 		uint32_t Unknown3(uint32_t _0);
 		uint32_t Unknown4(uint32_t _0);
@@ -37514,7 +37514,7 @@ uint32_t nn::tc::IManager::Unknown0(uint32_t _0) {
 	ns_print("Stub implementation for nn::tc::IManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::tc::IManager::Unknown1(uint32_t _0, IpcService* _1) {
+uint32_t nn::tc::IManager::Unknown1(uint32_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::tc::IManager::Unknown1\n");
 	return 0;
 }
@@ -37620,11 +37620,11 @@ namespace nn::timesrv::detail::service {
 				ns_abort("Unknown message cmdId %u to interface nn::timesrv::detail::service::IStaticService", req->cmd_id);
 			}
 		}
-		uint32_t GetStandardLocalSystemClock(nn::timesrv::detail::service::ISystemClock* _0);
-		uint32_t GetStandardNetworkSystemClock(nn::timesrv::detail::service::ISystemClock* _0);
-		uint32_t GetStandardSteadyClock(nn::timesrv::detail::service::ISteadyClock* _0);
-		uint32_t GetStandardUserSystemClock(nn::timesrv::detail::service::ISystemClock* _0);
-		uint32_t GetTimeZoneService(nn::timesrv::detail::service::ITimeZoneService* _0);
+		uint32_t GetStandardLocalSystemClock(nn::timesrv::detail::service::ISystemClock*& _0);
+		uint32_t GetStandardNetworkSystemClock(nn::timesrv::detail::service::ISystemClock*& _0);
+		uint32_t GetStandardSteadyClock(nn::timesrv::detail::service::ISteadyClock*& _0);
+		uint32_t GetStandardUserSystemClock(nn::timesrv::detail::service::ISystemClock*& _0);
+		uint32_t GetTimeZoneService(nn::timesrv::detail::service::ITimeZoneService*& _0);
 		uint32_t IsStandardNetworkSystemClockAccuracySufficient(bool& _0);
 		uint32_t IsStandardUserSystemClockAutomaticCorrectionEnabled(bool& _0);
 		uint32_t SetStandardUserSystemClockAutomaticCorrectionEnabled(bool _0);
@@ -37763,22 +37763,22 @@ namespace nn::timesrv::detail::service {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::time::LocationName* temp3 = (nn::time::LocationName *) new uint8_t[temp2];
 				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::LoadLocationNameList: int32_t = 0x%x\n", req->GetData<int32_t>(8));
-				resp->error_code = LoadLocationNameList(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), (nn::time::LocationName *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadLocationNameList(req->GetData<int32_t>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 4: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x16, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::time::TimeZoneRule* temp3 = (nn::time::TimeZoneRule *) new uint8_t[temp2];
 				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::LoadTimeZoneRule: nn::time::LocationName = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x24).c_str());
-				resp->error_code = LoadTimeZoneRule(req->GetDataPointer<nn::time::LocationName>(8), (nn::time::TimeZoneRule *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = LoadTimeZoneRule(req->GetDataPointer<nn::time::LocationName>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 5: {
@@ -37791,12 +37791,12 @@ namespace nn::timesrv::detail::service {
 				resp->GenBuf(0, 0, 32);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::time::TimeZoneRule* temp3 = (nn::time::TimeZoneRule *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				auto temp4 = resp->GetDataPointer<nn::time::sf::CalendarAdditionalInfo>(0x10);
 				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::ToCalendarTime: nn::time::PosixTime = 0x%%lx, nn::time::TimeZoneRule *= buffer<0x%lx>\n", req->GetData<nn::time::PosixTime>(8), temp2);
-				resp->error_code = ToCalendarTime(req->GetData<nn::time::PosixTime>(8), (nn::time::TimeZoneRule *) temp3, temp2, *resp->GetDataPointer<nn::time::CalendarTime *>(8), temp4);
-				delete[] temp3;
+				resp->error_code = ToCalendarTime(req->GetData<nn::time::PosixTime>(8), temp3, temp2, *resp->GetDataPointer<nn::time::CalendarTime *>(8), temp4);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 101: {
@@ -37810,27 +37810,27 @@ namespace nn::timesrv::detail::service {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x15, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				nn::time::TimeZoneRule* temp3 = (nn::time::TimeZoneRule *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0xa, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				nn::time::PosixTime* temp6 = (nn::time::PosixTime *) new uint8_t[temp5];
 				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::ToPosixTime: nn::time::CalendarTime = 0x%%lx, nn::time::TimeZoneRule *= buffer<0x%lx>\n", req->GetData<nn::time::CalendarTime>(8), temp2);
-				resp->error_code = ToPosixTime(req->GetData<nn::time::CalendarTime>(8), (nn::time::TimeZoneRule *) temp3, temp2, *resp->GetDataPointer<int32_t *>(8), (nn::time::PosixTime *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = ToPosixTime(req->GetData<nn::time::CalendarTime>(8), temp3, temp2, *resp->GetDataPointer<int32_t *>(8), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 202: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0xa, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::time::PosixTime* temp3 = (nn::time::PosixTime *) new uint8_t[temp2];
 				ns_print("IPC message to nn::timesrv::detail::service::ITimeZoneService::ToPosixTimeWithMyRule: nn::time::CalendarTime = 0x%%lx\n", req->GetData<nn::time::CalendarTime>(8));
-				resp->error_code = ToPosixTimeWithMyRule(req->GetData<nn::time::CalendarTime>(8), *resp->GetDataPointer<int32_t *>(8), (nn::time::PosixTime *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ToPosixTimeWithMyRule(req->GetData<nn::time::CalendarTime>(8), *resp->GetDataPointer<int32_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			default:
@@ -37840,33 +37840,33 @@ namespace nn::timesrv::detail::service {
 		uint32_t GetDeviceLocationName(nn::time::LocationName& _0);
 		uint32_t GetTimeZoneRuleVersion(nn::time::TimeZoneRuleVersion& _0);
 		uint32_t GetTotalLocationNameCount(int32_t& _0);
-		uint32_t LoadLocationNameList(int32_t _0, int32_t& _1, nn::time::LocationName * _2, unsigned int _2_size);
-		uint32_t LoadTimeZoneRule(nn::time::LocationName _0, nn::time::TimeZoneRule * _1, unsigned int _1_size);
+		uint32_t LoadLocationNameList(int32_t _0, int32_t& _1, nn::time::LocationName *& _2, unsigned int _2_size);
+		uint32_t LoadTimeZoneRule(nn::time::LocationName _0, nn::time::TimeZoneRule *& _1, unsigned int _1_size);
 		uint32_t SetDeviceLocationName(nn::time::LocationName _0);
 		uint32_t ToCalendarTime(nn::time::PosixTime _0, nn::time::TimeZoneRule * _1, unsigned int _1_size, nn::time::CalendarTime& _2, nn::time::sf::CalendarAdditionalInfo& _3);
 		uint32_t ToCalendarTimeWithMyRule(nn::time::PosixTime _0, nn::time::CalendarTime& _1, nn::time::sf::CalendarAdditionalInfo& _2);
-		uint32_t ToPosixTime(nn::time::CalendarTime _0, nn::time::TimeZoneRule * _1, unsigned int _1_size, int32_t& _2, nn::time::PosixTime * _3, unsigned int _3_size);
-		uint32_t ToPosixTimeWithMyRule(nn::time::CalendarTime _0, int32_t& _1, nn::time::PosixTime * _2, unsigned int _2_size);
+		uint32_t ToPosixTime(nn::time::CalendarTime _0, nn::time::TimeZoneRule * _1, unsigned int _1_size, int32_t& _2, nn::time::PosixTime *& _3, unsigned int _3_size);
+		uint32_t ToPosixTimeWithMyRule(nn::time::CalendarTime _0, int32_t& _1, nn::time::PosixTime *& _2, unsigned int _2_size);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::timesrv::detail::service::IStaticService::GetStandardLocalSystemClock(nn::timesrv::detail::service::ISystemClock* _0) {
+uint32_t nn::timesrv::detail::service::IStaticService::GetStandardLocalSystemClock(nn::timesrv::detail::service::ISystemClock*& _0) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::IStaticService::GetStandardLocalSystemClock\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::IStaticService::GetStandardNetworkSystemClock(nn::timesrv::detail::service::ISystemClock* _0) {
+uint32_t nn::timesrv::detail::service::IStaticService::GetStandardNetworkSystemClock(nn::timesrv::detail::service::ISystemClock*& _0) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::IStaticService::GetStandardNetworkSystemClock\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::IStaticService::GetStandardSteadyClock(nn::timesrv::detail::service::ISteadyClock* _0) {
+uint32_t nn::timesrv::detail::service::IStaticService::GetStandardSteadyClock(nn::timesrv::detail::service::ISteadyClock*& _0) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::IStaticService::GetStandardSteadyClock\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::IStaticService::GetStandardUserSystemClock(nn::timesrv::detail::service::ISystemClock* _0) {
+uint32_t nn::timesrv::detail::service::IStaticService::GetStandardUserSystemClock(nn::timesrv::detail::service::ISystemClock*& _0) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::IStaticService::GetStandardUserSystemClock\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::IStaticService::GetTimeZoneService(nn::timesrv::detail::service::ITimeZoneService* _0) {
+uint32_t nn::timesrv::detail::service::IStaticService::GetTimeZoneService(nn::timesrv::detail::service::ITimeZoneService*& _0) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::IStaticService::GetTimeZoneService\n");
 	return 0;
 }
@@ -37942,11 +37942,11 @@ uint32_t nn::timesrv::detail::service::ITimeZoneService::GetTotalLocationNameCou
 	ns_print("Stub implementation for nn::timesrv::detail::service::ITimeZoneService::GetTotalLocationNameCount\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::ITimeZoneService::LoadLocationNameList(int32_t _0, int32_t& _1, nn::time::LocationName * _2, unsigned int _2_size) {
+uint32_t nn::timesrv::detail::service::ITimeZoneService::LoadLocationNameList(int32_t _0, int32_t& _1, nn::time::LocationName *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::ITimeZoneService::LoadLocationNameList\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::ITimeZoneService::LoadTimeZoneRule(nn::time::LocationName _0, nn::time::TimeZoneRule * _1, unsigned int _1_size) {
+uint32_t nn::timesrv::detail::service::ITimeZoneService::LoadTimeZoneRule(nn::time::LocationName _0, nn::time::TimeZoneRule *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::ITimeZoneService::LoadTimeZoneRule\n");
 	return 0;
 }
@@ -37962,11 +37962,11 @@ uint32_t nn::timesrv::detail::service::ITimeZoneService::ToCalendarTimeWithMyRul
 	ns_print("Stub implementation for nn::timesrv::detail::service::ITimeZoneService::ToCalendarTimeWithMyRule\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::ITimeZoneService::ToPosixTime(nn::time::CalendarTime _0, nn::time::TimeZoneRule * _1, unsigned int _1_size, int32_t& _2, nn::time::PosixTime * _3, unsigned int _3_size) {
+uint32_t nn::timesrv::detail::service::ITimeZoneService::ToPosixTime(nn::time::CalendarTime _0, nn::time::TimeZoneRule * _1, unsigned int _1_size, int32_t& _2, nn::time::PosixTime *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::ITimeZoneService::ToPosixTime\n");
 	return 0;
 }
-uint32_t nn::timesrv::detail::service::ITimeZoneService::ToPosixTimeWithMyRule(nn::time::CalendarTime _0, int32_t& _1, nn::time::PosixTime * _2, unsigned int _2_size) {
+uint32_t nn::timesrv::detail::service::ITimeZoneService::ToPosixTimeWithMyRule(nn::time::CalendarTime _0, int32_t& _1, nn::time::PosixTime *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::timesrv::detail::service::ITimeZoneService::ToPosixTimeWithMyRule\n");
 	return 0;
 }
@@ -37981,27 +37981,27 @@ namespace nn::tma {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown0: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown0((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = Unknown0(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 1: {
 				resp->GenBuf(0, 0, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown1: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown1((uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
-				delete[] temp3;
+				resp->error_code = Unknown1(temp3, temp2, *resp->GetDataPointer<uint32_t *>(8));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 2: {
@@ -38044,22 +38044,22 @@ namespace nn::tma {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown6\n");
-				resp->error_code = Unknown6((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown6(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown7\n");
-				resp->error_code = Unknown7((uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown7(temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 8: {
@@ -38072,14 +38072,14 @@ namespace nn::tma {
 				ns_abort("Unknown message cmdId %u to interface nn::tma::IHtcManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size);
+		uint32_t Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size);
 		uint32_t Unknown1(uint8_t * _0, unsigned int _0_size, uint32_t& _1);
-		uint32_t Unknown2(IpcService* _0);
-		uint32_t Unknown3(IpcService* _0);
-		uint32_t Unknown4(IpcService* _0);
-		uint32_t Unknown5(IpcService* _0);
-		uint32_t Unknown6(uint8_t * _0, unsigned int _0_size);
-		uint32_t Unknown7(uint8_t * _0, unsigned int _0_size);
+		uint32_t Unknown2(IpcService*& _0);
+		uint32_t Unknown3(IpcService*& _0);
+		uint32_t Unknown4(IpcService*& _0);
+		uint32_t Unknown5(IpcService*& _0);
+		uint32_t Unknown6(uint8_t *& _0, unsigned int _0_size);
+		uint32_t Unknown7(uint8_t *& _0, unsigned int _0_size);
 		uint32_t Unknown8(uint8_t _0);
 	};
 	class IHtcsManager : public IpcService {
@@ -38128,22 +38128,22 @@ namespace nn::tma {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::tma::IHtcsManager::Unknown6: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
-				resp->error_code = Unknown6(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown6(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 7: {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::tma::IHtcsManager::Unknown7: uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp2);
-				resp->error_code = Unknown7(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10));
-				delete[] temp3;
+				resp->error_code = Unknown7(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 8: {
@@ -38208,17 +38208,17 @@ namespace nn::tma {
 		}
 		uint32_t Unknown0(uint32_t& _0, uint32_t& _1);
 		uint32_t Unknown1(uint32_t _0, uint32_t& _1, uint32_t& _2);
-		uint32_t Unknown10(uint8_t * _0);
+		uint32_t Unknown10(uint8_t *& _0);
 		uint32_t Unknown100(uint64_t _0, uint64_t _1);
 		uint32_t Unknown101(uint64_t _0, uint64_t _1);
-		uint32_t Unknown11(uint8_t * _0);
-		uint32_t Unknown12(uint32_t& _0, IUnknown* _1);
-		uint32_t Unknown13(uint8_t _0, uint32_t& _1, IUnknown* _2);
+		uint32_t Unknown11(uint8_t *& _0);
+		uint32_t Unknown12(uint32_t& _0, IUnknown*& _1);
+		uint32_t Unknown13(uint8_t _0, uint32_t& _1, IUnknown*& _2);
 		uint32_t Unknown2(uint8_t * _0, uint32_t _1, uint32_t& _2, uint32_t& _3);
 		uint32_t Unknown3(uint8_t * _0, uint32_t _1, uint32_t& _2, uint32_t& _3);
 		uint32_t Unknown4(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown5(uint32_t _0, uint8_t * _1, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown6(uint32_t _0, uint32_t _1, uint32_t& _2, uint64_t& _3, uint8_t * _4, unsigned int _4_size);
+		uint32_t Unknown5(uint32_t _0, uint8_t *& _1, uint32_t& _2, uint32_t& _3);
+		uint32_t Unknown6(uint32_t _0, uint32_t _1, uint32_t& _2, uint64_t& _3, uint8_t *& _4, unsigned int _4_size);
 		uint32_t Unknown7(uint32_t _0, uint32_t _1, uint8_t * _2, unsigned int _2_size, uint32_t& _3, uint64_t& _4);
 		uint32_t Unknown8(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3);
 		uint32_t Unknown9(uint32_t _0, uint32_t _1, uint32_t _2, uint32_t& _3, uint32_t& _4);
@@ -38266,22 +38266,22 @@ namespace nn::tma {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::tma::ISocket::Unknown5: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown5(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown5(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 6: {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::tma::ISocket::Unknown6: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown6(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10));
-				delete[] temp3;
+				resp->error_code = Unknown6(req->GetData<uint32_t>(8), temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10));
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 7: {
@@ -38328,11 +38328,11 @@ namespace nn::tma {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x22, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::tma::ISocket::Unknown12: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
-				resp->error_code = Unknown12(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown12(req->GetData<uint32_t>(8), *resp->GetDataPointer<uint32_t *>(8), *resp->GetDataPointer<uint64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 13: {
@@ -38348,12 +38348,12 @@ namespace nn::tma {
 				resp->GenBuf(0, 1, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				IpcService *temp4;
 				ns_print("IPC message to nn::tma::ISocket::Unknown14: uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), temp2);
-				resp->error_code = Unknown14(req->GetData<uint32_t>(8), (uint8_t *) temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp4);
-				delete[] temp3;
+				resp->error_code = Unknown14(req->GetData<uint32_t>(8), temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp4);
+				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp4));
 				return 0;
@@ -38362,17 +38362,17 @@ namespace nn::tma {
 				resp->GenBuf(0, 1, 4);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x21, 1, temp5);
-				auto temp6 = new uint8_t[temp5];
-				ARMv8::ReadBytes(temp4, temp6, temp5);
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
+				ARMv8::ReadBytes(temp4, (uint8_t *)temp6, temp5);
 				IpcService *temp7;
 				ns_print("IPC message to nn::tma::ISocket::Unknown15: uint32_t = 0x%x, uint64_t = 0x%%lx, KObject = 0x%x, uint8_t *= buffer<0x%lx>, uint8_t *= buffer<0x%lx>\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), req->GetCopied(0), temp2, temp5);
-				resp->error_code = Unknown15(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), IPC::GetHandle<IpcService*>(req->GetCopied(0)), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5, *resp->GetDataPointer<uint32_t *>(8), temp7);
-				delete[] temp3;
-				delete[] temp6;
+				resp->error_code = Unknown15(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp6, temp5, *resp->GetDataPointer<uint32_t *>(8), temp7);
+				delete[] (uint8_t *) temp3;
+				delete[] (uint8_t *) temp6;
 				if(temp7 != nullptr)
 					resp->SetCopy(0, IPC::NewHandle(temp7));
 				return 0;
@@ -38389,25 +38389,25 @@ namespace nn::tma {
 		}
 		uint32_t Unknown0(uint32_t& _0, uint32_t& _1);
 		uint32_t Unknown1(uint8_t * _0, uint32_t& _1, uint32_t& _2);
-		uint32_t Unknown10(uint32_t _0, uint8_t * _1, uint32_t& _2, IUnknown* _3);
-		uint32_t Unknown11(uint32_t _0, uint32_t _1, uint32_t& _2, IpcService* _3);
-		uint32_t Unknown12(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
-		uint32_t Unknown13(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, IpcService* _4, uint32_t& _5, IpcService* _6);
-		uint32_t Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, IpcService* _3);
-		uint32_t Unknown15(uint32_t _0, uint64_t _1, IpcService* _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, IpcService* _6);
+		uint32_t Unknown10(uint32_t _0, uint8_t *& _1, uint32_t& _2, IUnknown*& _3);
+		uint32_t Unknown11(uint32_t _0, uint32_t _1, uint32_t& _2, IpcService*& _3);
+		uint32_t Unknown12(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size);
+		uint32_t Unknown13(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, IpcService* _4, uint32_t& _5, IpcService*& _6);
+		uint32_t Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, IpcService*& _3);
+		uint32_t Unknown15(uint32_t _0, uint64_t _1, IpcService* _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, IpcService*& _6);
 		uint32_t Unknown16(uint32_t _0, uint32_t& _1, uint64_t& _2);
 		uint32_t Unknown2(uint8_t * _0, uint32_t& _1, uint32_t& _2);
 		uint32_t Unknown3(uint32_t _0, uint32_t& _1, uint32_t& _2);
-		uint32_t Unknown4(uint8_t * _0, uint32_t& _1, IUnknown* _2);
-		uint32_t Unknown5(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size);
+		uint32_t Unknown4(uint8_t *& _0, uint32_t& _1, IUnknown*& _2);
+		uint32_t Unknown5(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size);
 		uint32_t Unknown6(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, uint64_t& _3);
 		uint32_t Unknown7(uint32_t _0, uint32_t& _1, uint32_t& _2);
 		uint32_t Unknown8(uint32_t _0, uint32_t _1, uint32_t& _2, uint32_t& _3);
-		uint32_t Unknown9(uint32_t& _0, IpcService* _1);
+		uint32_t Unknown9(uint32_t& _0, IpcService*& _1);
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::tma::IHtcManager::Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t * _2, unsigned int _2_size) {
+uint32_t nn::tma::IHtcManager::Unknown0(uint8_t * _0, unsigned int _0_size, uint32_t& _1, uint8_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown0\n");
 	return 0;
 }
@@ -38415,27 +38415,27 @@ uint32_t nn::tma::IHtcManager::Unknown1(uint8_t * _0, unsigned int _0_size, uint
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown1\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcManager::Unknown2(IpcService* _0) {
+uint32_t nn::tma::IHtcManager::Unknown2(IpcService*& _0) {
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown2\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcManager::Unknown3(IpcService* _0) {
+uint32_t nn::tma::IHtcManager::Unknown3(IpcService*& _0) {
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown3\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcManager::Unknown4(IpcService* _0) {
+uint32_t nn::tma::IHtcManager::Unknown4(IpcService*& _0) {
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown4\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcManager::Unknown5(IpcService* _0) {
+uint32_t nn::tma::IHtcManager::Unknown5(IpcService*& _0) {
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown5\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcManager::Unknown6(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::tma::IHtcManager::Unknown6(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown6\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcManager::Unknown7(uint8_t * _0, unsigned int _0_size) {
+uint32_t nn::tma::IHtcManager::Unknown7(uint8_t *& _0, unsigned int _0_size) {
 	ns_print("Stub implementation for nn::tma::IHtcManager::Unknown7\n");
 	return 0;
 }
@@ -38451,7 +38451,7 @@ uint32_t nn::tma::IHtcsManager::Unknown1(uint32_t _0, uint32_t& _1, uint32_t& _2
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown1\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcsManager::Unknown10(uint8_t * _0) {
+uint32_t nn::tma::IHtcsManager::Unknown10(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown10\n");
 	return 0;
 }
@@ -38463,15 +38463,15 @@ uint32_t nn::tma::IHtcsManager::Unknown101(uint64_t _0, uint64_t _1) {
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown101\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcsManager::Unknown11(uint8_t * _0) {
+uint32_t nn::tma::IHtcsManager::Unknown11(uint8_t *& _0) {
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown11\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcsManager::Unknown12(uint32_t& _0, IUnknown* _1) {
+uint32_t nn::tma::IHtcsManager::Unknown12(uint32_t& _0, IUnknown*& _1) {
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown12\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcsManager::Unknown13(uint8_t _0, uint32_t& _1, IUnknown* _2) {
+uint32_t nn::tma::IHtcsManager::Unknown13(uint8_t _0, uint32_t& _1, IUnknown*& _2) {
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown13\n");
 	return 0;
 }
@@ -38487,11 +38487,11 @@ uint32_t nn::tma::IHtcsManager::Unknown4(uint32_t _0, uint32_t _1, uint32_t& _2,
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown4\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcsManager::Unknown5(uint32_t _0, uint8_t * _1, uint32_t& _2, uint32_t& _3) {
+uint32_t nn::tma::IHtcsManager::Unknown5(uint32_t _0, uint8_t *& _1, uint32_t& _2, uint32_t& _3) {
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown5\n");
 	return 0;
 }
-uint32_t nn::tma::IHtcsManager::Unknown6(uint32_t _0, uint32_t _1, uint32_t& _2, uint64_t& _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::tma::IHtcsManager::Unknown6(uint32_t _0, uint32_t _1, uint32_t& _2, uint64_t& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::tma::IHtcsManager::Unknown6\n");
 	return 0;
 }
@@ -38515,27 +38515,27 @@ uint32_t nn::tma::ISocket::Unknown1(uint8_t * _0, uint32_t& _1, uint32_t& _2) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown1\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown10(uint32_t _0, uint8_t * _1, uint32_t& _2, IUnknown* _3) {
+uint32_t nn::tma::ISocket::Unknown10(uint32_t _0, uint8_t *& _1, uint32_t& _2, IUnknown*& _3) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown10\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown11(uint32_t _0, uint32_t _1, uint32_t& _2, IpcService* _3) {
+uint32_t nn::tma::ISocket::Unknown11(uint32_t _0, uint32_t _1, uint32_t& _2, IpcService*& _3) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown11\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown12(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::tma::ISocket::Unknown12(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown12\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown13(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, IpcService* _4, uint32_t& _5, IpcService* _6) {
+uint32_t nn::tma::ISocket::Unknown13(uint32_t _0, uint32_t _1, uint32_t _2, uint64_t _3, IpcService* _4, uint32_t& _5, IpcService*& _6) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown13\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, IpcService* _3) {
+uint32_t nn::tma::ISocket::Unknown14(uint32_t _0, uint8_t * _1, unsigned int _1_size, uint32_t& _2, IpcService*& _3) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown14\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown15(uint32_t _0, uint64_t _1, IpcService* _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, IpcService* _6) {
+uint32_t nn::tma::ISocket::Unknown15(uint32_t _0, uint64_t _1, IpcService* _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size, uint32_t& _5, IpcService*& _6) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown15\n");
 	return 0;
 }
@@ -38551,11 +38551,11 @@ uint32_t nn::tma::ISocket::Unknown3(uint32_t _0, uint32_t& _1, uint32_t& _2) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown3\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown4(uint8_t * _0, uint32_t& _1, IUnknown* _2) {
+uint32_t nn::tma::ISocket::Unknown4(uint8_t *& _0, uint32_t& _1, IUnknown*& _2) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown4\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown5(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t * _3, unsigned int _3_size) {
+uint32_t nn::tma::ISocket::Unknown5(uint32_t _0, uint32_t& _1, uint64_t& _2, uint8_t *& _3, unsigned int _3_size) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown5\n");
 	return 0;
 }
@@ -38571,7 +38571,7 @@ uint32_t nn::tma::ISocket::Unknown8(uint32_t _0, uint32_t _1, uint32_t& _2, uint
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown8\n");
 	return 0;
 }
-uint32_t nn::tma::ISocket::Unknown9(uint32_t& _0, IpcService* _1) {
+uint32_t nn::tma::ISocket::Unknown9(uint32_t& _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::tma::ISocket::Unknown9\n");
 	return 0;
 }
@@ -38707,7 +38707,7 @@ namespace nn::uart {
 		uint32_t Unknown3();
 		uint32_t Unknown4();
 		uint32_t Unknown5();
-		uint32_t Unknown6(IUnknown* _0);
+		uint32_t Unknown6(IUnknown*& _0);
 		uint32_t Unknown7();
 		uint32_t Unknown8();
 	};
@@ -38803,7 +38803,7 @@ uint32_t nn::uart::IManager::Unknown5() {
 	ns_print("Stub implementation for nn::uart::IManager::Unknown5\n");
 	return 0;
 }
-uint32_t nn::uart::IManager::Unknown6(IUnknown* _0) {
+uint32_t nn::uart::IManager::Unknown6(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::uart::IManager::Unknown6\n");
 	return 0;
 }
@@ -39203,7 +39203,7 @@ namespace nn::usb::hs {
 		}
 		uint32_t Unknown0();
 		uint32_t Unknown1();
-		uint32_t Unknown2(IpcService* _0);
+		uint32_t Unknown2(IpcService*& _0);
 		uint32_t Unknown3();
 		uint32_t Unknown4();
 		uint32_t Unknown5();
@@ -39284,13 +39284,13 @@ namespace nn::usb::hs {
 				ns_abort("Unknown message cmdId %u to interface nn::usb::hs::IClientIfSession", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1();
 		uint32_t Unknown2();
 		uint32_t Unknown3();
 		uint32_t Unknown4(uint32_t& _0);
 		uint32_t Unknown5();
-		uint32_t Unknown6(IpcService* _0);
+		uint32_t Unknown6(IpcService*& _0);
 		uint32_t Unknown7();
 		uint32_t Unknown8();
 		uint32_t Unknown9();
@@ -39361,7 +39361,7 @@ namespace nn::usb::hs {
 		uint32_t Unknown3();
 		uint32_t Unknown4();
 		uint32_t Unknown5(uint8_t _0);
-		uint32_t Unknown6(IpcService* _0);
+		uint32_t Unknown6(IpcService*& _0);
 		uint32_t Unknown7();
 	};
 }
@@ -39374,7 +39374,7 @@ uint32_t nn::usb::hs::IClientEpSession::Unknown1() {
 	ns_print("Stub implementation for nn::usb::hs::IClientEpSession::Unknown1\n");
 	return 0;
 }
-uint32_t nn::usb::hs::IClientEpSession::Unknown2(IpcService* _0) {
+uint32_t nn::usb::hs::IClientEpSession::Unknown2(IpcService*& _0) {
 	ns_print("Stub implementation for nn::usb::hs::IClientEpSession::Unknown2\n");
 	return 0;
 }
@@ -39394,7 +39394,7 @@ uint32_t nn::usb::hs::IClientEpSession::Unknown6() {
 	ns_print("Stub implementation for nn::usb::hs::IClientEpSession::Unknown6\n");
 	return 0;
 }
-uint32_t nn::usb::hs::IClientIfSession::Unknown0(IpcService* _0) {
+uint32_t nn::usb::hs::IClientIfSession::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::usb::hs::IClientIfSession::Unknown0\n");
 	return 0;
 }
@@ -39418,7 +39418,7 @@ uint32_t nn::usb::hs::IClientIfSession::Unknown5() {
 	ns_print("Stub implementation for nn::usb::hs::IClientIfSession::Unknown5\n");
 	return 0;
 }
-uint32_t nn::usb::hs::IClientIfSession::Unknown6(IpcService* _0) {
+uint32_t nn::usb::hs::IClientIfSession::Unknown6(IpcService*& _0) {
 	ns_print("Stub implementation for nn::usb::hs::IClientIfSession::Unknown6\n");
 	return 0;
 }
@@ -39458,7 +39458,7 @@ uint32_t nn::usb::hs::IClientRootSession::Unknown5(uint8_t _0) {
 	ns_print("Stub implementation for nn::usb::hs::IClientRootSession::Unknown5\n");
 	return 0;
 }
-uint32_t nn::usb::hs::IClientRootSession::Unknown6(IpcService* _0) {
+uint32_t nn::usb::hs::IClientRootSession::Unknown6(IpcService*& _0) {
 	ns_print("Stub implementation for nn::usb::hs::IClientRootSession::Unknown6\n");
 	return 0;
 }
@@ -39486,7 +39486,7 @@ namespace nn::usb::pd::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::usb::pd::detail::IPdCradleManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class IPdCradleSession : public IpcService {
 	public:
@@ -39579,7 +39579,7 @@ namespace nn::usb::pd::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::usb::pd::detail::IPdManager", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IUnknown* _0);
+		uint32_t Unknown0(IUnknown*& _0);
 	};
 	class IPdSession : public IpcService {
 	public:
@@ -39635,7 +39635,7 @@ namespace nn::usb::pd::detail {
 				ns_abort("Unknown message cmdId %u to interface nn::usb::pd::detail::IPdSession", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1();
 		uint32_t Unknown2();
 		uint32_t Unknown3(uint32_t& _0);
@@ -39645,7 +39645,7 @@ namespace nn::usb::pd::detail {
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::usb::pd::detail::IPdCradleManager::Unknown0(IUnknown* _0) {
+uint32_t nn::usb::pd::detail::IPdCradleManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::usb::pd::detail::IPdCradleManager::Unknown0\n");
 	return 0;
 }
@@ -39685,11 +39685,11 @@ uint32_t nn::usb::pd::detail::IPdCradleSession::Unknown8(uint8_t& _0) {
 	ns_print("Stub implementation for nn::usb::pd::detail::IPdCradleSession::Unknown8\n");
 	return 0;
 }
-uint32_t nn::usb::pd::detail::IPdManager::Unknown0(IUnknown* _0) {
+uint32_t nn::usb::pd::detail::IPdManager::Unknown0(IUnknown*& _0) {
 	ns_print("Stub implementation for nn::usb::pd::detail::IPdManager::Unknown0\n");
 	return 0;
 }
-uint32_t nn::usb::pd::detail::IPdSession::Unknown0(IpcService* _0) {
+uint32_t nn::usb::pd::detail::IPdSession::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::usb::pd::detail::IPdSession::Unknown0\n");
 	return 0;
 }
@@ -39770,16 +39770,16 @@ namespace nn::usb::pm {
 				ns_abort("Unknown message cmdId %u to interface nn::usb::pm::IPmService", req->cmd_id);
 			}
 		}
-		uint32_t Unknown0(IpcService* _0);
+		uint32_t Unknown0(IpcService*& _0);
 		uint32_t Unknown1();
-		uint32_t Unknown2(IpcService* _0);
+		uint32_t Unknown2(IpcService*& _0);
 		uint32_t Unknown3(uint32_t& _0);
 		uint32_t Unknown4(uint32_t _0, uint32_t _1);
 		uint32_t Unknown5();
 	};
 }
 #ifdef DEFINE_STUBS
-uint32_t nn::usb::pm::IPmService::Unknown0(IpcService* _0) {
+uint32_t nn::usb::pm::IPmService::Unknown0(IpcService*& _0) {
 	ns_print("Stub implementation for nn::usb::pm::IPmService::Unknown0\n");
 	return 0;
 }
@@ -39787,7 +39787,7 @@ uint32_t nn::usb::pm::IPmService::Unknown1() {
 	ns_print("Stub implementation for nn::usb::pm::IPmService::Unknown1\n");
 	return 0;
 }
-uint32_t nn::usb::pm::IPmService::Unknown2(IpcService* _0) {
+uint32_t nn::usb::pm::IPmService::Unknown2(IpcService*& _0) {
 	ns_print("Stub implementation for nn::usb::pm::IPmService::Unknown2\n");
 	return 0;
 }
@@ -39850,11 +39850,11 @@ namespace nn::visrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::vi::DisplayInfo* temp3 = (nn::vi::DisplayInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::ListDisplays\n");
-				resp->error_code = ListDisplays(*resp->GetDataPointer<int64_t *>(8), (nn::vi::DisplayInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListDisplays(*resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 1010: {
@@ -39891,11 +39891,11 @@ namespace nn::visrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::OpenLayer: nn::vi::DisplayName = %s, uint64_t = 0x%%lx, nn::applet::AppletResourceUserId = 0x%%lx\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x40).c_str(), req->GetData<uint64_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50));
-				resp->error_code = OpenLayer(req->GetDataPointer<nn::vi::DisplayName>(8), req->GetData<uint64_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), req->pid, *resp->GetDataPointer<int64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = OpenLayer(req->GetDataPointer<nn::vi::DisplayName>(8), req->GetData<uint64_t>(0x48), req->GetData<nn::applet::AppletResourceUserId>(0x50), req->pid, *resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2021: {
@@ -39908,11 +39908,11 @@ namespace nn::visrv::sf {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::CreateStrayLayer: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = CreateStrayLayer(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = CreateStrayLayer(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2031: {
@@ -39931,22 +39931,22 @@ namespace nn::visrv::sf {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x46, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageMap: int64_t = 0x%%lx, int64_t = 0x%%lx, uint64_t = 0x%%lx, nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<int64_t>(8), req->GetData<int64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<nn::applet::AppletResourceUserId>(0x20));
-				resp->error_code = GetIndirectLayerImageMap(req->GetData<int64_t>(8), req->GetData<int64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<nn::applet::AppletResourceUserId>(0x20), req->pid, *resp->GetDataPointer<int64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetIndirectLayerImageMap(req->GetData<int64_t>(8), req->GetData<int64_t>(0x10), req->GetData<uint64_t>(0x18), req->GetData<nn::applet::AppletResourceUserId>(0x20), req->pid, *resp->GetDataPointer<int64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2451: {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x46, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageCropMap: float = %f, float = %f, float = %f, float = %f, int64_t = 0x%%lx, int64_t = 0x%%lx, uint64_t = 0x%%lx, nn::applet::AppletResourceUserId = 0x%%lx\n", (double) req->GetData<float>(8), (double) req->GetData<float>(0xc), (double) req->GetData<float>(0x10), (double) req->GetData<float>(0x14), req->GetData<int64_t>(0x18), req->GetData<int64_t>(0x20), req->GetData<uint64_t>(0x28), req->GetData<nn::applet::AppletResourceUserId>(0x30));
-				resp->error_code = GetIndirectLayerImageCropMap(req->GetData<float>(8), req->GetData<float>(0xc), req->GetData<float>(0x10), req->GetData<float>(0x14), req->GetData<int64_t>(0x18), req->GetData<int64_t>(0x20), req->GetData<uint64_t>(0x28), req->GetData<nn::applet::AppletResourceUserId>(0x30), req->pid, *resp->GetDataPointer<int64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = GetIndirectLayerImageCropMap(req->GetData<float>(8), req->GetData<float>(0xc), req->GetData<float>(0x10), req->GetData<float>(0x14), req->GetData<int64_t>(0x18), req->GetData<int64_t>(0x20), req->GetData<uint64_t>(0x28), req->GetData<nn::applet::AppletResourceUserId>(0x30), req->pid, *resp->GetDataPointer<int64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2460: {
@@ -39979,22 +39979,22 @@ namespace nn::visrv::sf {
 		}
 		uint32_t CloseDisplay(uint64_t _0);
 		uint32_t CloseLayer(uint64_t _0);
-		uint32_t CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t * _4, unsigned int _4_size);
+		uint32_t CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t *& _4, unsigned int _4_size);
 		uint32_t DestroyStrayLayer(uint64_t _0);
 		uint32_t GetDisplayResolution(uint64_t _0, int64_t& _1, int64_t& _2);
-		uint32_t GetDisplayVsyncEvent(uint64_t _0, IpcService* _1);
-		uint32_t GetDisplayVsyncEventForDebug(uint64_t _0, IpcService* _1);
-		uint32_t GetIndirectDisplayTransactionService(nns::hosbinder::IHOSBinderDriver* _0);
-		uint32_t GetIndirectLayerImageCropMap(float _0, float _1, float _2, float _3, int64_t _4, int64_t _5, uint64_t _6, nn::applet::AppletResourceUserId _7, uint64_t _8, int64_t& _9, int64_t& _10, uint8_t * _11, unsigned int _11_size);
-		uint32_t GetIndirectLayerImageMap(int64_t _0, int64_t _1, uint64_t _2, nn::applet::AppletResourceUserId _3, uint64_t _4, int64_t& _5, int64_t& _6, uint8_t * _7, unsigned int _7_size);
+		uint32_t GetDisplayVsyncEvent(uint64_t _0, IpcService*& _1);
+		uint32_t GetDisplayVsyncEventForDebug(uint64_t _0, IpcService*& _1);
+		uint32_t GetIndirectDisplayTransactionService(nns::hosbinder::IHOSBinderDriver*& _0);
+		uint32_t GetIndirectLayerImageCropMap(float _0, float _1, float _2, float _3, int64_t _4, int64_t _5, uint64_t _6, nn::applet::AppletResourceUserId _7, uint64_t _8, int64_t& _9, int64_t& _10, uint8_t *& _11, unsigned int _11_size);
+		uint32_t GetIndirectLayerImageMap(int64_t _0, int64_t _1, uint64_t _2, nn::applet::AppletResourceUserId _3, uint64_t _4, int64_t& _5, int64_t& _6, uint8_t *& _7, unsigned int _7_size);
 		uint32_t GetIndirectLayerImageRequiredMemoryInfo(int64_t _0, int64_t _1, int64_t& _2, int64_t& _3);
-		uint32_t GetManagerDisplayService(nn::visrv::sf::IManagerDisplayService* _0);
-		uint32_t GetRelayService(nns::hosbinder::IHOSBinderDriver* _0);
-		uint32_t GetSystemDisplayService(nn::visrv::sf::ISystemDisplayService* _0);
-		uint32_t ListDisplays(int64_t& _0, nn::vi::DisplayInfo * _1, unsigned int _1_size);
+		uint32_t GetManagerDisplayService(nn::visrv::sf::IManagerDisplayService*& _0);
+		uint32_t GetRelayService(nns::hosbinder::IHOSBinderDriver*& _0);
+		uint32_t GetSystemDisplayService(nn::visrv::sf::ISystemDisplayService*& _0);
+		uint32_t ListDisplays(int64_t& _0, nn::vi::DisplayInfo *& _1, unsigned int _1_size);
 		uint32_t OpenDefaultDisplay(uint64_t& _0);
 		uint32_t OpenDisplay(nn::vi::DisplayName _0, uint64_t& _1);
-		uint32_t OpenLayer(nn::vi::DisplayName _0, uint64_t _1, nn::applet::AppletResourceUserId _2, uint64_t _3, int64_t& _4, uint8_t * _5, unsigned int _5_size);
+		uint32_t OpenLayer(nn::vi::DisplayName _0, uint64_t _1, nn::applet::AppletResourceUserId _2, uint64_t _3, int64_t& _4, uint8_t *& _5, unsigned int _5_size);
 		uint32_t SetDisplayEnabled(bool _0, uint64_t _1);
 		uint32_t SetLayerScalingMode(uint32_t _0, uint64_t _1);
 	};
@@ -40016,7 +40016,7 @@ namespace nn::visrv::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::visrv::sf::IApplicationRootService", req->cmd_id);
 			}
 		}
-		uint32_t GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService* _1);
+		uint32_t GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1);
 	};
 	class IManagerDisplayService : public IpcService {
 	public:
@@ -40165,7 +40165,7 @@ namespace nn::visrv::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::visrv::sf::IManagerDisplayService", req->cmd_id);
 			}
 		}
-		uint32_t AcquireLayerTexturePresentingEvent(uint64_t _0, IpcService* _1);
+		uint32_t AcquireLayerTexturePresentingEvent(uint64_t _0, IpcService*& _1);
 		uint32_t AddToLayerStack(uint32_t _0, uint64_t _1);
 		uint32_t CreateIndirectConsumerEndPoint(uint64_t _0, nn::applet::AppletResourceUserId _1, uint64_t& _2);
 		uint32_t CreateIndirectLayer(uint64_t& _0);
@@ -40175,7 +40175,7 @@ namespace nn::visrv::sf {
 		uint32_t DestroyIndirectLayer(uint64_t _0);
 		uint32_t DestroyIndirectProducerEndPoint(uint64_t _0);
 		uint32_t DestroyManagedLayer(uint64_t _0);
-		uint32_t GetDisplayHotplugEvent(uint64_t _0, IpcService* _1);
+		uint32_t GetDisplayHotplugEvent(uint64_t _0, IpcService*& _1);
 		uint32_t GetDisplayHotplugState(uint64_t _0, uint32_t& _1);
 		uint32_t GetDisplayResolution(uint64_t _0, int64_t& _1, int64_t& _2);
 		uint32_t ReleaseLayerTexturePresentingEvent(uint64_t _0);
@@ -40215,8 +40215,8 @@ namespace nn::visrv::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::visrv::sf::IManagerRootService", req->cmd_id);
 			}
 		}
-		uint32_t GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService* _1);
-		uint32_t GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService* _2);
+		uint32_t GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1);
+		uint32_t GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService*& _2);
 	};
 	class ISystemDisplayService : public IpcService {
 	public:
@@ -40287,22 +40287,22 @@ namespace nn::visrv::sf {
 				resp->GenBuf(0, 0, 16);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::ISystemDisplayService::CreateStrayLayer: uint32_t = 0x%x, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10));
-				resp->error_code = CreateStrayLayer(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = CreateStrayLayer(req->GetData<uint32_t>(8), req->GetData<uint64_t>(0x10), *resp->GetDataPointer<uint64_t *>(8), *resp->GetDataPointer<int64_t *>(0x10), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2400: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::ISystemDisplayService::OpenIndirectLayer: uint64_t = 0x%%lx, nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10));
-				resp->error_code = OpenIndirectLayer(req->GetData<uint64_t>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->pid, *resp->GetDataPointer<int64_t *>(8), (uint8_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = OpenIndirectLayer(req->GetData<uint64_t>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->pid, *resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 2401: {
@@ -40321,33 +40321,33 @@ namespace nn::visrv::sf {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				nn::vi::DisplayModeInfo* temp3 = (nn::vi::DisplayModeInfo *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::ISystemDisplayService::ListDisplayModes: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = ListDisplayModes(req->GetData<uint64_t>(8), *resp->GetDataPointer<int64_t *>(8), (nn::vi::DisplayModeInfo *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListDisplayModes(req->GetData<uint64_t>(8), *resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3001: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint32_t* temp3 = (uint32_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::ISystemDisplayService::ListDisplayRgbRanges: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = ListDisplayRgbRanges(req->GetData<uint64_t>(8), *resp->GetDataPointer<int64_t *>(8), (uint32_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListDisplayRgbRanges(req->GetData<uint64_t>(8), *resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3002: {
 				resp->GenBuf(0, 0, 8);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(6, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
+				uint32_t* temp3 = (uint32_t *) new uint8_t[temp2];
 				ns_print("IPC message to nn::visrv::sf::ISystemDisplayService::ListDisplayContentTypes: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
-				resp->error_code = ListDisplayContentTypes(req->GetData<uint64_t>(8), *resp->GetDataPointer<int64_t *>(8), (uint32_t *) temp3, temp2);
-				ARMv8::WriteBytes(temp1, temp3, temp2);
-				delete[] temp3;
+				resp->error_code = ListDisplayContentTypes(req->GetData<uint64_t>(8), *resp->GetDataPointer<int64_t *>(8), temp3, temp2);
+				ARMv8::WriteBytes(temp1, (uint8_t *) temp3, temp2);
+				delete[] (uint8_t *)temp3;
 				return 0;
 			}
 			case 3200: {
@@ -40451,7 +40451,7 @@ namespace nn::visrv::sf {
 			}
 		}
 		uint32_t CloseIndirectLayer(uint64_t _0);
-		uint32_t CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t * _4, unsigned int _4_size);
+		uint32_t CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t *& _4, unsigned int _4_size);
 		uint32_t FlipIndirectLayer(uint64_t _0);
 		uint32_t GetDisplayCmuLuma(uint64_t _0, float& _1);
 		uint32_t GetDisplayCmuMode(uint64_t _0, uint32_t& _1);
@@ -40465,10 +40465,10 @@ namespace nn::visrv::sf {
 		uint32_t GetLayerZ(uint64_t _0, int64_t& _1);
 		uint32_t GetZOrderCountMax(uint64_t _0, int64_t& _1);
 		uint32_t GetZOrderCountMin(uint64_t _0, int64_t& _1);
-		uint32_t ListDisplayContentTypes(uint64_t _0, int64_t& _1, uint32_t * _2, unsigned int _2_size);
-		uint32_t ListDisplayModes(uint64_t _0, int64_t& _1, nn::vi::DisplayModeInfo * _2, unsigned int _2_size);
-		uint32_t ListDisplayRgbRanges(uint64_t _0, int64_t& _1, uint32_t * _2, unsigned int _2_size);
-		uint32_t OpenIndirectLayer(uint64_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, int64_t& _3, uint8_t * _4, unsigned int _4_size);
+		uint32_t ListDisplayContentTypes(uint64_t _0, int64_t& _1, uint32_t *& _2, unsigned int _2_size);
+		uint32_t ListDisplayModes(uint64_t _0, int64_t& _1, nn::vi::DisplayModeInfo *& _2, unsigned int _2_size);
+		uint32_t ListDisplayRgbRanges(uint64_t _0, int64_t& _1, uint32_t *& _2, unsigned int _2_size);
+		uint32_t OpenIndirectLayer(uint64_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, int64_t& _3, uint8_t *& _4, unsigned int _4_size);
 		uint32_t SetDisplayCmuLuma(float _0, uint64_t _1);
 		uint32_t SetDisplayCmuMode(uint32_t _0, uint64_t _1);
 		uint32_t SetDisplayContentType(uint32_t _0, uint64_t _1);
@@ -40511,8 +40511,8 @@ namespace nn::visrv::sf {
 				ns_abort("Unknown message cmdId %u to interface nn::visrv::sf::ISystemRootService", req->cmd_id);
 			}
 		}
-		uint32_t GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService* _1);
-		uint32_t GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService* _2);
+		uint32_t GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1);
+		uint32_t GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService*& _2);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -40524,7 +40524,7 @@ uint32_t nn::visrv::sf::IApplicationDisplayService::CloseLayer(uint64_t _0) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::CloseLayer\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::CreateStrayLayer\n");
 	return 0;
 }
@@ -40536,23 +40536,23 @@ uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayResolution(uint64_
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetDisplayResolution\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEvent(uint64_t _0, IpcService* _1) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEvent(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEvent\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug(uint64_t _0, IpcService* _1) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectDisplayTransactionService(nns::hosbinder::IHOSBinderDriver* _0) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectDisplayTransactionService(nns::hosbinder::IHOSBinderDriver*& _0) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetIndirectDisplayTransactionService\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageCropMap(float _0, float _1, float _2, float _3, int64_t _4, int64_t _5, uint64_t _6, nn::applet::AppletResourceUserId _7, uint64_t _8, int64_t& _9, int64_t& _10, uint8_t * _11, unsigned int _11_size) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageCropMap(float _0, float _1, float _2, float _3, int64_t _4, int64_t _5, uint64_t _6, nn::applet::AppletResourceUserId _7, uint64_t _8, int64_t& _9, int64_t& _10, uint8_t *& _11, unsigned int _11_size) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageCropMap\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageMap(int64_t _0, int64_t _1, uint64_t _2, nn::applet::AppletResourceUserId _3, uint64_t _4, int64_t& _5, int64_t& _6, uint8_t * _7, unsigned int _7_size) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageMap(int64_t _0, int64_t _1, uint64_t _2, nn::applet::AppletResourceUserId _3, uint64_t _4, int64_t& _5, int64_t& _6, uint8_t *& _7, unsigned int _7_size) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageMap\n");
 	return 0;
 }
@@ -40560,19 +40560,19 @@ uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageRequire
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageRequiredMemoryInfo\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetManagerDisplayService(nn::visrv::sf::IManagerDisplayService* _0) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetManagerDisplayService(nn::visrv::sf::IManagerDisplayService*& _0) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetManagerDisplayService\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetRelayService(nns::hosbinder::IHOSBinderDriver* _0) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetRelayService(nns::hosbinder::IHOSBinderDriver*& _0) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetRelayService\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetSystemDisplayService(nn::visrv::sf::ISystemDisplayService* _0) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetSystemDisplayService(nn::visrv::sf::ISystemDisplayService*& _0) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetSystemDisplayService\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::ListDisplays(int64_t& _0, nn::vi::DisplayInfo * _1, unsigned int _1_size) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::ListDisplays(int64_t& _0, nn::vi::DisplayInfo *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::ListDisplays\n");
 	return 0;
 }
@@ -40584,7 +40584,7 @@ uint32_t nn::visrv::sf::IApplicationDisplayService::OpenDisplay(nn::vi::DisplayN
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::OpenDisplay\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::OpenLayer(nn::vi::DisplayName _0, uint64_t _1, nn::applet::AppletResourceUserId _2, uint64_t _3, int64_t& _4, uint8_t * _5, unsigned int _5_size) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::OpenLayer(nn::vi::DisplayName _0, uint64_t _1, nn::applet::AppletResourceUserId _2, uint64_t _3, int64_t& _4, uint8_t *& _5, unsigned int _5_size) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::OpenLayer\n");
 	return 0;
 }
@@ -40596,11 +40596,11 @@ uint32_t nn::visrv::sf::IApplicationDisplayService::SetLayerScalingMode(uint32_t
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::SetLayerScalingMode\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService* _1) {
+uint32_t nn::visrv::sf::IApplicationRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationRootService::GetDisplayService\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IManagerDisplayService::AcquireLayerTexturePresentingEvent(uint64_t _0, IpcService* _1) {
+uint32_t nn::visrv::sf::IManagerDisplayService::AcquireLayerTexturePresentingEvent(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IManagerDisplayService::AcquireLayerTexturePresentingEvent\n");
 	return 0;
 }
@@ -40640,7 +40640,7 @@ uint32_t nn::visrv::sf::IManagerDisplayService::DestroyManagedLayer(uint64_t _0)
 	ns_print("Stub implementation for nn::visrv::sf::IManagerDisplayService::DestroyManagedLayer\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IManagerDisplayService::GetDisplayHotplugEvent(uint64_t _0, IpcService* _1) {
+uint32_t nn::visrv::sf::IManagerDisplayService::GetDisplayHotplugEvent(uint64_t _0, IpcService*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IManagerDisplayService::GetDisplayHotplugEvent\n");
 	return 0;
 }
@@ -40688,11 +40688,11 @@ uint32_t nn::visrv::sf::IManagerDisplayService::SetLayerVisibility(bool _0, uint
 	ns_print("Stub implementation for nn::visrv::sf::IManagerDisplayService::SetLayerVisibility\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IManagerRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService* _1) {
+uint32_t nn::visrv::sf::IManagerRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IManagerRootService::GetDisplayService\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IManagerRootService::GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService* _2) {
+uint32_t nn::visrv::sf::IManagerRootService::GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService*& _2) {
 	ns_print("Stub implementation for nn::visrv::sf::IManagerRootService::GetDisplayServiceWithProxyNameExchange\n");
 	return 0;
 }
@@ -40700,7 +40700,7 @@ uint32_t nn::visrv::sf::ISystemDisplayService::CloseIndirectLayer(uint64_t _0) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::CloseIndirectLayer\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::ISystemDisplayService::CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::visrv::sf::ISystemDisplayService::CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::CreateStrayLayer\n");
 	return 0;
 }
@@ -40756,19 +40756,19 @@ uint32_t nn::visrv::sf::ISystemDisplayService::GetZOrderCountMin(uint64_t _0, in
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::GetZOrderCountMin\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::ISystemDisplayService::ListDisplayContentTypes(uint64_t _0, int64_t& _1, uint32_t * _2, unsigned int _2_size) {
+uint32_t nn::visrv::sf::ISystemDisplayService::ListDisplayContentTypes(uint64_t _0, int64_t& _1, uint32_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::ListDisplayContentTypes\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::ISystemDisplayService::ListDisplayModes(uint64_t _0, int64_t& _1, nn::vi::DisplayModeInfo * _2, unsigned int _2_size) {
+uint32_t nn::visrv::sf::ISystemDisplayService::ListDisplayModes(uint64_t _0, int64_t& _1, nn::vi::DisplayModeInfo *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::ListDisplayModes\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::ISystemDisplayService::ListDisplayRgbRanges(uint64_t _0, int64_t& _1, uint32_t * _2, unsigned int _2_size) {
+uint32_t nn::visrv::sf::ISystemDisplayService::ListDisplayRgbRanges(uint64_t _0, int64_t& _1, uint32_t *& _2, unsigned int _2_size) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::ListDisplayRgbRanges\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::ISystemDisplayService::OpenIndirectLayer(uint64_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, int64_t& _3, uint8_t * _4, unsigned int _4_size) {
+uint32_t nn::visrv::sf::ISystemDisplayService::OpenIndirectLayer(uint64_t _0, nn::applet::AppletResourceUserId _1, uint64_t _2, int64_t& _3, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::OpenIndirectLayer\n");
 	return 0;
 }
@@ -40828,11 +40828,11 @@ uint32_t nn::visrv::sf::ISystemDisplayService::SetLayerZ(uint64_t _0, int64_t _1
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::SetLayerZ\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::ISystemRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService* _1) {
+uint32_t nn::visrv::sf::ISystemRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemRootService::GetDisplayService\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::ISystemRootService::GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService* _2) {
+uint32_t nn::visrv::sf::ISystemRootService::GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService*& _2) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemRootService::GetDisplayServiceWithProxyNameExchange\n");
 	return 0;
 }
@@ -41359,7 +41359,7 @@ namespace nn::wlan::detail {
 		uint32_t Unknown18();
 		uint32_t Unknown19();
 		uint32_t Unknown2();
-		uint32_t Unknown20(IpcService* _0);
+		uint32_t Unknown20(IpcService*& _0);
 		uint32_t Unknown21();
 		uint32_t Unknown22(uint32_t& _0);
 		uint32_t Unknown23();
@@ -41418,11 +41418,11 @@ namespace nn::wlan::detail {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				ns_print("IPC message to nn::wlan::detail::ISocketManager::Unknown0: uint8_t *= buffer<0x%lx>\n", temp2);
-				resp->error_code = Unknown0((uint8_t *) temp3, temp2);
-				delete[] temp3;
+				resp->error_code = Unknown0(temp3, temp2);
+				delete[] (uint8_t *) temp3;
 				return 0;
 			}
 			case 1: {
@@ -41674,7 +41674,7 @@ uint32_t nn::wlan::detail::ILocalManager::Unknown2() {
 	ns_print("Stub implementation for nn::wlan::detail::ILocalManager::Unknown2\n");
 	return 0;
 }
-uint32_t nn::wlan::detail::ILocalManager::Unknown20(IpcService* _0) {
+uint32_t nn::wlan::detail::ILocalManager::Unknown20(IpcService*& _0) {
 	ns_print("Stub implementation for nn::wlan::detail::ILocalManager::Unknown20\n");
 	return 0;
 }
@@ -42088,16 +42088,16 @@ namespace nns::hosbinder {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(5, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(6, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nns::hosbinder::IHOSBinderDriver::TransactParcel: int32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = TransactParcel(req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = TransactParcel(req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			case 1: {
@@ -42119,16 +42119,16 @@ namespace nns::hosbinder {
 				resp->GenBuf(0, 0, 0);
 				unsigned int temp2;
 				auto temp1 = req->GetBuffer(0x21, 0, temp2);
-				auto temp3 = new uint8_t[temp2];
-				ARMv8::ReadBytes(temp1, temp3, temp2);
+				uint8_t* temp3 = (uint8_t *) new uint8_t[temp2];
+				ARMv8::ReadBytes(temp1, (uint8_t *)temp3, temp2);
 				unsigned int temp5;
 				auto temp4 = req->GetBuffer(0x22, 0, temp5);
-				auto temp6 = new uint8_t[temp5];
+				uint8_t* temp6 = (uint8_t *) new uint8_t[temp5];
 				ns_print("IPC message to nns::hosbinder::IHOSBinderDriver::TransactParcelAuto: int32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint8_t *= buffer<0x%lx>\n", req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp2);
-				resp->error_code = TransactParcelAuto(req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), (uint8_t *) temp3, temp2, (uint8_t *) temp6, temp5);
-				delete[] temp3;
-				ARMv8::WriteBytes(temp4, temp6, temp5);
-				delete[] temp6;
+				resp->error_code = TransactParcelAuto(req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), temp3, temp2, temp6, temp5);
+				delete[] (uint8_t *) temp3;
+				ARMv8::WriteBytes(temp4, (uint8_t *) temp6, temp5);
+				delete[] (uint8_t *)temp6;
 				return 0;
 			}
 			default:
@@ -42136,9 +42136,9 @@ namespace nns::hosbinder {
 			}
 		}
 		uint32_t AdjustRefcount(int32_t _0, int32_t _1, int32_t _2);
-		uint32_t GetNativeHandle(int32_t _0, uint32_t _1, IpcService* _2);
-		uint32_t TransactParcel(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size);
-		uint32_t TransactParcelAuto(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size);
+		uint32_t GetNativeHandle(int32_t _0, uint32_t _1, IpcService*& _2);
+		uint32_t TransactParcel(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t *& _4, unsigned int _4_size);
+		uint32_t TransactParcelAuto(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t *& _4, unsigned int _4_size);
 	};
 }
 #ifdef DEFINE_STUBS
@@ -42146,15 +42146,15 @@ uint32_t nns::hosbinder::IHOSBinderDriver::AdjustRefcount(int32_t _0, int32_t _1
 	ns_print("Stub implementation for nns::hosbinder::IHOSBinderDriver::AdjustRefcount\n");
 	return 0;
 }
-uint32_t nns::hosbinder::IHOSBinderDriver::GetNativeHandle(int32_t _0, uint32_t _1, IpcService* _2) {
+uint32_t nns::hosbinder::IHOSBinderDriver::GetNativeHandle(int32_t _0, uint32_t _1, IpcService*& _2) {
 	ns_print("Stub implementation for nns::hosbinder::IHOSBinderDriver::GetNativeHandle\n");
 	return 0;
 }
-uint32_t nns::hosbinder::IHOSBinderDriver::TransactParcel(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size) {
+uint32_t nns::hosbinder::IHOSBinderDriver::TransactParcel(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nns::hosbinder::IHOSBinderDriver::TransactParcel\n");
 	return 0;
 }
-uint32_t nns::hosbinder::IHOSBinderDriver::TransactParcelAuto(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t * _4, unsigned int _4_size) {
+uint32_t nns::hosbinder::IHOSBinderDriver::TransactParcelAuto(int32_t _0, uint32_t _1, uint32_t _2, uint8_t * _3, unsigned int _3_size, uint8_t *& _4, unsigned int _4_size) {
 	ns_print("Stub implementation for nns::hosbinder::IHOSBinderDriver::TransactParcelAuto\n");
 	return 0;
 }

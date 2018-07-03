@@ -2,7 +2,7 @@
 #include "Nsemu.hpp"
 #include "IpcStubs.hpp"
 
-uint32_t nn::socket::sf::IClient::Accept(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& sockaddr_len, sockaddr *_addr, unsigned _size) {
+uint32_t nn::socket::sf::IClient::Accept(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& sockaddr_len, sockaddr*& _addr, unsigned _size) {
 	ns_print("nn::socket::sf::IClient::accept\n");
 	struct sockaddr *addr = (struct sockaddr *) _addr;
 	socklen_t size = (uint32_t) _size;
@@ -37,7 +37,7 @@ uint32_t nn::socket::sf::IClient::Connect(uint32_t socket, sockaddr * _addr, uns
 	bsd_errno = errno;
 	return 0;
 }
-uint32_t nn::socket::sf::IClient::GetSockName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& sockaddr_len, sockaddr * _addr, unsigned _size) {
+uint32_t nn::socket::sf::IClient::GetSockName(uint32_t socket, int32_t& ret, uint32_t& bsd_errno, uint32_t& sockaddr_len, sockaddr*& _addr, unsigned _size) {
 	ns_print("nn::socket::sf::IClient::getsockname\n");
 
 	struct sockaddr *addr = (struct sockaddr *) _addr;
@@ -56,7 +56,7 @@ uint32_t nn::socket::sf::IClient::Listen(uint32_t socket, uint32_t backlog, int3
 	return 0;
 }
 
-uint32_t nn::socket::sf::IClient::Recv(uint32_t socket, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, int8_t * buf, unsigned _size) {
+uint32_t nn::socket::sf::IClient::Recv(uint32_t socket, uint32_t flags, int32_t& ret, uint32_t& bsd_errno, int8_t*& buf, unsigned _size) {
 	ns_print("nn::socket::sf::IClient::recv\n");
 
 	ret = (int32_t) ::recv(socket, buf, _size, flags);
@@ -64,7 +64,7 @@ uint32_t nn::socket::sf::IClient::Recv(uint32_t socket, uint32_t flags, int32_t&
 	return 0;
 }
 
-uint32_t nn::socket::sf::IClient::Send(uint32_t socket, uint32_t flags, int8_t * buf, unsigned _size, int32_t& ret, uint32_t& bsd_errno) {
+uint32_t nn::socket::sf::IClient::Send(uint32_t socket, uint32_t flags, int8_t* buf, unsigned _size, int32_t& ret, uint32_t& bsd_errno) {
 	ns_print("nn::socket::sf::IClient::send\n");
 
 	ret = (uint32_t) ::send(socket, buf, (size_t) _size, flags);
@@ -72,7 +72,7 @@ uint32_t nn::socket::sf::IClient::Send(uint32_t socket, uint32_t flags, int8_t *
 	return 0;
 }
 
-uint32_t nn::socket::sf::IClient::SendTo(uint32_t socket, uint32_t flags, int8_t * buf, unsigned _size, sockaddr * _addr, unsigned _addr_size, int32_t& ret, uint32_t& bsd_errno) {
+uint32_t nn::socket::sf::IClient::SendTo(uint32_t socket, uint32_t flags, int8_t* buf, unsigned _size, sockaddr* _addr, unsigned _addr_size, int32_t& ret, uint32_t& bsd_errno) {
 	ns_print("nn::socket::sf::IClient::sendto\n");
 
 	struct sockaddr *addr = (struct sockaddr *) _addr;
@@ -82,7 +82,7 @@ uint32_t nn::socket::sf::IClient::SendTo(uint32_t socket, uint32_t flags, int8_t
 	return 0;
 }
 
-uint32_t nn::socket::sf::IClient::SetSockOpt(uint32_t socket, uint32_t level, uint32_t option_name, uint8_t * optval, unsigned _opt_size, int32_t& ret, uint32_t& bsd_errno) {
+uint32_t nn::socket::sf::IClient::SetSockOpt(uint32_t socket, uint32_t level, uint32_t option_name, uint8_t* optval, unsigned _opt_size, int32_t& ret, uint32_t& bsd_errno) {
 	ns_print("nn::socket::sf::IClient::setsockopt\n");
 	return 0;
 }

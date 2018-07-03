@@ -149,8 +149,9 @@ typedef struct {
 std::tuple<uint64_t, uint64_t> QueryMemory(uint64_t meminfo, uint64_t pageinfo, uint64_t addr) {
         ns_print("QueryMemory 0x%lx\n", addr);
         for(auto [begin, end, perm] : Memory::GetRegions()) {
+                //ns_print("Region [0x%lx, 0x%lx %d]\n", begin, end, perm);
                 if (begin <= addr && addr <= end) {
-                        ns_print("found region at 0x%lx, 0x%lx\n", begin, end);
+                        //ns_print("found region at 0x%lx, 0x%lx\n", begin, end);
                         MemInfo minfo;
                         minfo.begin = begin;
                         minfo.size = end - begin + 1;

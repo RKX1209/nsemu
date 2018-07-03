@@ -50,11 +50,11 @@ void IpcMessage::GenBuf(unsigned int _move_cnt, unsigned int _copy_cnt, unsigned
         copy_cnt = _copy_cnt;
         uint32_t *obuf = (uint32_t *) raw_ptr;
         obuf[0] = 0;
+        ns_print("is_domain: %u, move: %u, copy: %u, bytes: %u\n", is_domainobj, move_cnt, copy_cnt, data_bytes);
         if(move_cnt != 0 || copy_cnt != 0) {
                 obuf[1] = ((move_cnt != 0 && !is_domainobj) || copy_cnt != 0) ? (1U << 31) : 0;
         	obuf[2] = (copy_cnt << 1) | ((is_domainobj ? 0 : move_cnt) << 5);
         }
-
         auto pos = 2 + (((move_cnt != 0 && !is_domainobj) || copy_cnt != 0) ? (1 + move_cnt + copy_cnt) : 0);
         auto start = pos;
         if(pos & 3)

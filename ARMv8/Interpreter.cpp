@@ -1160,28 +1160,16 @@ void IntprCallback::WriteVecElem(unsigned int vd_idx, unsigned int rn_idx, unsig
 
 template<typename T>
 static void _CompareTest(T *res, T arg1, T arg2, bool and_test) {
+        T onflag = ~(T)0;
         if (and_test) {
-                *res = (arg1 & arg2 != 0);
+                *res = (arg1 & arg2 != 0 ? onflag : 0);
         } else {
-                *res = (arg1 == arg2);
+                *res = (arg1 == arg2 ? onflag : 0);
         }
 }
 
 /* Compare Bit wise equal */
 void IntprCallback::CompareEqualVec(unsigned int vd_idx, unsigned int vn_idx, unsigned int vm_idx, int index, int size) {
-        if (size == 0) {
-                _CompareTest(&VREG(vd_idx).b[index], VREG(vn_idx).b[index], VREG(vm_idx).b[index], true);
-        } else if (size == 1) {
-                _CompareTest(&VREG(vd_idx).h[index], VREG(vn_idx).h[index], VREG(vm_idx).h[index], true);
-        } else if (size == 2) {
-                _CompareTest(&VREG(vd_idx).s[index], VREG(vn_idx).s[index], VREG(vm_idx).s[index], true);
-        } else if (size == 3) {
-                _CompareTest(&VREG(vd_idx).d[index], VREG(vn_idx).d[index], VREG(vm_idx).d[index], true);
-        }
-}
-
-/* Compare Bit wise test bits nonzero */
-void IntprCallback::CompareTestBitsVec(unsigned int vd_idx, unsigned int vn_idx, unsigned int vm_idx, int index, int size) {
         if (size == 0) {
                 _CompareTest(&VREG(vd_idx).b[index], VREG(vn_idx).b[index], VREG(vm_idx).b[index], false);
         } else if (size == 1) {
@@ -1190,5 +1178,18 @@ void IntprCallback::CompareTestBitsVec(unsigned int vd_idx, unsigned int vn_idx,
                 _CompareTest(&VREG(vd_idx).s[index], VREG(vn_idx).s[index], VREG(vm_idx).s[index], false);
         } else if (size == 3) {
                 _CompareTest(&VREG(vd_idx).d[index], VREG(vn_idx).d[index], VREG(vm_idx).d[index], false);
+        }
+}
+
+/* Compare Bit wise test bits nonzero */
+void IntprCallback::CompareTestBitsVec(unsigned int vd_idx, unsigned int vn_idx, unsigned int vm_idx, int index, int size) {
+        if (size == 0) {
+                _CompareTest(&VREG(vd_idx).b[index], VREG(vn_idx).b[index], VREG(vm_idx).b[index], true);
+        } else if (size == 1) {
+                _CompareTest(&VREG(vd_idx).h[index], VREG(vn_idx).h[index], VREG(vm_idx).h[index], true);
+        } else if (size == 2) {
+                _CompareTest(&VREG(vd_idx).s[index], VREG(vn_idx).s[index], VREG(vm_idx).s[index], true);
+        } else if (size == 3) {
+                _CompareTest(&VREG(vd_idx).d[index], VREG(vn_idx).d[index], VREG(vm_idx).d[index], true);
         }
 }

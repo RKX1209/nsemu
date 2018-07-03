@@ -102,7 +102,7 @@ def formatParam(param, input, i):
 	else:
 		arrspec = ''
 
-	return '%s%s %s%s%s' % (type, '&' if not input and (not type.endswith('*') and not arrspec) else '', name, arrspec, ', unsigned int %s_size' % name if hasSize else '')
+	return '%s%s %s%s%s' % (type, '&' if not input and not arrspec else '', name, arrspec, ', unsigned int %s_size' % name if hasSize else '')
 
 def generatePrototype(func):
 	return ', '.join([formatParam(x, True, i) for i, x in enumerate(func['inputs'])] + [formatParam(x, False, i + len(func['inputs'])) for i, x in enumerate(func['outputs'])])
@@ -141,14 +141,14 @@ def generateCaller(qname, fname, func):
 			an, sn, bn = tempname(), tempname(), tempname()
 			yield 'unsigned int %s;' % sn
 			yield 'auto %s = req->GetBuffer(%s, %i, %s);' % (an, emitInt(rest[1]), cbo, sn)
-			yield 'auto %s = new uint8_t[%s];' % (bn, sn)
-			yield 'ARMv8::ReadBytes(%s, %s, %s);' % (an, bn, sn)
-			params.append('(%s *) %s' % (retype(rest[0]), bn))
+			yield '%s* %s = (%s *) new uint8_t[%s];' % (retype(rest[0]), bn, retype(rest[0]), sn)
+			yield 'ARMv8::ReadBytes(%s, (uint8_t *)%s, %s);' % (an, bn, sn)
+			params.append('%s' % (bn))
 			params.append(sn)
 			logFmt.append('%s *%s= buffer<0x%%lx>' % (retype(rest[0]), '%s ' % name if name else ''))
 			logElems.append(sn)
 			bufSizes += 1
-			yield AFTER, 'delete[] %s;' % bn
+			yield AFTER, 'delete[] (uint8_t *) %s;' % bn
 		elif type == 'object':
 			params.append('IPC::GetHandle<%s*>(req->GetMoved(%i))' % (rest[0][0], objOff))
 			logFmt.append('%s %s= 0x%%x' % (rest[0][0], '%s ' % name if name else ''))
@@ -202,12 +202,12 @@ def generateCaller(qname, fname, func):
 			an, sn, bn = tempname(), tempname(), tempname()
 			yield 'unsigned int %s;' % sn
 			yield 'auto %s = req->GetBuffer(%s, %i, %s);' % (an, emitInt(rest[1]), cbo, sn)
-			yield 'auto %s = new uint8_t[%s];' % (bn, sn)
-			params.append('(%s *) %s' % (retype(rest[0]), bn))
+			yield '%s* %s = (%s *) new uint8_t[%s];' % (retype(rest[0]), bn, retype(rest[0]), sn)
+			params.append('%s' % (bn))
 			params.append(sn)
 			bufSizes += 1
-			yield AFTER, 'ARMv8::WriteBytes(%s, %s, %s);' % (an, bn, sn)
-			yield AFTER, 'delete[] %s;' % bn
+			yield AFTER, 'ARMv8::WriteBytes(%s, (uint8_t *) %s, %s);' % (an, bn, sn)
+			yield AFTER, 'delete[] (uint8_t *)%s;' % bn
 		elif type == 'object':
 			tn = tempname()
 			yield '%s* %s;' % (rest[0][0], tn)

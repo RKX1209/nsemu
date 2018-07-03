@@ -1962,9 +1962,11 @@ static void Handle3SamePair(uint32_t insn, int is_q, bool u, unsigned int opcode
         int ebytes = 1 << size;
         int elements = (is_q ? 128 : 64) / (8 << size);
         for (int e = 0; e < elements; e++) {
-                unsigned int reg_idx = e < (ebytes / 2) ? rn : rm;
-                cb->ReadVecElem(GPR_DUMMY, reg_idx, e, size);
-                cb->ReadVecElem(GPR_DUMMY2, reg_idx, e + 1, size);
+                unsigned int reg_idx = e < (elements / 2) ? rn : rm;
+                int base = e < (elements / 2) ? e : (e - elements / 2);
+                //ns_print("ADDP V[%u][%u] = V[%u][%u] + V[%u][%u]\n", rd, e, reg_idx, 2 * e, reg_idx, 2 * e + 1);
+                cb->ReadVecElem(GPR_DUMMY, reg_idx, 2 * base, size);
+                cb->ReadVecElem(GPR_DUMMY2, reg_idx, 2 * base + 1, size);
                 switch (opcode) {
                         case 0x17: /* ADDP */
                                 cb->AddReg (GPR_DUMMY, GPR_DUMMY, GPR_DUMMY2, false, true);
@@ -1985,8 +1987,13 @@ static void Handle3SamePair(uint32_t insn, int is_q, bool u, unsigned int opcode
                                 UnsupportedOp ("FMINP");
                                 break;
                 }
-                cb->WriteVecElem(rd, GPR_DUMMY, e, size);
+                cb->WriteVecElem(VREG_DUMMY, GPR_DUMMY, e, size);
         }
+        // V[rd] = V[dummy] XXX: More optimize
+        cb->ReadVecElem(GPR_DUMMY, VREG_DUMMY, 0, 3);
+        cb->WriteVecElem(rd, GPR_DUMMY, 0, 3);
+        cb->ReadVecElem(GPR_DUMMY, VREG_DUMMY, 1, 3);
+        cb->WriteVecElem(rd, GPR_DUMMY, 1, 3); 
 }
 
 static void DisasSimd3SameLogic(uint32_t insn, DisasCallback *cb) {

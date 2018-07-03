@@ -5,18 +5,18 @@ uint32_t SmService::Initialize() {
         return 0;
 }
 
-uint32_t SmService::GetService(ServiceName _name, IpcService *service) {
+uint32_t SmService::GetService(ServiceName _name, IpcService*& service) {
         std::string name = (char *) _name;
         if (IPC::services.find(name) == IPC::services.end()) {
                 ns_print("Unknown service name %s\n", name.c_str());
                 return 0xC15; //error code
         }
         service = IPC::services[name];
-        ns_print("Found: %s\n", name.c_str());        
+        ns_print("Found: %s => %p\n", name.c_str(), (void *)service);
         return 0;
 }
 
-uint32_t SmService::RegisterService(ServiceName _name, IpcService *service) {
+uint32_t SmService::RegisterService(ServiceName _name, IpcService*& service) {
         std::string name = (char *) _name;
         IpcService *new_srv = new IpcService();
         debug_print("Registering service %s\n", _name);
