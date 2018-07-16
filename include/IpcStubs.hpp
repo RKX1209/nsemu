@@ -811,8 +811,7 @@ namespace nv::gemcoredump {
 				ns_print("IPC message to SmService::GetService: ServiceName name = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 8).c_str());
 				resp->error_code = GetService(req->GetDataPointer<ServiceName>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
-				ns_print("GetService = 0x%x\n", resp->error_code);
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -821,7 +820,7 @@ namespace nv::gemcoredump {
 				ns_print("IPC message to SmService::RegisterService: ServiceName name = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 8).c_str());
 				resp->error_code = RegisterService(req->GetDataPointer<ServiceName>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -894,7 +893,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfile: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfile(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 6: {
@@ -921,7 +920,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetUserRegistrationNotifier\n");
 				resp->error_code = GetUserRegistrationNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 101: {
@@ -930,7 +929,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetUserStateChangeNotifier\n");
 				resp->error_code = GetUserStateChangeNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 102: {
@@ -939,7 +938,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetBaasAccountManagerForSystemService: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountManagerForSystemService(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 103: {
@@ -948,7 +947,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetBaasUserAvailabilityChangeNotifier\n");
 				resp->error_code = GetBaasUserAvailabilityChangeNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 104: {
@@ -957,7 +956,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfileUpdateNotifier\n");
 				resp->error_code = GetProfileUpdateNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 110: {
@@ -1030,7 +1029,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetProfileEditor: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfileEditor(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 206: {
@@ -1045,7 +1044,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::CreateFloatingRegistrationRequest: uint32_t = 0x%x, KObject = 0x%x\n", req->GetData<uint32_t>(8), req->GetCopied(0));
 				resp->error_code = CreateFloatingRegistrationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 230: {
@@ -1054,7 +1053,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::AuthenticateServiceAsync\n");
 				resp->error_code = AuthenticateServiceAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 250: {
@@ -1063,7 +1062,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::GetBaasAccountAdministrator: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountAdministrator(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 290: {
@@ -1072,7 +1071,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ProxyProcedureForGuestLoginWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ProxyProcedureForGuestLoginWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 291: {
@@ -1081,7 +1080,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::ProxyProcedureForFloatingRegistrationWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ProxyProcedureForFloatingRegistrationWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 299: {
@@ -1090,7 +1089,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForAdministrator::SuspendBackgroundDaemon\n");
 				resp->error_code = SuspendBackgroundDaemon(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 997: {
@@ -1201,7 +1200,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetProfile: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfile(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 6: {
@@ -1234,7 +1233,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForApplication::GetBaasAccountManagerForApplication: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountManagerForApplication(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 102: {
@@ -1243,7 +1242,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForApplication::AuthenticateApplicationAsync\n");
 				resp->error_code = AuthenticateApplicationAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 110: {
@@ -1269,7 +1268,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForApplication::CreateGuestLoginRequest: uint32_t = 0x%x, KObject = 0x%x\n", req->GetData<uint32_t>(8), req->GetCopied(0));
 				resp->error_code = CreateGuestLoginRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -1343,7 +1342,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetProfile: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetProfile(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 6: {
@@ -1370,7 +1369,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetUserRegistrationNotifier\n");
 				resp->error_code = GetUserRegistrationNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 101: {
@@ -1379,7 +1378,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetUserStateChangeNotifier\n");
 				resp->error_code = GetUserStateChangeNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 102: {
@@ -1388,7 +1387,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetBaasAccountManagerForSystemService: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetBaasAccountManagerForSystemService(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 103: {
@@ -1397,7 +1396,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetBaasUserAvailabilityChangeNotifier\n");
 				resp->error_code = GetBaasUserAvailabilityChangeNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 104: {
@@ -1406,7 +1405,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IAccountServiceForSystemService::GetProfileUpdateNotifier\n");
 				resp->error_code = GetProfileUpdateNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 110: {
@@ -1498,7 +1497,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::EnsureCacheAsync: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = EnsureCacheAsync(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -1524,7 +1523,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::RegisterNotificationTokenAsync: nn::npns::NotificationToken = %s, nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x28).c_str(), read_string(req->GetDataPointer<uint8_t *>(0x30), 0x10).c_str());
 				resp->error_code = RegisterNotificationTokenAsync(req->GetDataPointer<nn::npns::NotificationToken>(8), req->GetData<nn::account::Uid>(0x30), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 51: {
@@ -1533,7 +1532,7 @@ namespace nn::account {
 				ns_print("IPC message to nn::account::IBaasAccessTokenAccessor::UnregisterNotificationTokenAsync: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = UnregisterNotificationTokenAsync(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -1873,7 +1872,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::EnsureIdTokenCacheAsync\n");
 				resp->error_code = EnsureIdTokenCacheAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -1926,7 +1925,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsync\n");
 				resp->error_code = RefreshNintendoAccountUserResourceCacheAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 132: {
@@ -1935,7 +1934,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(req->GetData<uint32_t>(8), *resp->GetDataPointer<bool *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 150: {
@@ -1954,7 +1953,7 @@ namespace nn::account::baas {
 				delete[] (uint8_t *) temp3;
 				delete[] (uint8_t *) temp6;
 				if(temp7 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp7));
+					resp->SetMove(0, NewHandle((IpcService *)temp7));
 				return 0;
 			}
 			case 200: {
@@ -1969,7 +1968,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::RegisterAsync\n");
 				resp->error_code = RegisterAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 202: {
@@ -1978,7 +1977,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::UnregisterAsync\n");
 				resp->error_code = UnregisterAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 203: {
@@ -1993,7 +1992,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::SynchronizeProfileAsync\n");
 				resp->error_code = SynchronizeProfileAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 221: {
@@ -2002,7 +2001,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::UploadProfileAsync\n");
 				resp->error_code = UploadProfileAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 222: {
@@ -2011,7 +2010,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::SynchronizeProfileAsyncIfSecondsElapsed: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = SynchronizeProfileAsyncIfSecondsElapsed(req->GetData<uint32_t>(8), *resp->GetDataPointer<bool *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 250: {
@@ -2026,7 +2025,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::CreateProcedureToLinkWithNintendoAccount\n");
 				resp->error_code = CreateProcedureToLinkWithNintendoAccount(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 252: {
@@ -2035,7 +2034,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToLinkWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ResumeProcedureToLinkWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 255: {
@@ -2044,7 +2043,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::CreateProcedureToUpdateLinkageStateOfNintendoAccount\n");
 				resp->error_code = CreateProcedureToUpdateLinkageStateOfNintendoAccount(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 256: {
@@ -2053,7 +2052,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToUpdateLinkageStateOfNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ResumeProcedureToUpdateLinkageStateOfNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 260: {
@@ -2062,7 +2061,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::CreateProcedureToLinkNnidWithNintendoAccount\n");
 				resp->error_code = CreateProcedureToLinkNnidWithNintendoAccount(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 261: {
@@ -2071,7 +2070,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::ResumeProcedureToLinkNnidWithNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ResumeProcedureToLinkNnidWithNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 280: {
@@ -2080,7 +2079,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount: nn::account::detail::Uuid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = ProxyProcedureToAcquireApplicationAuthorizationForNintendoAccount(req->GetData<nn::account::detail::Uuid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 997: {
@@ -2089,7 +2088,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IAdministrator::DebugUnlinkNintendoAccountAsync\n");
 				resp->error_code = DebugUnlinkNintendoAccountAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 998: {
@@ -2192,7 +2191,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::RegisterAsync\n");
 				resp->error_code = RegisterAsync(*resp->GetDataPointer<nn::account::Uid *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 101: {
@@ -2201,7 +2200,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::RegisterWithUidAsync: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = RegisterWithUidAsync(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 110: {
@@ -2221,7 +2220,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IFloatingRegistrationRequest::EnsureIdTokenCacheAsync\n");
 				resp->error_code = EnsureIdTokenCacheAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -2329,7 +2328,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IManagerForApplication::EnsureIdTokenCacheAsync\n");
 				resp->error_code = EnsureIdTokenCacheAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -2370,7 +2369,7 @@ namespace nn::account::baas {
 				resp->error_code = CreateAuthorizationRequest(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			default:
@@ -2407,7 +2406,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IManagerForSystemService::EnsureIdTokenCacheAsync\n");
 				resp->error_code = EnsureIdTokenCacheAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -2460,7 +2459,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsync\n");
 				resp->error_code = RefreshNintendoAccountUserResourceCacheAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 132: {
@@ -2469,7 +2468,7 @@ namespace nn::account::baas {
 				ns_print("IPC message to nn::account::baas::IManagerForSystemService::RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = RefreshNintendoAccountUserResourceCacheAsyncIfSecondsElapsed(req->GetData<uint32_t>(8), *resp->GetDataPointer<bool *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 150: {
@@ -2488,7 +2487,7 @@ namespace nn::account::baas {
 				delete[] (uint8_t *) temp3;
 				delete[] (uint8_t *) temp6;
 				if(temp7 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp7));
+					resp->SetMove(0, NewHandle((IpcService *)temp7));
 				return 0;
 			}
 			default:
@@ -2757,7 +2756,7 @@ namespace nn::account::detail {
 				ns_print("IPC message to nn::account::detail::IAsyncContext::GetSystemEvent\n");
 				resp->error_code = GetSystemEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -2798,7 +2797,7 @@ namespace nn::account::detail {
 				ns_print("IPC message to nn::account::detail::INotifier::GetSystemEvent\n");
 				resp->error_code = GetSystemEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -2863,7 +2862,7 @@ namespace nn::account::http {
 				ns_print("IPC message to nn::account::http::IOAuthProcedure::PrepareAsync\n");
 				resp->error_code = PrepareAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -2904,7 +2903,7 @@ namespace nn::account::http {
 				resp->error_code = ApplyResponseAsync(temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 10: {
@@ -2964,7 +2963,7 @@ namespace nn::account::nas {
 				ns_print("IPC message to nn::account::nas::IAuthorizationRequest::InvokeWithoutInteractionAsync\n");
 				resp->error_code = InvokeWithoutInteractionAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 19: {
@@ -3028,7 +3027,7 @@ namespace nn::account::nas {
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForExternalNsa::PrepareAsync\n");
 				resp->error_code = PrepareAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -3069,7 +3068,7 @@ namespace nn::account::nas {
 				resp->error_code = ApplyResponseAsync(temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 10: {
@@ -3137,7 +3136,7 @@ namespace nn::account::nas {
 				ns_print("IPC message to nn::account::nas::IOAuthProcedureForNintendoAccountLinkage::PrepareAsync\n");
 				resp->error_code = PrepareAsync(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -3178,7 +3177,7 @@ namespace nn::account::nas {
 				resp->error_code = ApplyResponseAsync(temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 10: {
@@ -3814,7 +3813,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IAllSystemAppletProxiesService::OpenSystemAppletProxy: uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetCopied(0));
 				resp->error_code = OpenSystemAppletProxy(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 200: {
@@ -3823,7 +3822,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IAllSystemAppletProxiesService::OpenLibraryAppletProxyOld: uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetCopied(0));
 				resp->error_code = OpenLibraryAppletProxyOld(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 201: {
@@ -3837,7 +3836,7 @@ namespace nn::am::service {
 				resp->error_code = OpenLibraryAppletProxy(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 300: {
@@ -3846,7 +3845,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IAllSystemAppletProxiesService::OpenOverlayAppletProxy: uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetCopied(0));
 				resp->error_code = OpenOverlayAppletProxy(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 350: {
@@ -3855,7 +3854,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IAllSystemAppletProxiesService::OpenSystemApplicationProxy: uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetCopied(0));
 				resp->error_code = OpenSystemApplicationProxy(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 400: {
@@ -3864,7 +3863,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IAllSystemAppletProxiesService::CreateSelfLibraryAppletCreatorForDevelop: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = CreateSelfLibraryAppletCreatorForDevelop(req->GetData<uint64_t>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -3889,7 +3888,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IAppletAccessor::GetAppletStateChangedEvent\n");
 				resp->error_code = GetAppletStateChangedEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -3944,7 +3943,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationAccessor::GetAppletStateChangedEvent\n");
 				resp->error_code = GetAppletStateChangedEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -4001,7 +4000,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationAccessor::GetCurrentLibraryApplet\n");
 				resp->error_code = GetCurrentLibraryApplet(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 120: {
@@ -4068,7 +4067,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationCreator::CreateApplication: nn::ncm::ApplicationId = 0x%%lx\n", req->GetData<nn::ncm::ApplicationId>(8));
 				resp->error_code = CreateApplication(req->GetData<nn::ncm::ApplicationId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -4077,7 +4076,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationCreator::PopLaunchRequestedApplication\n");
 				resp->error_code = PopLaunchRequestedApplication(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -4086,7 +4085,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationCreator::CreateSystemApplication: nn::ncm::SystemApplicationId = 0x%%lx\n", req->GetData<nn::ncm::SystemApplicationId>(8));
 				resp->error_code = CreateSystemApplication(req->GetData<nn::ncm::SystemApplicationId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 100: {
@@ -4095,7 +4094,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationCreator::PopFloatingApplicationForDevelopment\n");
 				resp->error_code = PopFloatingApplicationForDevelopment(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -4118,7 +4117,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationFunctions::PopLaunchParameter: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = PopLaunchParameter(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -4285,7 +4284,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetCommonStateGetter\n");
 				resp->error_code = GetCommonStateGetter(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -4294,7 +4293,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetSelfController\n");
 				resp->error_code = GetSelfController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -4303,7 +4302,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetWindowController\n");
 				resp->error_code = GetWindowController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -4312,7 +4311,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetAudioController\n");
 				resp->error_code = GetAudioController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 4: {
@@ -4321,7 +4320,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetDisplayController\n");
 				resp->error_code = GetDisplayController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -4330,7 +4329,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetProcessWindingController\n");
 				resp->error_code = GetProcessWindingController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 11: {
@@ -4339,7 +4338,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetLibraryAppletCreator\n");
 				resp->error_code = GetLibraryAppletCreator(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 20: {
@@ -4348,7 +4347,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetApplicationFunctions\n");
 				resp->error_code = GetApplicationFunctions(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1000: {
@@ -4357,7 +4356,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxy::GetDebugFunctions\n");
 				resp->error_code = GetDebugFunctions(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -4385,7 +4384,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IApplicationProxyService::OpenApplicationProxy: uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetCopied(0));
 				resp->error_code = OpenApplicationProxy(req->GetData<uint64_t>(8), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -4450,7 +4449,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ICommonStateGetter::GetEventHandle\n");
 				resp->error_code = GetEventHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -4531,7 +4530,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ICommonStateGetter::GetAcquiredSleepLockEvent\n");
 				resp->error_code = GetAcquiredSleepLockEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 20: {
@@ -4546,7 +4545,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ICommonStateGetter::GetHomeButtonReaderLockAccessor\n");
 				resp->error_code = GetHomeButtonReaderLockAccessor(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 31: {
@@ -4555,7 +4554,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ICommonStateGetter::GetReaderLockAccessorEx: int32_t = 0x%x\n", req->GetData<int32_t>(8));
 				resp->error_code = GetReaderLockAccessorEx(req->GetData<int32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 40: {
@@ -4594,7 +4593,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ICommonStateGetter::GetDefaultDisplayResolutionChangeEvent\n");
 				resp->error_code = GetDefaultDisplayResolutionChangeEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -4642,7 +4641,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IDebugFunctions::OpenMainApplication\n");
 				resp->error_code = OpenMainApplication(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -4761,7 +4760,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IDisplayController::AcquireLastApplicationCaptureBuffer\n");
 				resp->error_code = AcquireLastApplicationCaptureBuffer(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 11: {
@@ -4776,7 +4775,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IDisplayController::AcquireLastForegroundCaptureBuffer\n");
 				resp->error_code = AcquireLastForegroundCaptureBuffer(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 13: {
@@ -4791,7 +4790,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IDisplayController::AcquireCallerAppletCaptureBuffer\n");
 				resp->error_code = AcquireCallerAppletCaptureBuffer(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 15: {
@@ -4806,7 +4805,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IDisplayController::AcquireLastApplicationCaptureBufferEx\n");
 				resp->error_code = AcquireLastApplicationCaptureBufferEx(*resp->GetDataPointer<bool *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 17: {
@@ -4815,7 +4814,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IDisplayController::AcquireLastForegroundCaptureBufferEx\n");
 				resp->error_code = AcquireLastForegroundCaptureBufferEx(*resp->GetDataPointer<bool *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 18: {
@@ -4824,7 +4823,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IDisplayController::AcquireCallerAppletCaptureBufferEx\n");
 				resp->error_code = AcquireCallerAppletCaptureBufferEx(*resp->GetDataPointer<bool *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 20: {
@@ -4973,7 +4972,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IHomeMenuFunctions::PopFromGeneralChannel\n");
 				resp->error_code = PopFromGeneralChannel(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 21: {
@@ -4982,7 +4981,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IHomeMenuFunctions::GetPopFromGeneralChannelEvent\n");
 				resp->error_code = GetPopFromGeneralChannelEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 30: {
@@ -4991,7 +4990,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IHomeMenuFunctions::GetHomeButtonWriterLockAccessor\n");
 				resp->error_code = GetHomeButtonWriterLockAccessor(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 31: {
@@ -5000,7 +4999,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IHomeMenuFunctions::GetWriterLockAccessorEx: int32_t = 0x%x\n", req->GetData<int32_t>(8));
 				resp->error_code = GetWriterLockAccessorEx(req->GetData<int32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -5026,7 +5025,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletAccessor::GetAppletStateChangedEvent\n");
 				resp->error_code = GetAppletStateChangedEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -5077,7 +5076,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletAccessor::PopOutData\n");
 				resp->error_code = PopOutData(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 102: {
@@ -5098,7 +5097,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletAccessor::PopInteractiveOutData\n");
 				resp->error_code = PopInteractiveOutData(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 105: {
@@ -5107,7 +5106,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletAccessor::GetPopOutDataEvent\n");
 				resp->error_code = GetPopOutDataEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 106: {
@@ -5116,7 +5115,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletAccessor::GetPopInteractiveOutDataEvent\n");
 				resp->error_code = GetPopInteractiveOutDataEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 110: {
@@ -5177,7 +5176,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletCreator::CreateLibraryApplet: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
 				resp->error_code = CreateLibraryApplet(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -5198,7 +5197,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletCreator::CreateStorage: int64_t = 0x%%lx\n", req->GetData<int64_t>(8));
 				resp->error_code = CreateStorage(req->GetData<int64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 11: {
@@ -5207,7 +5206,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletCreator::CreateTransferMemoryStorage: bool = 0x%x, int64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<bool>(8), req->GetData<int64_t>(0x10), req->GetCopied(0));
 				resp->error_code = CreateTransferMemoryStorage(req->GetData<bool>(8), req->GetData<int64_t>(0x10), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 12: {
@@ -5216,7 +5215,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletCreator::CreateHandleStorage: int64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<int64_t>(8), req->GetCopied(0));
 				resp->error_code = CreateHandleStorage(req->GetData<int64_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -5241,7 +5240,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetCommonStateGetter\n");
 				resp->error_code = GetCommonStateGetter(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -5250,7 +5249,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetSelfController\n");
 				resp->error_code = GetSelfController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -5259,7 +5258,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetWindowController\n");
 				resp->error_code = GetWindowController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -5268,7 +5267,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetAudioController\n");
 				resp->error_code = GetAudioController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 4: {
@@ -5277,7 +5276,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetDisplayController\n");
 				resp->error_code = GetDisplayController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -5286,7 +5285,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetProcessWindingController\n");
 				resp->error_code = GetProcessWindingController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 11: {
@@ -5295,7 +5294,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetLibraryAppletCreator\n");
 				resp->error_code = GetLibraryAppletCreator(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 20: {
@@ -5304,7 +5303,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::OpenLibraryAppletSelfAccessor\n");
 				resp->error_code = OpenLibraryAppletSelfAccessor(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1000: {
@@ -5313,7 +5312,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletProxy::GetDebugFunctions\n");
 				resp->error_code = GetDebugFunctions(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -5341,7 +5340,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::PopInData\n");
 				resp->error_code = PopInData(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -5356,7 +5355,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::PopInteractiveInData\n");
 				resp->error_code = PopInteractiveInData(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -5371,7 +5370,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::GetPopInDataEvent\n");
 				resp->error_code = GetPopInDataEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 6: {
@@ -5380,7 +5379,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::GetPopInteractiveInDataEvent\n");
 				resp->error_code = GetPopInteractiveInDataEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 10: {
@@ -5447,7 +5446,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::PopExtraStorage\n");
 				resp->error_code = PopExtraStorage(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 25: {
@@ -5456,7 +5455,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILibraryAppletSelfAccessor::GetPopExtraStorageEvent\n");
 				resp->error_code = GetPopExtraStorageEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 30: {
@@ -5519,7 +5518,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILockAccessor::TryLock: bool = 0x%x\n", req->GetData<bool>(8));
 				resp->error_code = TryLock(req->GetData<bool>(8), *resp->GetDataPointer<bool *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -5534,7 +5533,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ILockAccessor::GetEvent\n");
 				resp->error_code = GetEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -5556,7 +5555,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetCommonStateGetter\n");
 				resp->error_code = GetCommonStateGetter(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -5565,7 +5564,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetSelfController\n");
 				resp->error_code = GetSelfController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -5574,7 +5573,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetWindowController\n");
 				resp->error_code = GetWindowController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -5583,7 +5582,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetAudioController\n");
 				resp->error_code = GetAudioController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 4: {
@@ -5592,7 +5591,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetDisplayController\n");
 				resp->error_code = GetDisplayController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -5601,7 +5600,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetProcessWindingController\n");
 				resp->error_code = GetProcessWindingController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 11: {
@@ -5610,7 +5609,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetLibraryAppletCreator\n");
 				resp->error_code = GetLibraryAppletCreator(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 20: {
@@ -5619,7 +5618,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetOverlayFunctions\n");
 				resp->error_code = GetOverlayFunctions(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1000: {
@@ -5628,7 +5627,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IOverlayAppletProxy::GetDebugFunctions\n");
 				resp->error_code = GetDebugFunctions(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -5721,7 +5720,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IProcessWindingController::OpenCallingLibraryApplet\n");
 				resp->error_code = OpenCallingLibraryApplet(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 21: {
@@ -5736,7 +5735,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IProcessWindingController::PopContext\n");
 				resp->error_code = PopContext(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 23: {
@@ -5810,7 +5809,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISelfController::GetLibraryAppletLaunchableEvent\n");
 				resp->error_code = GetLibraryAppletLaunchableEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 10: {
@@ -5982,7 +5981,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IStorage::Open\n");
 				resp->error_code = Open(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -5991,7 +5990,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IStorage::OpenTransferStorage\n");
 				resp->error_code = OpenTransferStorage(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -6053,7 +6052,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetCommonStateGetter\n");
 				resp->error_code = GetCommonStateGetter(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -6062,7 +6061,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetSelfController\n");
 				resp->error_code = GetSelfController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -6071,7 +6070,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetWindowController\n");
 				resp->error_code = GetWindowController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -6080,7 +6079,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetAudioController\n");
 				resp->error_code = GetAudioController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 4: {
@@ -6089,7 +6088,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetDisplayController\n");
 				resp->error_code = GetDisplayController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -6098,7 +6097,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetProcessWindingController\n");
 				resp->error_code = GetProcessWindingController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 11: {
@@ -6107,7 +6106,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetLibraryAppletCreator\n");
 				resp->error_code = GetLibraryAppletCreator(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 20: {
@@ -6116,7 +6115,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetHomeMenuFunctions\n");
 				resp->error_code = GetHomeMenuFunctions(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 21: {
@@ -6125,7 +6124,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetGlobalStateController\n");
 				resp->error_code = GetGlobalStateController(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 22: {
@@ -6134,7 +6133,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetApplicationCreator\n");
 				resp->error_code = GetApplicationCreator(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1000: {
@@ -6143,7 +6142,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ISystemAppletProxy::GetDebugFunctions\n");
 				resp->error_code = GetDebugFunctions(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -6179,7 +6178,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::ITransferStorageAccessor::GetHandle\n");
 				resp->error_code = GetHandle(*resp->GetDataPointer<uint64_t *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -6217,7 +6216,7 @@ namespace nn::am::service {
 				ns_print("IPC message to nn::am::service::IWindowController::CreateWindow: nn::am::service::WindowCreationOption = 0x%x\n", req->GetData<nn::am::service::WindowCreationOption>(8));
 				resp->error_code = CreateWindow(req->GetData<nn::am::service::WindowCreationOption>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -7425,7 +7424,7 @@ namespace nn::apm {
 				ns_print("IPC message to nn::apm::IManager::OpenSession\n");
 				resp->error_code = OpenSession(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -7452,7 +7451,7 @@ namespace nn::apm {
 				ns_print("IPC message to nn::apm::IManagerPrivileged::OpenSession\n");
 				resp->error_code = OpenSession(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -7502,7 +7501,7 @@ namespace nn::apm {
 				ns_print("IPC message to nn::apm::ISystemManager::GetPerformanceEvent: nn::apm::EventTarget = 0x%x\n", req->GetData<nn::apm::EventTarget>(8));
 				resp->error_code = GetPerformanceEvent(req->GetData<nn::apm::EventTarget>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -7659,7 +7658,7 @@ namespace nn::arp::detail {
 				ns_print("IPC message to nn::arp::detail::IWriter::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -7808,7 +7807,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5: {
@@ -7867,7 +7866,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown11\n");
 				resp->error_code = Unknown11(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 12: {
@@ -7876,7 +7875,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioDevice::Unknown12\n");
 				resp->error_code = Unknown12(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -7936,7 +7935,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioIn::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5: {
@@ -8046,7 +8045,7 @@ namespace nn::audio::detail {
 				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
 				delete[] (uint8_t *)temp7;
 				return 0;
@@ -8076,7 +8075,7 @@ namespace nn::audio::detail {
 				resp->error_code = Unknown3(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
 				delete[] (uint8_t *)temp7;
 				return 0;
@@ -8113,7 +8112,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioInManagerForApplet::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -8122,7 +8121,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioInManagerForApplet::Unknown1: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -8210,7 +8209,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioOut::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5: {
@@ -8296,7 +8295,7 @@ namespace nn::audio::detail {
 				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
 				delete[] (uint8_t *)temp7;
 				return 0;
@@ -8326,7 +8325,7 @@ namespace nn::audio::detail {
 				resp->error_code = Unknown3(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, *resp->GetDataPointer<uint128_t *>(8), temp4, temp7, temp6);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				ARMv8::WriteBytes(temp5, (uint8_t *) temp7, temp6);
 				delete[] (uint8_t *)temp7;
 				return 0;
@@ -8351,7 +8350,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioOutManagerForApplet::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -8360,7 +8359,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioOutManagerForApplet::Unknown1: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -8476,7 +8475,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioRenderer::Unknown7\n");
 				resp->error_code = Unknown7(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 8: {
@@ -8546,7 +8545,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown0: uint8_t[0x34] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x, KObject = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x34).c_str(), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetCopied(0), req->GetCopied(1));
 				resp->error_code = Unknown0(req->GetDataPointer<uint8_t *>(8), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -8561,7 +8560,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown2: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown2(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -8570,7 +8569,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioRendererManager::Unknown3: uint8_t[0x34] = %s, uint64_t = 0x%%lx, uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x34).c_str(), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetData<uint64_t>(0x50), req->GetCopied(0));
 				resp->error_code = Unknown3(req->GetDataPointer<uint8_t *>(8), req->GetData<uint64_t>(0x40), req->GetData<uint64_t>(0x48), req->GetData<uint64_t>(0x50), req->pid, IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -8593,7 +8592,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioRendererManagerForApplet::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -8602,7 +8601,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IAudioRendererManagerForApplet::Unknown1: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -8704,7 +8703,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorder::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5: {
@@ -8778,7 +8777,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorderManager::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), req->GetCopied(0));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), IPC::GetHandle<IpcService*>(req->GetCopied(0)), *resp->GetDataPointer<uint128_t *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -8798,7 +8797,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown0: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -8807,7 +8806,7 @@ namespace nn::audio::detail {
 				ns_print("IPC message to nn::audio::detail::IFinalOutputRecorderManagerForApplet::Unknown1: uint64_t = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Unknown1(req->GetData<uint64_t>(8), req->GetData<uint64_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -9354,7 +9353,7 @@ namespace nn::audioctrl::detail {
 				ns_print("IPC message to nn::audioctrl::detail::IAudioController::Unknown19\n");
 				resp->error_code = Unknown19(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 20: {
@@ -9363,7 +9362,7 @@ namespace nn::audioctrl::detail {
 				ns_print("IPC message to nn::audioctrl::detail::IAudioController::Unknown20\n");
 				resp->error_code = Unknown20(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 21: {
@@ -9513,7 +9512,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCache\n");
 				resp->error_code = RequestSyncDeliveryCache(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 20100: {
@@ -9522,7 +9521,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IBcatService::RequestSyncDeliveryCacheWithApplicationId: uint32_t = 0x%x, nn::ApplicationId = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<nn::ApplicationId>(0x10));
 				resp->error_code = RequestSyncDeliveryCacheWithApplicationId(req->GetData<uint32_t>(8), req->GetData<nn::ApplicationId>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 30100: {
@@ -9705,7 +9704,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheProgressService::GetEvent\n");
 				resp->error_code = GetEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -9737,7 +9736,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateFileService\n");
 				resp->error_code = CreateFileService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -9746,7 +9745,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IDeliveryCacheStorageService::CreateDirectoryService\n");
 				resp->error_code = CreateDirectoryService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 10: {
@@ -9779,7 +9778,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IServiceCreator::CreateBcatService: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = CreateBcatService(req->GetData<uint64_t>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -9788,7 +9787,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageService: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = CreateDeliveryCacheStorageService(req->GetData<uint64_t>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -9797,7 +9796,7 @@ namespace nn::bcat::detail::ipc {
 				ns_print("IPC message to nn::bcat::detail::ipc::IServiceCreator::CreateDeliveryCacheStorageServiceWithApplicationId: nn::ApplicationId = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
 				resp->error_code = CreateDeliveryCacheStorageServiceWithApplicationId(req->GetData<nn::ApplicationId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -9933,7 +9932,7 @@ namespace nn::bgtc {
 				ns_print("IPC message to nn::bgtc::IStateControlService::Unknown2\n");
 				resp->error_code = Unknown2(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {
@@ -9987,7 +9986,7 @@ namespace nn::bgtc {
 				ns_print("IPC message to nn::bgtc::ITaskService::Unknown3\n");
 				resp->error_code = Unknown3(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 4: {
@@ -10032,7 +10031,7 @@ namespace nn::bgtc {
 				ns_print("IPC message to nn::bgtc::ITaskService::Unknown14\n");
 				resp->error_code = Unknown14(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 15: {
@@ -10175,7 +10174,7 @@ namespace nn::bluetooth {
 				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -10398,7 +10397,7 @@ namespace nn::bluetooth {
 				ns_print("IPC message to nn::bluetooth::IBluetoothDriver::Unknown36\n");
 				resp->error_code = Unknown36(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 37: {
@@ -10729,7 +10728,7 @@ namespace nn::bpc {
 				ns_print("IPC message to nn::bpc::IBoardPowerControlManager::Unknown5: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown5(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 6: {
@@ -10744,7 +10743,7 @@ namespace nn::bpc {
 				ns_print("IPC message to nn::bpc::IBoardPowerControlManager::Unknown7: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown7(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 8: {
@@ -11331,7 +11330,7 @@ namespace nn::btm {
 				ns_print("IPC message to nn::btm::IBtmSystem::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -12393,7 +12392,7 @@ namespace nn::codec::detail {
 				ns_print("IPC message to nn::codec::detail::IHardwareOpusDecoderManager::Unknown0: uint64_t = 0x%%lx, uint32_t = 0x%x, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), req->GetCopied(0));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->GetData<uint32_t>(0x10), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -12413,7 +12412,7 @@ namespace nn::codec::detail {
 				resp->error_code = Unknown2(req->GetData<uint32_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 3: {
@@ -12541,7 +12540,7 @@ namespace nn::erpt::sf {
 				ns_print("IPC message to nn::erpt::sf::IManager::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -12619,7 +12618,7 @@ namespace nn::erpt::sf {
 				ns_print("IPC message to nn::erpt::sf::ISession::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -12628,7 +12627,7 @@ namespace nn::erpt::sf {
 				ns_print("IPC message to nn::erpt::sf::ISession::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -13039,7 +13038,7 @@ namespace nn::eth::sf {
 				ns_print("IPC message to nn::eth::sf::IEthInterfaceGroup::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -13183,7 +13182,7 @@ namespace nn::eupld::sf {
 				ns_print("IPC message to nn::eupld::sf::IRequest::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -13358,7 +13357,7 @@ namespace nn::fan::detail {
 				ns_print("IPC message to nn::fan::detail::IManager::Unknown0: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown0(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -13418,7 +13417,7 @@ namespace nn::fatalsrv {
 				ns_print("IPC message to nn::fatalsrv::IPrivateService::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -13489,7 +13488,7 @@ namespace nn::fgm::sf {
 				ns_print("IPC message to nn::fgm::sf::IDebugger::Initialize: uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint64_t>(8), req->GetCopied(0));
 				resp->error_code = Initialize(req->GetData<uint64_t>(8), IPC::GetHandle<IpcService*>(req->GetCopied(0)), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -13528,7 +13527,7 @@ namespace nn::fgm::sf {
 				ns_print("IPC message to nn::fgm::sf::IRequest::Initialize: nn::fgm::Module = 0x%x, uint64_t = 0x%%lx\n", req->GetData<nn::fgm::Module>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = Initialize(req->GetData<nn::fgm::Module>(8), req->GetData<uint64_t>(0x10), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -13569,7 +13568,7 @@ namespace nn::fgm::sf {
 				ns_print("IPC message to nn::fgm::sf::ISession::Initialize\n");
 				resp->error_code = Initialize(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -13625,7 +13624,7 @@ namespace nn::friends::detail::ipc {
 				ns_print("IPC message to nn::friends::detail::ipc::IFriendService::GetCompletionEvent\n");
 				resp->error_code = GetCompletionEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -14326,7 +14325,7 @@ namespace nn::friends::detail::ipc {
 				ns_print("IPC message to nn::friends::detail::ipc::INotificationService::GetEvent\n");
 				resp->error_code = GetEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -14360,7 +14359,7 @@ namespace nn::friends::detail::ipc {
 				ns_print("IPC message to nn::friends::detail::ipc::IServiceCreator::CreateFriendService\n");
 				resp->error_code = CreateFriendService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -14369,7 +14368,7 @@ namespace nn::friends::detail::ipc {
 				ns_print("IPC message to nn::friends::detail::ipc::IServiceCreator::CreateNotificationService: nn::account::Uid = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = CreateNotificationService(req->GetData<nn::account::Uid>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -15044,7 +15043,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IEventNotifier::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -15222,7 +15221,7 @@ namespace nn::fssrv::sf {
 				resp->error_code = OpenFile(req->GetData<uint32_t>(8), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 9: {
@@ -15236,7 +15235,7 @@ namespace nn::fssrv::sf {
 				resp->error_code = OpenDirectory(req->GetData<uint32_t>(8), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 10: {
@@ -15327,7 +15326,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByCurrentProcess\n");
 				resp->error_code = OpenDataFileSystemByCurrentProcess(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7: {
@@ -15336,7 +15335,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountContent7: nn::ApplicationId tid = 0x%%lx, uint32_t ncaType = 0x%x\n", req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10));
 				resp->error_code = MountContent7(req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 8: {
@@ -15350,7 +15349,7 @@ namespace nn::fssrv::sf {
 				resp->error_code = MountContent(req->GetData<nn::ApplicationId>(8), req->GetData<uint32_t>(0x10), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 9: {
@@ -15359,7 +15358,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataFileSystemByApplicationId: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
 				resp->error_code = OpenDataFileSystemByApplicationId(req->GetData<nn::ApplicationId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 11: {
@@ -15373,7 +15372,7 @@ namespace nn::fssrv::sf {
 				resp->error_code = MountBis(req->GetData<nn::fssrv::sf::Partition>(8), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 12: {
@@ -15382,7 +15381,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenBisPartition: nn::fssrv::sf::Partition partitionID = 0x%x\n", req->GetData<nn::fssrv::sf::Partition>(8));
 				resp->error_code = OpenBisPartition(req->GetData<nn::fssrv::sf::Partition>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 13: {
@@ -15402,7 +15401,7 @@ namespace nn::fssrv::sf {
 				resp->error_code = OpenHostFileSystemImpl(temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 18: {
@@ -15411,7 +15410,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSdCard\n");
 				resp->error_code = MountSdCard(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 19: {
@@ -15473,7 +15472,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenGameCardPartition: nn::fssrv::sf::Partition partitionID = 0x%x, uint32_t = 0x%x\n", req->GetData<nn::fssrv::sf::Partition>(8), req->GetData<uint32_t>(0xc));
 				resp->error_code = OpenGameCardPartition(req->GetData<nn::fssrv::sf::Partition>(8), req->GetData<uint32_t>(0xc), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 31: {
@@ -15482,7 +15481,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountGameCardPartition: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
 				resp->error_code = MountGameCardPartition(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 32: {
@@ -15497,7 +15496,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str());
 				resp->error_code = MountSaveData(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 52: {
@@ -15506,7 +15505,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSystemSaveData: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str());
 				resp->error_code = MountSystemSaveData(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 53: {
@@ -15515,7 +15514,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountSaveDataReadOnly: uint8_t input = 0x%x, nn::fssrv::sf::SaveStruct saveStruct = %s\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str());
 				resp->error_code = MountSaveDataReadOnly(req->GetData<uint8_t>(8), req->GetDataPointer<nn::fssrv::sf::SaveStruct>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 57: {
@@ -15557,7 +15556,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataInfoReader\n");
 				resp->error_code = OpenSaveDataInfoReader(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 61: {
@@ -15566,7 +15565,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataIterator: uint8_t = 0x%x\n", req->GetData<uint8_t>(8));
 				resp->error_code = OpenSaveDataIterator(req->GetData<uint8_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 80: {
@@ -15575,7 +15574,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSaveDataThumbnailFile: uint8_t = 0x%x, uint8_t[0x40] = %s, uint32_t = 0x%x\n", req->GetData<uint8_t>(8), read_string(req->GetDataPointer<uint8_t *>(0x10), 0x40).c_str(), req->GetData<uint32_t>(0x50));
 				resp->error_code = OpenSaveDataThumbnailFile(req->GetData<uint8_t>(8), req->GetDataPointer<uint8_t *>(0x10), req->GetData<uint32_t>(0x50), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 100: {
@@ -15584,7 +15583,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountImageDirectory: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = MountImageDirectory(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 110: {
@@ -15593,7 +15592,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::MountContentStorage: uint32_t contentStorageID = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = MountContentStorage(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 200: {
@@ -15602,7 +15601,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataStorageByCurrentProcess\n");
 				resp->error_code = OpenDataStorageByCurrentProcess(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 201: {
@@ -15611,7 +15610,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataStorageByApplicationId: nn::ApplicationId tid = 0x%%lx\n", req->GetData<nn::ApplicationId>(8));
 				resp->error_code = OpenDataStorageByApplicationId(req->GetData<nn::ApplicationId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 202: {
@@ -15620,7 +15619,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDataStorageByDataId: nn::ApplicationId tid = 0x%%lx, uint8_t storageId = 0x%x\n", req->GetData<nn::ApplicationId>(8), req->GetData<uint8_t>(0x10));
 				resp->error_code = OpenDataStorageByDataId(req->GetData<nn::ApplicationId>(8), req->GetData<uint8_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 203: {
@@ -15629,7 +15628,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenRomStorage\n");
 				resp->error_code = OpenRomStorage(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 400: {
@@ -15638,7 +15637,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenDeviceOperator\n");
 				resp->error_code = OpenDeviceOperator(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 500: {
@@ -15647,7 +15646,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenSdCardDetectionEventNotifier\n");
 				resp->error_code = OpenSdCardDetectionEventNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 501: {
@@ -15656,7 +15655,7 @@ namespace nn::fssrv::sf {
 				ns_print("IPC message to nn::fssrv::sf::IFileSystemProxy::OpenGameCardDetectionEventNotifier\n");
 				resp->error_code = OpenGameCardDetectionEventNotifier(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 600: {
@@ -15890,7 +15889,7 @@ namespace nn::fssrv::sf {
 				resp->error_code = MountCode(req->GetData<nn::ApplicationId>(8), temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 1: {
@@ -16467,7 +16466,7 @@ namespace nn::gpio {
 				ns_print("IPC message to nn::gpio::IManager::Unknown0: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown0(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -16476,7 +16475,7 @@ namespace nn::gpio {
 				ns_print("IPC message to nn::gpio::IManager::Unknown1: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown1(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -16485,7 +16484,7 @@ namespace nn::gpio {
 				ns_print("IPC message to nn::gpio::IManager::Unknown2: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown2(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -16595,7 +16594,7 @@ namespace nn::gpio {
 				ns_print("IPC message to nn::gpio::IPadSession::Unknown10\n");
 				resp->error_code = Unknown10(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 11: {
@@ -16773,7 +16772,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IAppletResource::GetSharedMemoryHandle\n");
 				resp->error_code = GetSharedMemoryHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -17102,7 +17101,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidServer::CreateAppletResource: nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::applet::AppletResourceUserId>(8));
 				resp->error_code = CreateAppletResource(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -17135,7 +17134,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidServer::AcquireXpadIdEventHandle: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = AcquireXpadIdEventHandle(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 41: {
@@ -17173,7 +17172,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidServer::GetJoyXpadLifoHandle: nn::hid::JoyXpadId = 0x%x\n", req->GetData<nn::hid::JoyXpadId>(8));
 				resp->error_code = GetJoyXpadLifoHandle(req->GetData<nn::hid::JoyXpadId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 59: {
@@ -17205,7 +17204,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidServer::GetSixAxisSensorLifoHandle: nn::hid::BasicXpadId = 0x%x\n", req->GetData<nn::hid::BasicXpadId>(8));
 				resp->error_code = GetSixAxisSensorLifoHandle(req->GetData<nn::hid::BasicXpadId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 63: {
@@ -17226,7 +17225,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidServer::GetJoySixAxisSensorLifoHandle: nn::hid::JoyXpadId = 0x%x\n", req->GetData<nn::hid::JoyXpadId>(8));
 				resp->error_code = GetJoySixAxisSensorLifoHandle(req->GetData<nn::hid::JoyXpadId>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 66: {
@@ -17378,7 +17377,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidServer::AcquireNpadStyleSetUpdateEventHandle: uint32_t = 0x%x, nn::applet::AppletResourceUserId = 0x%%lx, uint64_t = 0x%%lx\n", req->GetData<uint32_t>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->GetData<uint64_t>(0x18));
 				resp->error_code = AcquireNpadStyleSetUpdateEventHandle(req->GetData<uint32_t>(8), req->GetData<nn::applet::AppletResourceUserId>(0x10), req->GetData<uint64_t>(0x18), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 107: {
@@ -17495,7 +17494,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidServer::CreateActiveVibrationDeviceList\n");
 				resp->error_code = CreateActiveVibrationDeviceList(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 204: {
@@ -17668,7 +17667,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireHomeButtonEventHandle: nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::applet::AppletResourceUserId>(8));
 				resp->error_code = AcquireHomeButtonEventHandle(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 111: {
@@ -17683,7 +17682,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireSleepButtonEventHandle: nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::applet::AppletResourceUserId>(8));
 				resp->error_code = AcquireSleepButtonEventHandle(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 131: {
@@ -17698,7 +17697,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireCaptureButtonEventHandle: nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::applet::AppletResourceUserId>(8));
 				resp->error_code = AcquireCaptureButtonEventHandle(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 151: {
@@ -17713,7 +17712,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireNfcDeviceUpdateEventHandle\n");
 				resp->error_code = AcquireNfcDeviceUpdateEventHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 211: {
@@ -17733,7 +17732,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireNfcActivateEventHandle: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = AcquireNfcActivateEventHandle(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 213: {
@@ -17748,7 +17747,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireIrSensorEventHandle: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = AcquireIrSensorEventHandle(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 231: {
@@ -17900,7 +17899,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquirePlayReportControllerUsageUpdateEvent\n");
 				resp->error_code = AcquirePlayReportControllerUsageUpdateEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 541: {
@@ -17920,7 +17919,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquirePlayReportRegisteredDeviceUpdateEvent\n");
 				resp->error_code = AcquirePlayReportRegisteredDeviceUpdateEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 543: {
@@ -17940,7 +17939,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireConnectionTriggerTimeoutEvent\n");
 				resp->error_code = AcquireConnectionTriggerTimeoutEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 545: {
@@ -17955,7 +17954,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireDeviceRegisteredEventForControllerSupport\n");
 				resp->error_code = AcquireDeviceRegisteredEventForControllerSupport(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 547: {
@@ -17976,7 +17975,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireUniquePadConnectionEventHandle\n");
 				resp->error_code = AcquireUniquePadConnectionEventHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 703: {
@@ -17996,7 +17995,7 @@ namespace nn::hid {
 				ns_print("IPC message to nn::hid::IHidSystemServer::AcquireJoyDetachOnBluetoothOffEventHandle: nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::applet::AppletResourceUserId>(8));
 				resp->error_code = AcquireJoyDetachOnBluetoothOffEventHandle(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 800: {
@@ -19046,7 +19045,7 @@ namespace nn::htc::tenv {
 				ns_print("IPC message to nn::htc::tenv::IServiceManager::Unknown0: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -19086,7 +19085,7 @@ namespace nn::i2c {
 				ns_print("IPC message to nn::i2c::IManager::Unknown0: uint16_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint16_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint32_t>(0x14));
 				resp->error_code = Unknown0(req->GetData<uint16_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint32_t>(0x14), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -19095,7 +19094,7 @@ namespace nn::i2c {
 				ns_print("IPC message to nn::i2c::IManager::Unknown1: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown1(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -19266,7 +19265,7 @@ namespace nn::idle::detail {
 				ns_print("IPC message to nn::idle::detail::IPolicyManagerSystem::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -19361,7 +19360,7 @@ namespace nn::irsensor {
 				ns_print("IPC message to nn::irsensor::IIrSensorServer::GetIrsensorSharedMemoryHandle: nn::applet::AppletResourceUserId = 0x%%lx\n", req->GetData<nn::applet::AppletResourceUserId>(8));
 				resp->error_code = GetIrsensorSharedMemoryHandle(req->GetData<nn::applet::AppletResourceUserId>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 305: {
@@ -19976,7 +19975,7 @@ namespace nn::ldn::detail {
 				ns_print("IPC message to nn::ldn::detail::IMonitorServiceCreator::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -20039,7 +20038,7 @@ namespace nn::ldn::detail {
 				ns_print("IPC message to nn::ldn::detail::ISystemLocalCommunicationService::Unknown100\n");
 				resp->error_code = Unknown100(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 101: {
@@ -20240,7 +20239,7 @@ namespace nn::ldn::detail {
 				ns_print("IPC message to nn::ldn::detail::ISystemServiceCreator::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -20303,7 +20302,7 @@ namespace nn::ldn::detail {
 				ns_print("IPC message to nn::ldn::detail::IUserLocalCommunicationService::Unknown100\n");
 				resp->error_code = Unknown100(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 101: {
@@ -20504,7 +20503,7 @@ namespace nn::ldn::detail {
 				ns_print("IPC message to nn::ldn::detail::IUserServiceCreator::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -20824,7 +20823,7 @@ namespace nn::lm {
 				ns_print("IPC message to nn::lm::ILogService::Unknown0: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown0(req->GetData<uint64_t>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -21006,7 +21005,7 @@ namespace nn::lr {
 				ns_print("IPC message to nn::lr::ILocationResolverManager::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -21021,7 +21020,7 @@ namespace nn::lr {
 				ns_print("IPC message to nn::lr::ILocationResolverManager::Unknown3\n");
 				resp->error_code = Unknown3(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -21412,7 +21411,7 @@ namespace nn::mii::detail {
 				ns_print("IPC message to nn::mii::detail::IStaticService::GetDatabaseService: int32_t = 0x%x\n", req->GetData<int32_t>(8));
 				resp->error_code = GetDatabaseService(req->GetData<int32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -22285,7 +22284,7 @@ namespace nn::news::detail::ipc {
 				ns_print("IPC message to nn::news::detail::ipc::INewlyArrivedEventHolder::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -22524,7 +22523,7 @@ namespace nn::news::detail::ipc {
 				ns_print("IPC message to nn::news::detail::ipc::IOverwriteEventHolder::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -22544,7 +22543,7 @@ namespace nn::news::detail::ipc {
 				ns_print("IPC message to nn::news::detail::ipc::IServiceCreator::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -22553,7 +22552,7 @@ namespace nn::news::detail::ipc {
 				ns_print("IPC message to nn::news::detail::ipc::IServiceCreator::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -22562,7 +22561,7 @@ namespace nn::news::detail::ipc {
 				ns_print("IPC message to nn::news::detail::ipc::IServiceCreator::Unknown2\n");
 				resp->error_code = Unknown2(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -22571,7 +22570,7 @@ namespace nn::news::detail::ipc {
 				ns_print("IPC message to nn::news::detail::ipc::IServiceCreator::Unknown3\n");
 				resp->error_code = Unknown3(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 4: {
@@ -22580,7 +22579,7 @@ namespace nn::news::detail::ipc {
 				ns_print("IPC message to nn::news::detail::ipc::IServiceCreator::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -22755,7 +22754,7 @@ namespace nn::nfc::am::detail {
 				ns_print("IPC message to nn::nfc::am::detail::IAmManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -22845,7 +22844,7 @@ namespace nn::nfc::detail {
 				ns_print("IPC message to nn::nfc::detail::ISystemManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -22908,7 +22907,7 @@ namespace nn::nfc::detail {
 				ns_print("IPC message to nn::nfc::detail::IUserManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -23054,7 +23053,7 @@ namespace nn::nfc::mifare::detail {
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown8: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown8(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 9: {
@@ -23063,7 +23062,7 @@ namespace nn::nfc::mifare::detail {
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown9: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown9(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 10: {
@@ -23090,7 +23089,7 @@ namespace nn::nfc::mifare::detail {
 				ns_print("IPC message to nn::nfc::mifare::detail::IUser::Unknown13\n");
 				resp->error_code = Unknown13(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -23123,7 +23122,7 @@ namespace nn::nfc::mifare::detail {
 				ns_print("IPC message to nn::nfc::mifare::detail::IUserManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -23354,7 +23353,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown17: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown17(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 18: {
@@ -23363,7 +23362,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown18: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown18(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 19: {
@@ -23396,7 +23395,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown23\n");
 				resp->error_code = Unknown23(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 24: {
@@ -23607,7 +23606,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown307: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown307(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 308: {
@@ -23616,7 +23615,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown308: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown308(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 309: {
@@ -23655,7 +23654,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IDebug::Unknown314\n");
 				resp->error_code = Unknown314(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -23728,7 +23727,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IDebugManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -23856,7 +23855,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown17: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown17(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 18: {
@@ -23865,7 +23864,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown18: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown18(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 19: {
@@ -23892,7 +23891,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::ISystem::Unknown23\n");
 				resp->error_code = Unknown23(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 100: {
@@ -23994,7 +23993,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::ISystemManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -24161,7 +24160,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown17: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown17(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 18: {
@@ -24170,7 +24169,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown18: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown18(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 19: {
@@ -24203,7 +24202,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IUser::Unknown23\n");
 				resp->error_code = Unknown23(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 24: {
@@ -24258,7 +24257,7 @@ namespace nn::nfp::detail {
 				ns_print("IPC message to nn::nfp::detail::IUserManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -24725,7 +24724,7 @@ namespace nn::nifm::detail {
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::CreateScanRequest\n");
 				resp->error_code = CreateScanRequest(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 4: {
@@ -24734,7 +24733,7 @@ namespace nn::nifm::detail {
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::CreateRequest: int32_t = 0x%x\n", req->GetData<int32_t>(8));
 				resp->error_code = CreateRequest(req->GetData<int32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 5: {
@@ -24837,7 +24836,7 @@ namespace nn::nifm::detail {
 				resp->error_code = CreateTemporaryNetworkProfile(temp3, temp2, *resp->GetDataPointer<nn::util::Uuid *>(8), temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			case 15: {
@@ -24965,7 +24964,7 @@ namespace nn::nifm::detail {
 				ns_print("IPC message to nn::nifm::detail::IGeneralService::GetTelemetorySystemEventReadableHandle\n");
 				resp->error_code = GetTelemetorySystemEventReadableHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 32: {
@@ -25082,9 +25081,9 @@ namespace nn::nifm::detail {
 				ns_print("IPC message to nn::nifm::detail::IRequest::GetSystemEventReadableHandles\n");
 				resp->error_code = GetSystemEventReadableHandles(temp1, temp2);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				if(temp2 != nullptr)
-					resp->SetCopy(1, IPC::NewHandle(temp2));
+					resp->SetCopy(1, NewHandle(temp2));
 				return 0;
 			}
 			case 3: {
@@ -25289,7 +25288,7 @@ namespace nn::nifm::detail {
 				ns_print("IPC message to nn::nifm::detail::IScanRequest::GetSystemEventReadableHandle\n");
 				resp->error_code = GetSystemEventReadableHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -25312,7 +25311,7 @@ namespace nn::nifm::detail {
 				ns_print("IPC message to nn::nifm::detail::IStaticService::CreateGeneralServiceOld\n");
 				resp->error_code = CreateGeneralServiceOld(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 5: {
@@ -25321,7 +25320,7 @@ namespace nn::nifm::detail {
 				ns_print("IPC message to nn::nifm::detail::IStaticService::CreateGeneralService: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = CreateGeneralService(req->GetData<uint64_t>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -26566,7 +26565,7 @@ namespace nn::npns {
 				ns_print("IPC message to nn::npns::INpnsSystem::Unknown5\n");
 				resp->error_code = Unknown5(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 6: {
@@ -26581,7 +26580,7 @@ namespace nn::npns {
 				ns_print("IPC message to nn::npns::INpnsSystem::Unknown7\n");
 				resp->error_code = Unknown7(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 11: {
@@ -26679,7 +26678,7 @@ namespace nn::npns {
 				ns_print("IPC message to nn::npns::INpnsSystem::Unknown105\n");
 				resp->error_code = Unknown105(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 111: {
@@ -26793,7 +26792,7 @@ namespace nn::npns {
 				ns_print("IPC message to nn::npns::INpnsUser::Unknown5\n");
 				resp->error_code = Unknown5(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 7: {
@@ -26802,7 +26801,7 @@ namespace nn::npns {
 				ns_print("IPC message to nn::npns::INpnsUser::Unknown7\n");
 				resp->error_code = Unknown7(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 21: {
@@ -27093,7 +27092,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown2\n");
 				resp->error_code = Unknown2(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {
@@ -27286,7 +27285,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown44\n");
 				resp->error_code = Unknown44(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 45: {
@@ -27295,7 +27294,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown45\n");
 				resp->error_code = Unknown45(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 46: {
@@ -27322,7 +27321,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown49\n");
 				resp->error_code = Unknown49(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 52: {
@@ -27331,7 +27330,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown52\n");
 				resp->error_code = Unknown52(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 53: {
@@ -27394,7 +27393,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown62\n");
 				resp->error_code = Unknown62(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 63: {
@@ -27415,7 +27414,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown65\n");
 				resp->error_code = Unknown65(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 66: {
@@ -27520,7 +27519,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown300\n");
 				resp->error_code = Unknown300(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 301: {
@@ -27635,7 +27634,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IApplicationManagerInterface::Unknown505\n");
 				resp->error_code = Unknown505(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 506: {
@@ -28491,7 +28490,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IProgressMonitorForDeleteUserSaveDataAll::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -28533,7 +28532,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IServiceGetterInterface::Unknown7994\n");
 				resp->error_code = Unknown7994(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7995: {
@@ -28542,7 +28541,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IServiceGetterInterface::Unknown7995\n");
 				resp->error_code = Unknown7995(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7996: {
@@ -28551,7 +28550,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IServiceGetterInterface::Unknown7996\n");
 				resp->error_code = Unknown7996(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7997: {
@@ -28560,7 +28559,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IServiceGetterInterface::Unknown7997\n");
 				resp->error_code = Unknown7997(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7998: {
@@ -28569,7 +28568,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IServiceGetterInterface::Unknown7998\n");
 				resp->error_code = Unknown7998(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7999: {
@@ -28578,7 +28577,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::IServiceGetterInterface::Unknown7999\n");
 				resp->error_code = Unknown7999(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -28717,7 +28716,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::ISystemUpdateInterface::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -28756,7 +28755,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::ISystemUpdateInterface::Unknown9\n");
 				resp->error_code = Unknown9(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 10: {
@@ -28777,7 +28776,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::ISystemUpdateInterface::Unknown12\n");
 				resp->error_code = Unknown12(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 13: {
@@ -28792,7 +28791,7 @@ namespace nn::ns::detail {
 				ns_print("IPC message to nn::ns::detail::ISystemUpdateInterface::Unknown14\n");
 				resp->error_code = Unknown14(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 15: {
@@ -30018,7 +30017,7 @@ namespace nn::ntc::detail::service {
 				ns_print("IPC message to nn::ntc::detail::service::IEnsureNetworkClockAvailabilityService::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -30067,7 +30066,7 @@ namespace nn::ntc::detail::service {
 				ns_print("IPC message to nn::ntc::detail::service::IStaticService::Unknown0: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
 				resp->error_code = Unknown0(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 100: {
@@ -30147,7 +30146,7 @@ namespace nn::omm::detail {
 				ns_print("IPC message to nn::omm::detail::IOperationModeManager::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -30216,7 +30215,7 @@ namespace nn::omm::detail {
 				ns_print("IPC message to nn::omm::detail::IOperationModeManager::Unknown12\n");
 				resp->error_code = Unknown12(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 13: {
@@ -30338,7 +30337,7 @@ namespace nn::ovln {
 				ns_print("IPC message to nn::ovln::IReceiver::Unknown2\n");
 				resp->error_code = Unknown2(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {
@@ -30374,7 +30373,7 @@ namespace nn::ovln {
 				ns_print("IPC message to nn::ovln::IReceiverService::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -31004,7 +31003,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetPinCodeChangedEvent\n");
 				resp->error_code = GetPinCodeChangedEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1403: {
@@ -31048,7 +31047,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetSynchronizationEvent\n");
 				resp->error_code = GetSynchronizationEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1451: {
@@ -31094,7 +31093,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetPlayTimerEventToRequestSuspension\n");
 				resp->error_code = GetPlayTimerEventToRequestSuspension(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1471: {
@@ -31115,7 +31114,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetUnlinkedEvent\n");
 				resp->error_code = GetUnlinkedEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1474: {
@@ -31183,7 +31182,7 @@ namespace nn::pctl::detail::ipc {
 				resp->error_code = RequestPairingAsync(temp3, temp2, *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp4));
+					resp->SetCopy(0, NewHandle(temp4));
 				return 0;
 			}
 			case 2002: {
@@ -31198,7 +31197,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::AuthorizePairingAsync: nn::pctl::detail::PairingInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = AuthorizePairingAsync(req->GetData<nn::pctl::detail::PairingInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2004: {
@@ -31213,7 +31212,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::RetrievePairingInfoAsync\n");
 				resp->error_code = RetrievePairingInfoAsync(*resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2006: {
@@ -31228,7 +31227,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::UnlinkPairingAsync: bool = 0x%x\n", req->GetData<bool>(8));
 				resp->error_code = UnlinkPairingAsync(req->GetData<bool>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2008: {
@@ -31246,7 +31245,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetAccountMiiImageAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, temp4, temp3);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				ARMv8::WriteBytes(temp2, (uint8_t *) temp4, temp3);
 				delete[] (uint8_t *)temp4;
 				return 0;
@@ -31271,7 +31270,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::GetAccountMiiImageContentTypeAsync: nn::pctl::detail::PairingAccountInfoBase = %s\n", read_string(req->GetDataPointer<uint8_t *>(8), 0x10).c_str());
 				resp->error_code = GetAccountMiiImageContentTypeAsync(req->GetData<nn::pctl::detail::PairingAccountInfoBase>(8), *resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), *resp->GetDataPointer<uint32_t *>(0x10), temp1, temp4, temp3);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				ARMv8::WriteBytes(temp2, (uint8_t *) temp4, temp3);
 				delete[] (uint8_t *)temp4;
 				return 0;
@@ -31293,7 +31292,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlService::SynchronizeParentalControlSettingsAsync\n");
 				resp->error_code = SynchronizeParentalControlSettingsAsync(*resp->GetDataPointer<nn::pctl::detail::AsyncData *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2014: {
@@ -31398,7 +31397,7 @@ namespace nn::pctl::detail::ipc {
 				ns_print("IPC message to nn::pctl::detail::ipc::IParentalControlServiceFactory::CreateService: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = CreateService(req->GetData<uint64_t>(8), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -31905,7 +31904,7 @@ namespace nn::pcv::detail {
 				ns_print("IPC message to nn::pcv::detail::IPcvService::GetPowerClockInfoEvent\n");
 				resp->error_code = GetPowerClockInfoEvent(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 22: {
@@ -32328,7 +32327,7 @@ namespace nn::pinmux {
 				ns_print("IPC message to nn::pinmux::IManager::Unknown0: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown0(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -32423,7 +32422,7 @@ namespace nn::pl::detail {
 				ns_print("IPC message to nn::pl::detail::ISharedFontManager::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5: {
@@ -32556,7 +32555,7 @@ namespace nn::pm::detail {
 				ns_print("IPC message to nn::pm::detail::IShellInterface::Unknown3\n");
 				resp->error_code = Unknown3(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 4: {
@@ -32830,7 +32829,7 @@ namespace nn::psc::sf {
 				ns_print("IPC message to nn::psc::sf::IPmControl::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -32930,7 +32929,7 @@ namespace nn::psc::sf {
 				ns_print("IPC message to nn::psc::sf::IPmService::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -33044,7 +33043,7 @@ namespace nn::psm {
 				ns_print("IPC message to nn::psm::IPsmServer::Unknown7\n");
 				resp->error_code = Unknown7(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 8: {
@@ -33101,7 +33100,7 @@ namespace nn::psm {
 				ns_print("IPC message to nn::psm::IPsmServer::Unknown16\n");
 				resp->error_code = Unknown16(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 17: {
@@ -33116,7 +33115,7 @@ namespace nn::psm {
 				ns_print("IPC message to nn::psm::IPsmServer::Unknown18\n");
 				resp->error_code = Unknown18(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -33154,7 +33153,7 @@ namespace nn::psm {
 				ns_print("IPC message to nn::psm::IPsmSession::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -33354,7 +33353,7 @@ namespace nn::pwm {
 				ns_print("IPC message to nn::pwm::IManager::Unknown0: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown0(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -33363,7 +33362,7 @@ namespace nn::pwm {
 				ns_print("IPC message to nn::pwm::IManager::Unknown1: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown1(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -33510,7 +33509,7 @@ namespace nn::sasbus {
 				ns_print("IPC message to nn::sasbus::IManager::Unknown0: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown0(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -33849,7 +33848,7 @@ namespace nn::settings {
 				resp->error_code = CreateSettingsItemKeyIterator(temp3, temp2, temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp4));
+					resp->SetMove(0, NewHandle((IpcService *)temp4));
 				return 0;
 			}
 			default:
@@ -34528,7 +34527,7 @@ namespace nn::settings {
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::AcquireTelemetryDirtyFlagEventHandle\n");
 				resp->error_code = AcquireTelemetryDirtyFlagEventHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 83: {
@@ -34599,7 +34598,7 @@ namespace nn::settings {
 				ns_print("IPC message to nn::settings::ISystemSettingsServer::AcquireFatalDirtyFlagEventHandle\n");
 				resp->error_code = AcquireFatalDirtyFlagEventHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 94: {
@@ -35559,7 +35558,7 @@ namespace nn::sm::detail {
 				ns_print("IPC message to nn::sm::detail::IUserInterface::Unknown1: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = Unknown1(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -35568,7 +35567,7 @@ namespace nn::sm::detail {
 				ns_print("IPC message to nn::sm::detail::IUserInterface::Unknown2: uint64_t = 0x%%lx, uint8_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), req->GetData<uint32_t>(0x14));
 				resp->error_code = Unknown2(req->GetData<uint64_t>(8), req->GetData<uint8_t>(0x10), req->GetData<uint32_t>(0x14), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {
@@ -36452,7 +36451,7 @@ namespace nn::spl::detail {
 				ns_print("IPC message to nn::spl::detail::IGeneralInterface::Unknown23\n");
 				resp->error_code = Unknown23(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 24: {
@@ -36639,7 +36638,7 @@ namespace nn::spsm::detail {
 				ns_print("IPC message to nn::spsm::detail::IPowerStateInterface::Unknown1\n");
 				resp->error_code = Unknown1(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -36660,7 +36659,7 @@ namespace nn::spsm::detail {
 				ns_print("IPC message to nn::spsm::detail::IPowerStateInterface::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5: {
@@ -37022,7 +37021,7 @@ namespace nn::ssl::sf {
 				ns_print("IPC message to nn::ssl::sf::ISslContext::CreateConnection\n");
 				resp->error_code = CreateConnection(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -37132,7 +37131,7 @@ namespace nn::ssl::sf {
 				ns_print("IPC message to nn::ssl::sf::ISslService::CreateContext: nn::ssl::sf::SslVersion = 0x%x, uint64_t = 0x%%lx\n", req->GetData<nn::ssl::sf::SslVersion>(8), req->GetData<uint64_t>(0x10));
 				resp->error_code = CreateContext(req->GetData<nn::ssl::sf::SslVersion>(8), req->GetData<uint64_t>(0x10), req->pid, temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -37394,7 +37393,7 @@ namespace nn::tc {
 				ns_print("IPC message to nn::tc::IManager::Unknown1: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown1(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2: {
@@ -37504,7 +37503,7 @@ namespace nn::timesrv::detail::service {
 				ns_print("IPC message to nn::timesrv::detail::service::IStaticService::GetStandardUserSystemClock\n");
 				resp->error_code = GetStandardUserSystemClock(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1: {
@@ -37513,7 +37512,7 @@ namespace nn::timesrv::detail::service {
 				ns_print("IPC message to nn::timesrv::detail::service::IStaticService::GetStandardNetworkSystemClock\n");
 				resp->error_code = GetStandardNetworkSystemClock(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 2: {
@@ -37522,7 +37521,7 @@ namespace nn::timesrv::detail::service {
 				ns_print("IPC message to nn::timesrv::detail::service::IStaticService::GetStandardSteadyClock\n");
 				resp->error_code = GetStandardSteadyClock(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -37531,7 +37530,7 @@ namespace nn::timesrv::detail::service {
 				ns_print("IPC message to nn::timesrv::detail::service::IStaticService::GetTimeZoneService\n");
 				resp->error_code = GetTimeZoneService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 4: {
@@ -37540,7 +37539,7 @@ namespace nn::timesrv::detail::service {
 				ns_print("IPC message to nn::timesrv::detail::service::IStaticService::GetStandardLocalSystemClock\n");
 				resp->error_code = GetStandardLocalSystemClock(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 100: {
@@ -37955,7 +37954,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown2\n");
 				resp->error_code = Unknown2(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {
@@ -37964,7 +37963,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown3\n");
 				resp->error_code = Unknown3(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 4: {
@@ -37973,7 +37972,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown4\n");
 				resp->error_code = Unknown4(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5: {
@@ -37982,7 +37981,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::IHtcManager::Unknown5\n");
 				resp->error_code = Unknown5(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 6: {
@@ -38123,7 +38122,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::IHtcsManager::Unknown12\n");
 				resp->error_code = Unknown12(*resp->GetDataPointer<uint32_t *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 13: {
@@ -38132,7 +38131,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::IHtcsManager::Unknown13: uint8_t = 0x%x\n", req->GetData<uint8_t>(8));
 				resp->error_code = Unknown13(req->GetData<uint8_t>(8), *resp->GetDataPointer<uint32_t *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 100: {
@@ -38204,7 +38203,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::ISocket::Unknown4\n");
 				resp->error_code = Unknown4(temp1, *resp->GetDataPointer<uint32_t *>(0x4c), temp2);
 				if(temp2 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp2));
+					resp->SetMove(0, NewHandle((IpcService *)temp2));
 				return 0;
 			}
 			case 5: {
@@ -38247,7 +38246,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::ISocket::Unknown9\n");
 				resp->error_code = Unknown9(*resp->GetDataPointer<uint32_t *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 10: {
@@ -38257,7 +38256,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::ISocket::Unknown10: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = Unknown10(req->GetData<uint32_t>(8), temp1, *resp->GetDataPointer<uint32_t *>(0x4c), temp2);
 				if(temp2 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp2));
+					resp->SetMove(0, NewHandle((IpcService *)temp2));
 				return 0;
 			}
 			case 11: {
@@ -38266,7 +38265,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::ISocket::Unknown11: uint32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc));
 				resp->error_code = Unknown11(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), *resp->GetDataPointer<uint32_t *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 12: {
@@ -38286,7 +38285,7 @@ namespace nn::tma {
 				ns_print("IPC message to nn::tma::ISocket::Unknown13: uint32_t = 0x%x, uint32_t = 0x%x, uint32_t = 0x%x, uint64_t = 0x%%lx, KObject = 0x%x\n", req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), req->GetCopied(0));
 				resp->error_code = Unknown13(req->GetData<uint32_t>(8), req->GetData<uint32_t>(0xc), req->GetData<uint32_t>(0x10), req->GetData<uint64_t>(0x18), IPC::GetHandle<IpcService*>(req->GetCopied(0)), *resp->GetDataPointer<uint32_t *>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 14: {
@@ -38300,7 +38299,7 @@ namespace nn::tma {
 				resp->error_code = Unknown14(req->GetData<uint32_t>(8), temp3, temp2, *resp->GetDataPointer<uint32_t *>(8), temp4);
 				delete[] (uint8_t *) temp3;
 				if(temp4 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp4));
+					resp->SetCopy(0, NewHandle(temp4));
 				return 0;
 			}
 			case 15: {
@@ -38319,7 +38318,7 @@ namespace nn::tma {
 				delete[] (uint8_t *) temp3;
 				delete[] (uint8_t *) temp6;
 				if(temp7 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp7));
+					resp->SetCopy(0, NewHandle(temp7));
 				return 0;
 			}
 			case 16: {
@@ -38627,7 +38626,7 @@ namespace nn::uart {
 				ns_print("IPC message to nn::uart::IManager::Unknown6\n");
 				resp->error_code = Unknown6(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 7: {
@@ -39115,7 +39114,7 @@ namespace nn::usb::hs {
 				ns_print("IPC message to nn::usb::hs::IClientEpSession::Unknown2\n");
 				resp->error_code = Unknown2(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {
@@ -39165,7 +39164,7 @@ namespace nn::usb::hs {
 				ns_print("IPC message to nn::usb::hs::IClientIfSession::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -39204,7 +39203,7 @@ namespace nn::usb::hs {
 				ns_print("IPC message to nn::usb::hs::IClientIfSession::Unknown6\n");
 				resp->error_code = Unknown6(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 7: {
@@ -39287,7 +39286,7 @@ namespace nn::usb::hs {
 				ns_print("IPC message to nn::usb::hs::IClientRootSession::Unknown6\n");
 				resp->error_code = Unknown6(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 7: {
@@ -39424,7 +39423,7 @@ namespace nn::usb::pd::detail {
 				ns_print("IPC message to nn::usb::pd::detail::IPdCradleManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -39517,7 +39516,7 @@ namespace nn::usb::pd::detail {
 				ns_print("IPC message to nn::usb::pd::detail::IPdManager::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -39537,7 +39536,7 @@ namespace nn::usb::pd::detail {
 				ns_print("IPC message to nn::usb::pd::detail::IPdSession::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -39675,7 +39674,7 @@ namespace nn::usb::pm {
 				ns_print("IPC message to nn::usb::pm::IPmService::Unknown0\n");
 				resp->error_code = Unknown0(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 1: {
@@ -39690,7 +39689,7 @@ namespace nn::usb::pm {
 				ns_print("IPC message to nn::usb::pm::IPmService::Unknown2\n");
 				resp->error_code = Unknown2(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {
@@ -39761,7 +39760,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetRelayService\n");
 				resp->error_code = GetRelayService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 101: {
@@ -39770,7 +39769,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetSystemDisplayService\n");
 				resp->error_code = GetSystemDisplayService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 102: {
@@ -39779,7 +39778,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetManagerDisplayService\n");
 				resp->error_code = GetManagerDisplayService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 103: {
@@ -39788,7 +39787,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetIndirectDisplayTransactionService\n");
 				resp->error_code = GetIndirectDisplayTransactionService(temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 1000: {
@@ -39906,7 +39905,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEvent: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = GetDisplayVsyncEvent(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 5203: {
@@ -39915,7 +39914,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = GetDisplayVsyncEventForDebug(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			default:
@@ -39954,7 +39953,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IApplicationRootService::GetDisplayService: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = GetDisplayService(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -40028,7 +40027,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IManagerDisplayService::AcquireLayerTexturePresentingEvent: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = AcquireLayerTexturePresentingEvent(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2301: {
@@ -40043,7 +40042,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IManagerDisplayService::GetDisplayHotplugEvent: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = GetDisplayHotplugEvent(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 2402: {
@@ -40144,7 +40143,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IManagerRootService::GetDisplayService: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = GetDisplayService(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -40153,7 +40152,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::IManagerRootService::GetDisplayServiceWithProxyNameExchange: nn::vi::ProxyName = 0x%%lx, uint32_t = 0x%x\n", req->GetData<nn::vi::ProxyName>(8), req->GetData<uint32_t>(0x10));
 				resp->error_code = GetDisplayServiceWithProxyNameExchange(req->GetData<nn::vi::ProxyName>(8), req->GetData<uint32_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -40440,7 +40439,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::ISystemRootService::GetDisplayService: uint32_t = 0x%x\n", req->GetData<uint32_t>(8));
 				resp->error_code = GetDisplayService(req->GetData<uint32_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 3: {
@@ -40449,7 +40448,7 @@ namespace nn::visrv::sf {
 				ns_print("IPC message to nn::visrv::sf::ISystemRootService::GetDisplayServiceWithProxyNameExchange: nn::vi::ProxyName = 0x%%lx, uint32_t = 0x%x\n", req->GetData<nn::vi::ProxyName>(8), req->GetData<uint32_t>(0x10));
 				resp->error_code = GetDisplayServiceWithProxyNameExchange(req->GetData<nn::vi::ProxyName>(8), req->GetData<uint32_t>(0x10), temp1);
 				if(temp1 != nullptr)
-					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -41140,7 +41139,7 @@ namespace nn::wlan::detail {
 				ns_print("IPC message to nn::wlan::detail::ILocalManager::Unknown20\n");
 				resp->error_code = Unknown20(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 21: {
@@ -42057,7 +42056,7 @@ namespace nns::hosbinder {
 				ns_print("IPC message to nns::hosbinder::IHOSBinderDriver::GetNativeHandle: int32_t = 0x%x, uint32_t = 0x%x\n", req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc));
 				resp->error_code = GetNativeHandle(req->GetData<int32_t>(8), req->GetData<uint32_t>(0xc), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, IPC::NewHandle(temp1));
+					resp->SetCopy(0, NewHandle(temp1));
 				return 0;
 			}
 			case 3: {

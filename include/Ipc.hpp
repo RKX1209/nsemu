@@ -1,10 +1,5 @@
 #ifndef _IPC_HPP
 #define _IPC_HPP
-class KObject {
-public:
-        virtual ~KObject() {}
-        virtual void Close() {}
-};
 
 class IpcMessage {
 public:
@@ -107,7 +102,7 @@ private:
         bool is_domainobj;
 };
 
-class IpcService {
+class IpcService : public KObject {
 public:
         IpcService() : handle(0xf000){}
         virtual uint32_t Dispatch(IpcMessage *req, IpcMessage *resp) { return 0; }
@@ -120,19 +115,17 @@ class IUnknown : public IpcService {
 namespace IPC {
 
 extern std::unordered_map<std::string, IpcService*> services;
-extern std::unordered_map<uint32_t, IpcService *> handles;
+//extern std::unordered_map<uint32_t, KObject *> handles;
 extern bool is_domainobj;
 
 void InitIPC();
-
-uint32_t NewHandle(IpcService *srv);
 
 template<typename T>
 T GetHandle(uint32_t handle) {
         if (handles.find(handle) == handles.end()) {
                 return nullptr;
         }
-        IpcService *srv = handles[handle];
+        KObject *srv = handles[handle];
         return static_cast<T>(srv);
 }
 

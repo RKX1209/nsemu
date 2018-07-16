@@ -213,14 +213,14 @@ def generateCaller(qname, fname, func):
 			yield '%s* %s;' % (rest[0][0], tn)
 			params.append(tn)
 			yield AFTER, 'if(%s != nullptr)' % tn
-			yield AFTER, '\tresp->SetMove(%i, IPC::NewHandle((IpcService *)%s));' % (objOff, tn)
+			yield AFTER, '\tresp->SetMove(%i, NewHandle((IpcService *)%s));' % (objOff, tn)
 			objOff += 1
 		elif type == 'IpcService':
 			tn = tempname()
 			yield 'IpcService *%s;' % tn
 			params.append(tn)
 			yield AFTER, 'if(%s != nullptr)' % tn
-			yield AFTER, '\tresp->SetCopy(%i, IPC::NewHandle(%s));' % (hndOff, tn)
+			yield AFTER, '\tresp->SetCopy(%i, NewHandle(%s));' % (hndOff, tn)
 			hndOff += 1
 		elif type == 'pid':
 			assert False

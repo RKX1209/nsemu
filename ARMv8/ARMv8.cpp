@@ -12,8 +12,9 @@ void Init() {
 	cpu_engine = Interpreter::get_instance ();
         cpu_engine->Init ();
         PC = 0x0;
-        //PC = 0x30f0;
         SP = 0x3100000;
+        Thread *main_thread = ThreadManager::Create();
+        X(1) = main_thread->handle; // Assign main thread handle to X1
         SYSR.tpidrro_el[0] = tls_base;
         SYSR.tczid_el[0] = 0x4; //FIXME: calclulate at runtime
         Memory::AddMemmap (tls_base, tls_size);

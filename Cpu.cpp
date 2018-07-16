@@ -9,7 +9,7 @@ bool DeepTrace;
 void Init() {
 	ARMv8::Init ();
         SVC::Init ();
-        // TODO: Thread::Init()
+        ThreadManager::Init();
 }
 
 void Run() {
