@@ -1,3 +1,0 @@
-[submodule "test/newlib"]
-	path = test/newlib
-	url = https://github.com/reswitched/newlib
