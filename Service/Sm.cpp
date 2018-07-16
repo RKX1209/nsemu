@@ -9,7 +9,8 @@ uint32_t SmService::GetService(ServiceName _name, IpcService*& service) {
         std::string name = (char *) _name;
         if (IPC::services.find(name) == IPC::services.end()) {
                 ns_print("Unknown service name %s\n", name.c_str());
-                return 0xC15; //error code
+                //return 0xC15; //error code
+                return 0x415; //error code
         }
         service = IPC::services[name];
         ns_print("Found: %s => %p\n", name.c_str(), (void *)service);

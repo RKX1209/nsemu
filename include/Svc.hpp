@@ -7,6 +7,36 @@ extern std::function<void()> svc_handlers[0x80];
 
 void Init();
 
+enum GetInfoType {
+    // 1.0.0+
+    AllowedCpuIdBitmask = 0,
+    AllowedThreadPrioBitmask = 1,
+    MapRegionBaseAddr = 2,
+    MapRegionSize = 3,
+    HeapRegionBaseAddr = 4,
+    HeapRegionSize = 5,
+    TotalMemoryUsage = 6,
+    TotalHeapUsage = 7,
+    IsCurrentProcessBeingDebugged = 8,
+    ResourceHandleLimit = 9,
+    IdleTickCount = 10,
+    RandomEntropy = 11,
+    PerformanceCounter = 0xF0000002,
+    // 2.0.0+
+    AddressSpaceBaseAddr = 12,
+    AddressSpaceSize = 13,
+    NewMapRegionBaseAddr = 14,
+    NewMapRegionSize = 15,
+    // 3.0.0+
+    IsVirtualAddressMemoryEnabled = 16,
+    PersonalMmHeapUsage = 17,
+    TitleId = 18,
+    // 4.0.0+
+    PrivilegedProcessId = 19,
+    // 5.0.0+
+    UserExceptionContextAddr = 20,
+};
+
 std::tuple<uint64_t, uint64_t> SetHeapSize(uint64_t size);
 uint64_t SetMemoryAttribute(uint64_t addr, uint64_t size, uint64_t state0, uint64_t state1);
 uint64_t MirrorStack(uint64_t dest, uint64_t src, uint64_t size);

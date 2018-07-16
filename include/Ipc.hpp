@@ -28,7 +28,6 @@ public:
         }
         template<typename T>
         T GetDataPointer(uint offset) {
-                ns_print("req.type=%u, raw_ptr:0x%x, payload_off:0x%x\n", type, raw_ptr, payload_off);
                 return (T) (raw_ptr + payload_off + 8 + offset);
         }
         uint64_t GetBuffer(int btype, int num, unsigned int& size) {
@@ -76,7 +75,7 @@ public:
                 return 0;
         }
         void GenBuf(unsigned int _move_cnt, unsigned int _copy_cnt, unsigned int _data_bytes);
-        void SetErrorCode(uint32_t error_code);
+        void SetErrorCode();
         void ParseMessage();
         void SetMove(int offset, uint32_t handler) {
                 uint32_t *buf = (uint32_t *) raw_ptr;

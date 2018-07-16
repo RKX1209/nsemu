@@ -72,10 +72,10 @@ void IpcMessage::GenBuf(unsigned int _move_cnt, unsigned int _copy_cnt, unsigned
         obuf[pos] = byte_swap32_str("SFCO");
 }
 
-void IpcMessage::SetErrorCode(uint32_t ecode) {
-        error_code = ecode;
-        if (raw_ptr) {
-                raw_ptr[(payload_off >> 2) + 2] = error_code;
+void IpcMessage::SetErrorCode() {
+        uint32_t *buf = (uint32_t *) raw_ptr;
+        if (buf) {
+                buf[(payload_off >> 2) + 2] = error_code;
         }
 }
 
@@ -116,10 +116,15 @@ uint32_t ProcMessage(IpcService *handler, uint8_t buf[]) {
         req.ParseMessage();
         IpcMessage resp(obuf, is_domainobj);
         uint32_t ret = 0xf601;
+
+        //#if 0
+        ns_print("Incoming message\n");
+        bindump(buf, 0x100);
+        //#endif
         switch(req.type) {
         case 2: //Close
                 resp.GenBuf(0, 0, 0);
-                resp.SetErrorCode(0);
+                resp.error_code = 0;
                 ret = 0x25a0b;
                 break;
         case 4: //Normal
@@ -132,21 +137,21 @@ uint32_t ProcMessage(IpcService *handler, uint8_t buf[]) {
                         resp.GenBuf(0, 0, 4);
                         is_domainobj = true;
                         *resp.GetDataPointer<uint32_t*>(8) = handler->handle;
-                        resp.SetErrorCode(0);
+                        resp.error_code = 0;
                         break;
                     case 2: // DuplicateSession
                         debug_print("DuplicateSession\n");
                         is_domainobj = false;
                         resp.GenBuf(1, 0, 0);
                         resp.SetMove(0, NewHandle(handler));
-                        resp.SetErrorCode(0);
+                        resp.error_code = 0;
                         ret = 0;
                         break;
                     case 3: // QueryPointerBufferSize
                         debug_print("QueryPointerBufferSize\n");
                         resp.GenBuf(0, 0, 4);
                         *resp.GetDataPointer<uint32_t *>(8) = 0x500;
-                        resp.SetErrorCode(0);
+                        resp.error_code = 0;
                         ret = 0;
                         break;
                     case 4: // DuplicateSession
@@ -154,7 +159,7 @@ uint32_t ProcMessage(IpcService *handler, uint8_t buf[]) {
                         is_domainobj = false;
                         resp.GenBuf(1, 0, 0);
                         resp.SetMove(0, NewHandle(handler));
-                        resp.SetErrorCode(0);
+                        resp.error_code = 0;
                         ret = 0;
                         break;
                     default:
@@ -162,8 +167,14 @@ uint32_t ProcMessage(IpcService *handler, uint8_t buf[]) {
                 }
         }
         if (ret == 0) {
+                resp.SetErrorCode();
                 memcpy (buf, obuf, 0x100);
         }
+        //#if 0
+        ns_print("Out message\n");
+        bindump(buf, 0x100);
+        //#endif
+
         return ret;
 }
 

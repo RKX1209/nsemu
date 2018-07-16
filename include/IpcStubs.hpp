@@ -812,6 +812,7 @@ namespace nv::gemcoredump {
 				resp->error_code = GetService(req->GetDataPointer<ServiceName>(8), temp1);
 				if(temp1 != nullptr)
 					resp->SetMove(0, IPC::NewHandle((IpcService *)temp1));
+				ns_print("GetService = 0x%x\n", resp->error_code);
 				return 0;
 			}
 			case 2: {
