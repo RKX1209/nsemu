@@ -1,10 +1,10 @@
 # NSEMU
-NSEMU is a Nintendo Switch Emulator. It allows you to play games on PC.
+Experimental Nintendo Switch Emulator. Still WIP.
 ## Building
 ```
 git clone https://github.com/RKX1209/nsemu.git
 cd nsemu
-make -j4
+make -j
 ```
 
 ## Running
@@ -13,16 +13,26 @@ make -j4
 ```
 You can try some homebrew application like [libtransistor](https://github.com/reswitched/libtransistor).  
 
+Network sample.Sending the string to localhost:5555.
 ```
 ./nsemu /path/to/libtransistor/build/test/test_bsd.nso
-
 ``` 
-
-## Debugging
-Currently you should modify a run level flag to debugging mode.  
-include/Util.hpp
-```cpp
-static RunLevel curlevel = RUN_LEVEL_DEBUG;
-//static RunLevel curlevel = RUN_LEVEL_RELEASE;
+```
+$ nc -l localhost 5555
+Hello from libtransistor over a socket!
 ```
 
+## Debugging
+GDB mode.
+```
+./nsemu -s /path/to/nsofile
+```
+```
+gdb-multiarch -q
+gdb$ set architecture aarch64
+gdb$ target remote localhost:1234
+```
+Debug logs.
+```
+./nsemu -d /path/to/nsofile
+```
