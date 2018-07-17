@@ -1,5 +1,9 @@
 # NSEMU
-Experimental Nintendo Switch Emulator. Still WIP.
+Experimental Nintendo Switch emulator.
+
+## Status
+Still WIP project. You can get update via [My twitter](https://twitter.com/RKX1209).  
+TODO list is [here](https://github.com/RKX1209/nsemu/wiki/TODO). 
 ## Building
 ```
 git clone https://github.com/RKX1209/nsemu.git
