@@ -321,7 +321,7 @@ def main():
 	print >>fp, '#ifndef __IPCSTUBS_HPP__'
 	print >>fp, '#define __IPCSTUBS_HPP__'
     	print >>fp
-	impled = (u"nn::fssrv::sf::IFileSystemProxy", u"nn::socket::sf::IClient")
+	impled = (u"nn::fssrv::sf::IFileSystemProxy", u"nn::socket::sf::IClient",u"nn::socket::resolver::IResolver", u"nn::am::service::IApplicationProxyService")
     	# XXX:
     	tmp_srvs = {k: services[k] for k in impled if k in services}
 	print tmp_srvs
@@ -390,6 +390,7 @@ def main():
 			partial = partials[qname] if qname in partials else None
 			for fname, func in sorted(funcs.items(), key=lambda x: x[0]):
 				implemented = re.search('[^a-zA-Z0-9:]%s::%s[^a-zA-Z0-9:]' % (qname, fname), allcode)
+				#implemented = re.search('%s[^a-zA-Z0-9:]' % (fname), allcode)
 				if not implemented:
 					print >>fp, 'uint32_t %s::%s(%s) {' % (qname, fname, generatePrototype(func))
 					print >>fp, '\tns_print("Stub implementation for %s::%s\\n");' % (qname, fname)

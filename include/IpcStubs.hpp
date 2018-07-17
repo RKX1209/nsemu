@@ -2,7 +2,9 @@
 #define __IPCSTUBS_HPP__
 
 #define SERVICE_MAPPING() do { \
+	SERVICE("appletOE", nn::am::service::IApplicationProxyService); \
 	SERVICE("fsp-srv", nn::fssrv::sf::IFileSystemProxy); \
+	SERVICE("sfdnsres", nn::socket::resolver::IResolver); \
 	SERVICE("bsd:u", nn::socket::sf::IClient); \
 	SERVICE("bsd:s", nn::socket::sf::IClient); \
 } while(0)
@@ -6461,46 +6463,6 @@ uint32_t nn::am::service::IApplicationFunctions::SetMediaPlaybackStateForApplica
 }
 uint32_t nn::am::service::IApplicationFunctions::SetTerminateResult(uint32_t _0) {
 	ns_print("Stub implementation for nn::am::service::IApplicationFunctions::SetTerminateResult\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetApplicationFunctions(nn::am::service::IApplicationFunctions*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetApplicationFunctions\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetAudioController(nn::am::service::IAudioController*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetAudioController\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetCommonStateGetter(nn::am::service::ICommonStateGetter*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetCommonStateGetter\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetDebugFunctions(nn::am::service::IDebugFunctions*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetDebugFunctions\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetDisplayController(nn::am::service::IDisplayController*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetDisplayController\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetLibraryAppletCreator(nn::am::service::ILibraryAppletCreator*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetLibraryAppletCreator\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetProcessWindingController(nn::am::service::IProcessWindingController*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetProcessWindingController\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetSelfController(nn::am::service::ISelfController*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetSelfController\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxy::GetWindowController(nn::am::service::IWindowController*& _0) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxy::GetWindowController\n");
-	return 0;
-}
-uint32_t nn::am::service::IApplicationProxyService::OpenApplicationProxy(uint64_t _0, uint64_t _1, IpcService* _2, nn::am::service::IApplicationProxy*& _3) {
-	ns_print("Stub implementation for nn::am::service::IApplicationProxyService::OpenApplicationProxy\n");
 	return 0;
 }
 uint32_t nn::am::service::IAudioController::ChangeMainAppletMasterVolume(float _0, int64_t _1) {
