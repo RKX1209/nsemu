@@ -10,7 +10,7 @@ git clone https://github.com/RKX1209/nsemu.git
 cd nsemu
 make -j
 ```
-
+**NOTICE:** NSEMU is written in C++17. Please update your gcc version (> 6.1).  
 ## Running
 ```
 ./nsemu <NSO file>
