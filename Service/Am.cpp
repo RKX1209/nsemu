@@ -1,7 +1,8 @@
 /* nsemu - LGPL - Copyright 2018 rkx1209<rkx1209dev@gmail.com> */
 #include "Nsemu.hpp"
 #include "IpcStubs.hpp"
-using namespace nn::am::service;
+#include "Am.hpp"
+
 uint32_t nn::am::service::IApplicationProxyService::OpenApplicationProxy(uint64_t reserved, uint64_t pid, IpcService* handle, IApplicationProxy*& proxy) {
 	ns_print("nn::am::service::IApplicationProxyService::OpenApplicationProxy\n");
         proxy = new IApplicationProxy();
@@ -57,3 +58,29 @@ uint32_t nn::am::service::IApplicationProxy::GetWindowController(IWindowControll
         ctr = new IWindowController();
         return 0;
 }
+
+/* ICommonStateGetter */
+uint32_t nn::am::service::ICommonStateGetter::ReceiveMessage(nn::am::AppletMessage& msg) {
+	ns_print("nn::am::service::ICommonStateGetter::ReceiveMessage\n");
+	msg = 15;
+	return 0;
+}
+
+uint32_t nn::am::service::ICommonStateGetter::GetCurrentFocusState(uint8_t& state) {
+	ns_print("nn::am::service::ICommonStateGetter::GetCurrentFocusState\n");
+	state = FocusState::InFocus;
+	return 0;
+}
+
+/* ISelfController */
+uint32_t nn::am::service::ISelfController::SetFocusHandlingMode(bool _0, bool _1, bool _2) {
+	ns_print("nn::am::service::ISelfController::SetFocusHandlingMode\n");
+	/* TODO */
+	return 0;
+}
+uint32_t nn::am::service::ISelfController::SetOutOfFocusSuspendingEnabled(bool _0) {
+	ns_print("nn::am::service::ISelfController::SetOutOfFocusSuspendingEnabled\n");
+	/* TODO */
+	return 0;
+}
+/* ISelfController */

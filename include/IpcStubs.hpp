@@ -2,11 +2,197 @@
 #define __IPCSTUBS_HPP__
 
 #define SERVICE_MAPPING() do { \
+	SERVICE("acc:su", nn::account::IAccountServiceForAdministrator); \
+	SERVICE("acc:u0", nn::account::IAccountServiceForApplication); \
+	SERVICE("acc:u1", nn::account::IAccountServiceForSystemService); \
+	SERVICE("acc:aa", nn::account::IBaasAccessTokenAccessor); \
+	SERVICE("ahid:cd", nn::ahid::IServerSession); \
+	SERVICE("ahid:hdr", nn::ahid::hdr::ISession); \
+	SERVICE("appletAE", nn::am::service::IAllSystemAppletProxiesService); \
 	SERVICE("appletOE", nn::am::service::IApplicationProxyService); \
+	SERVICE("aoc:u", nn::aocsrv::detail::IAddOnContentManager); \
+	SERVICE("apm", nn::apm::IManager); \
+	SERVICE("apm:p", nn::apm::IManagerPrivileged); \
+	SERVICE("apm:sys", nn::apm::ISystemManager); \
+	SERVICE("arp:r", nn::arp::detail::IReader); \
+	SERVICE("arp:w", nn::arp::detail::IWriter); \
+	SERVICE("audin:u", nn::audio::detail::IAudioInManager); \
+	SERVICE("audin:a", nn::audio::detail::IAudioInManagerForApplet); \
+	SERVICE("audin:d", nn::audio::detail::IAudioInManagerForDebugger); \
+	SERVICE("audout:u", nn::audio::detail::IAudioOutManager); \
+	SERVICE("audout:a", nn::audio::detail::IAudioOutManagerForApplet); \
+	SERVICE("audout:d", nn::audio::detail::IAudioOutManagerForDebugger); \
+	SERVICE("audren:u", nn::audio::detail::IAudioRendererManager); \
+	SERVICE("audren:a", nn::audio::detail::IAudioRendererManagerForApplet); \
+	SERVICE("audren:d", nn::audio::detail::IAudioRendererManagerForDebugger); \
+	SERVICE("audrec:u", nn::audio::detail::IFinalOutputRecorderManager); \
+	SERVICE("audrec:a", nn::audio::detail::IFinalOutputRecorderManagerForApplet); \
+	SERVICE("audrec:d", nn::audio::detail::IFinalOutputRecorderManagerForDebugger); \
+	SERVICE("audctl", nn::audioctrl::detail::IAudioController); \
+	SERVICE("bcat:a", nn::bcat::detail::ipc::IServiceCreator); \
+	SERVICE("bcat:m", nn::bcat::detail::ipc::IServiceCreator); \
+	SERVICE("bcat:u", nn::bcat::detail::ipc::IServiceCreator); \
+	SERVICE("bcat:s", nn::bcat::detail::ipc::IServiceCreator); \
+	SERVICE("bgtc:sc", nn::bgtc::IStateControlService); \
+	SERVICE("bgtc:t", nn::bgtc::ITaskService); \
+	SERVICE("btdrv", nn::bluetooth::IBluetoothDriver); \
+	SERVICE("bpc", nn::bpc::IBoardPowerControlManager); \
+	SERVICE("bpc:r", nn::bpc::IRtcManager); \
+	SERVICE("bsdcfg", nn::bsdsocket::cfg::ServerInterface); \
+	SERVICE("btm", nn::btm::IBtm); \
+	SERVICE("btm:dbg", nn::btm::IBtmDebug); \
+	SERVICE("btm:sys", nn::btm::IBtmSystem); \
+	SERVICE("caps:a", nn::capsrv::sf::IAlbumAccessorService); \
+	SERVICE("caps:c", nn::capsrv::sf::IAlbumControlService); \
+	SERVICE("caps:su", nn::capsrv::sf::IScreenShotApplicationService); \
+	SERVICE("caps:sc", nn::capsrv::sf::IScreenShotControlService); \
+	SERVICE("caps:ss", nn::capsrv::sf::IScreenShotService); \
+	SERVICE("cec-mgr", nn::cec::ICecManager); \
+	SERVICE("hwopus", nn::codec::detail::IHardwareOpusDecoderManager); \
+	SERVICE("erpt:c", nn::erpt::sf::IContext); \
+	SERVICE("erpt:r", nn::erpt::sf::ISession); \
+	SERVICE("es", nn::es::IETicketService); \
+	SERVICE("ethc:c", nn::eth::sf::IEthInterface); \
+	SERVICE("ethc:i", nn::eth::sf::IEthInterfaceGroup); \
+	SERVICE("eupld:c", nn::eupld::sf::IControl); \
+	SERVICE("eupld:r", nn::eupld::sf::IRequest); \
+	SERVICE("fan", nn::fan::detail::IManager); \
+	SERVICE("fatal:p", nn::fatalsrv::IPrivateService); \
+	SERVICE("fatal:u", nn::fatalsrv::IService); \
+	SERVICE("fgm:0", nn::fgm::sf::ISession); \
+	SERVICE("fgm", nn::fgm::sf::ISession); \
+	SERVICE("fgm:9", nn::fgm::sf::ISession); \
+	SERVICE("friend:v", nn::friends::detail::ipc::IServiceCreator); \
+	SERVICE("friend:u", nn::friends::detail::ipc::IServiceCreator); \
+	SERVICE("friend:m", nn::friends::detail::ipc::IServiceCreator); \
+	SERVICE("friend:s", nn::friends::detail::ipc::IServiceCreator); \
+	SERVICE("friend:a", nn::friends::detail::ipc::IServiceCreator); \
 	SERVICE("fsp-srv", nn::fssrv::sf::IFileSystemProxy); \
+	SERVICE("fsp-ldr", nn::fssrv::sf::IFileSystemProxyForLoader); \
+	SERVICE("fsp-pr", nn::fssrv::sf::IProgramRegistry); \
+	SERVICE("gpio", nn::gpio::IManager); \
+	SERVICE("hid:dbg", nn::hid::IHidDebugServer); \
+	SERVICE("hid", nn::hid::IHidServer); \
+	SERVICE("hid:sys", nn::hid::IHidSystemServer); \
+	SERVICE("hid:tmp", nn::hid::IHidTemporaryServer); \
+	SERVICE("i2c:pcv", nn::i2c::IManager); \
+	SERVICE("i2c", nn::i2c::IManager); \
+	SERVICE("idle:sys", nn::idle::detail::IPolicyManagerSystem); \
+	SERVICE("irs", nn::irsensor::IIrSensorServer); \
+	SERVICE("irs:sys", nn::irsensor::IIrSensorSystemServer); \
+	SERVICE("lbl", nn::lbl::detail::ILblController); \
+	SERVICE("ldn:m", nn::ldn::detail::IMonitorServiceCreator); \
+	SERVICE("ldn:s", nn::ldn::detail::ISystemServiceCreator); \
+	SERVICE("ldn:u", nn::ldn::detail::IUserServiceCreator); \
+	SERVICE("ldr:shel", nn::ldr::detail::IShellInterface); \
+	SERVICE("lm", nn::lm::ILogService); \
+	SERVICE("lr", nn::lr::ILocationResolverManager); \
+	SERVICE("mii:e", nn::mii::detail::IStaticService); \
+	SERVICE("mii:u", nn::mii::detail::IStaticService); \
+	SERVICE("mm:u", nn::mmnv::IRequest); \
+	SERVICE("ncm", nn::ncm::IContentManager); \
+	SERVICE("news:a", nn::news::detail::ipc::IServiceCreator); \
+	SERVICE("news:c", nn::news::detail::ipc::IServiceCreator); \
+	SERVICE("news:m", nn::news::detail::ipc::IServiceCreator); \
+	SERVICE("news:p", nn::news::detail::ipc::IServiceCreator); \
+	SERVICE("news:v", nn::news::detail::ipc::IServiceCreator); \
+	SERVICE("nfc:am", nn::nfc::am::detail::IAmManager); \
+	SERVICE("nfc:sys", nn::nfc::detail::ISystemManager); \
+	SERVICE("nfc:user", nn::nfc::detail::IUserManager); \
+	SERVICE("nfc:mf:u", nn::nfc::mifare::detail::IUserManager); \
+	SERVICE("nfp:dbg", nn::nfp::detail::IDebugManager); \
+	SERVICE("nfp:sys", nn::nfp::detail::ISystemManager); \
+	SERVICE("nfp:user", nn::nfp::detail::IUserManager); \
+	SERVICE("nifm:a", nn::nifm::detail::IStaticService); \
+	SERVICE("nifm:s", nn::nifm::detail::IStaticService); \
+	SERVICE("nifm:u", nn::nifm::detail::IStaticService); \
+	SERVICE("nim", nn::nim::detail::INetworkInstallManager); \
+	SERVICE("nim:shp", nn::nim::detail::IShopServiceManager); \
+	SERVICE("npns:s", nn::npns::INpnsSystem); \
+	SERVICE("npns:u", nn::npns::INpnsUser); \
+	SERVICE("ns:dev", nn::ns::detail::IDevelopInterface); \
+	SERVICE("ns:rid", nn::ns::detail::IServiceGetterInterface); \
+	SERVICE("ns:web", nn::ns::detail::IServiceGetterInterface); \
+	SERVICE("ns:ec", nn::ns::detail::IServiceGetterInterface); \
+	SERVICE("ns:am2", nn::ns::detail::IServiceGetterInterface); \
+	SERVICE("ns:rt", nn::ns::detail::IServiceGetterInterface); \
+	SERVICE("ns:su", nn::ns::detail::ISystemUpdateInterface); \
+	SERVICE("ns:vm", nn::ns::detail::IVulnerabilityManagerInterface); \
+	SERVICE("nsd:a", nn::nsd::detail::IManager); \
+	SERVICE("nsd:u", nn::nsd::detail::IManager); \
+	SERVICE("ntc", nn::ntc::detail::service::IStaticService); \
+	SERVICE("omm", nn::omm::detail::IOperationModeManager); \
+	SERVICE("ovln:rcv", nn::ovln::IReceiverService); \
+	SERVICE("ovln:snd", nn::ovln::ISenderService); \
+	SERVICE("pcie", nn::pcie::detail::IManager); \
+	SERVICE("pctl:s", nn::pctl::detail::ipc::IParentalControlServiceFactory); \
+	SERVICE("pctl:r", nn::pctl::detail::ipc::IParentalControlServiceFactory); \
+	SERVICE("pctl:a", nn::pctl::detail::ipc::IParentalControlServiceFactory); \
+	SERVICE("pctl", nn::pctl::detail::ipc::IParentalControlServiceFactory); \
+	SERVICE("pcv:arb", nn::pcv::IArbitrationManager); \
+	SERVICE("pcv:imm", nn::pcv::IImmediateManager); \
+	SERVICE("pcv", nn::pcv::detail::IPcvService); \
+	SERVICE("pdm:ntfy", nn::pdm::detail::INotifyService); \
+	SERVICE("pdm:qry", nn::pdm::detail::IQueryService); \
+	SERVICE("pinmux", nn::pinmux::IManager); \
+	SERVICE("pl:u", nn::pl::detail::ISharedFontManager); \
+	SERVICE("pm:bm", nn::pm::detail::IBootModeInterface); \
+	SERVICE("pm:info", nn::pm::detail::IInformationInterface); \
+	SERVICE("pm:shell", nn::pm::detail::IShellInterface); \
+	SERVICE("prepo:a", nn::prepo::detail::ipc::IPrepoService); \
+	SERVICE("prepo:m", nn::prepo::detail::ipc::IPrepoService); \
+	SERVICE("prepo:u", nn::prepo::detail::ipc::IPrepoService); \
+	SERVICE("prepo:s", nn::prepo::detail::ipc::IPrepoService); \
+	SERVICE("psc:c", nn::psc::sf::IPmControl); \
+	SERVICE("psc:m", nn::psc::sf::IPmService); \
+	SERVICE("psm", nn::psm::IPsmServer); \
+	SERVICE("pwm", nn::pwm::IManager); \
+	SERVICE("ro:dmnt", nn::ro::detail::IDebugMonitorInterface); \
+	SERVICE("ldr:ro", nn::ro::detail::IRoInterface); \
+	SERVICE("sasbus", nn::sasbus::IManager); \
+	SERVICE("set:cal", nn::settings::IFactorySettingsServer); \
+	SERVICE("set:fd", nn::settings::IFirmwareDebugSettingsServer); \
+	SERVICE("set", nn::settings::ISettingsServer); \
+	SERVICE("set:sys", nn::settings::ISystemSettingsServer); \
+	SERVICE("sm:m", nn::sm::detail::IManagerInterface); \
+	SERVICE("sm:", nn::sm::detail::IUserInterface); \
 	SERVICE("sfdnsres", nn::socket::resolver::IResolver); \
 	SERVICE("bsd:u", nn::socket::sf::IClient); \
 	SERVICE("bsd:s", nn::socket::sf::IClient); \
+	SERVICE("spl:", nn::spl::detail::IGeneralInterface); \
+	SERVICE("csrng", nn::spl::detail::IRandomInterface); \
+	SERVICE("spsm", nn::spsm::detail::IPowerStateInterface); \
+	SERVICE("ssl", nn::ssl::sf::ISslService); \
+	SERVICE("tc", nn::tc::IManager); \
+	SERVICE("time:s", nn::timesrv::detail::service::IStaticService); \
+	SERVICE("time:u", nn::timesrv::detail::service::IStaticService); \
+	SERVICE("time:r", nn::timesrv::detail::service::IStaticService); \
+	SERVICE("time:a", nn::timesrv::detail::service::IStaticService); \
+	SERVICE("ts", nn::ts::server::IMeasurementServer); \
+	SERVICE("uart", nn::uart::IManager); \
+	SERVICE("usb:ds", nn::usb::ds::IDsService); \
+	SERVICE("usb:hs", nn::usb::hs::IClientRootSession); \
+	SERVICE("usb:pd:c", nn::usb::pd::detail::IPdCradleManager); \
+	SERVICE("usb:pd", nn::usb::pd::detail::IPdManager); \
+	SERVICE("usb:pm", nn::usb::pm::IPmService); \
+	SERVICE("vi:u", nn::visrv::sf::IApplicationRootService); \
+	SERVICE("vi:m", nn::visrv::sf::IManagerRootService); \
+	SERVICE("vi:s", nn::visrv::sf::ISystemRootService); \
+	SERVICE("wlan:inf", nn::wlan::detail::IInfraManager); \
+	SERVICE("wlan:lga", nn::wlan::detail::ILocalGetActionFrame); \
+	SERVICE("wlan:lg", nn::wlan::detail::ILocalGetFrame); \
+	SERVICE("wlan:lcl", nn::wlan::detail::ILocalManager); \
+	SERVICE("wlan:sg", nn::wlan::detail::ISocketGetFrame); \
+	SERVICE("wlan:soc", nn::wlan::detail::ISocketManager); \
+	SERVICE("xcd:sys", nn::xcd::detail::ISystemServer); \
+	SERVICE("dispdrv", nns::hosbinder::IHOSBinderDriver); \
+	SERVICE("nvdrvdbg", nns::nvdrv::INvDrvDebugFSServices); \
+	SERVICE("nvdrv:s", nns::nvdrv::INvDrvServices); \
+	SERVICE("nvdrv:t", nns::nvdrv::INvDrvServices); \
+	SERVICE("nvdrv:a", nns::nvdrv::INvDrvServices); \
+	SERVICE("nvdrv", nns::nvdrv::INvDrvServices); \
+	SERVICE("nvgem:c", nv::gemcontrol::INvGemControl); \
+	SERVICE("nvgem:cd", nv::gemcoredump::INvGemCoreDump); \
 } while(0)
 
 using ServiceName = uint8_t *; // uint8_t[8]
@@ -6509,10 +6695,6 @@ uint32_t nn::am::service::ICommonStateGetter::GetCradleStatus(uint8_t& _0) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetCradleStatus\n");
 	return 0;
 }
-uint32_t nn::am::service::ICommonStateGetter::GetCurrentFocusState(uint8_t& _0) {
-	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetCurrentFocusState\n");
-	return 0;
-}
 uint32_t nn::am::service::ICommonStateGetter::GetDefaultDisplayResolution(int32_t& _0, int32_t& _1) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::GetDefaultDisplayResolution\n");
 	return 0;
@@ -6555,10 +6737,6 @@ uint32_t nn::am::service::ICommonStateGetter::IsVrModeEnabled(bool& _0) {
 }
 uint32_t nn::am::service::ICommonStateGetter::PushToGeneralChannel(nn::am::service::IStorage* _0) {
 	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::PushToGeneralChannel\n");
-	return 0;
-}
-uint32_t nn::am::service::ICommonStateGetter::ReceiveMessage(nn::am::AppletMessage& _0) {
-	ns_print("Stub implementation for nn::am::service::ICommonStateGetter::ReceiveMessage\n");
 	return 0;
 }
 uint32_t nn::am::service::ICommonStateGetter::ReleaseSleepLock() {
@@ -7109,10 +7287,6 @@ uint32_t nn::am::service::ISelfController::SetControllerFirmwareUpdateSection(bo
 	ns_print("Stub implementation for nn::am::service::ISelfController::SetControllerFirmwareUpdateSection\n");
 	return 0;
 }
-uint32_t nn::am::service::ISelfController::SetFocusHandlingMode(bool _0, bool _1, bool _2) {
-	ns_print("Stub implementation for nn::am::service::ISelfController::SetFocusHandlingMode\n");
-	return 0;
-}
 uint32_t nn::am::service::ISelfController::SetHandlesRequestToDisplay(bool _0) {
 	ns_print("Stub implementation for nn::am::service::ISelfController::SetHandlesRequestToDisplay\n");
 	return 0;
@@ -7131,10 +7305,6 @@ uint32_t nn::am::service::ISelfController::SetMediaPlaybackState(bool _0) {
 }
 uint32_t nn::am::service::ISelfController::SetOperationModeChangedNotification(bool _0) {
 	ns_print("Stub implementation for nn::am::service::ISelfController::SetOperationModeChangedNotification\n");
-	return 0;
-}
-uint32_t nn::am::service::ISelfController::SetOutOfFocusSuspendingEnabled(bool _0) {
-	ns_print("Stub implementation for nn::am::service::ISelfController::SetOutOfFocusSuspendingEnabled\n");
 	return 0;
 }
 uint32_t nn::am::service::ISelfController::SetPerformanceModeChangedNotification(bool _0) {

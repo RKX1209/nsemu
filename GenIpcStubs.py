@@ -321,9 +321,10 @@ def main():
 	print >>fp, '#ifndef __IPCSTUBS_HPP__'
 	print >>fp, '#define __IPCSTUBS_HPP__'
     	print >>fp
-	impled = (u"nn::fssrv::sf::IFileSystemProxy", u"nn::socket::sf::IClient",u"nn::socket::resolver::IResolver", u"nn::am::service::IApplicationProxyService")
+	# impled = (u"nn::fssrv::sf::IFileSystemProxy", u"nn::socket::sf::IClient",u"nn::socket::resolver::IResolver", u"nn::am::service::IApplicationProxyService")
     	# XXX:
-    	tmp_srvs = {k: services[k] for k in impled if k in services}
+    	# tmp_srvs = {k: services[k] for k in impled if k in services}
+	tmp_srvs = services
 	print tmp_srvs
 	print >>fp, '#define SERVICE_MAPPING() do { \\'
 	for iname, snames in sorted(tmp_srvs.items(), key=lambda x: x[0]):
