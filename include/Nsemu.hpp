@@ -31,6 +31,7 @@ using namespace std;
 #include "Util.hpp"
 #include "NintendoObject.hpp"
 #include "Cpu.hpp"
+#include "Kernel.hpp"
 #include "Svc.hpp"
 #include "ARMv8/ARMv8.hpp"
 #include "ARMv8/Disassembler.hpp"

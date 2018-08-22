@@ -16899,19 +16899,19 @@ namespace nn::hid {
 		uint32_t Dispatch(IpcMessage *req, IpcMessage *resp) {
 			switch(req->cmd_id) {
 			case 0: {
-				resp->GenBuf(0, 1, 0);
-				IpcService *temp1;
+				resp->GenBuf(1, 0, 0);
+				uint8_t* temp1;
 				ns_print("IPC message to nn::hid::IAppletResource::GetSharedMemoryHandle\n");
 				resp->error_code = GetSharedMemoryHandle(temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, NewHandle(temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
 				ns_abort("Unknown message cmdId %u to interface nn::hid::IAppletResource", req->cmd_id);
 			}
 		}
-		uint32_t GetSharedMemoryHandle(IpcService*& _0);
+		uint32_t GetSharedMemoryHandle(uint8_t*& _0);
 	};
 	class IHidDebugServer : public IpcService {
 	public:
@@ -18380,10 +18380,6 @@ uint32_t nn::hid::IActiveVibrationDeviceList::ActivateVibrationDevice(nn::hid::V
 	ns_print("Stub implementation for nn::hid::IActiveVibrationDeviceList::ActivateVibrationDevice\n");
 	return 0;
 }
-uint32_t nn::hid::IAppletResource::GetSharedMemoryHandle(IpcService*& _0) {
-	ns_print("Stub implementation for nn::hid::IAppletResource::GetSharedMemoryHandle\n");
-	return 0;
-}
 uint32_t nn::hid::IHidDebugServer::ActivateFirmwareUpdate() {
 	ns_print("Stub implementation for nn::hid::IHidDebugServer::ActivateFirmwareUpdate\n");
 	return 0;
@@ -18606,10 +18602,6 @@ uint32_t nn::hid::IHidServer::ActivateXpad(nn::hid::BasicXpadId _0, nn::applet::
 }
 uint32_t nn::hid::IHidServer::CreateActiveVibrationDeviceList(nn::hid::IActiveVibrationDeviceList*& _0) {
 	ns_print("Stub implementation for nn::hid::IHidServer::CreateActiveVibrationDeviceList\n");
-	return 0;
-}
-uint32_t nn::hid::IHidServer::CreateAppletResource(nn::applet::AppletResourceUserId _0, uint64_t _1, nn::hid::IAppletResource*& _2) {
-	ns_print("Stub implementation for nn::hid::IHidServer::CreateAppletResource\n");
 	return 0;
 }
 uint32_t nn::hid::IHidServer::DeactivateJoySixAxisSensor(nn::hid::JoyXpadId _0) {
@@ -40032,21 +40024,21 @@ namespace nn::visrv::sf {
 				return 0;
 			}
 			case 5202: {
-				resp->GenBuf(0, 1, 0);
-				IpcService *temp1;
+				resp->GenBuf(1, 0, 0);
+				Kernel::Event* temp1;
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEvent: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = GetDisplayVsyncEvent(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, NewHandle(temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			case 5203: {
-				resp->GenBuf(0, 1, 0);
-				IpcService *temp1;
+				resp->GenBuf(1, 0, 0);
+				Kernel::Event* temp1;
 				ns_print("IPC message to nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug: uint64_t = 0x%%lx\n", req->GetData<uint64_t>(8));
 				resp->error_code = GetDisplayVsyncEventForDebug(req->GetData<uint64_t>(8), temp1);
 				if(temp1 != nullptr)
-					resp->SetCopy(0, NewHandle(temp1));
+					resp->SetMove(0, NewHandle((IpcService *)temp1));
 				return 0;
 			}
 			default:
@@ -40058,8 +40050,8 @@ namespace nn::visrv::sf {
 		uint32_t CreateStrayLayer(uint32_t _0, uint64_t _1, uint64_t& _2, int64_t& _3, uint8_t *& _4, unsigned int _4_size);
 		uint32_t DestroyStrayLayer(uint64_t _0);
 		uint32_t GetDisplayResolution(uint64_t _0, int64_t& _1, int64_t& _2);
-		uint32_t GetDisplayVsyncEvent(uint64_t _0, IpcService*& _1);
-		uint32_t GetDisplayVsyncEventForDebug(uint64_t _0, IpcService*& _1);
+		uint32_t GetDisplayVsyncEvent(uint64_t _0, Kernel::Event*& _1);
+		uint32_t GetDisplayVsyncEventForDebug(uint64_t _0, Kernel::Event*& _1);
 		uint32_t GetIndirectDisplayTransactionService(nns::hosbinder::IHOSBinderDriver*& _0);
 		uint32_t GetIndirectLayerImageCropMap(float _0, float _1, float _2, float _3, int64_t _4, int64_t _5, uint64_t _6, nn::applet::AppletResourceUserId _7, uint64_t _8, int64_t& _9, int64_t& _10, uint8_t *& _11, unsigned int _11_size);
 		uint32_t GetIndirectLayerImageMap(int64_t _0, int64_t _1, uint64_t _2, nn::applet::AppletResourceUserId _3, uint64_t _4, int64_t& _5, int64_t& _6, uint8_t *& _7, unsigned int _7_size);
@@ -40612,16 +40604,8 @@ uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayResolution(uint64_
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetDisplayResolution\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEvent(uint64_t _0, IpcService*& _1) {
-	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEvent\n");
-	return 0;
-}
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug(uint64_t _0, IpcService*& _1) {
+uint32_t nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug(uint64_t _0, Kernel::Event*& _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetDisplayVsyncEventForDebug\n");
-	return 0;
-}
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectDisplayTransactionService(nns::hosbinder::IHOSBinderDriver*& _0) {
-	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetIndirectDisplayTransactionService\n");
 	return 0;
 }
 uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageCropMap(float _0, float _1, float _2, float _3, int64_t _4, int64_t _5, uint64_t _6, nn::applet::AppletResourceUserId _7, uint64_t _8, int64_t& _9, int64_t& _10, uint8_t *& _11, unsigned int _11_size) {
@@ -40636,28 +40620,12 @@ uint32_t nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageRequire
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetIndirectLayerImageRequiredMemoryInfo\n");
 	return 0;
 }
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetManagerDisplayService(nn::visrv::sf::IManagerDisplayService*& _0) {
-	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetManagerDisplayService\n");
-	return 0;
-}
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetRelayService(nns::hosbinder::IHOSBinderDriver*& _0) {
-	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetRelayService\n");
-	return 0;
-}
-uint32_t nn::visrv::sf::IApplicationDisplayService::GetSystemDisplayService(nn::visrv::sf::ISystemDisplayService*& _0) {
-	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::GetSystemDisplayService\n");
-	return 0;
-}
 uint32_t nn::visrv::sf::IApplicationDisplayService::ListDisplays(int64_t& _0, nn::vi::DisplayInfo *& _1, unsigned int _1_size) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::ListDisplays\n");
 	return 0;
 }
 uint32_t nn::visrv::sf::IApplicationDisplayService::OpenDefaultDisplay(uint64_t& _0) {
 	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::OpenDefaultDisplay\n");
-	return 0;
-}
-uint32_t nn::visrv::sf::IApplicationDisplayService::OpenDisplay(nn::vi::DisplayName _0, uint64_t& _1) {
-	ns_print("Stub implementation for nn::visrv::sf::IApplicationDisplayService::OpenDisplay\n");
 	return 0;
 }
 uint32_t nn::visrv::sf::IApplicationDisplayService::OpenLayer(nn::vi::DisplayName _0, uint64_t _1, nn::applet::AppletResourceUserId _2, uint64_t _3, int64_t& _4, uint8_t *& _5, unsigned int _5_size) {
@@ -40762,10 +40730,6 @@ uint32_t nn::visrv::sf::IManagerDisplayService::SetIndirectProducerFlipOffset(ui
 }
 uint32_t nn::visrv::sf::IManagerDisplayService::SetLayerVisibility(bool _0, uint64_t _1) {
 	ns_print("Stub implementation for nn::visrv::sf::IManagerDisplayService::SetLayerVisibility\n");
-	return 0;
-}
-uint32_t nn::visrv::sf::IManagerRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1) {
-	ns_print("Stub implementation for nn::visrv::sf::IManagerRootService::GetDisplayService\n");
 	return 0;
 }
 uint32_t nn::visrv::sf::IManagerRootService::GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService*& _2) {
@@ -40902,10 +40866,6 @@ uint32_t nn::visrv::sf::ISystemDisplayService::SetLayerVisibility(bool _0, uint6
 }
 uint32_t nn::visrv::sf::ISystemDisplayService::SetLayerZ(uint64_t _0, int64_t _1) {
 	ns_print("Stub implementation for nn::visrv::sf::ISystemDisplayService::SetLayerZ\n");
-	return 0;
-}
-uint32_t nn::visrv::sf::ISystemRootService::GetDisplayService(uint32_t _0, nn::visrv::sf::IApplicationDisplayService*& _1) {
-	ns_print("Stub implementation for nn::visrv::sf::ISystemRootService::GetDisplayService\n");
 	return 0;
 }
 uint32_t nn::visrv::sf::ISystemRootService::GetDisplayServiceWithProxyNameExchange(nn::vi::ProxyName _0, uint32_t _1, nn::visrv::sf::IApplicationDisplayService*& _2) {

@@ -1,5 +1,6 @@
 /* nsemu - LGPL - Copyright 2017 rkx1209<rkx1209dev@gmail.com> */
 #include "Nsemu.hpp"
+#include "Service/Dispdrv.hpp"
 namespace Cpu {
 
 static State state = State::PowerDown;
@@ -7,9 +8,10 @@ FILE *TraceOut;
 bool DeepTrace;
 
 void Init() {
-	ARMv8::Init ();
-        SVC::Init ();
+	ARMv8::Init();
+        SVC::Init();
         ThreadManager::Init();
+        NVFlinger::Init();
 }
 
 void Run() {

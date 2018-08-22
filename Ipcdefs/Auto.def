@@ -1793,7 +1793,7 @@ interface nn::hid::IActiveVibrationDeviceList {
 }
 
 interface nn::hid::IAppletResource {
-	[0] GetSharedMemoryHandle() -> IpcService;
+	[0] GetSharedMemoryHandle() -> object<uint8_t>;
 }
 
 interface nn::hid::IHidDebugServer is hid:dbg {
@@ -4004,8 +4004,8 @@ interface nn::visrv::sf::IApplicationDisplayService {
 	[2450] GetIndirectLayerImageMap(i64, i64, u64, nn::applet::AppletResourceUserId, pid) -> (i64, i64, buffer<unknown, 0x46, 0>);
 	[2451] GetIndirectLayerImageCropMap(f32, f32, f32, f32, i64, i64, u64, nn::applet::AppletResourceUserId, pid) -> (i64, i64, buffer<unknown, 0x46, 0>);
 	[2460] GetIndirectLayerImageRequiredMemoryInfo(i64, i64) -> (i64, i64);
-	[5202] GetDisplayVsyncEvent(u64) -> IpcService;
-	[5203] GetDisplayVsyncEventForDebug(u64) -> IpcService;
+	[5202] GetDisplayVsyncEvent(u64) -> object<Kernel::Event>;
+	[5203] GetDisplayVsyncEventForDebug(u64) -> object<Kernel::Event>;
 }
 
 interface nn::visrv::sf::IApplicationRootService is vi:u {
