@@ -1,0 +1,6 @@
+soX play 
+
+Reproduzir arquivos de áudios atraves  do sox 
+
+Reproduzir áudios atarvez de um arquivo 
+
